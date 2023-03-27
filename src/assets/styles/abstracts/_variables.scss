@@ -1,0 +1,31 @@
+// -----------------------------------------------------------------------------
+// This file contains all application-wide Sass variables.
+// -----------------------------------------------------------------------------
+
+$min-contrast-ratio: 3;
+$primary: #408fff;
+$white: #fff !default;
+$gray-100: #f1f0f1 !default;
+$gray-200: #e0dedf !default;
+$gray-300: #c7c4c6 !default;
+$gray-400: #aeaaac !default;
+$gray-500: #959093 !default;
+$gray-600: #7c7679 !default;
+$gray-700: #625d60 !default;
+$gray-800: #484446 !default;
+$gray-900: #2e2c2d !default;
+$black: #000 !default;
+
+$body-bg: $gray-100;
+$body-color: $gray-700;
+
+/// Relative or absolute URL where all assets are served from
+/// @type String
+/// @example scss - When using a CDN
+///   $base-url: 'https://cdn.example.com/assets/';
+$base-url: "/assets/" !default;
+
+$header-height: 5rem;
+$main-height: calc(100% - $header-height);
+$header-font-size: 1.25rem;
+$header-line-height: 1.2;
