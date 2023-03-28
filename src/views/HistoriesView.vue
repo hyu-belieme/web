@@ -1,10 +1,12 @@
 <script setup>
 import HistoryList from "@/components/HistoryList.vue";
+import DetailHistory from "../components/DetailHistory.vue";
 </script>
 
 <template>
   <section class="history-list-page">
     <HistoryList></HistoryList>
+    <DetailHistory></DetailHistory>
   </section>
 </template>
 
@@ -25,14 +27,12 @@ $detail-tab-ratio: 25;
     height: 100%;
     flex-basis: 0;
     flex-grow: $list-tab-ratio;
-    background-color: $white;
   }
 
   .history-detail {
     height: 100%;
     flex-basis: 0;
     flex-grow: $detail-tab-ratio;
-    background-color: $white;
   }
 }
 </style>
