@@ -4,9 +4,9 @@ import ItemCell from "@/components/ItemCell.vue";
 
 <template>
   <section class="item-list">
-    <ItemCell></ItemCell>
-    <ItemCell></ItemCell>
-    <ItemCell></ItemCell>
+    <ItemCell v-bind="{ num: 1, status: 'USABLE' }"></ItemCell>
+    <ItemCell v-bind="{ num: 2, status: 'UNUSABLE' }"></ItemCell>
+    <ItemCell v-bind="{ num: 3, status: 'INACTIVE' }"></ItemCell>
   </section>
 </template>
 

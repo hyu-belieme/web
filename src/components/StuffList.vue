@@ -4,10 +4,10 @@ import StuffCell from "@/components/StuffCell.vue";
 
 <template>
   <section class="stuff-list">
-    <StuffCell></StuffCell>
-    <StuffCell></StuffCell>
-    <StuffCell></StuffCell>
-    <StuffCell></StuffCell>
+    <StuffCell v-bind="{ name: '블루투스 스피커', thumbnail: '📻', count: 5 }"></StuffCell>
+    <StuffCell v-bind="{ name: '우산', thumbnail: '🌂', count: 2 }"></StuffCell>
+    <StuffCell v-bind="{ name: '축구공', thumbnail: '⚽️', count: 3 }"></StuffCell>
+    <StuffCell v-bind="{ name: '농구공', thumbnail: '🏀', count: 0 }"></StuffCell>
   </section>
 </template>
 

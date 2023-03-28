@@ -5,17 +5,36 @@ import Tag from "@/components/Tag.vue";
 <template>
   <section class="cell">
     <section class="content">
-      <span class="numbering">1</span>
+      <span class="numbering">{{ num }}</span>
       <section class="tags">
-        <Tag v-bind="{ color: 'green', size: 6, content: '대여 가능' }"></Tag>
+        <Tag
+          v-if="status === 'USABLE'"
+          v-bind="{ color: 'green', size: 6, content: '대여가능' }"
+        ></Tag>
+        <Tag
+          v-if="status === 'UNUSABLE'"
+          v-bind="{ color: 'orange', size: 6, content: '대여 중' }"
+        ></Tag>
+        <Tag
+          v-if="status === 'INACTIVE'"
+          v-bind="{ color: 'red', size: 6, content: '사용불가' }"
+        ></Tag>
       </section>
       <section class="buttons">
-        <button class="btn btn-primary btn-sm">대여하기</button>
+        <button v-if="status === 'USABLE'" class="btn btn-primary btn-sm">대여하기</button>
+        <button v-else class="btn btn-primary btn-sm" disabled>대여하기</button>
       </section>
     </section>
     <div class="division-line"></div>
   </section>
 </template>
+
+<script>
+export default {
+  name: "ItemCell",
+  props: ["num", "status"]
+};
+</script>
 
 <style lang="scss" scoped>
 .cell {

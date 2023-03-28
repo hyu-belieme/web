@@ -1,12 +1,19 @@
 <template>
   <section class="cell">
     <section class="content">
-      <span class="key">대여 요청 시간</span>
-      <span class="value">2022년 03월 17일 (금) 오후 1시 08분</span>
+      <span class="keyword">{{ keyword }}</span>
+      <span class="value">{{ value }}</span>
     </section>
     <div class="division-line"></div>
   </section>
 </template>
+
+<script>
+export default {
+  name: "InfoCell",
+  props: ["keyword", "value"]
+};
+</script>
 
 <style lang="scss" scoped>
 .cell {
@@ -26,7 +33,7 @@
     gap: map-get($spacers, 2);
     align-items: center;
 
-    .key {
+    .keyword {
       line-height: $list-cell-height;
       font-size: $h6-font-size;
       flex-grow: 1;

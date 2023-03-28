@@ -1,5 +1,5 @@
 <script setup>
-import InfoList from "@/components/InfoList.vue";
+import InfoCell from "@/components/InfoCell.vue";
 </script>
 
 <template>
@@ -8,8 +8,34 @@ import InfoList from "@/components/InfoList.vue";
       <section class="icon">📻</section>
       <section class="name">블루투스 스피커 #2</section>
     </section>
-    <InfoList></InfoList>
-    <InfoList></InfoList>
+    <section class="info-list">
+      <InfoCell
+        v-bind="{ keyword: '대여 요청 시간', value: '2022년 03월 17일 (금) 오후 1시 08분' }"
+      ></InfoCell>
+      <InfoCell
+        v-bind="{ keyword: '대여 요청 시간', value: '2022년 03월 17일 (금) 오후 1시 08분' }"
+      ></InfoCell>
+      <InfoCell
+        v-bind="{ keyword: '대여 요청 시간', value: '2022년 03월 17일 (금) 오후 1시 08분' }"
+      ></InfoCell>
+      <InfoCell
+        v-bind="{ keyword: '대여 요청 시간', value: '2022년 03월 17일 (금) 오후 1시 08분' }"
+      ></InfoCell>
+    </section>
+    <section class="info-list">
+      <InfoCell
+        v-bind="{ keyword: '대여 요청 시간', value: '2022년 03월 17일 (금) 오후 1시 08분' }"
+      ></InfoCell>
+      <InfoCell
+        v-bind="{ keyword: '대여 요청 시간', value: '2022년 03월 17일 (금) 오후 1시 08분' }"
+      ></InfoCell>
+      <InfoCell
+        v-bind="{ keyword: '대여 요청 시간', value: '2022년 03월 17일 (금) 오후 1시 08분' }"
+      ></InfoCell>
+      <InfoCell
+        v-bind="{ keyword: '대여 요청 시간', value: '2022년 03월 17일 (금) 오후 1시 08분' }"
+      ></InfoCell>
+    </section>
     <section class="buttons">
       <button class="btn btn-primary btn-sm">승인하기</button>
       <button class="btn btn-danger btn-sm">취소하기</button>

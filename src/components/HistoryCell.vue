@@ -5,15 +5,22 @@ import Tag from "@/components/Tag.vue";
 <template>
   <section class="cell">
     <section class="content">
-      <span class="name">블루투스 스피커 #2</span>
+      <span class="name">{{ name }} #{{ num }}</span>
       <section class="tags">
-        <Tag v-bind="{ color: 'green', size: 6, content: '18 이석환' }"></Tag>
-        <Tag v-bind="{ color: 'orange', size: 6, content: '3분전' }"></Tag>
+        <Tag v-bind="{ color: 'green', size: 6, content: requester }"></Tag>
+        <Tag v-bind="{ color: 'orange', size: 6, content: timestamp }"></Tag>
       </section>
     </section>
     <div class="division-line"></div>
   </section>
 </template>
+
+<script>
+export default {
+  name: "HistoryCell",
+  props: ["name", "num", "requester", "timestamp"]
+};
+</script>
 
 <style lang="scss" scoped>
 .cell {
