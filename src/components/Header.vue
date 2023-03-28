@@ -14,8 +14,6 @@
 </template>
 
 <style lang="scss">
-@import "@/assets/styles/main.scss";
-
 .logo {
   height: $header-font-size * $header-line-height;
 }
