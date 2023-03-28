@@ -1,6 +1,6 @@
 <script setup>
 import HistoryList from "@/components/HistoryList.vue";
-import DetailHistory from "../components/DetailHistory.vue";
+import DetailHistory from "@/components/DetailHistory.vue";
 </script>
 
 <template>

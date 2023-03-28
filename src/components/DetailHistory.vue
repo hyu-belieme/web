@@ -1,11 +1,12 @@
 <script setup>
 import HistoryInfo from "@/components/HistoryInfo.vue";
+import ProcedureDesc from "@/components/ProcedureDesc.vue";
 </script>
 
 <template>
   <section class="history-detail">
     <HistoryInfo></HistoryInfo>
-    <section class="procedure-desc"></section>
+    <ProcedureDesc></ProcedureDesc>
   </section>
 </template>
 

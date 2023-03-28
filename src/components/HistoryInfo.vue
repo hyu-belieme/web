@@ -1,9 +1,15 @@
+<script setup>
+import InfoList from "@/components/InfoList.vue";
+</script>
+
 <template>
   <section class="history-info">
     <section class="label">
       <section class="icon">📻</section>
       <section class="name">블루투스 스피커 #2</section>
     </section>
+    <InfoList></InfoList>
+    <InfoList></InfoList>
     <section class="buttons">
       <button class="btn btn-primary btn-sm">승인하기</button>
       <button class="btn btn-danger btn-sm">취소하기</button>
