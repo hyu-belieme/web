@@ -1,0 +1,10 @@
+// -----------------------------------------------------------------------------
+// This file contains all styles related to the header of the site/application.
+// -----------------------------------------------------------------------------
+
+header {
+  width: 100%;
+  height: $header-height;
+  font-size: $header-font-size;
+  line-height: $header-line-height;
+}
