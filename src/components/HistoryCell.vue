@@ -5,10 +5,10 @@ import Tag from "@/components/Tag.vue";
 <template>
   <section class="cell">
     <section class="content">
-      <span class="name">{{ name }} #{{ num }}</span>
+      <span class="name">{{ item.stuffName }} #{{ item.num }}</span>
       <section class="tags">
-        <Tag v-bind="{ color: 'green', size: 6, content: requester }"></Tag>
-        <Tag v-bind="{ color: 'orange', size: 6, content: timestamp }"></Tag>
+        <Tag v-bind="userTagInfo"></Tag>
+        <Tag v-bind="timestampTagInfo"></Tag>
       </section>
     </section>
     <div class="division-line"></div>
@@ -18,8 +18,65 @@ import Tag from "@/components/Tag.vue";
 <script>
 export default {
   name: "HistoryCell",
-  props: ["name", "num", "requester", "timestamp"]
+  props: [
+    "item",
+    "num",
+    "requester",
+    "approveManage",
+    "returnManger",
+    "lostManager",
+    "cancelManager",
+    "reservedTimestamp",
+    "approveTimestamp",
+    "returnTimestamp",
+    "lostTimestamp",
+    "cancelTimestamp"
+  ],
+  computed: {
+    userTagInfo() {
+      const tagColor = "green";
+      const tagSize = 6;
+
+      var userInfo = this.makeUserTagContent();
+      return {
+        color: tagColor,
+        size: tagSize,
+        content: userInfo
+      };
+    },
+    timestampTagInfo() {
+      const tagSize = 6;
+
+      var timeInfo = this.makeTimestampTagContent();
+      return {
+        color: "orange",
+        size: tagSize,
+        content: timeInfo
+      };
+    }
+  },
+  methods: {
+    makeUserTagContent() {
+      if (this.requester != null) return `${getEnterYear(this.requester)} ${this.requester.name}`;
+      if (this.lostManager != null)
+        return `${getEnterYear(this.lostManager)} ${this.lostManager.name}`;
+      return "ERROR";
+    },
+    makeTimestampTagContent() {
+      if (this.reservedTimestamp != null) {
+        return this.$dayjs.unix(this.reservedTimestamp).fromNow();
+      }
+      if (this.lostTimestamp != null) {
+        return this.$dayjs.unix(this.lostTimestamp).fromNow();
+      }
+      return "ERROR";
+    }
+  }
 };
+
+function getEnterYear(user) {
+  return user.studentId.substr(2, 2);
+}
 </script>
 
 <style lang="scss" scoped>

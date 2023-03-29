@@ -7,44 +7,34 @@ import HistoryCell from "@/components/HistoryCell.vue";
     <!-- history-list-header-cell -->
     <section class="cell-header">요청된 기록</section>
     <HistoryCell
-      v-bind="{ name: '블루투스 스피커', num: 1, requester: '18 이석환', timestamp: '3분전' }"
-    ></HistoryCell>
-    <HistoryCell
-      v-bind="{ name: '블루투스 스피커', num: 1, requester: '18 이석환', timestamp: '3분전' }"
+      v-bind="{
+        item: {
+          stuffName: '우산',
+          stuffEmoji: '🌂',
+          num: 1,
+          status: 'USABLE'
+        },
+        num: 1,
+        status: 'EXPIRED',
+        reservedTimestamp: 1678276395,
+        requester: {
+          studentId: 'DEV1',
+          name: '개발자1'
+        },
+        cancelTimestamp: 1678276717,
+        cancelManager: {
+          studentId: 'DEV1',
+          name: '개발자1'
+        }
+      }"
     ></HistoryCell>
 
     <!-- history-list-header-cell -->
     <section class="cell-header">요청된 기록</section>
-    <HistoryCell
-      v-bind="{ name: '블루투스 스피커', num: 1, requester: '18 이석환', timestamp: '3분전' }"
-    ></HistoryCell>
-    <HistoryCell
-      v-bind="{ name: '블루투스 스피커', num: 1, requester: '18 이석환', timestamp: '3분전' }"
-    ></HistoryCell>
-    <HistoryCell
-      v-bind="{ name: '블루투스 스피커', num: 1, requester: '18 이석환', timestamp: '3분전' }"
-    ></HistoryCell>
-    <HistoryCell
-      v-bind="{ name: '블루투스 스피커', num: 1, requester: '18 이석환', timestamp: '3분전' }"
-    ></HistoryCell>
 
     <!-- history-list-header-cell -->
     <section class="cell-header">요청된 기록</section>
-    <HistoryCell
-      v-bind="{ name: '블루투스 스피커', num: 1, requester: '18 이석환', timestamp: '3분전' }"
-    ></HistoryCell>
-    <HistoryCell
-      v-bind="{ name: '블루투스 스피커', num: 1, requester: '18 이석환', timestamp: '3분전' }"
-    ></HistoryCell>
-    <HistoryCell
-      v-bind="{ name: '블루투스 스피커', num: 1, requester: '18 이석환', timestamp: '3분전' }"
-    ></HistoryCell>
-    <HistoryCell
-      v-bind="{ name: '블루투스 스피커', num: 1, requester: '18 이석환', timestamp: '3분전' }"
-    ></HistoryCell>
-    <HistoryCell
-      v-bind="{ name: '블루투스 스피커', num: 1, requester: '18 이석환', timestamp: '3분전' }"
-    ></HistoryCell>
+
     <!-- show-more-cell -->
     <section class="cell-hider">
       <span>더 보기</span>
@@ -53,21 +43,7 @@ import HistoryCell from "@/components/HistoryCell.vue";
 
     <!-- history-list-header-cell -->
     <section class="cell-header">요청된 기록</section>
-    <HistoryCell
-      v-bind="{ name: '블루투스 스피커', num: 1, requester: '18 이석환', timestamp: '3분전' }"
-    ></HistoryCell>
-    <HistoryCell
-      v-bind="{ name: '블루투스 스피커', num: 1, requester: '18 이석환', timestamp: '3분전' }"
-    ></HistoryCell>
-    <HistoryCell
-      v-bind="{ name: '블루투스 스피커', num: 1, requester: '18 이석환', timestamp: '3분전' }"
-    ></HistoryCell>
-    <HistoryCell
-      v-bind="{ name: '블루투스 스피커', num: 1, requester: '18 이석환', timestamp: '3분전' }"
-    ></HistoryCell>
-    <HistoryCell
-      v-bind="{ name: '블루투스 스피커', num: 1, requester: '18 이석환', timestamp: '3분전' }"
-    ></HistoryCell>
+
     <!-- show-more-cell -->
     <section class="cell-hider">
       <span>최소화 하기</span>
