@@ -4,53 +4,98 @@ import HistoryCell from "@/components/HistoryCell.vue";
 
 <template>
   <section class="history-list">
-    <!-- history-list-header-cell -->
-    <section class="cell-header">요청된 기록</section>
-    <HistoryCell
-      v-bind="{
-        item: {
-          stuffName: '우산',
-          stuffEmoji: '🌂',
-          num: 1,
-          status: 'USABLE'
-        },
-        num: 1,
-        status: 'EXPIRED',
-        reservedTimestamp: 1678276395,
-        requester: {
-          studentId: 'DEV1',
-          name: '개발자1'
-        },
-        cancelTimestamp: 1678276717,
-        cancelManager: {
-          studentId: 'DEV1',
-          name: '개발자1'
-        }
-      }"
-    ></HistoryCell>
-
-    <!-- history-list-header-cell -->
-    <section class="cell-header">요청된 기록</section>
-
-    <!-- history-list-header-cell -->
-    <section class="cell-header">요청된 기록</section>
-
-    <!-- show-more-cell -->
-    <section class="cell-hider">
-      <span>더 보기</span>
-      <i class="bi bi-chevron-down"></i>
+    <section v-show="requestedHistories.length > 0">
+      <section class="cell-header">요청된 기록</section>
+      <HistoryCell
+        v-for="history in requestedHistories"
+        key="history"
+        v-bind="history"
+      ></HistoryCell>
     </section>
 
-    <!-- history-list-header-cell -->
-    <section class="cell-header">요청된 기록</section>
+    <section v-show="usingHistories.length > 0">
+      <section class="cell-header">사용 중인 기록</section>
+      <HistoryCell v-for="history in usingHistories" key="history" v-bind="history"></HistoryCell>
+    </section>
 
-    <!-- show-more-cell -->
-    <section class="cell-hider">
-      <span>최소화 하기</span>
-      <i class="bi bi-chevron-up"></i>
+    <section v-show="lostHistories.length > 0">
+      <section class="cell-header">분실된 기록</section>
+      <HistoryCell v-for="history in lostHistories" key="history" v-bind="history"></HistoryCell>
+    </section>
+
+    <section v-show="returnedHistories.length > 0">
+      <section class="cell-header">반납된 기록</section>
+      <HistoryCell
+        v-for="history in returnedHistories"
+        key="history"
+        v-bind="history"
+      ></HistoryCell>
+      <section class="cell-hider">
+        <span>더 보기</span>
+        <i class="bi bi-chevron-down"></i>
+      </section>
+    </section>
+
+    <section v-show="cancelHistories.length > 0">
+      <section class="cell-header">취소된 기록</section>
+      <HistoryCell v-for="history in cancelHistories" key="history" v-bind="history"></HistoryCell>
+      <section class="cell-hider">
+        <span>최소화 하기</span>
+        <i class="bi bi-chevron-up"></i>
+      </section>
     </section>
   </section>
 </template>
+
+<script>
+import historyDummies from "@/assets/dummies/histories.js";
+
+export default {
+  name: "HistoryList",
+  data() {
+    return {
+      allHistories: historyDummies
+    };
+  },
+  computed: {
+    requestedHistories() {
+      var output = [];
+      for (var history of this.allHistories) {
+        if (history.status == "REQUESTED") output.push(history);
+      }
+      return output;
+    },
+    usingHistories() {
+      var output = [];
+      for (var history of this.allHistories) {
+        if (history.status == "USING" || history.status == "DELAYED") output.push(history);
+      }
+      return output;
+    },
+    lostHistories() {
+      var output = [];
+      for (var history of this.allHistories) {
+        if (history.status == "LOST") output.push(history);
+      }
+      return output;
+    },
+    returnedHistories() {
+      var output = [];
+      for (var history of this.allHistories) {
+        if (history.status == "RETURNED") output.push(history);
+      }
+      return output;
+    },
+    cancelHistories() {
+      var output = [];
+      for (var history of this.allHistories) {
+        if (history.status == "EXPIRED") output.push(history);
+      }
+      return output;
+    }
+  }
+};
+</script>
 
 <style lang="scss" scoped>
 .history-list {
