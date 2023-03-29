@@ -24,12 +24,14 @@ $detail-tab-ratio: 25;
   padding-bottom: map-get($map: $spacers, $key: 4);
 
   .history-list {
+    max-width: calc(100% * $list-tab-ratio / ($list-tab-ratio + $detail-tab-ratio));
     height: 100%;
     flex-basis: 0;
     flex-grow: $list-tab-ratio;
   }
 
   .history-detail {
+    max-width: calc(100% * $detail-tab-ratio / ($list-tab-ratio + $detail-tab-ratio));
     height: 100%;
     flex-basis: 0;
     flex-grow: $detail-tab-ratio;
