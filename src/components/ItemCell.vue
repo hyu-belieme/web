@@ -32,7 +32,7 @@ import Tag from "@/components/Tag.vue";
 <script>
 export default {
   name: "ItemCell",
-  props: ["num", "status"]
+  props: ["num", "status", "lastHistory"]
 };
 </script>
 

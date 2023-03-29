@@ -5,10 +5,58 @@ import ItemList from "@/components/ItemList.vue";
 
 <template>
   <section class="stuff-detail">
-    <StuffInfo></StuffInfo>
-    <ItemList></ItemList>
+    <StuffInfo v-bind="{ name: stuff.name, thumbnail: stuff.thumbnail }"></StuffInfo>
+    <ItemList v-bind="{ items: stuff.items }"></ItemList>
   </section>
 </template>
+
+<script>
+export default {
+  name: "DetailStuff",
+  data() {
+    return {
+      stuff: {
+        name: "블루투스 스피커",
+        thumbnail: "📻",
+        amount: 6,
+        count: 5,
+        items: [
+          {
+            num: 1,
+            status: "USABLE",
+            lastHistory: null
+          },
+          {
+            num: 2,
+            status: "USABLE",
+            lastHistory: null
+          },
+          {
+            num: 3,
+            status: "USABLE",
+            lastHistory: null
+          },
+          {
+            num: 4,
+            status: "USABLE",
+            lastHistory: null
+          },
+          {
+            num: 5,
+            status: "USABLE",
+            lastHistory: null
+          },
+          {
+            num: 6,
+            status: "USABLE",
+            lastHistory: null
+          }
+        ]
+      }
+    };
+  }
+};
+</script>
 
 <style lang="scss" scoped>
 .stuff-detail {

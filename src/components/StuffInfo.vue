@@ -1,9 +1,9 @@
 <template>
   <section class="stuff-info">
-    <section class="icon">📻</section>
+    <section class="icon">{{ thumbnail }}</section>
     <section class="label-and-desc">
       <section class="label">
-        <section class="name">블루투스 스피커</section>
+        <section class="name">{{ name }}</section>
         <section class="buttons">
           <button class="btn btn-primary btn-sm">수정</button>
           <button class="btn btn-primary btn-sm">추가</button>
@@ -17,6 +17,13 @@
     </section>
   </section>
 </template>
+
+<script>
+export default {
+  name: "StuffInfo",
+  props: ["name", "thumbnail"]
+};
+</script>
 
 <style lang="scss" scoped>
 .stuff-info {

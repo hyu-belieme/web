@@ -4,11 +4,20 @@ import ItemCell from "@/components/ItemCell.vue";
 
 <template>
   <section class="item-list">
-    <ItemCell v-bind="{ num: 1, status: 'USABLE' }"></ItemCell>
-    <ItemCell v-bind="{ num: 2, status: 'UNUSABLE' }"></ItemCell>
-    <ItemCell v-bind="{ num: 3, status: 'INACTIVE' }"></ItemCell>
+    <ItemCell
+      v-for="item in items"
+      key="item"
+      v-bind="{ num: item.num, status: item.status, lastHistory: item.lastHistory }"
+    ></ItemCell>
   </section>
 </template>
+
+<script>
+export default {
+  name: "ItemList",
+  props: ["items"]
+};
+</script>
 
 <style lang="scss" scoped>
 .item-list {
