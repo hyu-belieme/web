@@ -5,35 +5,51 @@ import InfoCell from "@/components/InfoCell.vue";
 <template>
   <section class="history-info">
     <section class="label">
-      <section class="icon">📻</section>
-      <section class="name">블루투스 스피커 #2</section>
+      <section class="icon">{{ item.stuffEmoji }}</section>
+      <section class="name">{{ item.stuffName }} #{{ item.num }}</section>
     </section>
     <section class="info-list">
       <InfoCell
-        v-bind="{ keyword: '대여 요청 시간', value: '2022년 03월 17일 (금) 오후 1시 08분' }"
+        v-if="reservedTimestamp != null"
+        v-bind="{ keyword: '대여 요청된 시각', value: timeToString(reservedTimestamp) }"
       ></InfoCell>
       <InfoCell
-        v-bind="{ keyword: '대여 요청 시간', value: '2022년 03월 17일 (금) 오후 1시 08분' }"
+        v-if="approveTimestamp != null"
+        v-bind="{ keyword: '대여 승인된 시각', value: timeToString(approveTimestamp) }"
       ></InfoCell>
       <InfoCell
-        v-bind="{ keyword: '대여 요청 시간', value: '2022년 03월 17일 (금) 오후 1시 08분' }"
+        v-if="lostTimestamp != null"
+        v-bind="{ keyword: '분실 등록된 시각', value: timeToString(lostTimestamp) }"
       ></InfoCell>
       <InfoCell
-        v-bind="{ keyword: '대여 요청 시간', value: '2022년 03월 17일 (금) 오후 1시 08분' }"
+        v-if="returnTimestamp != null"
+        v-bind="{ keyword: '반납 승인된 시각', value: timeToString(returnTimestamp) }"
+      ></InfoCell>
+      <InfoCell
+        v-if="cancelTimestamp != null"
+        v-bind="{ keyword: '취소된 시각', value: timeToString(cancelTimestamp) }"
       ></InfoCell>
     </section>
     <section class="info-list">
       <InfoCell
-        v-bind="{ keyword: '대여 요청 시간', value: '2022년 03월 17일 (금) 오후 1시 08분' }"
+        v-if="requester != null"
+        v-bind="{ keyword: '대여 요청자', value: nameAndStudentIdFormat(requester) }"
       ></InfoCell>
       <InfoCell
-        v-bind="{ keyword: '대여 요청 시간', value: '2022년 03월 17일 (금) 오후 1시 08분' }"
+        v-if="approveManager != null"
+        v-bind="{ keyword: '대여 승인 담당자', value: nameAndStudentIdFormat(approveManager) }"
       ></InfoCell>
       <InfoCell
-        v-bind="{ keyword: '대여 요청 시간', value: '2022년 03월 17일 (금) 오후 1시 08분' }"
+        v-if="returnManager != null"
+        v-bind="{ keyword: '분실 등록 담당자', value: nameAndStudentIdFormat(returnManager) }"
       ></InfoCell>
       <InfoCell
-        v-bind="{ keyword: '대여 요청 시간', value: '2022년 03월 17일 (금) 오후 1시 08분' }"
+        v-if="lostManager != null"
+        v-bind="{ keyword: '반납 승인 담당자', value: nameAndStudentIdFormat(lostManager) }"
+      ></InfoCell>
+      <InfoCell
+        v-if="cancelManager != null"
+        v-bind="{ keyword: '취소 요청자', value: nameAndStudentIdFormat(cancelManager) }"
       ></InfoCell>
     </section>
     <section class="buttons">
@@ -42,6 +58,73 @@ import InfoCell from "@/components/InfoCell.vue";
     </section>
   </section>
 </template>
+
+<script>
+export default {
+  name: "HistoryInfo",
+  data() {
+    return {
+      item: {
+        stuffName: "우산",
+        stuffEmoji: "🌂",
+        num: 1,
+        status: "USABLE",
+        lastHistory: {
+          num: 6,
+          status: "EXPIRED",
+          reservedTimestamp: 1678799387,
+          requester: {
+            university: {
+              code: "DEV",
+              name: "DEV"
+            },
+            studentId: "DEV1",
+            name: "개발자1"
+          }
+        }
+      },
+      num: 2,
+      status: "FOUND",
+      lostTimestamp: 1678278730,
+      lostManager: {
+        university: {
+          code: "DEV",
+          name: "DEV"
+        },
+        studentId: "DEV1",
+        name: "개발자1"
+      },
+      returnTimestamp: 1678278740,
+      returnManager: {
+        university: {
+          code: "DEV",
+          name: "DEV"
+        },
+        studentId: "DEV1",
+        name: "개발자1"
+      },
+      university: {
+        code: "HYU",
+        name: "한양대학교"
+      },
+      department: {
+        code: "CSE",
+        name: "컴퓨터 소프트웨어학부",
+        baseMajors: ["FH04067", "FH04068"]
+      }
+    };
+  },
+  methods: {
+    timeToString(time) {
+      return this.$dayjs.unix(time).format("llll");
+    },
+
+    nameAndStudentIdFormat(user) {
+      return `${user.name} (${user.studentId})`;
+    }
+  }
+};
+</script>
 
 <style lang="scss" scoped>
 .history-info {
