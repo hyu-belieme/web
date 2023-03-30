@@ -4,11 +4,7 @@ import ItemCell from "@/components/ItemCell.vue";
 
 <template>
   <section class="item-list">
-    <ItemCell
-      v-for="item in items"
-      key="item"
-      v-bind="{ num: item.num, status: item.status, lastHistory: item.lastHistory }"
-    ></ItemCell>
+    <ItemCell v-for="item in items" key="item" v-bind="{ item: item }"></ItemCell>
   </section>
 </template>
 

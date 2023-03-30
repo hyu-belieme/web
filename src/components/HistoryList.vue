@@ -9,18 +9,26 @@ import HistoryCell from "@/components/HistoryCell.vue";
       <HistoryCell
         v-for="history in requestedHistories"
         key="history"
-        v-bind="history"
+        v-bind="{ history: history }"
       ></HistoryCell>
     </section>
 
     <section v-show="usingHistories.length > 0">
       <section class="cell-header">사용 중인 기록</section>
-      <HistoryCell v-for="history in usingHistories" key="history" v-bind="history"></HistoryCell>
+      <HistoryCell
+        v-for="history in usingHistories"
+        key="history"
+        v-bind="{ history: history }"
+      ></HistoryCell>
     </section>
 
     <section v-show="lostHistories.length > 0">
       <section class="cell-header">분실된 기록</section>
-      <HistoryCell v-for="history in lostHistories" key="history" v-bind="history"></HistoryCell>
+      <HistoryCell
+        v-for="history in lostHistories"
+        key="history"
+        v-bind="{ history: history }"
+      ></HistoryCell>
     </section>
 
     <section v-show="returnedHistories.length > 0">
@@ -28,7 +36,7 @@ import HistoryCell from "@/components/HistoryCell.vue";
       <HistoryCell
         v-for="history in returnedHistories"
         key="history"
-        v-bind="history"
+        v-bind="{ history: history }"
       ></HistoryCell>
       <section class="cell-hider">
         <span>더 보기</span>
@@ -38,7 +46,11 @@ import HistoryCell from "@/components/HistoryCell.vue";
 
     <section v-show="cancelHistories.length > 0">
       <section class="cell-header">취소된 기록</section>
-      <HistoryCell v-for="history in cancelHistories" key="history" v-bind="history"></HistoryCell>
+      <HistoryCell
+        v-for="history in cancelHistories"
+        key="history"
+        v-bind="{ history: history }"
+      ></HistoryCell>
       <section class="cell-hider">
         <span>최소화 하기</span>
         <i class="bi bi-chevron-up"></i>

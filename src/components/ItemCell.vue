@@ -5,23 +5,13 @@ import Tag from "@/components/Tag.vue";
 <template>
   <section class="cell">
     <section class="content">
-      <span class="numbering">{{ num }}</span>
+      <span class="numbering">{{ item.num }}</span>
       <section class="tags">
-        <Tag
-          v-if="status === 'USABLE'"
-          v-bind="{ color: 'green', size: 6, content: '대여가능' }"
-        ></Tag>
-        <Tag
-          v-if="status === 'UNUSABLE'"
-          v-bind="{ color: 'orange', size: 6, content: '대여 중' }"
-        ></Tag>
-        <Tag
-          v-if="status === 'INACTIVE'"
-          v-bind="{ color: 'red', size: 6, content: '사용불가' }"
-        ></Tag>
+        <Tag v-bind="statusTagInfo"></Tag>
+        <Tag v-if="item.status == 'UNUSABLE'" v-bind="tiemstampTagInfo"></Tag>
       </section>
       <section class="buttons">
-        <button v-if="status === 'USABLE'" class="btn btn-primary btn-sm">대여하기</button>
+        <button v-if="item.status === 'USABLE'" class="btn btn-primary btn-sm">대여하기</button>
         <button v-else class="btn btn-primary btn-sm" disabled>대여하기</button>
       </section>
     </section>
@@ -32,7 +22,44 @@ import Tag from "@/components/Tag.vue";
 <script>
 export default {
   name: "ItemCell",
-  props: ["num", "status", "lastHistory"]
+  props: ["item"],
+  computed: {
+    statusTagInfo() {
+      const tagSize = 6;
+
+      return {
+        size: tagSize,
+        color: this.makeStatusTagColor(this.item),
+        content: this.makeStatusTagContent(this.item)
+      };
+    },
+    tiemstampTagInfo() {
+      const tagSize = 6;
+      const tagColor = "orange";
+
+      return {
+        size: tagSize,
+        color: tagColor,
+        content: this.getRelativeTimeString(this.item.lastHistory.approvedAt)
+      };
+    }
+  },
+  methods: {
+    getRelativeTimeString(time) {
+      return this.$dayjs.unix(time).fromNow();
+    },
+    makeStatusTagColor(item) {
+      if (item.status == "USABLE") return "green";
+      if (item.status == "UNUSABLE") return "orange";
+      return "red";
+    },
+    makeStatusTagContent(item) {
+      if (item.status == "USABLE") return "대여가능";
+      if (item.status == "UNUSABLE") return "대여 중";
+      if (item.status == "INACTIVE") return "사용불가";
+      return "ERROR";
+    }
+  }
 };
 </script>
 
