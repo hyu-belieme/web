@@ -5,29 +5,29 @@ import InfoCell from "@/components/InfoCell.vue";
 <template>
   <section class="history-info">
     <section class="label">
-      <section class="icon">{{ item.stuffEmoji }}</section>
+      <section class="icon">{{ item.stuffThumbnail }}</section>
       <section class="name">{{ item.stuffName }} #{{ item.num }}</section>
     </section>
     <section class="info-list">
       <InfoCell
-        v-if="reservedTimestamp != null"
-        v-bind="{ keyword: '대여 요청된 시각', value: timeToString(reservedTimestamp) }"
+        v-if="requestedAt != null"
+        v-bind="{ keyword: '대여 요청된 시각', value: timeToString(requestedAt) }"
       ></InfoCell>
       <InfoCell
-        v-if="approveTimestamp != null"
-        v-bind="{ keyword: '대여 승인된 시각', value: timeToString(approveTimestamp) }"
+        v-if="approvedAt != null"
+        v-bind="{ keyword: '대여 승인된 시각', value: timeToString(approvedAt) }"
       ></InfoCell>
       <InfoCell
-        v-if="lostTimestamp != null"
-        v-bind="{ keyword: '분실 등록된 시각', value: timeToString(lostTimestamp) }"
+        v-if="lostAt != null"
+        v-bind="{ keyword: '분실 등록된 시각', value: timeToString(lostAt) }"
       ></InfoCell>
       <InfoCell
-        v-if="returnTimestamp != null"
-        v-bind="{ keyword: '반납 승인된 시각', value: timeToString(returnTimestamp) }"
+        v-if="returnedAt != null"
+        v-bind="{ keyword: '반납 승인된 시각', value: timeToString(returnedAt) }"
       ></InfoCell>
       <InfoCell
-        v-if="cancelTimestamp != null"
-        v-bind="{ keyword: '취소된 시각', value: timeToString(cancelTimestamp) }"
+        v-if="canceledAt != null"
+        v-bind="{ keyword: '취소된 시각', value: timeToString(canceledAt) }"
       ></InfoCell>
     </section>
     <section class="info-list">
@@ -66,13 +66,13 @@ export default {
     return {
       item: {
         stuffName: "우산",
-        stuffEmoji: "🌂",
+        stuffThumbnail: "🌂",
         num: 1,
         status: "USABLE",
         lastHistory: {
-          num: 6,
+          num: 7,
           status: "EXPIRED",
-          reservedTimestamp: 1678799387,
+          requestedAt: 1680076901,
           requester: {
             university: {
               code: "DEV",
@@ -85,7 +85,7 @@ export default {
       },
       num: 2,
       status: "FOUND",
-      lostTimestamp: 1678278730,
+      lostAt: 1678278730,
       lostManager: {
         university: {
           code: "DEV",
@@ -94,7 +94,7 @@ export default {
         studentId: "DEV1",
         name: "개발자1"
       },
-      returnTimestamp: 1678278740,
+      returnedAt: 1678278740,
       returnManager: {
         university: {
           code: "DEV",
