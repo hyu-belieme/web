@@ -5,7 +5,7 @@ import ItemList from "@/components/ItemList.vue";
 
 <template>
   <section class="stuff-detail">
-    <StuffInfo v-bind="{ name: stuff.name, thumbnail: stuff.thumbnail }"></StuffInfo>
+    <StuffInfo v-bind="{ stuff: stuff }"></StuffInfo>
     <ItemList v-bind="{ items: stuff.itemList }"></ItemList>
   </section>
 </template>

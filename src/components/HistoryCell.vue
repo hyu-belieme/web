@@ -5,7 +5,7 @@ import Tag from "@/components/Tag.vue";
 <template>
   <section class="cell">
     <section class="content">
-      <span class="name">{{ item.stuffName }} #{{ item.num }}</span>
+      <span class="name">{{ history.item.stuffName }} #{{ history.item.num }}</span>
       <section class="tags">
         <Tag v-bind="userTagInfo"></Tag>
         <Tag v-bind="timestampTagInfo"></Tag>
@@ -18,26 +18,13 @@ import Tag from "@/components/Tag.vue";
 <script>
 export default {
   name: "HistoryCell",
-  props: [
-    "item",
-    "num",
-    "requester",
-    "approveManage",
-    "returnManger",
-    "lostManager",
-    "cancelManager",
-    "requestedAt",
-    "approvedAt",
-    "returnedAt",
-    "lostAt",
-    "canceledAt"
-  ],
+  props: ["history"],
   computed: {
     userTagInfo() {
       const tagColor = "green";
       const tagSize = 6;
 
-      var userInfo = this.makeUserTagContent();
+      var userInfo = this.makeUserTagContent(this.history);
       return {
         color: tagColor,
         size: tagSize,
@@ -47,7 +34,7 @@ export default {
     timestampTagInfo() {
       const tagSize = 6;
 
-      var timeInfo = this.makeTimestampTagContent();
+      var timeInfo = this.makeTimestampTagContent(this.history);
       return {
         color: "orange",
         size: tagSize,
@@ -56,32 +43,26 @@ export default {
     }
   },
   methods: {
-    makeUserTagContent() {
-      if (this.requester != null) return entranceYearAndNameToString(this.requester);
-      if (this.lostManager != null)
-        return `${getEnterYear(this.lostManager)} ${this.lostManager.name}`;
+    entranceYearAndNameToString(user) {
+      if (user.entranceYear == null) return user.name;
+      return `${user.entranceYear.substr(2, 2)} ${user.name}`;
+    },
+    makeUserTagContent(history) {
+      if (history.requester != null) return this.entranceYearAndNameToString(history.requester);
+      if (history.lostManager != null) return this.entranceYearAndNameToString(history.lostManager);
       return "ERROR";
     },
-    makeTimestampTagContent() {
-      if (this.requestedAt != null) {
-        return this.$dayjs.unix(this.requestedAt).fromNow();
+    makeTimestampTagContent(history) {
+      if (history.requestedAt != null) {
+        return this.$dayjs.unix(history.requestedAt).fromNow();
       }
-      if (this.lostAt != null) {
-        return this.$dayjs.unix(this.lostAt).fromNow();
+      if (history.lostAt != null) {
+        return this.$dayjs.unix(history.lostAt).fromNow();
       }
       return "ERROR";
     }
   }
 };
-
-function entranceYearAndNameToString(user) {
-  if (user.entranceYear == null) return user.name;
-  return `${user.entranceYear.substr(2, 2)} ${user.name}`;
-}
-
-function getEnterYear(user) {
-  return user.studentId.substr(2, 2);
-}
 </script>
 
 <style lang="scss" scoped>

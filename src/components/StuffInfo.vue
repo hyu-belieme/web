@@ -1,9 +1,9 @@
 <template>
   <section class="stuff-info">
-    <section class="icon">{{ thumbnail }}</section>
+    <section class="icon">{{ stuff.thumbnail }}</section>
     <section class="label-and-desc">
       <section class="label">
-        <section class="name">{{ name }}</section>
+        <section class="name">{{ stuff.name }}</section>
         <section class="buttons">
           <button class="btn btn-primary btn-sm">수정</button>
           <button class="btn btn-primary btn-sm">추가</button>
@@ -21,7 +21,7 @@
 <script>
 export default {
   name: "StuffInfo",
-  props: ["name", "thumbnail"]
+  props: ["stuff"]
 };
 </script>
 
