@@ -6,7 +6,7 @@ import ItemList from "@/components/ItemList.vue";
 <template>
   <section class="stuff-detail">
     <StuffInfo v-bind="{ name: stuff.name, thumbnail: stuff.thumbnail }"></StuffInfo>
-    <ItemList v-bind="{ items: stuff.items }"></ItemList>
+    <ItemList v-bind="{ items: stuff.itemList }"></ItemList>
   </section>
 </template>
 
@@ -16,20 +16,71 @@ export default {
   data() {
     return {
       stuff: {
-        name: "블루투스 스피커",
-        thumbnail: "📻",
-        amount: 6,
-        count: 5,
-        items: [
+        name: "우산",
+        thumbnail: "🌂",
+        amount: 5,
+        count: 4,
+        itemList: [
           {
             num: 1,
-            status: "USABLE",
-            lastHistory: null
+            status: "UNUSABLE",
+            lastHistory: {
+              num: 8,
+              status: "USING",
+              requestedAt: 1680180782,
+              requester: {
+                university: {
+                  code: "DEV",
+                  name: "DEV"
+                },
+                studentId: "DEV3",
+                name: "개발자1"
+              },
+              approvedAt: 1680180795,
+              approveManager: {
+                university: {
+                  code: "DEV",
+                  name: "DEV"
+                },
+                studentId: "DEV3",
+                name: "개발자1"
+              }
+            }
           },
           {
             num: 2,
             status: "USABLE",
-            lastHistory: null
+            lastHistory: {
+              num: 2,
+              status: "RETURNED",
+              requestedAt: 1678275343,
+              requester: {
+                university: {
+                  code: "DEV",
+                  name: "DEV"
+                },
+                studentId: "DEV1",
+                name: "개발자1"
+              },
+              approvedAt: 1678275747,
+              approveManager: {
+                university: {
+                  code: "DEV",
+                  name: "DEV"
+                },
+                studentId: "DEV1",
+                name: "개발자1"
+              },
+              returnedAt: 1678276386,
+              returnManager: {
+                university: {
+                  code: "DEV",
+                  name: "DEV"
+                },
+                studentId: "DEV1",
+                name: "개발자1"
+              }
+            }
           },
           {
             num: 3,
@@ -43,11 +94,6 @@ export default {
           },
           {
             num: 5,
-            status: "USABLE",
-            lastHistory: null
-          },
-          {
-            num: 6,
             status: "USABLE",
             lastHistory: null
           }
