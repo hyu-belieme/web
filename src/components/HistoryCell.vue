@@ -26,11 +26,11 @@ export default {
     "returnManger",
     "lostManager",
     "cancelManager",
-    "reservedTimestamp",
-    "approveTimestamp",
-    "returnTimestamp",
-    "lostTimestamp",
-    "cancelTimestamp"
+    "requestedAt",
+    "approvedAt",
+    "returnedAt",
+    "lostAt",
+    "canceledAt"
   ],
   computed: {
     userTagInfo() {
@@ -57,22 +57,27 @@ export default {
   },
   methods: {
     makeUserTagContent() {
-      if (this.requester != null) return `${getEnterYear(this.requester)} ${this.requester.name}`;
+      if (this.requester != null) return entranceYearAndNameToString(this.requester);
       if (this.lostManager != null)
         return `${getEnterYear(this.lostManager)} ${this.lostManager.name}`;
       return "ERROR";
     },
     makeTimestampTagContent() {
-      if (this.reservedTimestamp != null) {
-        return this.$dayjs.unix(this.reservedTimestamp).fromNow();
+      if (this.requestedAt != null) {
+        return this.$dayjs.unix(this.requestedAt).fromNow();
       }
-      if (this.lostTimestamp != null) {
-        return this.$dayjs.unix(this.lostTimestamp).fromNow();
+      if (this.lostAt != null) {
+        return this.$dayjs.unix(this.lostAt).fromNow();
       }
       return "ERROR";
     }
   }
 };
+
+function entranceYearAndNameToString(user) {
+  if (user.entranceYear == null) return user.name;
+  return `${user.entranceYear.substr(2, 2)} ${user.name}`;
+}
 
 function getEnterYear(user) {
   return user.studentId.substr(2, 2);
