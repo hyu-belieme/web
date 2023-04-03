@@ -1,5 +1,26 @@
 <script setup>
 import StuffCell from "@/components/StuffCell.vue";
+import stuffDummies from "@/assets/dummies/stuffs.js";
+import { storeToRefs } from "pinia";
+import { useStuffStore } from "@/stores/stuff.js";
+
+const stuffStore = useStuffStore();
+const { stuffs, selected } = storeToRefs(stuffStore);
+
+function updateSelected(newVal) {
+  stuffStore.updateSelected(newVal);
+}
+
+function updateStuffs() {
+  stuffStore.updateStuffs({
+    load: () => {
+      return stuffDummies;
+    }
+  });
+}
+
+updateSelected(0);
+updateStuffs();
 </script>
 
 <template>
@@ -8,33 +29,10 @@ import StuffCell from "@/components/StuffCell.vue";
       v-for="(stuff, index) in stuffs"
       :key="stuff"
       v-bind="{ stuff: stuff, selected: index == selected }"
-      @click="setSelected(index)"
+      @click="updateSelected(index)"
     ></StuffCell>
   </section>
 </template>
-
-<script>
-import stuffDummies from "@/assets/dummies/stuffs.js";
-
-export default {
-  name: "StuffList",
-  data() {
-    return {
-      stuffs: stuffDummies,
-      selected: 0
-    };
-  },
-  methods: {
-    setSelected(selected) {
-      this.selected = selected;
-      this.$emit("selectedStuff", this.stuffs[selected]);
-    }
-  },
-  created: function () {
-    this.setSelected(0);
-  }
-};
-</script>
 
 <style lang="scss" scoped>
 .stuff-list {

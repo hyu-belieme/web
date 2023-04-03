@@ -1,45 +1,35 @@
 <script setup>
 import StuffInfo from "@/components/StuffInfo.vue";
 import ItemList from "@/components/ItemList.vue";
+import stuffDummies from "@/assets/dummies/stuffs.js";
+import { storeToRefs } from "pinia";
+import { useStuffStore } from "@/stores/stuff.js";
+
+import { watch } from "vue";
+
+const stuffStore = useStuffStore();
+const { selectedStuff, selectedStuffDetail } = storeToRefs(stuffStore);
+
+function updateStuff() {
+  stuffStore.updateSelectedStuffDetail({
+    load: (stuffIdx) => {
+      return stuffDummies.find((e) => e.name == stuffIdx.name);
+    }
+  });
+}
+
+watch(selectedStuff, () => updateStuff());
+updateStuff();
 </script>
 
 <template>
   <section class="stuff-detail">
-    <section v-if="loaded">
-      <StuffInfo v-bind="{ stuff: stuffDetail }"></StuffInfo>
-      <ItemList v-bind="{ items: stuffDetail.itemList }"></ItemList>
+    <section v-if="selectedStuffDetail != undefined">
+      <StuffInfo v-bind="{ stuff: selectedStuffDetail }"></StuffInfo>
+      <ItemList v-bind="{ items: selectedStuffDetail.itemList }"></ItemList>
     </section>
   </section>
 </template>
-
-<script>
-import stuffDummies from "@/assets/dummies/stuffs.js";
-
-export default {
-  props: ["stuff"],
-  name: "DetailStuff",
-  data() {
-    return {
-      loaded: false,
-      stuffDetail: {}
-    };
-  },
-  methods: {
-    setDetailStuff() {
-      this.stuffDetail = stuffDummies.find((e) => e.name == this.stuff.name);
-    }
-  },
-  watch: {
-    stuff() {
-      this.setDetailStuff();
-    }
-  },
-  created: function () {
-    this.setDetailStuff();
-    this.loaded = true;
-  }
-};
-</script>
 
 <style lang="scss" scoped>
 .stuff-detail {

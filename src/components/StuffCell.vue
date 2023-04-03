@@ -1,5 +1,13 @@
-<script setup>
+<script>
 import Tag from "@/components/Tag.vue";
+import { toRefs } from "vue";
+export default {
+  components: { Tag },
+  props: ["stuff", "selected"],
+  setup(props) {
+    return toRefs(props);
+  }
+};
 </script>
 
 <template>
@@ -15,13 +23,6 @@ import Tag from "@/components/Tag.vue";
     <div class="division-line"></div>
   </section>
 </template>
-
-<script>
-export default {
-  name: "StuffCell",
-  props: ["stuff", "selected"]
-};
-</script>
 
 <style lang="scss" scoped>
 .cell {

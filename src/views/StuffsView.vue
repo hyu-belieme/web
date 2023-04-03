@@ -1,31 +1,14 @@
 <script setup>
 import StuffList from "@/components/StuffList.vue";
-import DetailStuff from "../components/DetailStuff.vue";
+import DetailStuff from "@/components/DetailStuff.vue";
 </script>
 
 <template>
   <section class="stuff-list-page">
-    <StuffList @selectedStuff="setStuff"></StuffList>
-    <DetailStuff v-if="loaded" v-bind="{ stuff: selectedStuff }"></DetailStuff>
+    <StuffList></StuffList>
+    <DetailStuff></DetailStuff>
   </section>
 </template>
-
-<script>
-export default {
-  data() {
-    return {
-      loaded: false,
-      selectedStuff: ""
-    };
-  },
-  methods: {
-    setStuff(stuff) {
-      this.selectedStuff = stuff;
-      this.loaded = true;
-    }
-  }
-};
-</script>
 
 <style lang="scss" scoped>
 $list-tab-ratio: 16;
