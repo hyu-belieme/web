@@ -5,101 +5,38 @@ import ItemList from "@/components/ItemList.vue";
 
 <template>
   <section class="stuff-detail">
-    <StuffInfo v-bind="{ stuff: stuff }"></StuffInfo>
-    <ItemList v-bind="{ items: stuff.itemList }"></ItemList>
+    <section v-if="loaded">
+      <StuffInfo v-bind="{ stuff: stuffDetail }"></StuffInfo>
+      <ItemList v-bind="{ items: stuffDetail.itemList }"></ItemList>
+    </section>
   </section>
 </template>
 
 <script>
+import stuffDummies from "@/assets/dummies/stuffs.js";
+
 export default {
+  props: ["stuff"],
   name: "DetailStuff",
   data() {
     return {
-      stuff: {
-        name: "우산",
-        thumbnail: "🌂",
-        amount: 5,
-        count: 4,
-        itemList: [
-          {
-            num: 1,
-            status: "UNUSABLE",
-            lastHistory: {
-              num: 8,
-              status: "USING",
-              requestedAt: 1680180782,
-              requester: {
-                university: {
-                  code: "DEV",
-                  name: "DEV"
-                },
-                studentId: "DEV3",
-                name: "개발자1"
-              },
-              approvedAt: 1680180795,
-              approveManager: {
-                university: {
-                  code: "DEV",
-                  name: "DEV"
-                },
-                studentId: "DEV3",
-                name: "개발자1"
-              }
-            }
-          },
-          {
-            num: 2,
-            status: "USABLE",
-            lastHistory: {
-              num: 2,
-              status: "RETURNED",
-              requestedAt: 1678275343,
-              requester: {
-                university: {
-                  code: "DEV",
-                  name: "DEV"
-                },
-                studentId: "DEV1",
-                name: "개발자1"
-              },
-              approvedAt: 1678275747,
-              approveManager: {
-                university: {
-                  code: "DEV",
-                  name: "DEV"
-                },
-                studentId: "DEV1",
-                name: "개발자1"
-              },
-              returnedAt: 1678276386,
-              returnManager: {
-                university: {
-                  code: "DEV",
-                  name: "DEV"
-                },
-                studentId: "DEV1",
-                name: "개발자1"
-              }
-            }
-          },
-          {
-            num: 3,
-            status: "USABLE",
-            lastHistory: null
-          },
-          {
-            num: 4,
-            status: "USABLE",
-            lastHistory: null
-          },
-          {
-            num: 5,
-            status: "USABLE",
-            lastHistory: null
-          }
-        ]
-      }
+      loaded: false,
+      stuffDetail: {}
     };
+  },
+  methods: {
+    setDetailStuff() {
+      this.stuffDetail = stuffDummies.find((e) => e.name == this.stuff.name);
+    }
+  },
+  watch: {
+    stuff() {
+      this.setDetailStuff();
+    }
+  },
+  created: function () {
+    this.setDetailStuff();
+    this.loaded = true;
   }
 };
 </script>

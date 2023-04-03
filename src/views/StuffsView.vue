@@ -5,10 +5,27 @@ import DetailStuff from "../components/DetailStuff.vue";
 
 <template>
   <section class="stuff-list-page">
-    <StuffList></StuffList>
-    <DetailStuff></DetailStuff>
+    <StuffList @selectedStuff="setStuff"></StuffList>
+    <DetailStuff v-if="loaded" v-bind="{ stuff: selectedStuff }"></DetailStuff>
   </section>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      loaded: false,
+      selectedStuff: ""
+    };
+  },
+  methods: {
+    setStuff(stuff) {
+      this.selectedStuff = stuff;
+      this.loaded = true;
+    }
+  }
+};
+</script>
 
 <style lang="scss" scoped>
 $list-tab-ratio: 16;

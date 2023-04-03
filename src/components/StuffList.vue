@@ -5,9 +5,10 @@ import StuffCell from "@/components/StuffCell.vue";
 <template>
   <section class="stuff-list">
     <StuffCell
-      v-for="stuff in stuffs"
+      v-for="(stuff, index) in stuffs"
       :key="stuff"
-      v-bind="{ name: stuff.name, thumbnail: stuff.thumbnail, count: stuff.count }"
+      v-bind="{ stuff: stuff, selected: index == selected }"
+      @click="setSelected(index)"
     ></StuffCell>
   </section>
 </template>
@@ -19,8 +20,18 @@ export default {
   name: "StuffList",
   data() {
     return {
-      stuffs: stuffDummies
+      stuffs: stuffDummies,
+      selected: 0
     };
+  },
+  methods: {
+    setSelected(selected) {
+      this.selected = selected;
+      this.$emit("selectedStuff", this.stuffs[selected]);
+    }
+  },
+  created: function () {
+    this.setSelected(0);
   }
 };
 </script>
