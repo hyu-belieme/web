@@ -1,13 +1,24 @@
+<script setup lang="ts">
+import { defineProps } from "vue";
+defineProps<{
+  color: {
+    type: String;
+    required: true;
+  };
+  size: {
+    type: String;
+    required: true;
+  };
+  content: {
+    type: String;
+    required: true;
+  };
+}>();
+</script>
+
 <template>
   <div :class="['tag-' + color + '-' + size]">{{ content }}</div>
 </template>
-
-<script lang="js">
-export default {
-  name: "Tag",
-  props: ["color", "size", "content"]
-};
-</script>
 
 <style lang="scss" scoped>
 $colors: (

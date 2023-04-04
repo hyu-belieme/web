@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 import Tag from "@/components/Tag.vue";
 import { toRefs } from "vue";
 export default {

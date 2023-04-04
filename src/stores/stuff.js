@@ -7,7 +7,7 @@ export const useStuffStore = defineStore("stuff", () => {
   const selectedStuffDetail = ref(undefined);
 
   const selectedStuff = computed(() => {
-    if (stuffs == undefined || selected == undefined) return undefined;
+    if (stuffs.value == undefined || selected.value == undefined) return undefined;
     return stuffs.value[selected.value];
   });
 
@@ -20,7 +20,7 @@ export const useStuffStore = defineStore("stuff", () => {
   }
 
   function updateSelectedStuffDetail(strategy) {
-    if (selectedStuff == undefined) return;
+    if (selectedStuff.value == undefined) return;
     selectedStuffDetail.value = strategy.load(selectedStuff.value);
   }
 

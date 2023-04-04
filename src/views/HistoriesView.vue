@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import HistoryList from "@/components/HistoryList.vue";
 import DetailHistory from "@/components/DetailHistory.vue";
 </script>
