@@ -2,7 +2,7 @@
 import StuffCell from "@/components/StuffCell.vue";
 import stuffDummies from "@/assets/dummies/stuffs.js";
 import { storeToRefs } from "pinia";
-import { useStuffStore } from "@/stores/stuff.js";
+import { useStuffStore } from "@/stores/stuff";
 
 const stuffStore = useStuffStore();
 const { stuffs, selected } = storeToRefs(stuffStore);

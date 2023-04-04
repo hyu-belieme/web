@@ -3,7 +3,7 @@ import StuffInfo from "@/components/StuffInfo.vue";
 import ItemList from "@/components/ItemList.vue";
 import stuffDummies from "@/assets/dummies/stuffs.js";
 import { storeToRefs } from "pinia";
-import { useStuffStore } from "@/stores/stuff.js";
+import { useStuffStore } from "@/stores/stuff";
 
 import { watch } from "vue";
 
