@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type StuffWithItems from "@/models/stuff/StuffWithItems";
 import { useStuffStore } from "@/stores/stuffStore";
 import { storeToRefs } from "pinia";
 
@@ -8,10 +9,10 @@ const { selectedStuffDetail } = storeToRefs(stuffStore);
 
 <template>
   <section class="stuff-info">
-    <section class="icon">{{ selectedStuffDetail?.thumbnail }}</section>
+    <section class="icon">{{ (selectedStuffDetail as StuffWithItems).thumbnail }}</section>
     <section class="label-and-desc">
       <section class="label">
-        <section class="name">{{ selectedStuffDetail?.name }}</section>
+        <section class="name">{{ (selectedStuffDetail as StuffWithItems).name }}</section>
         <section class="buttons">
           <button class="btn btn-primary btn-sm">수정</button>
           <button class="btn btn-primary btn-sm">추가</button>

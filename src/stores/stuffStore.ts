@@ -1,21 +1,27 @@
-import { ref, computed } from "vue";
-import { defineStore } from "pinia";
+import { loading, type Loading } from "@/models/Types";
 import type Stuff from "@/models/stuff/Stuff";
 import type StuffWithItems from "@/models/stuff/StuffWithItems";
+import { defineStore } from "pinia";
+import { computed, ref } from "vue";
 
 export const useStuffStore = defineStore("stuff", () => {
-  const selected = ref<number | undefined>(undefined);
-  const stuffs = ref<Stuff[] | undefined>(undefined);
-  const selectedStuffDetail = ref<StuffWithItems | undefined>(undefined);
+  const selected = ref(0);
+  const stuffs = ref<Stuff[] | Loading | undefined>(loading);
+  const selectedStuffDetail = ref<StuffWithItems | Loading | undefined>(loading);
 
   const selectedStuff = computed(() => {
-    if (stuffs.value == undefined || selected.value == undefined) return undefined;
-    return stuffs.value[selected.value];
+    if (stuffs.value == undefined) return undefined;
+    if (stuffs.value == loading) return loading;
+
+    let unwrapped = stuffs.value as Stuff[];
+    if (unwrapped.length <= selected.value) return undefined;
+    return unwrapped[selected.value];
   });
 
   const selectedStuffItems = computed(() => {
-    if (selectedStuffDetail.value == undefined) return [];
-    return selectedStuffDetail.value.items;
+    if (selectedStuffDetail.value == undefined) return undefined;
+    if (selectedStuffDetail.value == loading) return loading;
+    return (selectedStuffDetail.value as StuffWithItems).items;
   });
 
   function updateSelected(newVal: number) {
@@ -27,8 +33,9 @@ export const useStuffStore = defineStore("stuff", () => {
   }
 
   function updateSelectedStuffDetail(strategy: StuffDetailGetStrategy) {
-    if (selectedStuff.value == undefined) return;
-    selectedStuffDetail.value = strategy.load(selectedStuff.value);
+    if (selectedStuff.value == undefined) selectedStuffDetail.value = undefined;
+    else if (selectedStuff.value == loading) selectedStuffDetail.value = loading;
+    else selectedStuffDetail.value = strategy.load(selectedStuff.value as Stuff);
   }
 
   return {
@@ -44,9 +51,9 @@ export const useStuffStore = defineStore("stuff", () => {
 });
 
 interface StuffsGetStrategy {
-  load: () => Stuff[] | undefined;
+  load: () => Stuff[] | Loading | undefined;
 }
 
 interface StuffDetailGetStrategy {
-  load: (_: Stuff) => StuffWithItems | undefined;
+  load: (_: Stuff) => StuffWithItems | Loading | undefined;
 }
