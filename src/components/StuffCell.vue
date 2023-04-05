@@ -1,13 +1,12 @@
-<script lang="js">
+<script setup lang="ts">
 import Tag from "@/components/Tag.vue";
-import { toRefs } from "vue";
-export default {
-  components: { Tag },
-  props: ["stuff", "selected"],
-  setup(props) {
-    return toRefs(props);
-  }
-};
+import type Stuff from "@/models/stuff/Stuff.js";
+import { defineProps } from "vue";
+
+defineProps<{
+  stuff: Stuff;
+  selected: boolean;
+}>();
 </script>
 
 <template>

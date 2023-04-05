@@ -1,9 +1,17 @@
+<script setup lang="ts">
+import { useStuffStore } from "@/stores/stuffStore";
+import { storeToRefs } from "pinia";
+
+const stuffStore = useStuffStore();
+const { selectedStuffDetail } = storeToRefs(stuffStore);
+</script>
+
 <template>
   <section class="stuff-info">
-    <section class="icon">{{ stuff.thumbnail }}</section>
+    <section class="icon">{{ selectedStuffDetail?.thumbnail }}</section>
     <section class="label-and-desc">
       <section class="label">
-        <section class="name">{{ stuff.name }}</section>
+        <section class="name">{{ selectedStuffDetail?.name }}</section>
         <section class="buttons">
           <button class="btn btn-primary btn-sm">수정</button>
           <button class="btn btn-primary btn-sm">추가</button>
@@ -17,13 +25,6 @@
     </section>
   </section>
 </template>
-
-<script lang="ts">
-export default {
-  name: "StuffInfo",
-  props: ["stuff"]
-};
-</script>
 
 <style lang="scss" scoped>
 .stuff-info {

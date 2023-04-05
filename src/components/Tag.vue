@@ -1,18 +1,10 @@
 <script setup lang="ts">
 import { defineProps } from "vue";
+
 defineProps<{
-  color: {
-    type: String;
-    required: true;
-  };
-  size: {
-    type: String;
-    required: true;
-  };
-  content: {
-    type: String;
-    required: true;
-  };
+  color: string;
+  size: number;
+  content: string;
 }>();
 </script>
 

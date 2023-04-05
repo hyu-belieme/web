@@ -1,19 +1,21 @@
-<script setup>
+<script setup lang="ts">
 import ItemCell from "@/components/ItemCell.vue";
+import { useStuffStore } from "@/stores/stuffStore";
+import { storeToRefs } from "pinia";
+
+const stuffStore = useStuffStore();
+const { selectedStuffItems } = storeToRefs(stuffStore);
 </script>
 
 <template>
   <section class="item-list">
-    <ItemCell v-for="item in items" key="item" v-bind="{ item: item }"></ItemCell>
+    <ItemCell
+      v-for="(item, index) in selectedStuffItems"
+      :key="index"
+      v-bind="{ item: item }"
+    ></ItemCell>
   </section>
 </template>
-
-<script>
-export default {
-  name: "ItemList",
-  props: ["items"]
-};
-</script>
 
 <style lang="scss" scoped>
 .item-list {

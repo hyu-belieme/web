@@ -1,14 +1,7 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
-import type { Stuff, StuffWithItems } from "@/models/Stuff";
-
-interface StuffsGetStrategy {
-  load: () => Stuff[];
-}
-
-interface StuffDetailGetStrategy {
-  load: (_: Stuff) => Stuff[];
-}
+import type Stuff from "@/models/stuff/Stuff";
+import type StuffWithItems from "@/models/stuff/StuffWithItems";
 
 export const useStuffStore = defineStore("stuff", () => {
   const selected = ref<number | undefined>(undefined);
@@ -18,6 +11,11 @@ export const useStuffStore = defineStore("stuff", () => {
   const selectedStuff = computed(() => {
     if (stuffs.value == undefined || selected.value == undefined) return undefined;
     return stuffs.value[selected.value];
+  });
+
+  const selectedStuffItems = computed(() => {
+    if (selectedStuffDetail.value == undefined) return [];
+    return selectedStuffDetail.value.items;
   });
 
   function updateSelected(newVal: number) {
@@ -37,9 +35,18 @@ export const useStuffStore = defineStore("stuff", () => {
     selected,
     stuffs,
     selectedStuffDetail,
+    selectedStuffItems,
     selectedStuff,
     updateSelected,
     updateStuffs,
     updateSelectedStuffDetail
   };
 });
+
+interface StuffsGetStrategy {
+  load: () => Stuff[] | undefined;
+}
+
+interface StuffDetailGetStrategy {
+  load: (_: Stuff) => StuffWithItems | undefined;
+}

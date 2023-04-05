@@ -1,32 +1,33 @@
-<script setup>
-import StuffInfo from "@/components/StuffInfo.vue";
+<script setup lang="ts">
+import stuffDummies from "@/assets/dummies/stuffs";
 import ItemList from "@/components/ItemList.vue";
-import stuffDummies from "@/assets/dummies/stuffs.js";
+import StuffInfo from "@/components/StuffInfo.vue";
+import type Stuff from "@/models/stuff/Stuff.js";
+import { useStuffStore } from "@/stores/stuffStore";
 import { storeToRefs } from "pinia";
-import { useStuffStore } from "@/stores/stuff";
-
 import { watch } from "vue";
 
 const stuffStore = useStuffStore();
 const { selectedStuff, selectedStuffDetail } = storeToRefs(stuffStore);
 
+watch(selectedStuff, () => updateStuff());
+updateStuff();
+
+// ====== functions ======
 function updateStuff() {
   stuffStore.updateSelectedStuffDetail({
-    load: (stuffIdx) => {
+    load: (stuffIdx: Stuff) => {
       return stuffDummies.find((e) => e.name == stuffIdx.name);
     }
   });
 }
-
-watch(selectedStuff, () => updateStuff());
-updateStuff();
 </script>
 
 <template>
   <section class="stuff-detail">
     <section v-if="selectedStuffDetail != undefined">
-      <StuffInfo v-bind="{ stuff: selectedStuffDetail }"></StuffInfo>
-      <ItemList v-bind="{ items: selectedStuffDetail.itemList }"></ItemList>
+      <StuffInfo></StuffInfo>
+      <ItemList></ItemList>
     </section>
   </section>
 </template>

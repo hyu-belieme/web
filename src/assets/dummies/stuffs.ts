@@ -1,10 +1,12 @@
-export default [
+import type StuffWithItems from "@/models/stuff/StuffWithItems";
+
+const stuffDummies: StuffWithItems[] = [
   {
     name: "블루투스 스피커",
     thumbnail: "📻",
     amount: 2,
     count: 2,
-    itemList: [
+    items: [
       {
         num: 1,
         status: "USABLE",
@@ -22,7 +24,7 @@ export default [
     thumbnail: "🌂",
     amount: 5,
     count: 4,
-    itemList: [
+    items: [
       {
         num: 1,
         status: "UNUSABLE",
@@ -106,7 +108,7 @@ export default [
     thumbnail: "⚽️",
     amount: 3,
     count: 3,
-    itemList: [
+    items: [
       {
         num: 1,
         status: "USABLE",
@@ -129,7 +131,7 @@ export default [
     thumbnail: "🏀",
     amount: 2,
     count: 0,
-    itemList: [
+    items: [
       {
         num: 1,
         status: "UNUSABLE",
@@ -185,3 +187,5 @@ export default [
     ]
   }
 ];
+
+export default stuffDummies;

@@ -1,5 +1,52 @@
-<script setup>
+<script setup lang="ts">
 import Tag from "@/components/Tag.vue";
+import type Item from "@/models/item/Item.js";
+import { computed, getCurrentInstance } from "vue";
+
+const app = getCurrentInstance();
+const dayjs = app?.appContext.config.globalProperties.$dayjs;
+
+const props = defineProps<{
+  item: Item;
+}>();
+
+const statusTagInfo = computed(() => {
+  const tagSize = 6;
+
+  return {
+    size: tagSize,
+    color: makeStatusTagColor(props.item),
+    content: makeStatusTagContent(props.item)
+  };
+});
+
+const timestampTagInfo = computed(() => {
+  const tagSize = 6;
+  const tagColor = "orange";
+
+  return {
+    size: tagSize,
+    color: tagColor,
+    content: getRelativeTimeString(props.item.lastHistory?.approvedAt!)
+  };
+});
+
+function makeStatusTagColor(item: Item) {
+  if (item.status == "USABLE") return "green";
+  if (item.status == "UNUSABLE") return "orange";
+  return "red";
+}
+
+function makeStatusTagContent(item: Item) {
+  if (item.status == "USABLE") return "대여가능";
+  if (item.status == "UNUSABLE") return "대여 중";
+  if (item.status == "INACTIVE") return "사용불가";
+  return "ERROR";
+}
+
+function getRelativeTimeString(time: number) {
+  return dayjs?.unix(time).fromNow();
+}
 </script>
 
 <template>
@@ -8,7 +55,7 @@ import Tag from "@/components/Tag.vue";
       <span class="numbering">{{ item.num }}</span>
       <section class="tags">
         <Tag v-bind="statusTagInfo"></Tag>
-        <Tag v-if="item.status == 'UNUSABLE'" v-bind="tiemstampTagInfo"></Tag>
+        <Tag v-if="item.status == 'UNUSABLE'" v-bind="timestampTagInfo"></Tag>
       </section>
       <section class="buttons">
         <button v-if="item.status === 'USABLE'" class="btn btn-primary btn-sm">대여하기</button>
@@ -18,50 +65,6 @@ import Tag from "@/components/Tag.vue";
     <div class="division-line"></div>
   </section>
 </template>
-
-<script>
-export default {
-  name: "ItemCell",
-  props: ["item"],
-  computed: {
-    statusTagInfo() {
-      const tagSize = 6;
-
-      return {
-        size: tagSize,
-        color: this.makeStatusTagColor(this.item),
-        content: this.makeStatusTagContent(this.item)
-      };
-    },
-    tiemstampTagInfo() {
-      const tagSize = 6;
-      const tagColor = "orange";
-
-      return {
-        size: tagSize,
-        color: tagColor,
-        content: this.getRelativeTimeString(this.item.lastHistory.approvedAt)
-      };
-    }
-  },
-  methods: {
-    getRelativeTimeString(time) {
-      return this.$dayjs.unix(time).fromNow();
-    },
-    makeStatusTagColor(item) {
-      if (item.status == "USABLE") return "green";
-      if (item.status == "UNUSABLE") return "orange";
-      return "red";
-    },
-    makeStatusTagContent(item) {
-      if (item.status == "USABLE") return "대여가능";
-      if (item.status == "UNUSABLE") return "대여 중";
-      if (item.status == "INACTIVE") return "사용불가";
-      return "ERROR";
-    }
-  }
-};
-</script>
 
 <style lang="scss" scoped>
 .cell {
