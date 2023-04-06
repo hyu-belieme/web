@@ -1,27 +1,27 @@
 <script setup lang="ts">
 import Modal from "@/components/Modal.vue";
-import { ref, onMounted, onBeforeUpdate, onUpdated, onBeforeMount } from "vue";
+import { useModalStore } from "@/stores/modalStore";
+import { storeToRefs } from "pinia";
+import { ref, watch, onBeforeUpdate, onBeforeMount } from "vue";
 
-interface _Modal {
-  id: string;
-  title?: string;
-  content?: string;
-  posBtnText?: string;
-  negBtnText?: string;
-  templateHeader?: string;
-  templateBody?: string;
-  templateFooter?: string;
-}
-
-const modals = ref<_Modal[]>([]);
 const modalRefs = ref();
 
-const showModal = (id: string) => {
-  let idx = modals.value.findIndex((e) => e.id == id);
-  if (idx == undefined) return;
+const modalStore = useModalStore();
+const { modals, toShow, toShowCount, toHide, toHideCount } = storeToRefs(modalStore);
 
+watch(toShowCount, (newVal, oldVal) => {
+  let idx = modals.value.findIndex((e) => e.id == toShow.value);
+  if (idx == undefined || idx < 0 || newVal == 0) return;
   modalRefs.value[idx].show();
-};
+  modalStore.commitShow();
+});
+
+watch(toHideCount, (newVal, oldVal) => {
+  let idx = modals.value.findIndex((e) => e.id == toHide.value);
+  if (idx == undefined || idx < 0 || newVal == 0) return;
+  modalRefs.value[idx].hide();
+  modalStore.commitHide();
+});
 
 onBeforeUpdate(() => {
   modalRefs.value = [];
@@ -29,42 +29,6 @@ onBeforeUpdate(() => {
 
 onBeforeMount(() => {
   modalRefs.value = [];
-
-  modals.value.push({
-    id: "A",
-    title: "Modal A",
-    content: "이것은 Modal A",
-    negBtnText: "취소"
-  });
-  modals.value.push({
-    id: "B",
-    title: "Modal B",
-    content: "이것은 Modal B",
-    negBtnText: "취소",
-    templateHeader: `<i class='modal-title'>Modal B</i>`,
-    templateBody: `<i>{{ content }}</i>`,
-    templateFooter: `
-      <button
-        v-if="negBtnText != undefined"
-        type="button"
-        class="btn btn-secondary"
-        data-bs-dismiss="modal"
-      >
-        {{ negBtnText }}
-      </button>
-    `
-  });
-  modals.value.push({
-    id: "C",
-    title: "Modal C",
-    content: "이것은 Modal C",
-    negBtnText: "취소"
-  });
-});
-
-onMounted(() => {
-  showModal("B");
-  showModal("A");
 });
 </script>
 

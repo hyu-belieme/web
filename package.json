@@ -17,6 +17,7 @@
     "bootstrap-icons": "^1.10.3",
     "dayjs": "^1.11.7",
     "pinia": "^2.0.32",
+    "queue-typescript": "^1.0.1",
     "sanitize-html": "^2.10.0",
     "sass": "^1.60.0",
     "sass-loader": "^10.4.1",
