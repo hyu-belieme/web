@@ -17,6 +17,7 @@
     "bootstrap-icons": "^1.10.3",
     "dayjs": "^1.11.7",
     "pinia": "^2.0.32",
+    "sanitize-html": "^2.10.0",
     "sass": "^1.60.0",
     "sass-loader": "^10.4.1",
     "vue": "^3.2.47",
@@ -25,6 +26,8 @@
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.2.0",
+    "@types/bootstrap": "^5.2.6",
+    "@types/sanitize-html": "^2.9.0",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vue/eslint-config-prettier": "^7.1.0",
     "@vue/test-utils": "^2.3.0",

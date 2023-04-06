@@ -9,6 +9,8 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import "dayjs/locale/ko";
 
+import "bootstrap";
+
 dayjs.extend(relativeTime);
 dayjs.extend(localizedFormat);
 dayjs.locale("ko");
