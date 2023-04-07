@@ -1,16 +1,14 @@
 <script setup lang="ts">
 import type StuffWithItems from "@/models/stuff/StuffWithItems";
 import { useStuffStore } from "@/stores/stuffStore";
+import { useModeStore } from "@/stores/modeStore";
 import { storeToRefs } from "pinia";
-import { ref } from "vue";
 
 const stuffStore = useStuffStore();
 const { selectedStuffDetail } = storeToRefs(stuffStore);
 
-const editMode = ref(false);
-const changeMode = () => {
-  editMode.value = !editMode.value;
-};
+const modeStore = useModeStore();
+const { detailStuffMode } = storeToRefs(modeStore);
 </script>
 
 <template>
@@ -19,35 +17,49 @@ const changeMode = () => {
     <section class="label-and-desc">
       <section class="label">
         <section class="name">
+          <span v-if="detailStuffMode == 'SHOW'">
+            {{ (selectedStuffDetail as StuffWithItems).name }}
+          </span>
           <input
-            v-if="editMode"
+            v-else="detailStuffMode == 'SHOW'"
             type="text"
             class="form-control w-100 my-2"
             placeholder="name"
             aria-label="name"
             aria-describedby="basic-addon1"
           />
-          <span v-else>
-            {{ (selectedStuffDetail as StuffWithItems).name }}
-          </span>
         </section>
         <section class="buttons">
-          <button class="btn btn-primary btn-sm" @click="changeMode()">수정</button>
-          <button class="btn btn-primary btn-sm">추가</button>
+          <template v-if="detailStuffMode == 'SHOW'">
+            <button class="btn btn-primary btn-sm" @click="modeStore.changeMode('EDIT')">
+              수정
+            </button>
+            <button class="btn btn-primary btn-sm" @click="modeStore.changeMode('ADD')">
+              추가
+            </button>
+          </template>
+          <template v-else>
+            <button class="btn btn-primary btn-sm" @click="modeStore.changeMode('SHOW')">
+              저장
+            </button>
+            <button class="btn btn-second btn-sm" @click="modeStore.changeMode('SHOW')">
+              취소
+            </button>
+          </template>
         </section>
       </section>
       <div class="desc">
-        <textarea
-          v-if="editMode"
-          class="form-control h-100 fs-7"
-          placeholder="Leave a comment here"
-          id="floatingTextarea"
-        ></textarea>
-        <span v-else class="p-1">
+        <span v-if="detailStuffMode == 'SHOW'" class="p-1">
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi sint corrupti illum
           quos. Dolorum architecto illum, veritatis asperiores odio exercitationem impedit natus.
           Modi magni, aut corporis impedit ullam nemo saepe!
         </span>
+        <textarea
+          v-else
+          class="form-control h-100 fs-7"
+          placeholder="Leave a comment here"
+          id="floatingTextarea"
+        ></textarea>
       </div>
     </section>
   </section>
