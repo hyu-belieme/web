@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Tag from "@/components/Tag.vue";
 import type Item from "@/models/item/Item.js";
+import { useModalStore } from "@/stores/modalStore";
 import { computed, getCurrentInstance } from "vue";
 
 const app = getCurrentInstance();
@@ -31,6 +32,19 @@ const timestampTagInfo = computed(() => {
   };
 });
 
+const modalStore = useModalStore();
+modalStore.addModal({
+  id: "rentalRequest",
+  title: "대여 요청 보내기",
+  content:
+    "요청을 한 후에 대여장소에서 관리자를 통해 대여 승인을 받고 대여 할 수 있습니다. 단, 해당 요청은 15분 후에 자동으로 만료됩니다.",
+  posBtnText: "보내기"
+});
+
+function showModal() {
+  modalStore.showModal("rentalRequest");
+}
+
 function makeStatusTagColor(item: Item) {
   if (item.status == "USABLE") return "green";
   if (item.status == "UNUSABLE") return "orange";
@@ -58,8 +72,12 @@ function getRelativeTimeString(time: number) {
         <Tag v-if="item.status == 'UNUSABLE'" v-bind="timestampTagInfo"></Tag>
       </section>
       <section class="buttons">
-        <button v-if="item.status === 'USABLE'" class="btn btn-primary btn-sm">대여하기</button>
-        <button v-else class="btn btn-primary btn-sm" disabled>대여하기</button>
+        <button v-if="item.status === 'USABLE'" class="btn btn-primary btn-sm" @click="showModal()">
+          대여하기
+        </button>
+        <button v-else class="btn btn-primary btn-sm" @click="showModal()" disabled>
+          대여하기
+        </button>
       </section>
     </section>
     <div class="division-line"></div>
