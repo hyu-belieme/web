@@ -2,14 +2,22 @@
 import Tag from "@/components/Tag.vue";
 import type Item from "@/models/item/Item.js";
 import { useModalStore } from "@/stores/modalStore";
+import { useModeStore } from "@/stores/modeStore";
+import { storeToRefs } from "pinia";
 import { computed, getCurrentInstance } from "vue";
 
 const app = getCurrentInstance();
 const dayjs = app?.appContext.config.globalProperties.$dayjs;
 
+const modeStore = useModeStore();
+const { detailStuffMode } = storeToRefs(modeStore);
+
 const props = defineProps<{
   item: Item;
+  isNew: boolean;
 }>();
+
+const emit = defineEmits(["popItem"]);
 
 const statusTagInfo = computed(() => {
   const tagSize = 6;
@@ -71,14 +79,22 @@ function getRelativeTimeString(time: number) {
         <Tag v-bind="statusTagInfo"></Tag>
         <Tag v-if="item.status == 'UNUSABLE'" v-bind="timestampTagInfo"></Tag>
       </section>
-      <section class="buttons">
+      <template v-if="detailStuffMode == 'SHOW'">
         <button v-if="item.status === 'USABLE'" class="btn btn-primary btn-sm" @click="showModal()">
           대여하기
         </button>
         <button v-else class="btn btn-primary btn-sm" @click="showModal()" disabled>
           대여하기
         </button>
-      </section>
+      </template>
+      <template v-else>
+        <button v-if="isNew" type="button" class="btn btn-danger btn-sm" @click="emit('popItem')">
+          <i class="bi bi-dash-lg"></i>
+        </button>
+        <button v-else type="button" class="btn btn-danger btn-sm" disabled>
+          <i class="bi bi-dash-lg"></i>
+        </button>
+      </template>
     </section>
     <div class="division-line"></div>
   </section>
@@ -123,12 +139,6 @@ function getRelativeTimeString(time: number) {
 
       align-items: center;
       gap: map-get($spacers, 1);
-    }
-
-    .buttons {
-      display: flex;
-      flex-direction: row;
-      gap: map-get($map: $spacers, $key: 2);
     }
   }
 

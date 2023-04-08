@@ -1,4 +1,5 @@
 import type StuffWithItems from "@/models/stuff/StuffWithItems";
+import { List } from "immutable";
 
 const stuffDummies: StuffWithItems[] = [
   {
@@ -6,7 +7,7 @@ const stuffDummies: StuffWithItems[] = [
     thumbnail: "📻",
     amount: 2,
     count: 2,
-    items: [
+    items: List([
       {
         num: 1,
         status: "USABLE",
@@ -17,14 +18,14 @@ const stuffDummies: StuffWithItems[] = [
         status: "USABLE",
         lastHistory: null
       }
-    ]
+    ])
   },
   {
     name: "우산",
     thumbnail: "🌂",
     amount: 5,
     count: 4,
-    items: [
+    items: List([
       {
         num: 1,
         status: "UNUSABLE",
@@ -101,14 +102,14 @@ const stuffDummies: StuffWithItems[] = [
         status: "USABLE",
         lastHistory: null
       }
-    ]
+    ])
   },
   {
     name: "축구공",
     thumbnail: "⚽️",
     amount: 3,
     count: 3,
-    items: [
+    items: List([
       {
         num: 1,
         status: "USABLE",
@@ -124,14 +125,14 @@ const stuffDummies: StuffWithItems[] = [
         status: "USABLE",
         lastHistory: null
       }
-    ]
+    ])
   },
   {
     name: "농구공",
     thumbnail: "🏀",
     amount: 2,
     count: 0,
-    items: [
+    items: List([
       {
         num: 1,
         status: "UNUSABLE",
@@ -184,7 +185,7 @@ const stuffDummies: StuffWithItems[] = [
           }
         }
       }
-    ]
+    ])
   }
 ];
 
