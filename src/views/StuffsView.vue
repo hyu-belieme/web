@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import StuffList from "@/components/StuffList.vue";
 import DetailStuff from "@/components/DetailStuff.vue";
-import Modal from "@/components/Modal.vue";
 </script>
 
 <template>
