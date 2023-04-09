@@ -1,36 +1,42 @@
 import { Queue } from "queue-typescript";
 import { computed, readonly, ref } from "vue";
 import { defineStore } from "pinia";
+import { List } from "immutable";
+
+export interface ButtonInModal {
+  label: string;
+  event: () => void;
+}
 
 interface _Modal {
   id: string;
   title?: string;
   content?: string;
-  posBtnText?: string;
-  negBtnText?: string;
+  resolveBtn?: ButtonInModal;
+  rejectBtn?: ButtonInModal;
   templateHeader?: string;
   templateBody?: string;
   templateFooter?: string;
 }
 
 export const useModalStore = defineStore("modal", () => {
-  const _modals = ref<_Modal[]>([]);
+  const modals = ref<List<_Modal>>(List([]));
   const _queueForShow = ref(new Queue<string>());
   const _queueForHide = ref(new Queue<string>());
 
   const addModal = (modal: _Modal) => {
-    let idx = _modals.value.findIndex((e) => e.id == modal.id);
+    let idx = modals.value.findIndex((e) => e.id == modal.id);
     if (idx == undefined) {
-      _modals.value.push(modal);
+      modals.value = modals.value.push(modal);
       return;
     }
-    _modals.value.splice(idx, 1, modal);
+    modals.value = modals.value.splice(idx, 1, modal);
   };
 
   function removeModal(modal: _Modal) {
-    let idx = _modals.value.findIndex((e) => e.id == modal.id);
+    let idx = modals.value.findIndex((e) => e.id == modal.id);
     if (idx == undefined) return;
-    _modals.value.splice(idx, 1);
+    modals.value = modals.value.splice(idx, 1);
   }
 
   function showModal(id: string) {
@@ -48,8 +54,6 @@ export const useModalStore = defineStore("modal", () => {
   function commitHide() {
     _queueForHide.value.dequeue();
   }
-
-  const modals = readonly(_modals);
 
   const toShow = computed(() => _queueForShow.value.front);
   const toShowCount = computed(() => _queueForShow.value.length);

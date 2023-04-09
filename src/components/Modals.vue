@@ -43,8 +43,8 @@ onBeforeMount(() => {
     "
     :title="modal.title"
     :content="modal.content"
-    :pos-btn-text="modal.posBtnText"
-    :neg-btn-text="modal.negBtnText"
+    :resolve-btn="modal.resolveBtn"
+    :reject-btn="modal.rejectBtn"
   >
     <template v-if="modal.templateHeader" v-slot:header>
       <div v-html="modal.templateHeader"></div>

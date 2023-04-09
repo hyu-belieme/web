@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { Modal } from "bootstrap";
+import type { ButtonInModal } from "@/stores/modalStore";
 
 let modalEle = ref();
 let thisModalObj: Modal | null = null;
@@ -10,15 +11,21 @@ defineProps<{
   content?: string;
   posBtnText?: string;
   negBtnText?: string;
+  resolveBtn?: ButtonInModal;
+  rejectBtn?: ButtonInModal;
 }>();
 
 onMounted(() => {
   thisModalObj = new Modal(modalEle.value);
 });
+
 function showModal() {
   thisModalObj!.show();
 }
-defineExpose({ show: showModal });
+function hideModal() {
+  thisModalObj!.hide();
+}
+defineExpose({ show: showModal, hide: hideModal });
 </script>
 
 <template>
@@ -28,12 +35,7 @@ defineExpose({ show: showModal });
         <div class="modal-header">
           <slot name="header">
             <h5 class="modal-title">{{ title }}</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
+            <button type="button" class="btn-close" @click="" aria-label="Close"></button>
           </slot>
         </div>
         <div class="modal-body">
@@ -44,15 +46,20 @@ defineExpose({ show: showModal });
         <div class="modal-footer">
           <slot name="footer">
             <button
-              v-if="negBtnText != undefined"
+              v-if="rejectBtn != undefined"
               type="button"
               class="btn btn-secondary"
-              data-bs-dismiss="modal"
+              @click="rejectBtn?.event"
             >
-              {{ negBtnText }}
+              {{ rejectBtn.label }}
             </button>
-            <button v-if="posBtnText != undefined" type="button" class="btn btn-primary">
-              {{ posBtnText }}
+            <button
+              v-if="resolveBtn != undefined"
+              type="button"
+              class="btn btn-primary"
+              @click="resolveBtn?.event"
+            >
+              {{ resolveBtn.label }}
             </button>
           </slot>
         </div>

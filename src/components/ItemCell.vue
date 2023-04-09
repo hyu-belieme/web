@@ -46,7 +46,14 @@ modalStore.addModal({
   title: "대여 요청 보내기",
   content:
     "요청을 한 후에 대여장소에서 관리자를 통해 대여 승인을 받고 대여 할 수 있습니다. 단, 해당 요청은 15분 후에 자동으로 만료됩니다.",
-  posBtnText: "보내기"
+  resolveBtn: {
+    label: "보내기",
+    event: () => {
+      console.log("보내기");
+      console.log(props.item);
+      modalStore.hideModal("rentalRequest");
+    }
+  }
 });
 
 function showModal() {
