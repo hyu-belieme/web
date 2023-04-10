@@ -1,27 +1,27 @@
-<script setup>
+<script setup lang="ts">
 import Tag from "@/components/Tag.vue";
+import type Stuff from "@/models/stuff/Stuff.js";
+import { defineProps } from "vue";
+
+defineProps<{
+  stuff: Stuff;
+  selected: boolean;
+}>();
 </script>
 
 <template>
-  <section class="cell">
+  <section :class="[selected ? 'cell selected' : 'cell']">
     <section class="content">
-      <span class="icon">{{ thumbnail }}</span>
-      <span class="name">{{ name }}</span>
+      <span class="icon">{{ stuff.thumbnail }}</span>
+      <span class="name">{{ stuff.name }}</span>
       <section class="tags">
-        <Tag v-if="count <= 0" v-bind="{ color: 'red', size: 6, content: '남지 않음' }"></Tag>
-        <Tag v-else v-bind="{ color: 'blue', size: 6, content: count + '개 남음' }"></Tag>
+        <Tag v-if="stuff.count <= 0" v-bind="{ color: 'red', size: 6, content: '남지 않음' }"></Tag>
+        <Tag v-else v-bind="{ color: 'blue', size: 6, content: stuff.count + '개 남음' }"></Tag>
       </section>
     </section>
     <div class="division-line"></div>
   </section>
 </template>
-
-<script>
-export default {
-  name: "StuffCell",
-  props: ["name", "thumbnail", "count"]
-};
-</script>
 
 <style lang="scss" scoped>
 .cell {

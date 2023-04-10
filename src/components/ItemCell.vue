@@ -1,5 +1,85 @@
-<script setup>
+<script setup lang="ts">
 import Tag from "@/components/Tag.vue";
+import Modal from "@/components/Modal.vue";
+import type Item from "@/models/item/Item.js";
+import { useModalStore } from "@/stores/modalStore.js";
+import { useModeStore } from "@/stores/modeStore";
+import { storeToRefs } from "pinia";
+import { computed, getCurrentInstance } from "vue";
+
+const app = getCurrentInstance();
+const dayjs = app?.appContext.config.globalProperties.$dayjs;
+
+const modeStore = useModeStore();
+const { detailStuffMode } = storeToRefs(modeStore);
+
+const props = defineProps<{
+  item: Item;
+  isNew: boolean;
+}>();
+
+const emit = defineEmits(["popItem"]);
+
+const statusTagInfo = computed(() => {
+  const tagSize = 6;
+
+  return {
+    size: tagSize,
+    color: makeStatusTagColor(props.item),
+    content: makeStatusTagContent(props.item)
+  };
+});
+
+const timestampTagInfo = computed(() => {
+  const tagSize = 6;
+  const tagColor = "orange";
+
+  return {
+    size: tagSize,
+    color: tagColor,
+    content: getRelativeTimeString(props.item.lastHistory?.approvedAt!)
+  };
+});
+
+const modalStore = useModalStore();
+
+function showModal() {
+  modalStore.addModal({
+    key: "rentalRequest",
+    component: Modal,
+    props: {
+      title: "대여 요청 보내기",
+      content:
+        "요청을 한 후에 대여장소에서 관리자를 통해 대여 승인을 받고 대여 할 수 있습니다. 단, 해당 요청은 15분 후에 자동으로 만료됩니다.",
+      resolveLabel: "보내기"
+    },
+    resolve: () => {
+      console.log("보내기");
+      console.log(props.item);
+      modalStore.removeModal("rentalRequest");
+    },
+    reject: () => {
+      modalStore.removeModal("rentalRequest");
+    }
+  });
+}
+
+function makeStatusTagColor(item: Item) {
+  if (item.status == "USABLE") return "green";
+  if (item.status == "UNUSABLE") return "orange";
+  return "red";
+}
+
+function makeStatusTagContent(item: Item) {
+  if (item.status == "USABLE") return "대여가능";
+  if (item.status == "UNUSABLE") return "대여 중";
+  if (item.status == "INACTIVE") return "사용불가";
+  return "ERROR";
+}
+
+function getRelativeTimeString(time: number) {
+  return dayjs?.unix(time).fromNow();
+}
 </script>
 
 <template>
@@ -8,60 +88,33 @@ import Tag from "@/components/Tag.vue";
       <span class="numbering">{{ item.num }}</span>
       <section class="tags">
         <Tag v-bind="statusTagInfo"></Tag>
-        <Tag v-if="item.status == 'UNUSABLE'" v-bind="tiemstampTagInfo"></Tag>
+        <Tag v-if="item.status == 'UNUSABLE'" v-bind="timestampTagInfo"></Tag>
       </section>
-      <section class="buttons">
-        <button v-if="item.status === 'USABLE'" class="btn btn-primary btn-sm">대여하기</button>
-        <button v-else class="btn btn-primary btn-sm" disabled>대여하기</button>
-      </section>
+      <template v-if="detailStuffMode == 'SHOW'">
+        <button v-if="item.status === 'USABLE'" class="btn btn-primary btn-sm" @click="showModal()">
+          대여하기
+        </button>
+        <button v-else class="btn btn-primary btn-sm" @click="showModal()" disabled>
+          대여하기
+        </button>
+      </template>
+      <template v-else>
+        <button
+          v-if="detailStuffMode == 'ADD' || isNew"
+          type="button"
+          class="btn btn-danger btn-sm"
+          @click="emit('popItem')"
+        >
+          <i class="bi bi-dash-lg"></i>
+        </button>
+        <button v-else type="button" class="btn btn-danger btn-sm" disabled>
+          <i class="bi bi-dash-lg"></i>
+        </button>
+      </template>
     </section>
     <div class="division-line"></div>
   </section>
 </template>
-
-<script>
-export default {
-  name: "ItemCell",
-  props: ["item"],
-  computed: {
-    statusTagInfo() {
-      const tagSize = 6;
-
-      return {
-        size: tagSize,
-        color: this.makeStatusTagColor(this.item),
-        content: this.makeStatusTagContent(this.item)
-      };
-    },
-    tiemstampTagInfo() {
-      const tagSize = 6;
-      const tagColor = "orange";
-
-      return {
-        size: tagSize,
-        color: tagColor,
-        content: this.getRelativeTimeString(this.item.lastHistory.approvedAt)
-      };
-    }
-  },
-  methods: {
-    getRelativeTimeString(time) {
-      return this.$dayjs.unix(time).fromNow();
-    },
-    makeStatusTagColor(item) {
-      if (item.status == "USABLE") return "green";
-      if (item.status == "UNUSABLE") return "orange";
-      return "red";
-    },
-    makeStatusTagContent(item) {
-      if (item.status == "USABLE") return "대여가능";
-      if (item.status == "UNUSABLE") return "대여 중";
-      if (item.status == "INACTIVE") return "사용불가";
-      return "ERROR";
-    }
-  }
-};
-</script>
 
 <style lang="scss" scoped>
 .cell {
@@ -102,12 +155,6 @@ export default {
 
       align-items: center;
       gap: map-get($spacers, 1);
-    }
-
-    .buttons {
-      display: flex;
-      flex-direction: row;
-      gap: map-get($map: $spacers, $key: 2);
     }
   }
 

@@ -1,113 +1,54 @@
-<script setup>
-import StuffInfo from "@/components/StuffInfo.vue";
+<script setup lang="ts">
+import stuffDummies from "@/assets/dummies/stuffs";
 import ItemList from "@/components/ItemList.vue";
+import StuffInfo from "@/components/StuffInfo.vue";
+import { loading } from "@/models/Types";
+import type Stuff from "@/models/stuff/Stuff.js";
+import { useStuffStore } from "@/stores/stuffStore";
+import { storeToRefs } from "pinia";
+import { watch } from "vue";
+
+const stuffStore = useStuffStore();
+const { selectedStuff, selectedStuffDetail } = storeToRefs(stuffStore);
+
+watch(selectedStuff, () => updateStuff());
+updateStuff();
+
+// ====== functions ======
+function updateStuff() {
+  stuffStore.updateSelectedStuffDetail({
+    load: (stuffIdx: Stuff) => {
+      // return undefined;
+      // return null;
+      return stuffDummies.find((e) => e.name == stuffIdx.name);
+    }
+  });
+}
 </script>
 
 <template>
   <section class="stuff-detail">
-    <StuffInfo v-bind="{ stuff: stuff }"></StuffInfo>
-    <ItemList v-bind="{ items: stuff.itemList }"></ItemList>
+    <template v-if="selectedStuffDetail == loading">
+      <span class="w-100 text-center">로딩 중</span>
+    </template>
+    <template v-else-if="selectedStuffDetail == undefined">
+      <span class="w-100 text-center">
+        데이터를 불러오는데 문제가 발생하였습니다.<br />
+        새로고침 후에 다시 이용해 주세요.
+      </span>
+    </template>
+    <template v-else>
+      <StuffInfo></StuffInfo>
+      <ItemList></ItemList>
+    </template>
   </section>
 </template>
-
-<script>
-export default {
-  name: "DetailStuff",
-  data() {
-    return {
-      stuff: {
-        name: "우산",
-        thumbnail: "🌂",
-        amount: 5,
-        count: 4,
-        itemList: [
-          {
-            num: 1,
-            status: "UNUSABLE",
-            lastHistory: {
-              num: 8,
-              status: "USING",
-              requestedAt: 1680180782,
-              requester: {
-                university: {
-                  code: "DEV",
-                  name: "DEV"
-                },
-                studentId: "DEV3",
-                name: "개발자1"
-              },
-              approvedAt: 1680180795,
-              approveManager: {
-                university: {
-                  code: "DEV",
-                  name: "DEV"
-                },
-                studentId: "DEV3",
-                name: "개발자1"
-              }
-            }
-          },
-          {
-            num: 2,
-            status: "USABLE",
-            lastHistory: {
-              num: 2,
-              status: "RETURNED",
-              requestedAt: 1678275343,
-              requester: {
-                university: {
-                  code: "DEV",
-                  name: "DEV"
-                },
-                studentId: "DEV1",
-                name: "개발자1"
-              },
-              approvedAt: 1678275747,
-              approveManager: {
-                university: {
-                  code: "DEV",
-                  name: "DEV"
-                },
-                studentId: "DEV1",
-                name: "개발자1"
-              },
-              returnedAt: 1678276386,
-              returnManager: {
-                university: {
-                  code: "DEV",
-                  name: "DEV"
-                },
-                studentId: "DEV1",
-                name: "개발자1"
-              }
-            }
-          },
-          {
-            num: 3,
-            status: "USABLE",
-            lastHistory: null
-          },
-          {
-            num: 4,
-            status: "USABLE",
-            lastHistory: null
-          },
-          {
-            num: 5,
-            status: "USABLE",
-            lastHistory: null
-          }
-        ]
-      }
-    };
-  }
-};
-</script>
 
 <style lang="scss" scoped>
 .stuff-detail {
   display: flex;
   flex-direction: column;
+  overflow: scroll;
 
   padding: map-get($map: $spacers, $key: 4);
   gap: map-get($map: $spacers, $key: 4);

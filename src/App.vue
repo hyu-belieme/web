@@ -1,5 +1,6 @@
-<script setup>
+<script setup lang="ts">
 import Header from "./components/Header.vue";
+import Modals from "./components/Modals.vue";
 </script>
 
 <template>
@@ -9,4 +10,5 @@ import Header from "./components/Header.vue";
   <main class="container">
     <RouterView />
   </main>
+  <Modals></Modals>
 </template>
