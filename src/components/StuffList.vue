@@ -4,7 +4,15 @@ import StuffCell from "@/components/StuffCell.vue";
 import { loading } from "@/models/Types";
 import type Stuff from "@/models/stuff/Stuff";
 import { useStuffStore } from "@/stores/stuffStore";
+import { useModeStore } from "@/stores/modeStore";
+import { useModalStore } from "@/stores/modalStore";
 import { storeToRefs } from "pinia";
+import Modal from "@/components/Modal.vue";
+
+const modeStore = useModeStore();
+const { detailStuffMode } = storeToRefs(modeStore);
+
+const modalStore = useModalStore();
 
 const stuffStore = useStuffStore();
 const { stuffs, selected } = storeToRefs(stuffStore);
@@ -15,7 +23,26 @@ updateStuffs();
 // ====== functions ======
 
 function updateSelected(newVal: number) {
-  stuffStore.updateSelected(newVal);
+  if (newVal == selected.value) return;
+  if (detailStuffMode.value == "SHOW") {
+    stuffStore.updateSelected(newVal);
+    return;
+  }
+
+  modalStore.addModal({
+    key: "changeStuff",
+    component: Modal,
+    props: {
+      title: "이동하기",
+      content: "다른 물품을 선택하면 변경사항은 저장되지 않습니다. 이동하시겠습니끼?",
+      resolveLabel: "확인"
+    },
+    resolve: () => {
+      stuffStore.updateSelected(newVal);
+      modeStore.changeMode("SHOW");
+    },
+    reject: () => {}
+  });
 }
 
 function updateStuffs() {
