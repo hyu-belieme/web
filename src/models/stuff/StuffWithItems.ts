@@ -1,18 +1,7 @@
-import type Item from "@/models/item/Item";
+import type ItemNestedToStuff from "@/models/item/ItemNestedToStuff";
+import type Stuff from "@/models/stuff/Stuff";
 import type { List } from "immutable";
 
-export default class StuffWithItems {
-  thumbnail: string;
-  name: string;
-  amount: number;
-  count: number;
-  items: List<Item>;
-
-  constructor(name: string, thumbnail: string, amount: number, count: number, items: List<Item>) {
-    this.thumbnail = thumbnail;
-    this.name = name;
-    this.amount = amount;
-    this.count = count;
-    this.items = items;
-  }
+export default interface StuffWithItems extends Stuff {
+  items: List<ItemNestedToStuff>;
 }

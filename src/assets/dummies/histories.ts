@@ -1,8 +1,15 @@
-export default [
+import type History from "@/models/history/History";
+import { List } from "immutable";
+
+const historyDummies: List<History> = List([
   {
     item: {
-      stuffName: "우산",
-      stuffThumbnail: "🌂",
+      stuff: {
+        name: "우산",
+        thumbnail: "🌂",
+        amount: 5,
+        count: 4
+      },
       num: 1,
       status: "USABLE",
       lastHistory: {
@@ -51,8 +58,12 @@ export default [
   },
   {
     item: {
-      stuffName: "우산",
-      stuffThumbnail: "🌂",
+      stuff: {
+        name: "우산",
+        thumbnail: "🌂",
+        amount: 5,
+        count: 4
+      },
       num: 1,
       status: "USABLE",
       lastHistory: {
@@ -101,8 +112,12 @@ export default [
   },
   {
     item: {
-      stuffName: "우산",
-      stuffThumbnail: "🌂",
+      stuff: {
+        name: "우산",
+        thumbnail: "🌂",
+        amount: 5,
+        count: 4
+      },
       num: 1,
       status: "USABLE",
       lastHistory: {
@@ -151,8 +166,12 @@ export default [
   },
   {
     item: {
-      stuffName: "우산",
-      stuffThumbnail: "🌂",
+      stuff: {
+        name: "우산",
+        thumbnail: "🌂",
+        amount: 5,
+        count: 4
+      },
       num: 1,
       status: "USABLE",
       lastHistory: {
@@ -192,8 +211,12 @@ export default [
   },
   {
     item: {
-      stuffName: "우산",
-      stuffThumbnail: "🌂",
+      stuff: {
+        name: "우산",
+        thumbnail: "🌂",
+        amount: 5,
+        count: 4
+      },
       num: 1,
       status: "USABLE",
       lastHistory: {
@@ -233,8 +256,12 @@ export default [
   },
   {
     item: {
-      stuffName: "우산",
-      stuffThumbnail: "🌂",
+      stuff: {
+        name: "우산",
+        thumbnail: "🌂",
+        amount: 5,
+        count: 4
+      },
       num: 1,
       status: "USABLE",
       lastHistory: {
@@ -274,8 +301,12 @@ export default [
   },
   {
     item: {
-      stuffName: "우산",
-      stuffThumbnail: "🌂",
+      stuff: {
+        name: "우산",
+        thumbnail: "🌂",
+        amount: 5,
+        count: 4
+      },
       num: 1,
       status: "USABLE",
       lastHistory: {
@@ -315,8 +346,12 @@ export default [
   },
   {
     item: {
-      stuffName: "우산",
-      stuffThumbnail: "🌂",
+      stuff: {
+        name: "우산",
+        thumbnail: "🌂",
+        amount: 5,
+        count: 4
+      },
       num: 2,
       status: "USABLE",
       lastHistory: {
@@ -374,8 +409,12 @@ export default [
   },
   {
     item: {
-      stuffName: "우산",
-      stuffThumbnail: "🌂",
+      stuff: {
+        name: "우산",
+        thumbnail: "🌂",
+        amount: 5,
+        count: 4
+      },
       num: 2,
       status: "USABLE",
       lastHistory: {
@@ -449,4 +488,6 @@ export default [
       baseMajors: ["FH04067", "FH04068"]
     }
   }
-];
+]);
+
+export default historyDummies;

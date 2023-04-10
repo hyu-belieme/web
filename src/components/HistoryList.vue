@@ -1,5 +1,47 @@
-<script setup>
+<script setup lang="ts">
 import HistoryCell from "@/components/HistoryCell.vue";
+import historyDummies from "@/assets/dummies/histories";
+import { computed, ref } from "vue";
+
+const allHistories = ref(historyDummies);
+const requestedHistories = computed(() => {
+  var output = [];
+  for (var history of allHistories.value) {
+    if (history.status == "REQUESTED") output.push(history);
+  }
+  return output;
+});
+const usingHistories = computed(() => {
+  var output = [];
+  for (var history of allHistories.value) {
+    if (history.status == "USING" || history.status == "DELAYED") output.push(history);
+  }
+  return output;
+});
+
+const lostHistories = computed(() => {
+  var output = [];
+  for (var history of allHistories.value) {
+    if (history.status == "LOST") output.push(history);
+  }
+  return output;
+});
+
+const returnedHistories = computed(() => {
+  var output = [];
+  for (var history of allHistories.value) {
+    if (history.status == "RETURNED") output.push(history);
+  }
+  return output;
+});
+
+const cancelHistories = computed(() => {
+  var output = [];
+  for (var history of allHistories.value) {
+    if (history.status == "EXPIRED") output.push(history);
+  }
+  return output;
+});
 </script>
 
 <template>
@@ -58,56 +100,6 @@ import HistoryCell from "@/components/HistoryCell.vue";
     </section>
   </section>
 </template>
-
-<script>
-import historyDummies from "@/assets/dummies/histories.js";
-
-export default {
-  name: "HistoryList",
-  data() {
-    return {
-      allHistories: historyDummies
-    };
-  },
-  computed: {
-    requestedHistories() {
-      var output = [];
-      for (var history of this.allHistories) {
-        if (history.status == "REQUESTED") output.push(history);
-      }
-      return output;
-    },
-    usingHistories() {
-      var output = [];
-      for (var history of this.allHistories) {
-        if (history.status == "USING" || history.status == "DELAYED") output.push(history);
-      }
-      return output;
-    },
-    lostHistories() {
-      var output = [];
-      for (var history of this.allHistories) {
-        if (history.status == "LOST") output.push(history);
-      }
-      return output;
-    },
-    returnedHistories() {
-      var output = [];
-      for (var history of this.allHistories) {
-        if (history.status == "RETURNED") output.push(history);
-      }
-      return output;
-    },
-    cancelHistories() {
-      var output = [];
-      for (var history of this.allHistories) {
-        if (history.status == "EXPIRED") output.push(history);
-      }
-      return output;
-    }
-  }
-};
-</script>
 
 <style lang="scss" scoped>
 .history-list {

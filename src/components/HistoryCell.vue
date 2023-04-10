@@ -1,11 +1,62 @@
-<script setup>
+<script setup lang="ts">
 import Tag from "@/components/Tag.vue";
+import type User from "@/models/user/User";
+import type History from "@/models/history/History";
+import { computed, getCurrentInstance } from "vue";
+
+const props = defineProps<{
+  history: History;
+}>();
+
+const app = getCurrentInstance();
+const dayjs = app?.appContext.config.globalProperties.$dayjs;
+
+const userTagInfo = computed(() => {
+  const tagColor = "green";
+  const tagSize = 6;
+
+  var userInfo = makeUserTagContent(props.history);
+  return {
+    color: tagColor,
+    size: tagSize,
+    content: userInfo
+  };
+});
+const timestampTagInfo = computed(() => {
+  const tagSize = 6;
+
+  var timeInfo = makeTimestampTagContent(props.history);
+  return {
+    color: "orange",
+    size: tagSize,
+    content: timeInfo
+  };
+});
+
+const entranceYearAndNameToString = (user: User) => {
+  if (user.entranceYear == null) return user.name;
+  return `${user.entranceYear % 100} ${user.name}`;
+};
+const makeUserTagContent = (history: History) => {
+  if (history.requester != null) return entranceYearAndNameToString(history.requester);
+  if (history.lostManager != null) return entranceYearAndNameToString(history.lostManager);
+  return "ERROR";
+};
+const makeTimestampTagContent = (history: History) => {
+  if (history.requestedAt != null) {
+    return dayjs.unix(history.requestedAt).fromNow();
+  }
+  if (history.lostAt != null) {
+    return dayjs.unix(history.lostAt).fromNow();
+  }
+  return "ERROR";
+};
 </script>
 
 <template>
   <section class="cell">
     <section class="content">
-      <span class="name">{{ history.item.stuffName }} #{{ history.item.num }}</span>
+      <span class="name">{{ history.item.stuff.name }} #{{ history.item.num }}</span>
       <section class="tags">
         <Tag v-bind="userTagInfo"></Tag>
         <Tag v-bind="timestampTagInfo"></Tag>
@@ -14,56 +65,6 @@ import Tag from "@/components/Tag.vue";
     <div class="division-line"></div>
   </section>
 </template>
-
-<script>
-export default {
-  name: "HistoryCell",
-  props: ["history"],
-  computed: {
-    userTagInfo() {
-      const tagColor = "green";
-      const tagSize = 6;
-
-      var userInfo = this.makeUserTagContent(this.history);
-      return {
-        color: tagColor,
-        size: tagSize,
-        content: userInfo
-      };
-    },
-    timestampTagInfo() {
-      const tagSize = 6;
-
-      var timeInfo = this.makeTimestampTagContent(this.history);
-      return {
-        color: "orange",
-        size: tagSize,
-        content: timeInfo
-      };
-    }
-  },
-  methods: {
-    entranceYearAndNameToString(user) {
-      if (user.entranceYear == null) return user.name;
-      return `${user.entranceYear.substr(2, 2)} ${user.name}`;
-    },
-    makeUserTagContent(history) {
-      if (history.requester != null) return this.entranceYearAndNameToString(history.requester);
-      if (history.lostManager != null) return this.entranceYearAndNameToString(history.lostManager);
-      return "ERROR";
-    },
-    makeTimestampTagContent(history) {
-      if (history.requestedAt != null) {
-        return this.$dayjs.unix(history.requestedAt).fromNow();
-      }
-      if (history.lostAt != null) {
-        return this.$dayjs.unix(history.lostAt).fromNow();
-      }
-      return "ERROR";
-    }
-  }
-};
-</script>
 
 <style lang="scss" scoped>
 .cell {
