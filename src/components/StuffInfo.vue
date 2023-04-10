@@ -21,10 +21,11 @@ const { detailStuffMode } = storeToRefs(modeStore);
             {{ (selectedStuffDetail as StuffWithItems).name }}
           </span>
           <input
-            v-else="detailStuffMode == 'SHOW'"
+            v-else
             type="text"
             class="form-control w-100 my-2"
-            placeholder="name"
+            placeholder="물품 이름을 입력해주세요."
+            :value=" detailStuffMode == 'EDIT' ? (selectedStuffDetail as StuffWithItems).name : ''"
             aria-label="name"
             aria-describedby="basic-addon1"
           />
@@ -57,7 +58,8 @@ const { detailStuffMode } = storeToRefs(modeStore);
         <textarea
           v-else
           class="form-control h-100 fs-7"
-          placeholder="Leave a comment here"
+          placeholder="물품 설명을 입력해주세요."
+          :value="detailStuffMode == 'EDIT' ? 'Lorem ~~' : ''"
           id="floatingTextarea"
         ></textarea>
       </div>

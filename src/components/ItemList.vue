@@ -4,7 +4,7 @@ import { loading, type Loading } from "@/models/Types";
 import type Item from "@/models/item/Item";
 import { useModeStore } from "@/stores/modeStore";
 import { useStuffStore } from "@/stores/stuffStore";
-import type { List } from "immutable";
+import { List } from "immutable";
 import { storeToRefs } from "pinia";
 import { ref, watch } from "vue";
 
@@ -18,6 +18,14 @@ items.value = selectedStuffItems.value;
 
 watch(selectedStuffItems, (newVal) => {
   items.value = newVal;
+});
+
+watch(detailStuffMode, (newVal) => {
+  if (newVal == "SHOW") {
+    items.value = selectedStuffItems.value;
+  } else if (newVal == "ADD") {
+    items.value = List();
+  }
 });
 
 function pushNewItem() {

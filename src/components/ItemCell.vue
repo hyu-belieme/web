@@ -99,7 +99,12 @@ function getRelativeTimeString(time: number) {
         </button>
       </template>
       <template v-else>
-        <button v-if="isNew" type="button" class="btn btn-danger btn-sm" @click="emit('popItem')">
+        <button
+          v-if="detailStuffMode == 'ADD' || isNew"
+          type="button"
+          class="btn btn-danger btn-sm"
+          @click="emit('popItem')"
+        >
           <i class="bi bi-dash-lg"></i>
         </button>
         <button v-else type="button" class="btn btn-danger btn-sm" disabled>
