@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import Tag from "@/components/Tag.vue";
+import Modal from "@/components/Modal.vue";
 import type Item from "@/models/item/Item.js";
-import { useModalStore } from "@/stores/modalStore";
+import { useModalStore } from "@/stores/modalStore.js";
 import { useModeStore } from "@/stores/modeStore";
 import { storeToRefs } from "pinia";
 import { computed, getCurrentInstance } from "vue";
@@ -41,23 +42,26 @@ const timestampTagInfo = computed(() => {
 });
 
 const modalStore = useModalStore();
-modalStore.addModal({
-  id: "rentalRequest",
-  title: "대여 요청 보내기",
-  content:
-    "요청을 한 후에 대여장소에서 관리자를 통해 대여 승인을 받고 대여 할 수 있습니다. 단, 해당 요청은 15분 후에 자동으로 만료됩니다.",
-  resolveBtn: {
-    label: "보내기",
-    event: () => {
-      console.log("보내기");
-      console.log(props.item);
-      modalStore.hideModal("rentalRequest");
-    }
-  }
-});
 
 function showModal() {
-  modalStore.showModal("rentalRequest");
+  modalStore.addModal({
+    key: "rentalRequest",
+    component: Modal,
+    props: {
+      title: "대여 요청 보내기",
+      content:
+        "요청을 한 후에 대여장소에서 관리자를 통해 대여 승인을 받고 대여 할 수 있습니다. 단, 해당 요청은 15분 후에 자동으로 만료됩니다.",
+      resolveLabel: "보내기"
+    },
+    resolve: () => {
+      console.log("보내기");
+      console.log(props.item);
+      modalStore.removeModal("rentalRequest");
+    },
+    reject: () => {
+      modalStore.removeModal("rentalRequest");
+    }
+  });
 }
 
 function makeStatusTagColor(item: Item) {

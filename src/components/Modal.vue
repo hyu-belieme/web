@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onBeforeUnmount, onMounted, ref } from "vue";
 import { Modal } from "bootstrap";
-import type { ButtonInModal } from "@/stores/modalStore";
 
 let modalEle = ref();
 let thisModalObj: Modal | null = null;
@@ -9,14 +8,17 @@ let thisModalObj: Modal | null = null;
 defineProps<{
   title?: string;
   content?: string;
-  posBtnText?: string;
-  negBtnText?: string;
-  resolveBtn?: ButtonInModal;
-  rejectBtn?: ButtonInModal;
+  resolveLabel?: string;
+  rejectLabel?: string;
 }>();
 
 onMounted(() => {
   thisModalObj = new Modal(modalEle.value);
+  showModal();
+});
+
+onBeforeUnmount(() => {
+  hideModal();
 });
 
 function showModal() {
@@ -25,7 +27,6 @@ function showModal() {
 function hideModal() {
   thisModalObj!.hide();
 }
-defineExpose({ show: showModal, hide: hideModal });
 </script>
 
 <template>
@@ -35,7 +36,12 @@ defineExpose({ show: showModal, hide: hideModal });
         <div class="modal-header">
           <slot name="header">
             <h5 class="modal-title">{{ title }}</h5>
-            <button type="button" class="btn-close" @click="" aria-label="Close"></button>
+            <button
+              type="button"
+              class="btn-close"
+              @click="$emit('close')"
+              aria-label="Close"
+            ></button>
           </slot>
         </div>
         <div class="modal-body">
@@ -46,20 +52,20 @@ defineExpose({ show: showModal, hide: hideModal });
         <div class="modal-footer">
           <slot name="footer">
             <button
-              v-if="rejectBtn != undefined"
+              v-if="rejectLabel != undefined"
               type="button"
               class="btn btn-secondary"
-              @click="rejectBtn?.event"
+              @click="$emit('reject')"
             >
-              {{ rejectBtn.label }}
+              {{ rejectLabel }}
             </button>
             <button
-              v-if="resolveBtn != undefined"
+              v-if="resolveLabel != undefined"
               type="button"
               class="btn btn-primary"
-              @click="resolveBtn?.event"
+              @click="$emit('resolve')"
             >
-              {{ resolveBtn.label }}
+              {{ resolveLabel }}
             </button>
           </slot>
         </div>

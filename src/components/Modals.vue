@@ -1,61 +1,35 @@
 <script setup lang="ts">
-import Modal from "@/components/Modal.vue";
-import { useModalStore } from "@/stores/modalStore";
+import { useModalStore, type Modal } from "@/stores/modalStore.js";
 import { storeToRefs } from "pinia";
-import { ref, watch, onBeforeUpdate, onBeforeMount } from "vue";
-
-const modalRefs = ref();
 
 const modalStore = useModalStore();
-const { modals, toShow, toShowCount, toHide, toHideCount } = storeToRefs(modalStore);
+const { modals } = storeToRefs(modalStore);
 
-watch(toShowCount, (newVal, oldVal) => {
-  let idx = modals.value.findIndex((e) => e.id == toShow.value);
-  if (idx == undefined || idx < 0 || newVal == 0) return;
-  modalRefs.value[idx].show();
-  modalStore.commitShow();
-});
+const closeModal = (key: string) => {
+  modalStore.removeModal(key);
+};
+const onResolve = (value: any, key: string, resolve: (value: any) => void) => {
+  resolve(value);
+  closeModal(key);
+};
 
-watch(toHideCount, (newVal, oldVal) => {
-  let idx = modals.value.findIndex((e) => e.id == toHide.value);
-  if (idx == undefined || idx < 0 || newVal == 0) return;
-  modalRefs.value[idx].hide();
-  modalStore.commitHide();
-});
-
-onBeforeUpdate(() => {
-  modalRefs.value = [];
-});
-
-onBeforeMount(() => {
-  modalRefs.value = [];
-});
+const onReject = (reason: any, key: string, reject: (reason: any) => void) => {
+  reject(reason);
+  closeModal(key);
+};
 </script>
 
 <template>
-  <Modal
-    v-for="(modal, idx) in modals"
-    :key="modal.id"
-    :ref="
-      (el) => {
-        modalRefs[idx] = el;
-      }
-    "
-    :title="modal.title"
-    :content="modal.content"
-    :resolve-btn="modal.resolveBtn"
-    :reject-btn="modal.rejectBtn"
+  <component
+    v-for="modal in modals"
+    :key="(modal as Modal).key"
+    :is="(modal as Modal).component"
+    v-bind="(modal as Modal).props"
+    @resolve="(value: any) => onResolve(value, (modal as Modal).key, (modal as Modal).resolve)"
+    @reject="(reason: any) => onReject(reason, (modal as Modal).key, (modal as Modal).reject)"
+    @close="() => closeModal((modal as Modal).key)"
   >
-    <template v-if="modal.templateHeader" v-slot:header>
-      <div v-html="modal.templateHeader"></div>
-    </template>
-    <template v-if="modal.templateBody" v-slot:body>
-      <div v-html="modal.templateBody"></div>
-    </template>
-    <template v-if="modal.templateFooter" v-slot:footer>
-      <div v-html="modal.templateFooter"></div>
-    </template>
-  </Modal>
+  </component>
 </template>
 
 <style scoped></style>
