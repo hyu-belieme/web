@@ -48,7 +48,6 @@ function updateStuff() {
 .stuff-detail {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   overflow: scroll;
 
   padding: map-get($map: $spacers, $key: 4);
