@@ -92,10 +92,20 @@ function getRelativeTimeString(time: number) {
       </section>
       <template v-if="detailStuffMode == 'SHOW'">
         <button v-if="item.status === 'USABLE'" class="btn btn-primary btn-sm" @click="showModal()">
-          대여하기
+          대여 신청
         </button>
         <button v-else class="btn btn-primary btn-sm" @click="showModal()" disabled>
-          대여하기
+          대여 신청
+        </button>
+        <button
+          v-if="item.status != 'INACTIVATE'"
+          class="btn btn-primary btn-sm"
+          @click="showModal()"
+        >
+          분실 등록
+        </button>
+        <button v-else class="btn btn-primary btn-sm" @click="showModal()" disabled>
+          분실 등록
         </button>
       </template>
       <template v-else>

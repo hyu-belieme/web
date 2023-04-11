@@ -30,11 +30,11 @@ const { selectedHistory } = storeToRefs(historyStore);
       <HistoryInfoList></HistoryInfoList>
       <section class="buttons">
         <template v-if="selectedHistory.status == 'REQUESTED'">
-          <button v-if="isStaff" class="btn btn-primary btn-sm">승인하기</button>
-          <button class="btn btn-danger btn-sm">취소하기</button>
+          <button v-if="isStaff" class="btn btn-primary btn-sm">대여 승인</button>
+          <button class="btn btn-danger btn-sm">신청 취소</button>
         </template>
         <template v-else-if="selectedHistory.status == 'USING'">
-          <button v-if="isStaff" class="btn btn-primary btn-sm">반납하기</button>
+          <button v-if="isStaff" class="btn btn-primary btn-sm">반납 확인</button>
         </template>
       </section>
     </template>
