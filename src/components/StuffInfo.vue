@@ -8,7 +8,7 @@ const stuffStore = useStuffStore();
 const { selectedStuffDetail } = storeToRefs(stuffStore);
 
 const modeStore = useModeStore();
-const { detailStuffMode } = storeToRefs(modeStore);
+const { detailStuffMode, userMode } = storeToRefs(modeStore);
 </script>
 
 <template>
@@ -30,24 +30,38 @@ const { detailStuffMode } = storeToRefs(modeStore);
             aria-describedby="basic-addon1"
           />
         </section>
-        <section class="buttons">
-          <template v-if="detailStuffMode == 'SHOW'">
-            <button class="btn btn-primary btn-sm" @click="modeStore.changeMode('EDIT')">
-              수정
-            </button>
-            <button class="btn btn-primary btn-sm" @click="modeStore.changeMode('ADD')">
-              추가
-            </button>
-          </template>
-          <template v-else>
-            <button class="btn btn-primary btn-sm" @click="modeStore.changeMode('SHOW')">
-              저장
-            </button>
-            <button class="btn btn-second btn-sm" @click="modeStore.changeMode('SHOW')">
-              취소
-            </button>
-          </template>
-        </section>
+        <template v-if="userMode == 'STAFF' || userMode == 'MASTER'">
+          <section class="buttons">
+            <template v-if="detailStuffMode == 'SHOW'">
+              <button
+                class="btn btn-primary btn-sm"
+                @click="modeStore.changeDetailStuffMode('EDIT')"
+              >
+                수정
+              </button>
+              <button
+                class="btn btn-primary btn-sm"
+                @click="modeStore.changeDetailStuffMode('ADD')"
+              >
+                추가
+              </button>
+            </template>
+            <template v-else>
+              <button
+                class="btn btn-primary btn-sm"
+                @click="modeStore.changeDetailStuffMode('SHOW')"
+              >
+                저장
+              </button>
+              <button
+                class="btn btn-second btn-sm"
+                @click="modeStore.changeDetailStuffMode('SHOW')"
+              >
+                취소
+              </button>
+            </template>
+          </section>
+        </template>
       </section>
       <div class="desc">
         <span v-if="detailStuffMode == 'SHOW'" class="p-1">
