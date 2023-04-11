@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import HistoryCell from "@/components/HistoryCell.vue";
+import LoadingVue from "@/components/Loading.vue";
+import DataLoadFail from "@/components/DataLoadFail.vue";
 import historyDummies from "@/assets/dummies/histories";
 import { useHistoryStore, type HistoryCategory } from "@/stores/historyStore";
 import { loading } from "@/models/Types";
@@ -26,9 +28,9 @@ const updateSelected = (newVal: { category: HistoryCategory; index: number }) =>
 const updateHistories = () => {
   historyStore.updateHistory({
     load: () => {
-      // return undefined;
+      return undefined;
       // return loading;
-      return historyDummies;
+      // return historyDummies;
     }
   });
 };
@@ -40,13 +42,10 @@ initSelected();
 <template>
   <section class="history-list">
     <template v-if="histories === loading">
-      <span class="w-100 text-center">로딩 중</span>
+      <LoadingVue></LoadingVue>
     </template>
     <template v-else-if="histories === undefined">
-      <span class="w-100 text-center">
-        데이터를 불러오는데 문제가 발생하였습니다.<br />
-        새로고침 후에 다시 이용해 주세요.
-      </span>
+      <DataLoadFail></DataLoadFail>
     </template>
     <template v-else>
       <template v-for="histories in categorizedHistories">

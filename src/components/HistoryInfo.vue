@@ -3,6 +3,8 @@ import HistoryInfoList from "@/components/HistoryInfoList.vue";
 import { useHistoryStore } from "@/stores/historyStore";
 import { storeToRefs } from "pinia";
 import { loading } from "@/models/Types";
+import Loading from "@/components/Loading.vue";
+import DataLoadFail from "@/components/DataLoadFail.vue";
 
 const isStaff = false;
 
@@ -13,13 +15,10 @@ const { selectedHistory } = storeToRefs(historyStore);
 <template>
   <section class="history-info">
     <template v-if="selectedHistory == loading">
-      <span class="w-100 text-center">로딩 중</span>
+      <Loading></Loading>
     </template>
     <template v-else-if="selectedHistory == undefined">
-      <span class="w-100 text-center">
-        데이터를 불러오는데 문제가 발생하였습니다.<br />
-        새로고침 후에 다시 이용해 주세요.
-      </span>
+      <DataLoadFail></DataLoadFail>
     </template>
     <template v-else>
       <section class="label">
