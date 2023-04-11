@@ -10,6 +10,21 @@ import { storeToRefs } from "pinia";
 const historyStore = useHistoryStore();
 const { histories, categorizedHistories, selected } = storeToRefs(historyStore);
 
+const headerLabel = (category: HistoryCategory) => {
+  switch (category) {
+    case "REQUESTED":
+      return "요청된 기록";
+    case "USING":
+      return "사용 중인 기록";
+    case "LOST":
+      return "분실된 기록";
+    case "RETURNED":
+      return "반납된 기록";
+    case "EXPIRED":
+      return "취소된 기록";
+  }
+};
+
 const initSelected = () => {
   for (const histories of categorizedHistories.value) {
     if (histories.histories.size != 0) {
@@ -28,9 +43,9 @@ const updateSelected = (newVal: { category: HistoryCategory; index: number }) =>
 const updateHistories = () => {
   historyStore.updateHistory({
     load: () => {
-      return undefined;
+      // return undefined;
       // return loading;
-      // return historyDummies;
+      return historyDummies;
     }
   });
 };
@@ -50,7 +65,7 @@ initSelected();
     <template v-else>
       <template v-for="histories in categorizedHistories">
         <section v-show="histories.histories.size > 0">
-          <section class="cell-header">{{ histories.category }}</section>
+          <section class="cell-header">{{ headerLabel(histories.category) }}</section>
           <HistoryCell
             v-for="(history, index) of histories.histories"
             key="history"
