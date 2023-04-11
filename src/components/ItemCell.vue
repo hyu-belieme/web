@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import Tag from "@/components/Tag.vue";
 import Modal from "@/components/Modal.vue";
-import type Item from "@/models/item/Item.js";
-import { useModalStore } from "@/stores/modalStore.js";
+import type ItemNestedToStuff from "@/models/item/ItemNestedToStuff";
+import { useModalStore } from "@/stores/modalStore";
 import { useModeStore } from "@/stores/modeStore";
 import { storeToRefs } from "pinia";
 import { computed, getCurrentInstance } from "vue";
@@ -14,7 +14,7 @@ const modeStore = useModeStore();
 const { detailStuffMode } = storeToRefs(modeStore);
 
 const props = defineProps<{
-  item: Item;
+  item: ItemNestedToStuff;
   isNew: boolean;
 }>();
 
@@ -64,13 +64,13 @@ function showModal() {
   });
 }
 
-function makeStatusTagColor(item: Item) {
+function makeStatusTagColor(item: ItemNestedToStuff) {
   if (item.status == "USABLE") return "green";
   if (item.status == "UNUSABLE") return "orange";
   return "red";
 }
 
-function makeStatusTagContent(item: Item) {
+function makeStatusTagContent(item: ItemNestedToStuff) {
   if (item.status == "USABLE") return "대여가능";
   if (item.status == "UNUSABLE") return "대여 중";
   if (item.status == "INACTIVE") return "사용불가";

@@ -1,3 +1,10 @@
+<script setup lang="ts">
+const props = defineProps<{
+  keyword: string;
+  value: string;
+}>();
+</script>
+
 <template>
   <section class="cell">
     <section class="content">
@@ -7,13 +14,6 @@
     <div class="division-line"></div>
   </section>
 </template>
-
-<script>
-export default {
-  name: "InfoCell",
-  props: ["keyword", "value"]
-};
-</script>
 
 <style lang="scss" scoped>
 .cell {

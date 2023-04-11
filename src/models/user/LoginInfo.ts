@@ -1,3 +1,5 @@
-export default class LoginInfo {
-  constructor(token: String, createdAt: number, approvedAt: number) {}
+export default interface LoginInfo {
+  token: string;
+  createdAt: number;
+  approvedAt: number;
 }

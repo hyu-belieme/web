@@ -2,6 +2,8 @@
 import stuffDummies from "@/assets/dummies/stuffs";
 import ItemList from "@/components/ItemList.vue";
 import StuffInfo from "@/components/StuffInfo.vue";
+import Loading from "@/components/Loading.vue";
+import DataLoadFail from "@/components/DataLoadFail.vue";
 import { loading } from "@/models/Types";
 import type Stuff from "@/models/stuff/Stuff.js";
 import { useStuffStore } from "@/stores/stuffStore";
@@ -29,13 +31,10 @@ function updateStuff() {
 <template>
   <section class="stuff-detail">
     <template v-if="selectedStuffDetail == loading">
-      <span class="w-100 text-center">로딩 중</span>
+      <Loading></Loading>
     </template>
     <template v-else-if="selectedStuffDetail == undefined">
-      <span class="w-100 text-center">
-        데이터를 불러오는데 문제가 발생하였습니다.<br />
-        새로고침 후에 다시 이용해 주세요.
-      </span>
+      <DataLoadFail></DataLoadFail>
     </template>
     <template v-else>
       <StuffInfo></StuffInfo>

@@ -1,113 +1,98 @@
-<script setup>
+<script setup lang="ts">
 import HistoryCell from "@/components/HistoryCell.vue";
+import LoadingVue from "@/components/Loading.vue";
+import DataLoadFail from "@/components/DataLoadFail.vue";
+import historyDummies from "@/assets/dummies/histories";
+import { useHistoryStore, type HistoryCategory } from "@/stores/historyStore";
+import { loading } from "@/models/Types";
+import { storeToRefs } from "pinia";
+
+const historyStore = useHistoryStore();
+const { histories, categorizedHistories, selected } = storeToRefs(historyStore);
+
+const headerLabel = (category: HistoryCategory) => {
+  switch (category) {
+    case "REQUESTED":
+      return "요청된 기록";
+    case "USING":
+      return "사용 중인 기록";
+    case "LOST":
+      return "분실된 기록";
+    case "RETURNED":
+      return "반납된 기록";
+    case "EXPIRED":
+      return "취소된 기록";
+  }
+};
+
+const initSelected = () => {
+  for (const histories of categorizedHistories.value) {
+    if (histories.histories.size != 0) {
+      updateSelected({ category: histories.category, index: 0 });
+      return;
+    }
+  }
+};
+
+const updateSelected = (newVal: { category: HistoryCategory; index: number }) => {
+  if (JSON.stringify(newVal) == JSON.stringify(selected.value)) return;
+  console.log(newVal);
+  historyStore.updateSelected(newVal);
+};
+
+const updateHistories = () => {
+  historyStore.updateHistory({
+    load: () => {
+      // return undefined;
+      // return loading;
+      return historyDummies;
+    }
+  });
+};
+
+updateHistories();
+initSelected();
 </script>
 
 <template>
   <section class="history-list">
-    <section v-show="requestedHistories.length > 0">
-      <section class="cell-header">요청된 기록</section>
-      <HistoryCell
-        v-for="history in requestedHistories"
-        key="history"
-        v-bind="{ history: history }"
-      ></HistoryCell>
-    </section>
-
-    <section v-show="usingHistories.length > 0">
-      <section class="cell-header">사용 중인 기록</section>
-      <HistoryCell
-        v-for="history in usingHistories"
-        key="history"
-        v-bind="{ history: history }"
-      ></HistoryCell>
-    </section>
-
-    <section v-show="lostHistories.length > 0">
-      <section class="cell-header">분실된 기록</section>
-      <HistoryCell
-        v-for="history in lostHistories"
-        key="history"
-        v-bind="{ history: history }"
-      ></HistoryCell>
-    </section>
-
-    <section v-show="returnedHistories.length > 0">
-      <section class="cell-header">반납된 기록</section>
-      <HistoryCell
-        v-for="history in returnedHistories"
-        key="history"
-        v-bind="{ history: history }"
-      ></HistoryCell>
-      <section class="cell-hider">
-        <span>더 보기</span>
-        <i class="bi bi-chevron-down"></i>
-      </section>
-    </section>
-
-    <section v-show="cancelHistories.length > 0">
-      <section class="cell-header">취소된 기록</section>
-      <HistoryCell
-        v-for="history in cancelHistories"
-        key="history"
-        v-bind="{ history: history }"
-      ></HistoryCell>
-      <section class="cell-hider">
-        <span>최소화 하기</span>
-        <i class="bi bi-chevron-up"></i>
-      </section>
-    </section>
+    <template v-if="histories === loading">
+      <LoadingVue></LoadingVue>
+    </template>
+    <template v-else-if="histories === undefined">
+      <DataLoadFail></DataLoadFail>
+    </template>
+    <template v-else>
+      <template v-for="histories in categorizedHistories">
+        <section v-show="histories.histories.size > 0">
+          <section class="cell-header">{{ headerLabel(histories.category) }}</section>
+          <HistoryCell
+            v-for="(history, index) of histories.histories"
+            key="history"
+            v-bind="{
+              history: history,
+              selected:
+                JSON.stringify(selected) ==
+                JSON.stringify({ category: histories.category, index: index })
+            }"
+            @click="updateSelected({ category: histories.category, index: index })"
+          ></HistoryCell>
+          <template
+            v-if="
+              (histories.category == 'RETURNED' || histories.category == 'EXPIRED') &&
+              histories.histories.size >= 5
+            "
+          >
+            <section class="cell-hider">
+              <span>더 보기</span>
+              <i class="bi bi-chevron-down"></i>
+            </section>
+          </template>
+        </section>
+      </template>
+    </template>
   </section>
 </template>
-
-<script>
-import historyDummies from "@/assets/dummies/histories.js";
-
-export default {
-  name: "HistoryList",
-  data() {
-    return {
-      allHistories: historyDummies
-    };
-  },
-  computed: {
-    requestedHistories() {
-      var output = [];
-      for (var history of this.allHistories) {
-        if (history.status == "REQUESTED") output.push(history);
-      }
-      return output;
-    },
-    usingHistories() {
-      var output = [];
-      for (var history of this.allHistories) {
-        if (history.status == "USING" || history.status == "DELAYED") output.push(history);
-      }
-      return output;
-    },
-    lostHistories() {
-      var output = [];
-      for (var history of this.allHistories) {
-        if (history.status == "LOST") output.push(history);
-      }
-      return output;
-    },
-    returnedHistories() {
-      var output = [];
-      for (var history of this.allHistories) {
-        if (history.status == "RETURNED") output.push(history);
-      }
-      return output;
-    },
-    cancelHistories() {
-      var output = [];
-      for (var history of this.allHistories) {
-        if (history.status == "EXPIRED") output.push(history);
-      }
-      return output;
-    }
-  }
-};
-</script>
 
 <style lang="scss" scoped>
 .history-list {

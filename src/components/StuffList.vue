@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import stuffDummies from "@/assets/dummies/stuffs";
 import StuffCell from "@/components/StuffCell.vue";
+import Loading from "@/components/Loading.vue";
+import DataLoadFail from "@/components/DataLoadFail.vue";
 import { loading } from "@/models/Types";
 import type Stuff from "@/models/stuff/Stuff";
 import { useStuffStore } from "@/stores/stuffStore";
@@ -59,13 +61,10 @@ function updateStuffs() {
 <template>
   <section class="stuff-list">
     <template v-if="stuffs === loading">
-      <span class="w-100 text-center">로딩 중</span>
+      <Loading></Loading>
     </template>
     <template v-else-if="stuffs === undefined">
-      <span class="w-100 text-center">
-        데이터를 불러오는데 문제가 발생하였습니다.<br />
-        새로고침 후에 다시 이용해 주세요.
-      </span>
+      <DataLoadFail></DataLoadFail>
     </template>
     <template v-else>
       <StuffCell

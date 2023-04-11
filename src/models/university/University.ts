@@ -1,3 +1,4 @@
-export default class University {
-  constructor(private code: String, private name: String) {}
+export default interface University {
+  code: string;
+  name: string;
 }
