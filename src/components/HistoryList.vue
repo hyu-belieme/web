@@ -77,7 +77,12 @@ initSelected();
             }"
             @click="updateSelected({ category: histories.category, index: index })"
           ></HistoryCell>
-          <template v-if="histories.category == 'RETURNED' || histories.category == 'EXPIRED'">
+          <template
+            v-if="
+              (histories.category == 'RETURNED' || histories.category == 'EXPIRED') &&
+              histories.histories.size >= 5
+            "
+          >
             <section class="cell-hider">
               <span>더 보기</span>
               <i class="bi bi-chevron-down"></i>
