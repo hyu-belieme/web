@@ -4,7 +4,7 @@ import type User from "@/models/user/User";
 export default interface History {
   item: Item;
   num: number;
-  status: string;
+  status: HistoryStatus;
   requester?: User;
   approveManager?: User;
   returnManager?: User;

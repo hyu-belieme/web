@@ -6,6 +6,7 @@ import { computed, getCurrentInstance } from "vue";
 
 const props = defineProps<{
   history: History;
+  selected: boolean;
 }>();
 
 const app = getCurrentInstance();
@@ -54,7 +55,7 @@ const makeTimestampTagContent = (history: History) => {
 </script>
 
 <template>
-  <section class="cell">
+  <section :class="[selected ? 'cell selected' : 'cell']">
     <section class="content">
       <span class="name">{{ history.item.stuff.name }} #{{ history.item.num }}</span>
       <section class="tags">

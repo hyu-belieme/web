@@ -1,103 +1,63 @@
 <script setup lang="ts">
 import HistoryCell from "@/components/HistoryCell.vue";
 import historyDummies from "@/assets/dummies/histories";
-import { computed, ref } from "vue";
+import { useHistoryStore, type HistoryCategory } from "@/stores/historyStore";
+import { storeToRefs } from "pinia";
 
-const allHistories = ref(historyDummies);
-const requestedHistories = computed(() => {
-  var output = [];
-  for (var history of allHistories.value) {
-    if (history.status == "REQUESTED") output.push(history);
-  }
-  return output;
-});
-const usingHistories = computed(() => {
-  var output = [];
-  for (var history of allHistories.value) {
-    if (history.status == "USING" || history.status == "DELAYED") output.push(history);
-  }
-  return output;
-});
+const historyStore = useHistoryStore();
+const { categorizedHistories, selected } = storeToRefs(historyStore);
 
-const lostHistories = computed(() => {
-  var output = [];
-  for (var history of allHistories.value) {
-    if (history.status == "LOST") output.push(history);
+const initSelected = () => {
+  for (const histories of categorizedHistories.value) {
+    if (histories.histories.size != 0) {
+      updateSelected({ category: histories.category, index: 0 });
+      return;
+    }
   }
-  return output;
-});
+};
 
-const returnedHistories = computed(() => {
-  var output = [];
-  for (var history of allHistories.value) {
-    if (history.status == "RETURNED") output.push(history);
-  }
-  return output;
-});
+const updateSelected = (newVal: { category: HistoryCategory; index: number }) => {
+  if (JSON.stringify(newVal) == JSON.stringify(selected.value)) return;
+  console.log(newVal);
+  historyStore.updateSelected(newVal);
+};
 
-const cancelHistories = computed(() => {
-  var output = [];
-  for (var history of allHistories.value) {
-    if (history.status == "EXPIRED") output.push(history);
-  }
-  return output;
-});
+const updateHistories = () => {
+  historyStore.updateHistory({
+    load: () => {
+      return historyDummies;
+    }
+  });
+};
+
+updateHistories();
+initSelected();
 </script>
 
 <template>
   <section class="history-list">
-    <section v-show="requestedHistories.length > 0">
-      <section class="cell-header">요청된 기록</section>
-      <HistoryCell
-        v-for="history in requestedHistories"
-        key="history"
-        v-bind="{ history: history }"
-      ></HistoryCell>
-    </section>
-
-    <section v-show="usingHistories.length > 0">
-      <section class="cell-header">사용 중인 기록</section>
-      <HistoryCell
-        v-for="history in usingHistories"
-        key="history"
-        v-bind="{ history: history }"
-      ></HistoryCell>
-    </section>
-
-    <section v-show="lostHistories.length > 0">
-      <section class="cell-header">분실된 기록</section>
-      <HistoryCell
-        v-for="history in lostHistories"
-        key="history"
-        v-bind="{ history: history }"
-      ></HistoryCell>
-    </section>
-
-    <section v-show="returnedHistories.length > 0">
-      <section class="cell-header">반납된 기록</section>
-      <HistoryCell
-        v-for="history in returnedHistories"
-        key="history"
-        v-bind="{ history: history }"
-      ></HistoryCell>
-      <section class="cell-hider">
-        <span>더 보기</span>
-        <i class="bi bi-chevron-down"></i>
+    <template v-for="histories in categorizedHistories">
+      <section v-show="histories.histories.size > 0">
+        <section class="cell-header">{{ histories.category }}</section>
+        <HistoryCell
+          v-for="(history, index) of histories.histories"
+          key="history"
+          v-bind="{
+            history: history,
+            selected:
+              JSON.stringify(selected) ==
+              JSON.stringify({ category: histories.category, index: index })
+          }"
+          @click="updateSelected({ category: histories.category, index: index })"
+        ></HistoryCell>
+        <template v-if="histories.category == 'RETURNED' || histories.category == 'EXPIRED'">
+          <section class="cell-hider">
+            <span>더 보기</span>
+            <i class="bi bi-chevron-down"></i>
+          </section>
+        </template>
       </section>
-    </section>
-
-    <section v-show="cancelHistories.length > 0">
-      <section class="cell-header">취소된 기록</section>
-      <HistoryCell
-        v-for="history in cancelHistories"
-        key="history"
-        v-bind="{ history: history }"
-      ></HistoryCell>
-      <section class="cell-hider">
-        <span>최소화 하기</span>
-        <i class="bi bi-chevron-up"></i>
-      </section>
-    </section>
+    </template>
   </section>
 </template>
 
