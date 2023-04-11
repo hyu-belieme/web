@@ -2,10 +2,11 @@
 import HistoryCell from "@/components/HistoryCell.vue";
 import historyDummies from "@/assets/dummies/histories";
 import { useHistoryStore, type HistoryCategory } from "@/stores/historyStore";
+import { loading } from "@/models/Types";
 import { storeToRefs } from "pinia";
 
 const historyStore = useHistoryStore();
-const { categorizedHistories, selected } = storeToRefs(historyStore);
+const { histories, categorizedHistories, selected } = storeToRefs(historyStore);
 
 const initSelected = () => {
   for (const histories of categorizedHistories.value) {
@@ -25,6 +26,8 @@ const updateSelected = (newVal: { category: HistoryCategory; index: number }) =>
 const updateHistories = () => {
   historyStore.updateHistory({
     load: () => {
+      // return undefined;
+      // return loading;
       return historyDummies;
     }
   });
@@ -36,27 +39,38 @@ initSelected();
 
 <template>
   <section class="history-list">
-    <template v-for="histories in categorizedHistories">
-      <section v-show="histories.histories.size > 0">
-        <section class="cell-header">{{ histories.category }}</section>
-        <HistoryCell
-          v-for="(history, index) of histories.histories"
-          key="history"
-          v-bind="{
-            history: history,
-            selected:
-              JSON.stringify(selected) ==
-              JSON.stringify({ category: histories.category, index: index })
-          }"
-          @click="updateSelected({ category: histories.category, index: index })"
-        ></HistoryCell>
-        <template v-if="histories.category == 'RETURNED' || histories.category == 'EXPIRED'">
-          <section class="cell-hider">
-            <span>더 보기</span>
-            <i class="bi bi-chevron-down"></i>
-          </section>
-        </template>
-      </section>
+    <template v-if="histories === loading">
+      <span class="w-100 text-center">로딩 중</span>
+    </template>
+    <template v-else-if="histories === undefined">
+      <span class="w-100 text-center">
+        데이터를 불러오는데 문제가 발생하였습니다.<br />
+        새로고침 후에 다시 이용해 주세요.
+      </span>
+    </template>
+    <template v-else>
+      <template v-for="histories in categorizedHistories">
+        <section v-show="histories.histories.size > 0">
+          <section class="cell-header">{{ histories.category }}</section>
+          <HistoryCell
+            v-for="(history, index) of histories.histories"
+            key="history"
+            v-bind="{
+              history: history,
+              selected:
+                JSON.stringify(selected) ==
+                JSON.stringify({ category: histories.category, index: index })
+            }"
+            @click="updateSelected({ category: histories.category, index: index })"
+          ></HistoryCell>
+          <template v-if="histories.category == 'RETURNED' || histories.category == 'EXPIRED'">
+            <section class="cell-hider">
+              <span>더 보기</span>
+              <i class="bi bi-chevron-down"></i>
+            </section>
+          </template>
+        </section>
+      </template>
     </template>
   </section>
 </template>

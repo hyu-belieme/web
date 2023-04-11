@@ -45,35 +45,17 @@ export const useHistoryStore = defineStore("history", () => {
     return output;
   };
 
-  // const selectedWithCategorize = computed(() => {
-  //   var remain = selected.value;
-  //   var output = {
-  //     category: "REQUESTED",
-  //     index: remain
-  //   };
-  //   categorizedHistories.value.forEach((bound) => {
-  //     if (remain < bound.histories.size) {
-  //       output = {
-  //         category: bound.category,
-  //         index: remain
-  //       };
-  //       return false;
-  //     }
-  //     remain -= bound.histories.size;
-  //   });
-
-  //   return output;
-  // });
-
   const selectedHistory = computed(() => {
+    if (histories.value == loading) return loading;
+    if (histories.value == undefined) return undefined;
     const selectedCategory = selected.value.category;
     const selectedIndex = selected.value.index;
 
-    var histories = categorizedHistories.value.find((e) => {
+    var targetHistories = categorizedHistories.value.find((e) => {
       return e.category == selectedCategory;
     })?.histories;
-    if (histories == undefined || histories.size <= selectedIndex) return undefined;
-    return histories.get(selectedIndex);
+    if (targetHistories == undefined || targetHistories.size <= selectedIndex) return undefined;
+    return targetHistories.get(selectedIndex);
   });
 
   function updateSelected(newVal: { category: HistoryCategory; index: number }) {
