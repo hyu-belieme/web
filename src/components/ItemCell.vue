@@ -43,23 +43,65 @@ const timestampTagInfo = computed(() => {
 
 const modalStore = useModalStore();
 
-function showModal() {
+function showRentalRequestModal() {
   modalStore.addModal({
     key: "rentalRequest",
     component: Modal,
     props: {
-      title: "대여 요청 보내기",
+      title: "대여 신청하기",
       content:
-        "요청을 한 후에 대여장소에서 관리자를 통해 대여 승인을 받고 대여 할 수 있습니다. 단, 해당 요청은 15분 후에 자동으로 만료됩니다.",
-      resolveLabel: "보내기"
+        "신청을 한 후에 대여장소에서 관리자를 통해 대여 승인을 받고 대여 할 수 있습니다. 단, 해당 신청은 15분 후에 자동으로 만료됩니다.",
+      resolveLabel: "신청하기"
     },
     resolve: () => {
-      console.log("보내기");
+      console.log("대여 신청");
       console.log(props.item);
       modalStore.removeModal("rentalRequest");
     },
     reject: () => {
       modalStore.removeModal("rentalRequest");
+    }
+  });
+}
+
+function showLostRequestModal() {
+  modalStore.addModal({
+    key: "LostRequest",
+    component: Modal,
+    props: {
+      title: "분실 등록하기",
+      content:
+        "해당 물품을 분실하셨나요? 분실 등록 시 해당 물품은 사용 불가능 한 상태가 됩니다. 물품을 되찾게 된다면 반환 처리를 할 수 있지만 분실 기록은 남게 됩니다.",
+      resolveLabel: "등록하기"
+    },
+    resolve: () => {
+      console.log("분실 등록");
+      console.log(props.item);
+      modalStore.removeModal("LostRequest");
+    },
+    reject: () => {
+      modalStore.removeModal("LostRequest");
+    }
+  });
+}
+
+function showFoundApproveModal() {
+  modalStore.addModal({
+    key: "FoundApprove",
+    component: Modal,
+    props: {
+      title: "반환 확인하기",
+      content:
+        "분실한 물품을 찾으셨나요? 반환 확인 시 해당 묾품이 다시 사용가능해 집니다. 다시 물품을 분실된 상태로 만들 수 있지만 그렇게 할 시 새로운 기록은 남게 됩니다.",
+      resolveLabel: "확인하기"
+    },
+    resolve: () => {
+      console.log("반환 확인");
+      console.log(props.item);
+      modalStore.removeModal("FoundApprove");
+    },
+    reject: () => {
+      modalStore.removeModal("FoundApprove");
     }
   });
 }
@@ -91,21 +133,25 @@ function getRelativeTimeString(time: number) {
         <Tag v-if="item.status == 'UNUSABLE'" v-bind="timestampTagInfo"></Tag>
       </section>
       <template v-if="detailStuffMode == 'SHOW'">
-        <button v-if="item.status === 'USABLE'" class="btn btn-primary btn-sm" @click="showModal()">
+        <button
+          v-if="item.status === 'USABLE'"
+          class="btn btn-primary btn-sm"
+          @click="showRentalRequestModal()"
+        >
           대여 신청
         </button>
-        <button v-else class="btn btn-primary btn-sm" @click="showModal()" disabled>
+        <button v-else class="btn btn-primary btn-sm" @click="showRentalRequestModal()" disabled>
           대여 신청
         </button>
         <button
           v-if="item.status != 'INACTIVATE'"
           class="btn btn-primary btn-sm"
-          @click="showModal()"
+          @click="showLostRequestModal()"
         >
           분실 등록
         </button>
-        <button v-else class="btn btn-primary btn-sm" @click="showModal()" disabled>
-          분실 등록
+        <button v-else class="btn btn-primary btn-sm" @click="showFoundApproveModal()">
+          반환 확인
         </button>
       </template>
       <template v-else>
