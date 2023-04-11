@@ -2,7 +2,9 @@
 import Tag from "@/components/Tag.vue";
 import type User from "@/models/user/User";
 import type History from "@/models/history/History";
+import { useModeStore } from "@/stores/modeStore";
 import { computed, getCurrentInstance } from "vue";
+import { storeToRefs } from "pinia";
 
 const props = defineProps<{
   history: History;
@@ -11,6 +13,9 @@ const props = defineProps<{
 
 const app = getCurrentInstance();
 const dayjs = app?.appContext.config.globalProperties.$dayjs;
+
+const modeStore = useModeStore();
+const { userMode } = storeToRefs(modeStore);
 
 const userTagInfo = computed(() => {
   const tagColor = "green";
@@ -59,7 +64,7 @@ const makeTimestampTagContent = (history: History) => {
     <section class="content">
       <span class="name">{{ history.item.stuff.name }} #{{ history.item.num }}</span>
       <section class="tags">
-        <Tag v-bind="userTagInfo"></Tag>
+        <Tag v-if="userMode == 'STAFF' || userMode == 'MASTER'" v-bind="userTagInfo"></Tag>
         <Tag v-bind="timestampTagInfo"></Tag>
       </section>
     </section>

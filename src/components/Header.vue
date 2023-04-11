@@ -1,3 +1,16 @@
+<script setup lang="ts">
+import { useModeStore } from "@/stores/modeStore";
+import { storeToRefs } from "pinia";
+
+const modeStore = useModeStore();
+const { userMode } = storeToRefs(modeStore);
+
+const changeUserMode = () => {
+  if (userMode.value == "USER") modeStore.changeUserMode("STAFF");
+  else modeStore.changeUserMode("USER");
+};
+</script>
+
 <template>
   <section class="flex-grow-0">
     <img class="logo" src="@/assets/images/belieme_logo_en.png" />
@@ -9,7 +22,7 @@
     <RouterLink to="/users" class="m-4">유저관리</RouterLink>
   </nav>
   <section class="flex-grow-0">
-    <i class="icon bi bi-person"></i>
+    <i class="icon bi bi-person" @click="changeUserMode()"></i>
   </section>
 </template>
 

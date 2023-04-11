@@ -11,7 +11,7 @@ const app = getCurrentInstance();
 const dayjs = app?.appContext.config.globalProperties.$dayjs;
 
 const modeStore = useModeStore();
-const { detailStuffMode } = storeToRefs(modeStore);
+const { detailStuffMode, userMode } = storeToRefs(modeStore);
 
 const props = defineProps<{
   item: ItemNestedToStuff;
@@ -143,16 +143,18 @@ function getRelativeTimeString(time: number) {
         <button v-else class="btn btn-primary btn-sm" @click="showRentalRequestModal()" disabled>
           대여 신청
         </button>
-        <button
-          v-if="item.status != 'INACTIVATE'"
-          class="btn btn-primary btn-sm"
-          @click="showLostRequestModal()"
-        >
-          분실 등록
-        </button>
-        <button v-else class="btn btn-primary btn-sm" @click="showFoundApproveModal()">
-          반환 확인
-        </button>
+        <template v-if="userMode == 'STAFF' || userMode == 'MASTER'">
+          <button
+            v-if="item.status != 'INACTIVATE'"
+            class="btn btn-primary btn-sm"
+            @click="showLostRequestModal()"
+          >
+            분실 등록
+          </button>
+          <button v-else class="btn btn-primary btn-sm" @click="showFoundApproveModal()">
+            반환 확인
+          </button>
+        </template>
       </template>
       <template v-else>
         <button

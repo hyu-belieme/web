@@ -1,18 +1,28 @@
 import { defineStore } from "pinia";
-import { computed, readonly, ref } from "vue";
+import { readonly, ref } from "vue";
 
-type Mode = "SHOW" | "ADD" | "EDIT";
+type UserMode = "USER" | "STAFF" | "MASTER";
+type DetailStuffMode = "SHOW" | "ADD" | "EDIT";
 
 export const useModeStore = defineStore("mode", () => {
-  const _detailStuffMode = ref<Mode>("SHOW");
-  const detailStuffMode = readonly(_detailStuffMode);
+  const userMode = ref<UserMode>("USER");
+  const _userMode = readonly(userMode);
 
-  function changeMode(mode: Mode) {
-    _detailStuffMode.value = mode;
+  const detailStuffMode = ref<DetailStuffMode>("SHOW");
+  const _detailStuffMode = readonly(detailStuffMode);
+
+  function changeDetailStuffMode(mode: DetailStuffMode) {
+    detailStuffMode.value = mode;
+  }
+
+  function changeUserMode(mode: UserMode) {
+    userMode.value = mode;
   }
 
   return {
-    detailStuffMode,
-    changeMode
+    detailStuffMode: _detailStuffMode,
+    userMode: _userMode,
+    changeDetailStuffMode,
+    changeUserMode
   };
 });

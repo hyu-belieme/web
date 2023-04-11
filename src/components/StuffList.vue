@@ -41,7 +41,7 @@ function updateSelected(newVal: number) {
     },
     resolve: () => {
       stuffStore.updateSelected(newVal);
-      modeStore.changeMode("SHOW");
+      modeStore.changeDetailStuffMode("SHOW");
     },
     reject: () => {}
   });
