@@ -61,17 +61,17 @@ const nameAndStudentIdFormat = (user: User) => {
         }"
       ></InfoCell>
       <InfoCell
-        v-if="selectedHistory.returnManager != null"
+        v-if="selectedHistory.lostManager != null"
         v-bind="{
           keyword: '분실 등록 담당자',
-          value: nameAndStudentIdFormat(selectedHistory.returnManager)
+          value: nameAndStudentIdFormat(selectedHistory.lostManager)
         }"
       ></InfoCell>
       <InfoCell
-        v-if="selectedHistory.lostManager != null"
+        v-if="selectedHistory.returnManager != null"
         v-bind="{
           keyword: '반납 승인 담당자',
-          value: nameAndStudentIdFormat(selectedHistory.lostManager)
+          value: nameAndStudentIdFormat(selectedHistory.returnManager)
         }"
       ></InfoCell>
       <InfoCell
