@@ -7,10 +7,9 @@
     "composite": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
-      "@components/*": ["./src/components/*"],
       "@modules/*": ["./src/modules/*"],
-      "@common/*": ["./src/common/*"]
+      "@common/*": ["./src/common/*"],
+      "@core/*": ["./src/core/*"]
     }
   }
 }

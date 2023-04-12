@@ -1,4 +1,4 @@
-import type StuffWithItems from "@/models/stuff/StuffWithItems";
+import type { StuffWithItems } from "@common/types/Models";
 import { List } from "immutable";
 
 const stuffDummies: StuffWithItems[] = [

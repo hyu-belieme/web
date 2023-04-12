@@ -1,16 +1,13 @@
-import { createApp } from "vue";
-import { createPinia } from "pinia";
-
-import App from "./App.vue";
-import router from "./router";
-
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import localizedFormat from "dayjs/plugin/localizedFormat";
-import "dayjs/locale/ko";
-
+import App from "@core/App.vue";
+import router from "@core/router";
 import "bootstrap";
+import dayjs from "dayjs";
+import "dayjs/locale/ko";
+import localizedFormat from "dayjs/plugin/localizedFormat";
+import relativeTime from "dayjs/plugin/relativeTime";
 import "immutable";
+import { createPinia } from "pinia";
+import { createApp } from "vue";
 
 dayjs.extend(relativeTime);
 dayjs.extend(localizedFormat);

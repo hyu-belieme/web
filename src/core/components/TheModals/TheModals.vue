@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useModalStore, type Modal } from "@/stores/modalStore.js";
+import { useModalStore, type Modal } from "@common/stores/modalStore.js";
 import { storeToRefs } from "pinia";
 
 const modalStore = useModalStore();

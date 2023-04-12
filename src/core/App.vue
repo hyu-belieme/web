@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import Header from "./components/Header.vue";
-import Modals from "./components/Modals.vue";
+import TheHeader from "@core/components/TheHeader/TheHeader.vue";
+import TheModals from "@core/components/TheModals/TheModals.vue";
 </script>
 
 <template>
   <header class="d-flex flex-row align-items-center container">
-    <Header></Header>
+    <TheHeader></TheHeader>
   </header>
   <main class="container">
     <RouterView />
   </main>
-  <Modals></Modals>
+  <TheModals></TheModals>
 </template>
