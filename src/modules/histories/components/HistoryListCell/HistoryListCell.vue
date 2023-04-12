@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import Tag from "@/components/Tag.vue";
-import type User from "@/models/user/User";
-import type History from "@/models/history/History";
-import { useModeStore } from "@/stores/modeStore";
-import { computed, getCurrentInstance } from "vue";
+import InfoTag from "@common/components/InfoTag/InfoTag.vue";
+import { useModeStore } from "@common/stores/modeStore";
+import type { History, User } from "@common/types/Models";
+
 import { storeToRefs } from "pinia";
+import { computed, getCurrentInstance } from "vue";
 
 const props = defineProps<{
   history: History;
@@ -64,8 +64,8 @@ const makeTimestampTagContent = (history: History) => {
     <section class="content">
       <span class="name">{{ history.item.stuff.name }} #{{ history.item.num }}</span>
       <section class="tags">
-        <Tag v-if="userMode == 'STAFF' || userMode == 'MASTER'" v-bind="userTagInfo"></Tag>
-        <Tag v-bind="timestampTagInfo"></Tag>
+        <InfoTag v-if="userMode == 'STAFF' || userMode == 'MASTER'" v-bind="userTagInfo"></InfoTag>
+        <InfoTag v-bind="timestampTagInfo"></InfoTag>
       </section>
     </section>
     <div class="division-line"></div>

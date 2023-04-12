@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import InfoCell from "@/components/InfoCell.vue";
-import { loading } from "@/models/Types";
-import type User from "@/models/user/User";
-import { useHistoryStore } from "@/stores/historyStore";
+import { loading } from "@common/types/Loading";
+import type { User } from "@common/types/Models";
+
+import InfoCell from "@modules/histories/components/DetailHistoryContentInfoListCell/DetailHistoryContentInfoListCell.vue";
+import { useHistoryStore } from "@modules/histories/stores/historyStore";
+
 import { storeToRefs } from "pinia";
 import { getCurrentInstance } from "vue";
 

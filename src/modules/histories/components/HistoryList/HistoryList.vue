@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import HistoryCell from "@/components/HistoryCell.vue";
-import LoadingVue from "@/components/Loading.vue";
-import DataLoadFail from "@/components/DataLoadFail.vue";
-import historyDummies from "@/assets/dummies/histories";
-import { useHistoryStore, type HistoryCategory } from "@/stores/historyStore";
-import { loading } from "@/models/Types";
+import DataLoadErrorBox from "@common/components/DataLoadErrorBox/DataLoadErrorBox.vue";
+import LoadingBox from "@common/components/LoadingBox/LoadingBox.vue";
+import { loading } from "@common/types/Loading";
+
+import historyDummies from "@modules/histories/assets/dummies/historyDummies";
+import HistoryCell from "@modules/histories/components/HistoryListCell/HistoryListCell.vue";
+import { useHistoryStore, type HistoryCategory } from "@modules/histories/stores/historyStore";
+
 import { storeToRefs } from "pinia";
 
 const historyStore = useHistoryStore();
@@ -57,10 +59,10 @@ initSelected();
 <template>
   <section class="history-list">
     <template v-if="histories === loading">
-      <LoadingVue></LoadingVue>
+      <LoadingBox></LoadingBox>
     </template>
     <template v-else-if="histories === undefined">
-      <DataLoadFail></DataLoadFail>
+      <DataLoadErrorBox></DataLoadErrorBox>
     </template>
     <template v-else>
       <template v-for="histories in categorizedHistories">

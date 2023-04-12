@@ -45,6 +45,8 @@ export interface ItemNestedToStuff {
   lastHistory: HistoryNestedToItem | null;
 }
 
+type HistoryStatus = "REQUESTED" | "USING" | "DELAYED" | "LOST" | "RETURNED" | "EXPIRED";
+
 export interface History {
   item: Item;
   num: number;

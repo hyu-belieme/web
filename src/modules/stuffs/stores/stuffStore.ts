@@ -1,6 +1,6 @@
-import { loading, type Loading } from "@/models/Types";
-import type Stuff from "@/models/stuff/Stuff";
-import type StuffWithItems from "@/models/stuff/StuffWithItems";
+import { loading, type Loading } from "@common/types/Loading";
+import type { Stuff, StuffWithItems } from "@common/types/Models";
+
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 

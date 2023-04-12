@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import HistoryList from "@/components/HistoryList.vue";
-import DetailHistory from "@/components/DetailHistory.vue";
+import HistoryList from "@modules/histories/components/HistoryList/HistoryList.vue";
+import DetailHistory from "@modules/histories/components/DetailHistory/DetailHistory.vue";
 </script>
 
 <template>

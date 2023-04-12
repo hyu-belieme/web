@@ -1,8 +1,9 @@
-import { loading, type Loading } from "@/models/Types";
+import { loading, type Loading } from "@common/types/Loading";
+import type { History } from "@common/types/Models";
+
 import { List } from "immutable";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
-import type History from "@/models/history/History";
 
 export type HistoryCategory = "REQUESTED" | "USING" | "LOST" | "RETURNED" | "EXPIRED";
 interface CategorizedHistories {

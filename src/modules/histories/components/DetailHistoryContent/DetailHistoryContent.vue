@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import HistoryInfoList from "@/components/HistoryInfoList.vue";
-import { useHistoryStore } from "@/stores/historyStore";
-import { storeToRefs } from "pinia";
-import { loading } from "@/models/Types";
-import Loading from "@/components/Loading.vue";
-import DataLoadFail from "@/components/DataLoadFail.vue";
-import { useModeStore } from "@/stores/modeStore";
+import DataLoadErrorBox from "@common/components/DataLoadErrorBox/DataLoadErrorBox.vue";
+import LoadingBox from "@common/components/LoadingBox/LoadingBox.vue";
+import { useModeStore } from "@common/stores/modeStore";
+import { loading } from "@common/types/Loading";
 
-const isStaff = true;
+import InfoList from "@modules/histories/components/DetailHistoryContentInfoList/DetailHIstoryContentInfoList.vue";
+import { useHistoryStore } from "@modules/histories/stores/historyStore";
+
+import { storeToRefs } from "pinia";
+
 const modeStore = useModeStore();
 const { userMode } = storeToRefs(modeStore);
 
@@ -18,10 +19,10 @@ const { selectedHistory } = storeToRefs(historyStore);
 <template>
   <section class="history-info">
     <template v-if="selectedHistory == loading">
-      <Loading></Loading>
+      <LoadingBox></LoadingBox>
     </template>
     <template v-else-if="selectedHistory == undefined">
-      <DataLoadFail></DataLoadFail>
+      <DataLoadErrorBox></DataLoadErrorBox>
     </template>
     <template v-else>
       <section class="label">
@@ -30,7 +31,7 @@ const { selectedHistory } = storeToRefs(historyStore);
           {{ selectedHistory.item.stuff.name }} #{{ selectedHistory.item.num }}
         </section>
       </section>
-      <HistoryInfoList></HistoryInfoList>
+      <InfoList></InfoList>
       <section class="buttons">
         <template v-if="selectedHistory.status == 'REQUESTED'">
           <button v-if="userMode == 'STAFF' || userMode == 'MASTER'" class="btn btn-primary btn-sm">
