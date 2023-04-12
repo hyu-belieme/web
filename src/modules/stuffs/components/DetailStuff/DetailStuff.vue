@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import stuffDummies from "@/assets/dummies/stuffs";
-import ItemList from "@/components/ItemList.vue";
-import StuffInfo from "@/components/StuffInfo.vue";
-import Loading from "@/components/Loading.vue";
-import DataLoadFail from "@/components/DataLoadFail.vue";
-import { loading } from "@/models/Types";
-import type Stuff from "@/models/stuff/Stuff.js";
-import { useStuffStore } from "@/stores/stuffStore";
+import DataLoadErrorBox from "@common/components/DataLoadErrorBox/DataLoadErrorBox.vue";
+import LoadingBox from "@common/components/LoadingBox/LoadingBox.vue";
+import { loading } from "@common/types/Loading";
+import type { Stuff } from "@common/types/Models";
+
+import stuffDummies from "@modules/stuffs/assets/dummies/stuffDummies";
+import DetailStuffInfo from "@modules/stuffs/components/DetailStuffInfo/DetailStuffInfo.vue";
+import ItemList from "@modules/stuffs/components/DetailStuffItemList/DetailStuffItemList.vue";
+import { useStuffStore } from "@modules/stuffs/stores/stuffStore";
+
 import { storeToRefs } from "pinia";
 import { watch } from "vue";
 
@@ -31,13 +33,13 @@ function updateStuff() {
 <template>
   <section class="stuff-detail">
     <template v-if="selectedStuffDetail == loading">
-      <Loading></Loading>
+      <LoadingBox></LoadingBox>
     </template>
     <template v-else-if="selectedStuffDetail == undefined">
-      <DataLoadFail></DataLoadFail>
+      <DataLoadErrorBox></DataLoadErrorBox>
     </template>
     <template v-else>
-      <StuffInfo></StuffInfo>
+      <DetailStuffInfo></DetailStuffInfo>
       <ItemList></ItemList>
     </template>
   </section>

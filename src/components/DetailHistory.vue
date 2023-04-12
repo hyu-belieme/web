@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import HistoryInfo from "@/components/HistoryInfo.vue";
+import HistoryInfo from "@components/HistoryInfo.vue";
 import ProcedureDesc from "@/components/ProcedureDesc.vue";
 </script>
 

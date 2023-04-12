@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import Tag from "@/components/Tag.vue";
-import Modal from "@/components/Modal.vue";
-import type ItemNestedToStuff from "@/models/item/ItemNestedToStuff";
-import { useModalStore } from "@/stores/modalStore";
-import { useModeStore } from "@/stores/modeStore";
+import BasicModal from "@common/components/BasicModal/BasicModal.vue";
+import InfoTag from "@common/components/InfoTag/InfoTag.vue";
+import { useModalStore } from "@common/stores/modalStore";
+import { useModeStore } from "@common/stores/modeStore";
+import type { ItemNestedToStuff } from "@common/types/Models";
+
 import { storeToRefs } from "pinia";
 import { computed, getCurrentInstance } from "vue";
 
@@ -46,7 +47,7 @@ const modalStore = useModalStore();
 function showRentalRequestModal() {
   modalStore.addModal({
     key: "rentalRequest",
-    component: Modal,
+    component: BasicModal,
     props: {
       title: "대여 신청하기",
       content:
@@ -67,7 +68,7 @@ function showRentalRequestModal() {
 function showLostRequestModal() {
   modalStore.addModal({
     key: "LostRequest",
-    component: Modal,
+    component: BasicModal,
     props: {
       title: "분실 등록하기",
       content:
@@ -88,7 +89,7 @@ function showLostRequestModal() {
 function showFoundApproveModal() {
   modalStore.addModal({
     key: "FoundApprove",
-    component: Modal,
+    component: BasicModal,
     props: {
       title: "반환 확인하기",
       content:
@@ -129,8 +130,8 @@ function getRelativeTimeString(time: number) {
     <section class="content">
       <span class="numbering">{{ item.num }}</span>
       <section class="tags">
-        <Tag v-bind="statusTagInfo"></Tag>
-        <Tag v-if="item.status == 'UNUSABLE'" v-bind="timestampTagInfo"></Tag>
+        <InfoTag v-bind="statusTagInfo"></InfoTag>
+        <InfoTag v-if="item.status == 'UNUSABLE'" v-bind="timestampTagInfo"></InfoTag>
       </section>
       <template v-if="detailStuffMode == 'SHOW'">
         <button

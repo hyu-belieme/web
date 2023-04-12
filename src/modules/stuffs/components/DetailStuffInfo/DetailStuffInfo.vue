@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type StuffWithItems from "@/models/stuff/StuffWithItems";
-import { useStuffStore } from "@/stores/stuffStore";
-import { useModeStore } from "@/stores/modeStore";
+import type { StuffWithItems } from "@common/types/Models";
+import { useStuffStore } from "@modules/stuffs/stores/stuffStore";
+import { useModeStore } from "@common/stores/modeStore";
 import { storeToRefs } from "pinia";
 
 const stuffStore = useStuffStore();

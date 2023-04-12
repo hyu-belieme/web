@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import Tag from "@/components/Tag.vue";
-import type Stuff from "@/models/stuff/Stuff.js";
-import { defineProps } from "vue";
+import InfoTag from "@common/components/InfoTag/InfoTag.vue";
+import type { Stuff } from "@common/types/Models";
 
 defineProps<{
   stuff: Stuff;
@@ -15,8 +14,14 @@ defineProps<{
       <span class="icon">{{ stuff.thumbnail }}</span>
       <span class="name">{{ stuff.name }}</span>
       <section class="tags">
-        <Tag v-if="stuff.count <= 0" v-bind="{ color: 'red', size: 6, content: '남지 않음' }"></Tag>
-        <Tag v-else v-bind="{ color: 'blue', size: 6, content: stuff.count + '개 남음' }"></Tag>
+        <InfoTag
+          v-if="stuff.count <= 0"
+          v-bind="{ color: 'red', size: 6, content: '남지 않음' }"
+        ></InfoTag>
+        <InfoTag
+          v-else
+          v-bind="{ color: 'blue', size: 6, content: stuff.count + '개 남음' }"
+        ></InfoTag>
       </section>
     </section>
     <div class="division-line"></div>

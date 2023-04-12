@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import StuffList from "@/components/StuffList.vue";
-import DetailStuff from "@/components/DetailStuff.vue";
+import StuffList from "./components/StuffList/StuffList.vue";
+import DetailStuff from "./components/DetailStuff/DetailStuff.vue";
 </script>
 
 <template>

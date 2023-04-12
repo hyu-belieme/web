@@ -1,41 +1,42 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from "vue-router";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/stuffs',
-      name: 'stuffs',
+      path: "/stuffs",
+      name: "stuffs",
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/StuffsView.vue')
+      // component: () => import("../views/StuffsView.vue")
+      component: () => import("../modules/stuffs/StuffsView.vue")
     },
     {
-      path: '/histories',
-      name: 'histories',
+      path: "/histories",
+      name: "histories",
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/HistoriesView.vue')
+      component: () => import("../views/HistoriesView.vue")
     },
     {
-      path: '/bulletin',
-      name: 'bulletin',
+      path: "/bulletin",
+      name: "bulletin",
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/BulletinView.vue')
+      component: () => import("../views/BulletinView.vue")
     },
     {
-      path: '/users',
-      name: 'users',
+      path: "/users",
+      name: "users",
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/UsersView.vue')
+      component: () => import("../views/UsersView.vue")
     }
   ]
-})
+});
 
-export default router
+export default router;

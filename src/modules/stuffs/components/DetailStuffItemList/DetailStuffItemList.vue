@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import ItemCell from "@/components/ItemCell.vue";
-import { loading, type Loading } from "@/models/Types";
-import type ItemNestedToStuff from "@/models/item/ItemNestedToStuff";
-import { useModeStore } from "@/stores/modeStore";
-import { useStuffStore } from "@/stores/stuffStore";
+import { useModeStore } from "@common/stores/modeStore";
+import { loading, type Loading } from "@common/types/Loading";
+import type { ItemNestedToStuff } from "@common/types/Models";
+
+import ItemListCell from "@modules/stuffs/components/DetailStuffItemListCell/DetailStuffItemListCell.vue";
+import { useStuffStore } from "@modules/stuffs/stores/stuffStore";
+
 import { List } from "immutable";
 import { storeToRefs } from "pinia";
 import { ref, watch } from "vue";
@@ -45,12 +47,12 @@ const popItem = () => {
 
 <template>
   <section class="item-list">
-    <ItemCell
+    <ItemListCell
       v-for="(item, index) in (items as List<ItemNestedToStuff>)"
       :key="index"
       v-bind="{ item: item, isNew: index >= (selectedStuffItems as List<ItemNestedToStuff>).size }"
       @pop-item="popItem"
-    ></ItemCell>
+    ></ItemListCell>
     <button
       v-if="detailStuffMode == 'EDIT' || detailStuffMode == 'ADD'"
       type="button"
