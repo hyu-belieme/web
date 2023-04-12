@@ -3,8 +3,8 @@ import { useModeStore } from "@common/stores/modeStore";
 import { loading, type Loading } from "@common/types/Loading";
 import type { ItemNestedToStuff } from "@common/types/Models";
 
-import ItemListCell from "@modules/stuffs/components/DetailStuffItemListCell/DetailStuffItemListCell.vue";
-import { useStuffStore } from "@modules/stuffs/stores/stuffStore";
+import ItemListCell from "@^stuffs/components/DetailStuffItemListCell/DetailStuffItemListCell.vue";
+import { useStuffStore } from "@^stuffs/stores/stuffStore";
 
 import { List } from "immutable";
 import { storeToRefs } from "pinia";

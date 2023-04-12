@@ -7,9 +7,9 @@ import { useModeStore } from "@common/stores/modeStore";
 import { loading } from "@common/types/Loading";
 import type { Stuff } from "@common/types/Models";
 
-import stuffDummies from "@modules/stuffs/assets/dummies/stuffDummies";
-import StuffListCell from "@modules/stuffs/components/StuffListCell/StuffListCell.vue";
-import { useStuffStore } from "@modules/stuffs/stores/stuffStore";
+import stuffDummies from "@^stuffs/assets/dummies/stuffDummies";
+import StuffListCell from "@^stuffs/components/StuffListCell/StuffListCell.vue";
+import { useStuffStore } from "@^stuffs/stores/stuffStore";
 
 import { storeToRefs } from "pinia";
 

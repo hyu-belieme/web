@@ -4,10 +4,10 @@ import LoadingBox from "@common/components/LoadingBox/LoadingBox.vue";
 import { loading } from "@common/types/Loading";
 import type { Stuff } from "@common/types/Models";
 
-import stuffDummies from "@modules/stuffs/assets/dummies/stuffDummies";
-import DetailStuffInfo from "@modules/stuffs/components/DetailStuffInfo/DetailStuffInfo.vue";
-import ItemList from "@modules/stuffs/components/DetailStuffItemList/DetailStuffItemList.vue";
-import { useStuffStore } from "@modules/stuffs/stores/stuffStore";
+import stuffDummies from "@^stuffs/assets/dummies/stuffDummies";
+import DetailStuffInfo from "@^stuffs/components/DetailStuffInfo/DetailStuffInfo.vue";
+import ItemList from "@^stuffs/components/DetailStuffItemList/DetailStuffItemList.vue";
+import { useStuffStore } from "@^stuffs/stores/stuffStore";
 
 import { storeToRefs } from "pinia";
 import { watch } from "vue";
