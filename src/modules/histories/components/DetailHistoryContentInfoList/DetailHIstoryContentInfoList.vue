@@ -2,8 +2,8 @@
 import { loading } from "@common/types/Loading";
 import type { User } from "@common/types/Models";
 
-import InfoCell from "@modules/histories/components/DetailHistoryContentInfoListCell/DetailHistoryContentInfoListCell.vue";
-import { useHistoryStore } from "@modules/histories/stores/historyStore";
+import InfoCell from "@^histories/components/DetailHistoryContentInfoListCell/DetailHistoryContentInfoListCell.vue";
+import { useHistoryStore } from "@^histories/stores/historyStore";
 
 import { storeToRefs } from "pinia";
 import { getCurrentInstance } from "vue";

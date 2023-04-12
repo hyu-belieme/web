@@ -1,5 +1,5 @@
 import { loading, type Loading } from "@common/types/Loading";
-import type { History } from "@common/types/Models";
+import type { History, HistoryStatus } from "@common/types/Models";
 
 import { List } from "immutable";
 import { defineStore } from "pinia";

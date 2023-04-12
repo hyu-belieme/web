@@ -3,9 +3,9 @@ import DataLoadErrorBox from "@common/components/DataLoadErrorBox/DataLoadErrorB
 import LoadingBox from "@common/components/LoadingBox/LoadingBox.vue";
 import { loading } from "@common/types/Loading";
 
-import historyDummies from "@modules/histories/assets/dummies/historyDummies";
-import HistoryCell from "@modules/histories/components/HistoryListCell/HistoryListCell.vue";
-import { useHistoryStore, type HistoryCategory } from "@modules/histories/stores/historyStore";
+import historyDummies from "@^histories/assets/dummies/historyDummies";
+import HistoryCell from "@^histories/components/HistoryListCell/HistoryListCell.vue";
+import { useHistoryStore, type HistoryCategory } from "@^histories/stores/historyStore";
 
 import { storeToRefs } from "pinia";
 

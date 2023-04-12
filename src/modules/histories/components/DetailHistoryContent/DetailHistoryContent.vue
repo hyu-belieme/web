@@ -4,8 +4,8 @@ import LoadingBox from "@common/components/LoadingBox/LoadingBox.vue";
 import { useModeStore } from "@common/stores/modeStore";
 import { loading } from "@common/types/Loading";
 
-import InfoList from "@modules/histories/components/DetailHistoryContentInfoList/DetailHIstoryContentInfoList.vue";
-import { useHistoryStore } from "@modules/histories/stores/historyStore";
+import InfoList from "@^histories/components/DetailHistoryContentInfoList/DetailHIstoryContentInfoList.vue";
+import { useHistoryStore } from "@^histories/stores/historyStore";
 
 import { storeToRefs } from "pinia";
 

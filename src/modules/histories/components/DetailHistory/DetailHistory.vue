@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import DetailHistoryContent from "@modules/histories/components/DetailHistoryContent/DetailHistoryContent.vue";
-import ProcedureDesc from "@modules/histories/components/DetailHistoryProcedureDesc/DetailHistoryProcedureDesc.vue";
+import DetailHistoryContent from "@^histories/components/DetailHistoryContent/DetailHistoryContent.vue";
+import ProcedureDesc from "@^histories/components/DetailHistoryProcedureDesc/DetailHistoryProcedureDesc.vue";
 </script>
 
 <template>
