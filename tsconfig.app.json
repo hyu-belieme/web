@@ -7,7 +7,12 @@
     "composite": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "~/*": ["./*"],
+      "@modules/*": ["./src/modules/*"],
+      "@common/*": ["./src/common/*"],
+      "@core/*": ["./src/core/*"],
+      "@^stuffs/*": ["./src/modules/stuffs/*"],
+      "@^histories/*": ["./src/modules/histories/*"]
     }
   }
 }
