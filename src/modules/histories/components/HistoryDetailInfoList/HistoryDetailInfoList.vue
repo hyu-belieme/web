@@ -2,14 +2,14 @@
 import { loading } from "@common/types/Loading";
 import type { User } from "@common/types/Models";
 
-import InfoListCell from "@^histories/components/HistoryDetailContentInfoListCell/HistoryDetailContentInfoListCell.vue";
+import InfoListCell from "@^histories/components/HistoryDetailInfoListCell/HistoryDetailInfoListCell.vue";
 import { useHistoryStore } from "@^histories/stores/historyStore";
 
 import { storeToRefs } from "pinia";
 import { getCurrentInstance } from "vue";
 
 const app = getCurrentInstance();
-const dayjs = app?.appContext.config.globalProperties.$dayjs;
+const dayjs = app!.appContext.config.globalProperties.$dayjs;
 
 const historyStore = useHistoryStore();
 const { selectedHistory } = storeToRefs(historyStore);
@@ -86,3 +86,10 @@ const nameAndStudentIdFormat = (user: User) => {
     </section>
   </template>
 </template>
+
+<style lang="scss" scoped>
+.info-list {
+  display: flex;
+  flex-direction: column;
+}
+</style>
