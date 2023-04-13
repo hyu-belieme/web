@@ -9,13 +9,13 @@ import "immutable";
 import { createPinia } from "pinia";
 import { createApp } from "vue";
 
+const app = createApp(App);
+
 dayjs.extend(relativeTime);
 dayjs.extend(localizedFormat);
 dayjs.locale("ko");
-
-const app = createApp(App);
-
 app.config.globalProperties.$dayjs = dayjs;
+
 app.use(createPinia());
 app.use(router);
 

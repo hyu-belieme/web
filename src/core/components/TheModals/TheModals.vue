@@ -8,6 +8,7 @@ const { modals } = storeToRefs(modalStore);
 const closeModal = (key: string) => {
   modalStore.removeModal(key);
 };
+
 const onResolve = (value: any, key: string, resolve: (value: any) => void) => {
   resolve(value);
   closeModal(key);
