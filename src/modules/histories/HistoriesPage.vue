@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import HistoryList from "@^histories/components/HistoryList/HistoryList.vue";
-import DetailHistory from "@^histories/components/DetailHistory/DetailHistory.vue";
+import HistoryDetail from "@^histories/components/HistoryDetailSection/HistoryDetailSection.vue";
 </script>
 
 <template>
   <section class="history-list-page">
     <HistoryList></HistoryList>
-    <DetailHistory></DetailHistory>
+    <HistoryDetail></HistoryDetail>
   </section>
 </template>
 

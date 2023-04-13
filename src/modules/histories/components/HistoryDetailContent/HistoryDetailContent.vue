@@ -4,7 +4,7 @@ import LoadingView from "@common/components/LoadingView/LoadingView.vue";
 import { useUserModeStore } from "@common/stores/userModeStore";
 import { loading } from "@common/types/Loading";
 
-import InfoList from "@^histories/components/DetailHistoryContentInfoList/DetailHIstoryContentInfoList.vue";
+import InfoList from "@^histories/components/HistoryDetailContentInfoList/HistoryDetailContentInfoList.vue";
 import { useHistoryStore } from "@^histories/stores/historyStore";
 
 import { storeToRefs } from "pinia";

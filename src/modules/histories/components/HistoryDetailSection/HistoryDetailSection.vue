@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import DetailHistoryContent from "@^histories/components/DetailHistoryContent/DetailHistoryContent.vue";
-import ProcedureDesc from "@^histories/components/DetailHistoryProcedureDesc/DetailHistoryProcedureDesc.vue";
+import HistoryDetailContent from "@^histories/components/HistoryDetailContent/HistoryDetailContent.vue";
+import ProcedureDesc from "@^histories/components/ProcedureDesc/ProcedureDesc.vue";
 </script>
 
 <template>
   <section class="history-detail">
-    <DetailHistoryContent></DetailHistoryContent>
+    <HistoryDetailContent></HistoryDetailContent>
     <ProcedureDesc></ProcedureDesc>
   </section>
 </template>

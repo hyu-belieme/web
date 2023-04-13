@@ -2,7 +2,7 @@
 import { loading } from "@common/types/Loading";
 import type { User } from "@common/types/Models";
 
-import InfoCell from "@^histories/components/DetailHistoryContentInfoListCell/DetailHistoryContentInfoListCell.vue";
+import InfoListCell from "@^histories/components/HistoryDetailContentInfoListCell/HistoryDetailContentInfoListCell.vue";
 import { useHistoryStore } from "@^histories/stores/historyStore";
 
 import { storeToRefs } from "pinia";
@@ -26,63 +26,63 @@ const nameAndStudentIdFormat = (user: User) => {
 <template>
   <template v-if="selectedHistory !== undefined && selectedHistory !== loading">
     <section class="info-list">
-      <InfoCell
+      <InfoListCell
         v-if="selectedHistory.requestedAt !== undefined"
         v-bind="{ keyword: '대여 요청된 시각', value: timeToString(selectedHistory.requestedAt) }"
-      ></InfoCell>
-      <InfoCell
+      ></InfoListCell>
+      <InfoListCell
         v-if="selectedHistory.approvedAt !== undefined"
         v-bind="{ keyword: '대여 승인된 시각', value: timeToString(selectedHistory.approvedAt) }"
-      ></InfoCell>
-      <InfoCell
+      ></InfoListCell>
+      <InfoListCell
         v-if="selectedHistory.lostAt !== undefined"
         v-bind="{ keyword: '분실 등록된 시각', value: timeToString(selectedHistory.lostAt) }"
-      ></InfoCell>
-      <InfoCell
+      ></InfoListCell>
+      <InfoListCell
         v-if="selectedHistory.returnedAt !== undefined"
         v-bind="{ keyword: '반납 승인된 시각', value: timeToString(selectedHistory.returnedAt) }"
-      ></InfoCell>
-      <InfoCell
+      ></InfoListCell>
+      <InfoListCell
         v-if="selectedHistory.canceledAt !== undefined"
         v-bind="{ keyword: '취소된 시각', value: timeToString(selectedHistory.canceledAt) }"
-      ></InfoCell>
+      ></InfoListCell>
     </section>
     <section class="info-list">
-      <InfoCell
+      <InfoListCell
         v-if="selectedHistory.requester !== undefined"
         v-bind="{
           keyword: '대여 요청자',
           value: nameAndStudentIdFormat(selectedHistory.requester)
         }"
-      ></InfoCell>
-      <InfoCell
+      ></InfoListCell>
+      <InfoListCell
         v-if="selectedHistory.approveManager !== undefined"
         v-bind="{
           keyword: '대여 승인 담당자',
           value: nameAndStudentIdFormat(selectedHistory.approveManager)
         }"
-      ></InfoCell>
-      <InfoCell
+      ></InfoListCell>
+      <InfoListCell
         v-if="selectedHistory.lostManager !== undefined"
         v-bind="{
           keyword: '분실 등록 담당자',
           value: nameAndStudentIdFormat(selectedHistory.lostManager)
         }"
-      ></InfoCell>
-      <InfoCell
+      ></InfoListCell>
+      <InfoListCell
         v-if="selectedHistory.returnManager !== undefined"
         v-bind="{
           keyword: '반납 승인 담당자',
           value: nameAndStudentIdFormat(selectedHistory.returnManager)
         }"
-      ></InfoCell>
-      <InfoCell
+      ></InfoListCell>
+      <InfoListCell
         v-if="selectedHistory.cancelManager !== undefined"
         v-bind="{
           keyword: '취소 요청자',
           value: nameAndStudentIdFormat(selectedHistory.cancelManager)
         }"
-      ></InfoCell>
+      ></InfoListCell>
     </section>
   </template>
 </template>
