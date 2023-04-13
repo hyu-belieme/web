@@ -43,7 +43,7 @@ const updateSelected = (newVal: { category: HistoryCategory; index: number }) =>
 };
 
 const updateHistories = () => {
-  historyStore.updateHistory({
+  historyStore.updateHistories({
     load: () => {
       // return undefined;
       // return loading;
