@@ -11,7 +11,7 @@ defineProps<{
 <template>
   <section :class="[selected ? 'cell selected' : 'cell']">
     <section class="content">
-      <span class="icon">{{ stuff.thumbnail }}</span>
+      <span class="thumbnail">{{ stuff.thumbnail }}</span>
       <span class="name">{{ stuff.name }}</span>
       <section class="tags">
         <InfoTag
@@ -51,7 +51,7 @@ defineProps<{
     gap: map-get($spacers, 1);
     align-items: stretch;
 
-    .icon {
+    .thumbnail {
       line-height: $list-cell-height;
       font-size: $h2-font-size;
     }
