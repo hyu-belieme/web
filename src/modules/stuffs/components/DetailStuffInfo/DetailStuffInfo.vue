@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useModeStore } from "@common/stores/modeStore";
+import { useUserModeStore } from "@common/stores/userModeStore";
 import type { StuffWithItems } from "@common/types/Models";
 
 import { useStuffStore } from "@^stuffs/stores/stuffStore";
@@ -10,7 +11,10 @@ const stuffStore = useStuffStore();
 const { selectedStuffDetail } = storeToRefs(stuffStore);
 
 const modeStore = useModeStore();
-const { detailStuffMode, userMode } = storeToRefs(modeStore);
+const { detailStuffMode } = storeToRefs(modeStore);
+
+const userModeStore = useUserModeStore();
+const { userMode } = storeToRefs(userModeStore);
 </script>
 
 <template>

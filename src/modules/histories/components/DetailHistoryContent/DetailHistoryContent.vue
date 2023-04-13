@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import DataLoadErrorBox from "@common/components/DataLoadErrorBox/DataLoadErrorBox.vue";
 import LoadingBox from "@common/components/LoadingBox/LoadingBox.vue";
-import { useModeStore } from "@common/stores/modeStore";
+import { useUserModeStore } from "@common/stores/userModeStore";
 import { loading } from "@common/types/Loading";
 
 import InfoList from "@^histories/components/DetailHistoryContentInfoList/DetailHIstoryContentInfoList.vue";
@@ -9,8 +9,8 @@ import { useHistoryStore } from "@^histories/stores/historyStore";
 
 import { storeToRefs } from "pinia";
 
-const modeStore = useModeStore();
-const { userMode } = storeToRefs(modeStore);
+const userModeStore = useUserModeStore();
+const { userMode } = storeToRefs(userModeStore);
 
 const historyStore = useHistoryStore();
 const { selectedHistory } = storeToRefs(historyStore);

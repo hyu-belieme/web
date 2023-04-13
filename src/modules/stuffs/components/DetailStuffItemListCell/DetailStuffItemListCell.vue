@@ -3,6 +3,7 @@ import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import InfoTag from "@common/components/InfoTag/InfoTag.vue";
 import { useModalStore } from "@common/stores/modalStore";
 import { useModeStore } from "@common/stores/modeStore";
+import { useUserModeStore } from "@common/stores/userModeStore";
 import type { ItemInfoOnly } from "@common/types/Models";
 
 import { storeToRefs } from "pinia";
@@ -12,7 +13,10 @@ const app = getCurrentInstance();
 const dayjs = app?.appContext.config.globalProperties.$dayjs;
 
 const modeStore = useModeStore();
-const { detailStuffMode, userMode } = storeToRefs(modeStore);
+const { detailStuffMode } = storeToRefs(modeStore);
+
+const userModeStore = useUserModeStore();
+const { userMode } = storeToRefs(userModeStore);
 
 const props = defineProps<{
   item: ItemInfoOnly;

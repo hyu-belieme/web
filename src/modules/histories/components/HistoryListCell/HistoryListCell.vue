@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import InfoTag from "@common/components/InfoTag/InfoTag.vue";
-import { useModeStore } from "@common/stores/modeStore";
 import type { History, User } from "@common/types/Models";
+import { useUserModeStore } from "@common/stores/userModeStore";
 
 import { storeToRefs } from "pinia";
 import { computed, getCurrentInstance } from "vue";
@@ -14,8 +14,8 @@ const props = defineProps<{
 const app = getCurrentInstance();
 const dayjs = app?.appContext.config.globalProperties.$dayjs;
 
-const modeStore = useModeStore();
-const { userMode } = storeToRefs(modeStore);
+const userModeStore = useUserModeStore();
+const { userMode } = storeToRefs(userModeStore);
 
 const userTagInfo = computed(() => {
   const tagColor = "green";
