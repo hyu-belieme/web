@@ -40,19 +40,19 @@ const timestampTagInfo = computed(() => {
 });
 
 const entranceYearAndNameToString = (user: User) => {
-  if (user.entranceYear === null) return user.name;
+  if (user.entranceYear === undefined) return user.name;
   return `${user.entranceYear % 100} ${user.name}`;
 };
 const makeUserTagContent = (history: History) => {
-  if (history.requester !== null) return entranceYearAndNameToString(history.requester);
-  if (history.lostManager !== null) return entranceYearAndNameToString(history.lostManager);
+  if (history.requester !== undefined) return entranceYearAndNameToString(history.requester);
+  if (history.lostManager !== undefined) return entranceYearAndNameToString(history.lostManager);
   return "ERROR";
 };
 const makeTimestampTagContent = (history: History) => {
-  if (history.requestedAt !== null) {
+  if (history.requestedAt !== undefined) {
     return dayjs.unix(history.requestedAt).fromNow();
   }
-  if (history.lostAt !== null) {
+  if (history.lostAt !== undefined) {
     return dayjs.unix(history.lostAt).fromNow();
   }
   return "ERROR";

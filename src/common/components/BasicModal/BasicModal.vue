@@ -3,7 +3,7 @@ import { onBeforeUnmount, onMounted, ref } from "vue";
 import { Modal } from "bootstrap";
 
 let modalEle = ref();
-let thisModalObj: Modal | null = null;
+let thisModalObj: Modal | undefined = undefined;
 
 defineProps<{
   title?: string;

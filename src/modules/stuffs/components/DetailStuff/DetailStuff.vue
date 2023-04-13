@@ -22,7 +22,7 @@ function updateStuff() {
   stuffStore.updateSelectedStuffDetail({
     load: (stuffIdx: Stuff) => {
       // return undefined;
-      // return null;
+      // return loading;
       return stuffDummies.find((e) => e.name === stuffIdx.name);
     }
   });
