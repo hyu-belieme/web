@@ -13,28 +13,44 @@ import { useStuffStore } from "@^stuffs/stores/stuffStore";
 
 import { storeToRefs } from "pinia";
 import type { List } from "immutable";
+import { onBeforeMount } from "vue";
+
+onBeforeMount(() => {
+  detailStuffViewModeStore.changeDetailStuffViewMode("SHOW");
+  updateSelected(0);
+  updateStuffs();
+});
 
 const detailStuffViewModeStore = useDetailStuffViewModeStore();
 const { detailStuffViewMode } = storeToRefs(detailStuffViewModeStore);
 
-const modalStore = useModalStore();
-
 const stuffStore = useStuffStore();
 const { stuffs, selected } = storeToRefs(stuffStore);
 
-updateSelected(0);
-updateStuffs();
+const modalStore = useModalStore();
 
-// ====== functions ======
+const updateStuffs = () => {
+  stuffStore.updateStuffs({
+    load: () => {
+      // return undefined;
+      // return loading;
+      return stuffDummies;
+    }
+  });
+};
 
-function updateSelected(newVal: number) {
-  if (newVal == selected.value) return;
+const updateSelected = (toSelect: number) => {
+  if (toSelect == selected.value) return;
   if (detailStuffViewMode.value == "SHOW") {
-    stuffStore.updateSelected(newVal);
+    stuffStore.updateSelected(toSelect);
     return;
   }
 
-  modalStore.addModal({
+  modalStore.addModal(ConfirmModalOnChangingStuffAtEditionMode(toSelect));
+};
+
+const ConfirmModalOnChangingStuffAtEditionMode = (toSelect: number) => {
+  return {
     key: "changeStuff",
     component: BasicModal,
     props: {
@@ -43,22 +59,13 @@ function updateSelected(newVal: number) {
       resolveLabel: "확인"
     },
     resolve: () => {
-      stuffStore.updateSelected(newVal);
+      stuffStore.updateSelected(toSelect);
       detailStuffViewModeStore.changeDetailStuffViewMode("SHOW");
+      modalStore.removeModal("changeStuff");
     },
     reject: () => {}
-  });
-}
-
-function updateStuffs() {
-  stuffStore.updateStuffs({
-    load: () => {
-      // return undefined;
-      // return loading;
-      return stuffDummies;
-    }
-  });
-}
+  };
+};
 </script>
 
 <template>
