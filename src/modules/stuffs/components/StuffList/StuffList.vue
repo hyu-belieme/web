@@ -80,7 +80,7 @@ const changingStuffAtEditionModeConfirmModal = (toSelect: number) => {
     </template>
     <template v-else>
       <StuffListCell
-        v-for="(stuff, index) in (stuffs as List<Stuff>)"
+        v-for="(stuff, index) of (stuffs as List<Stuff>)"
         :key="stuff.name"
         v-bind="{ stuff: stuff, selected: index === selected }"
         @click="updateSelected(index)"

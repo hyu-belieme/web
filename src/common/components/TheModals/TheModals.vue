@@ -21,7 +21,7 @@ const onReject = (reason: any, key: string, reject: (reason: any, key: string) =
 
 <template>
   <component
-    v-for="modal in (modals as List<Modal>)"
+    v-for="modal of (modals as List<Modal>)"
     :key="modal.key"
     :is="modal.component"
     v-bind="modal.props"

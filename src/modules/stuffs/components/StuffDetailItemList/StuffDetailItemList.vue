@@ -60,7 +60,7 @@ const popItem = () => {
   <section class="item-list">
     <template v-if="items !== loading && items !== undefined">
       <ItemListCell
-        v-for="(item, index) in items"
+        v-for="(item, index) of items"
         :key="index"
         v-bind="{ item: item, isNew: index >= selectedStuffItemsSize() }"
         @pop-item="popItem"
