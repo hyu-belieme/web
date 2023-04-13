@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import StuffList from "@^stuffs/components/StuffList/StuffList.vue";
-import DetailStuff from "@^stuffs/components/DetailStuff/DetailStuff.vue";
+import StuffDetail from "@^stuffs/components/StuffDetailSection/StuffDetailSection.vue";
 </script>
 
 <template>
   <section class="stuff-list-page">
     <StuffList></StuffList>
-    <DetailStuff></DetailStuff>
+    <StuffDetail></StuffDetail>
   </section>
 </template>
 

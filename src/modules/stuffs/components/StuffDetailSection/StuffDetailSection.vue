@@ -1,24 +1,27 @@
 <script setup lang="ts">
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
+import LoadingView from "@common/components/LoadingView/LoadingView.vue";
 import { loading } from "@common/types/Loading";
 import type { Stuff } from "@common/types/Models";
 
 import stuffDummies from "@^stuffs/assets/dummies/stuffDummies";
-import DetailStuffInfo from "@^stuffs/components/DetailStuffInfo/DetailStuffInfo.vue";
-import ItemList from "@^stuffs/components/DetailStuffItemList/DetailStuffItemList.vue";
+import StuffDetailContent from "@^stuffs/components/StuffDetailContent/StuffDetailContent.vue";
+import ItemList from "@^stuffs/components/StuffDetailItemList/StuffDetailItemList.vue";
 import { useStuffStore } from "@^stuffs/stores/stuffStore";
 
 import { storeToRefs } from "pinia";
-import { watch } from "vue";
+import { onBeforeMount, watchEffect } from "vue";
+
+onBeforeMount(() => {
+  watchEffect(() => {
+    updateSelectedStuff();
+  });
+});
 
 const stuffStore = useStuffStore();
-const { selectedStuff, selectedStuffDetail } = storeToRefs(stuffStore);
+const { selectedStuffDetail } = storeToRefs(stuffStore);
 
-watch(selectedStuff, () => updateStuff());
-updateStuff();
-
-// ====== functions ======
-function updateStuff() {
+const updateSelectedStuff = () => {
   stuffStore.updateSelectedStuffDetail({
     load: (stuffIdx: Stuff) => {
       // return undefined;
@@ -26,19 +29,19 @@ function updateStuff() {
       return stuffDummies.find((e) => e.name === stuffIdx.name);
     }
   });
-}
+};
 </script>
 
 <template>
   <section class="stuff-detail">
     <template v-if="selectedStuffDetail === loading">
-      <LoadingBox></LoadingBox>
+      <LoadingView></LoadingView>
     </template>
     <template v-else-if="selectedStuffDetail === undefined">
       <DataLoadFailView></DataLoadFailView>
     </template>
     <template v-else>
-      <DetailStuffInfo></DetailStuffInfo>
+      <StuffDetailContent></StuffDetailContent>
       <ItemList></ItemList>
     </template>
   </section>

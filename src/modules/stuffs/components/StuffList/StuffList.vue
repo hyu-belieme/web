@@ -8,7 +8,7 @@ import type { Stuff } from "@common/types/Models";
 
 import stuffDummies from "@^stuffs/assets/dummies/stuffDummies";
 import StuffListCell from "@^stuffs/components/StuffListCell/StuffListCell.vue";
-import { useDetailStuffViewModeStore } from "@^stuffs/stores/DetailStuffViewModeStore";
+import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore.js";
 import { useStuffStore } from "@^stuffs/stores/stuffStore";
 
 import { storeToRefs } from "pinia";
@@ -16,13 +16,13 @@ import type { List } from "immutable";
 import { onBeforeMount } from "vue";
 
 onBeforeMount(() => {
-  detailStuffViewModeStore.changeDetailStuffViewMode("SHOW");
+  stuffDetailViewModeStore.changeStuffDetailViewMode("SHOW");
   updateSelected(0);
   updateStuffs();
 });
 
-const detailStuffViewModeStore = useDetailStuffViewModeStore();
-const { detailStuffViewMode } = storeToRefs(detailStuffViewModeStore);
+const stuffDetailViewModeStore = useStuffDetailViewModeStore();
+const { stuffDetailViewMode } = storeToRefs(stuffDetailViewModeStore);
 
 const stuffStore = useStuffStore();
 const { stuffs, selected } = storeToRefs(stuffStore);
@@ -41,15 +41,15 @@ const updateStuffs = () => {
 
 const updateSelected = (toSelect: number) => {
   if (toSelect === selected.value) return;
-  if (detailStuffViewMode.value === "SHOW") {
+  if (stuffDetailViewMode.value === "SHOW") {
     stuffStore.updateSelected(toSelect);
     return;
   }
 
-  modalStore.addModal(ConfirmModalOnChangingStuffAtEditionMode(toSelect));
+  modalStore.addModal(changingStuffAtEditionModeConfirmModal(toSelect));
 };
 
-const ConfirmModalOnChangingStuffAtEditionMode = (toSelect: number) => {
+const changingStuffAtEditionModeConfirmModal = (toSelect: number) => {
   return {
     key: "changeStuff",
     component: BasicModal,
@@ -60,7 +60,7 @@ const ConfirmModalOnChangingStuffAtEditionMode = (toSelect: number) => {
     },
     resolve: () => {
       stuffStore.updateSelected(toSelect);
-      detailStuffViewModeStore.changeDetailStuffViewMode("SHOW");
+      stuffDetailViewModeStore.changeStuffDetailViewMode("SHOW");
       modalStore.removeModal("changeStuff");
     },
     reject: () => {}

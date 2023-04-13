@@ -1,50 +1,53 @@
 import { loading, type Loading } from "@common/types/Loading";
 import type { Stuff, StuffWithItems } from "@common/types/Models";
-import type { List } from "immutable";
 
+import type { List } from "immutable";
 import { defineStore } from "pinia";
-import { computed, ref } from "vue";
+import { computed, readonly, ref } from "vue";
 
 export const useStuffStore = defineStore("stuff", () => {
   const selected = ref(0);
   const stuffs = ref<List<Stuff> | Loading | undefined>(loading);
   const selectedStuffDetail = ref<StuffWithItems | Loading | undefined>(loading);
-
-  const selectedStuff = computed(() => {
-    if (stuffs.value === undefined) return undefined;
-    if (stuffs.value === loading) return loading;
-
-    let unwrapped = stuffs.value as List<Stuff>;
-    if (unwrapped.size <= selected.value) return undefined;
-    return unwrapped.get(selected.value);
-  });
-
   const selectedStuffItems = computed(() => {
     if (selectedStuffDetail.value === undefined) return undefined;
     if (selectedStuffDetail.value === loading) return loading;
     return (selectedStuffDetail.value as StuffWithItems).items;
   });
 
-  function updateSelected(newVal: number) {
+  const updateSelected = (newVal: number) => {
     selected.value = newVal;
-  }
+  };
 
-  function updateStuffs(strategy: StuffsGetStrategy) {
+  const updateStuffs = (strategy: StuffsGetStrategy) => {
     stuffs.value = strategy.load();
-  }
+  };
 
-  function updateSelectedStuffDetail(strategy: StuffDetailGetStrategy) {
-    if (selectedStuff.value === undefined) selectedStuffDetail.value = undefined;
-    else if (selectedStuff.value === loading) selectedStuffDetail.value = loading;
-    else selectedStuffDetail.value = strategy.load(selectedStuff.value as Stuff);
-  }
+  const updateSelectedStuffDetail = (strategy: StuffDetailGetStrategy) => {
+    const targetStuff = _selectedStuff();
+    if (targetStuff === undefined) selectedStuffDetail.value = undefined;
+    else if (targetStuff === loading) selectedStuffDetail.value = loading;
+    else selectedStuffDetail.value = strategy.load(targetStuff);
+  };
+
+  const _selectedStuff = () => {
+    if (stuffs.value === undefined) return undefined;
+    if (stuffs.value === loading) return loading;
+
+    let unwrapped = stuffs.value as List<Stuff>;
+    if (unwrapped.size <= selected.value) return undefined;
+    return unwrapped.get(selected.value);
+  };
+
+  const $selected = readonly(selected);
+  const $stuffs = readonly(stuffs);
+  const $selectedStuffDetail = readonly(selectedStuffDetail);
 
   return {
-    selected,
-    stuffs,
-    selectedStuffDetail,
+    selected: $selected,
+    stuffs: $stuffs,
+    selectedStuffDetail: $selectedStuffDetail,
     selectedStuffItems,
-    selectedStuff,
     updateSelected,
     updateStuffs,
     updateSelectedStuffDetail
