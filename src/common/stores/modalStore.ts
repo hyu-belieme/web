@@ -12,6 +12,7 @@ export interface Modal {
 
 export const useModalStore = defineStore("modal", () => {
   const modals = ref<List<Modal>>(List([]));
+  const _modals = readonly(modals);
 
   const addModal = (modal: Modal) => {
     let idx = modals.value.findIndex((e) => e.key == modal.key);
@@ -30,7 +31,6 @@ export const useModalStore = defineStore("modal", () => {
     modals.value = modals.value.splice(idx, 1);
   }
 
-  const _modals = readonly(modals);
   return {
     modals: _modals,
     addModal,

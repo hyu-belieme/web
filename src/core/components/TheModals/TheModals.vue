@@ -11,12 +11,10 @@ const closeModal = (key: string) => {
 
 const onResolve = (value: any, key: string, resolve: (value: any) => void) => {
   resolve(value);
-  closeModal(key);
 };
 
 const onReject = (reason: any, key: string, reject: (reason: any) => void) => {
   reject(reason);
-  closeModal(key);
 };
 </script>
 
