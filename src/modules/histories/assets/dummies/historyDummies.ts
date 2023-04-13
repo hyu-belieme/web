@@ -256,7 +256,7 @@ const historyDummies: List<History> = List([
       }
     },
     num: 2,
-    status: "FOUND",
+    status: "RETURNED",
     lostAt: 1678278730,
     lostManager: {
       university: {

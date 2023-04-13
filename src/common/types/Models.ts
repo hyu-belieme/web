@@ -19,36 +19,31 @@ export interface User {
   loginInfo?: LoginInfo;
 }
 
-export interface Stuff {
+export interface StuffInfoOnly {
   thumbnail: string;
   name: string;
+}
+
+export interface Stuff extends StuffInfoOnly {
   amount: number;
   count: number;
 }
 
 export interface StuffWithItems extends Stuff {
-  items: List<ItemNestedToStuff>;
+  items: List<ItemInfoOnly>;
 }
 
-export interface Item {
-  stuffThumbnail: any;
-  stuffName: any;
-  stuff: Stuff;
+export interface ItemInfoOnly {
   num: number;
   status: string;
-  lastHistory: HistoryNestedToItem | null;
+  lastHistory: HistoryInfoOnly | null;
 }
 
-export interface ItemNestedToStuff {
-  num: number;
-  status: string;
-  lastHistory: HistoryNestedToItem | null;
+export interface Item extends ItemInfoOnly {
+  stuff: StuffInfoOnly;
 }
 
-export type HistoryStatus = "REQUESTED" | "USING" | "DELAYED" | "LOST" | "RETURNED" | "EXPIRED";
-
-export interface History {
-  item: Item;
+export interface HistoryInfoOnly {
   num: number;
   status: HistoryStatus;
   requester?: User;
@@ -63,17 +58,9 @@ export interface History {
   canceledAt?: number;
 }
 
-export interface HistoryNestedToItem {
-  num: number;
-  status: string;
-  requester?: User;
-  approveManager?: User;
-  returnManager?: User;
-  lostManager?: User;
-  cancelManager?: User;
-  requestedAt?: number;
-  approvedAt?: number;
-  returnedAt?: number;
-  lostAt?: number;
-  canceledAt?: number;
+export interface History extends HistoryInfoOnly {
+  item: Item;
 }
+
+export type ItemStatus = "USABLE" | "UNUSABLE" | "INACTIVE";
+export type HistoryStatus = "REQUESTED" | "USING" | "DELAYED" | "LOST" | "RETURNED" | "EXPIRED";

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useModeStore } from "@common/stores/modeStore";
 import { loading, type Loading } from "@common/types/Loading";
-import type { ItemNestedToStuff } from "@common/types/Models";
+import type { ItemInfoOnly } from "@common/types/Models";
 
 import ItemListCell from "@^stuffs/components/DetailStuffItemListCell/DetailStuffItemListCell.vue";
 import { useStuffStore } from "@^stuffs/stores/stuffStore";
@@ -15,7 +15,7 @@ const { detailStuffMode } = storeToRefs(modeStore);
 
 const stuffStore = useStuffStore();
 const { selectedStuffItems } = storeToRefs(stuffStore);
-const items = ref<Loading | List<ItemNestedToStuff> | undefined>(undefined);
+const items = ref<Loading | List<ItemInfoOnly> | undefined>(undefined);
 items.value = selectedStuffItems.value;
 
 watch(selectedStuffItems, (newVal) => {
@@ -48,9 +48,9 @@ const popItem = () => {
 <template>
   <section class="item-list">
     <ItemListCell
-      v-for="(item, index) in (items as List<ItemNestedToStuff>)"
+      v-for="(item, index) in (items as List<ItemInfoOnly>)"
       :key="index"
-      v-bind="{ item: item, isNew: index >= (selectedStuffItems as List<ItemNestedToStuff>).size }"
+      v-bind="{ item: item, isNew: index >= (selectedStuffItems as List<ItemInfoOnly>).size }"
       @pop-item="popItem"
     ></ItemListCell>
     <button

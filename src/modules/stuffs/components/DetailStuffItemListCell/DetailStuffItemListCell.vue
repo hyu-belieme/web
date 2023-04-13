@@ -3,7 +3,7 @@ import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import InfoTag from "@common/components/InfoTag/InfoTag.vue";
 import { useModalStore } from "@common/stores/modalStore";
 import { useModeStore } from "@common/stores/modeStore";
-import type { ItemNestedToStuff } from "@common/types/Models";
+import type { ItemInfoOnly } from "@common/types/Models";
 
 import { storeToRefs } from "pinia";
 import { computed, getCurrentInstance } from "vue";
@@ -15,7 +15,7 @@ const modeStore = useModeStore();
 const { detailStuffMode, userMode } = storeToRefs(modeStore);
 
 const props = defineProps<{
-  item: ItemNestedToStuff;
+  item: ItemInfoOnly;
   isNew: boolean;
 }>();
 
@@ -107,13 +107,13 @@ function showFoundApproveModal() {
   });
 }
 
-function makeStatusTagColor(item: ItemNestedToStuff) {
+function makeStatusTagColor(item: ItemInfoOnly) {
   if (item.status == "USABLE") return "green";
   if (item.status == "UNUSABLE") return "orange";
   return "red";
 }
 
-function makeStatusTagContent(item: ItemNestedToStuff) {
+function makeStatusTagContent(item: ItemInfoOnly) {
   if (item.status == "USABLE") return "대여가능";
   if (item.status == "UNUSABLE") return "대여 중";
   if (item.status == "INACTIVE") return "사용불가";
@@ -146,7 +146,7 @@ function getRelativeTimeString(time: number) {
         </button>
         <template v-if="userMode == 'STAFF' || userMode == 'MASTER'">
           <button
-            v-if="item.status != 'INACTIVATE'"
+            v-if="item.status != 'INACTIVE'"
             class="btn btn-primary btn-sm"
             @click="showLostRequestModal()"
           >
