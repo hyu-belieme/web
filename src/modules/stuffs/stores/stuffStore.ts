@@ -1,21 +1,22 @@
 import { loading, type Loading } from "@common/types/Loading";
 import type { Stuff, StuffWithItems } from "@common/types/Models";
+import type { List } from "immutable";
 
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 
 export const useStuffStore = defineStore("stuff", () => {
   const selected = ref(0);
-  const stuffs = ref<Stuff[] | Loading | undefined>(loading);
+  const stuffs = ref<List<Stuff> | Loading | undefined>(loading);
   const selectedStuffDetail = ref<StuffWithItems | Loading | undefined>(loading);
 
   const selectedStuff = computed(() => {
     if (stuffs.value == undefined) return undefined;
     if (stuffs.value == loading) return loading;
 
-    let unwrapped = stuffs.value as Stuff[];
-    if (unwrapped.length <= selected.value) return undefined;
-    return unwrapped[selected.value];
+    let unwrapped = stuffs.value as List<Stuff>;
+    if (unwrapped.size <= selected.value) return undefined;
+    return unwrapped.get(selected.value);
   });
 
   const selectedStuffItems = computed(() => {
@@ -51,7 +52,7 @@ export const useStuffStore = defineStore("stuff", () => {
 });
 
 interface StuffsGetStrategy {
-  load: () => Stuff[] | Loading | undefined;
+  load: () => List<Stuff> | Loading | undefined;
 }
 
 interface StuffDetailGetStrategy {

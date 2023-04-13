@@ -12,6 +12,7 @@ import StuffListCell from "@^stuffs/components/StuffListCell/StuffListCell.vue";
 import { useStuffStore } from "@^stuffs/stores/stuffStore";
 
 import { storeToRefs } from "pinia";
+import type { List } from "immutable";
 
 const modeStore = useModeStore();
 const { detailStuffMode } = storeToRefs(modeStore);
@@ -70,7 +71,7 @@ function updateStuffs() {
     </template>
     <template v-else>
       <StuffListCell
-        v-for="(stuff, index) in (stuffs as Stuff[])"
+        v-for="(stuff, index) in (stuffs as List<Stuff>)"
         :key="stuff.name"
         v-bind="{ stuff: stuff, selected: index == selected }"
         @click="updateSelected(index)"

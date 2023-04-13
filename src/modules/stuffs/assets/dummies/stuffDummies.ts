@@ -2,7 +2,7 @@ import type { StuffWithItems } from "@common/types/Models";
 
 import { List } from "immutable";
 
-const stuffDummies: StuffWithItems[] = [
+const stuffDummies: List<StuffWithItems> = List([
   {
     name: "블루투스 스피커",
     thumbnail: "📻",
@@ -188,6 +188,6 @@ const stuffDummies: StuffWithItems[] = [
       }
     ])
   }
-];
+]);
 
 export default stuffDummies;
