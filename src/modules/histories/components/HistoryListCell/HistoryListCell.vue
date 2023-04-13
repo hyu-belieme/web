@@ -40,19 +40,19 @@ const timestampTagInfo = computed(() => {
 });
 
 const entranceYearAndNameToString = (user: User) => {
-  if (user.entranceYear == null) return user.name;
+  if (user.entranceYear === null) return user.name;
   return `${user.entranceYear % 100} ${user.name}`;
 };
 const makeUserTagContent = (history: History) => {
-  if (history.requester != null) return entranceYearAndNameToString(history.requester);
-  if (history.lostManager != null) return entranceYearAndNameToString(history.lostManager);
+  if (history.requester !== null) return entranceYearAndNameToString(history.requester);
+  if (history.lostManager !== null) return entranceYearAndNameToString(history.lostManager);
   return "ERROR";
 };
 const makeTimestampTagContent = (history: History) => {
-  if (history.requestedAt != null) {
+  if (history.requestedAt !== null) {
     return dayjs.unix(history.requestedAt).fromNow();
   }
-  if (history.lostAt != null) {
+  if (history.lostAt !== null) {
     return dayjs.unix(history.lostAt).fromNow();
   }
   return "ERROR";
@@ -64,7 +64,10 @@ const makeTimestampTagContent = (history: History) => {
     <section class="content">
       <span class="name">{{ history.item.stuff.name }} #{{ history.item.num }}</span>
       <section class="tags">
-        <InfoTag v-if="userMode == 'STAFF' || userMode == 'MASTER'" v-bind="userTagInfo"></InfoTag>
+        <InfoTag
+          v-if="userMode === 'STAFF' || userMode === 'MASTER'"
+          v-bind="userTagInfo"
+        ></InfoTag>
         <InfoTag v-bind="timestampTagInfo"></InfoTag>
       </section>
     </section>

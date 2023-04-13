@@ -6,7 +6,7 @@ const userModeStore = useUserModeStore();
 const { userMode } = storeToRefs(userModeStore);
 
 const changeUserMode = () => {
-  if (userMode.value == "USER") userModeStore.changeUserMode("STAFF");
+  if (userMode.value === "USER") userModeStore.changeUserMode("STAFF");
   else userModeStore.changeUserMode("USER");
 };
 </script>

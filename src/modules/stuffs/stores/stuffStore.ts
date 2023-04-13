@@ -11,8 +11,8 @@ export const useStuffStore = defineStore("stuff", () => {
   const selectedStuffDetail = ref<StuffWithItems | Loading | undefined>(loading);
 
   const selectedStuff = computed(() => {
-    if (stuffs.value == undefined) return undefined;
-    if (stuffs.value == loading) return loading;
+    if (stuffs.value === undefined) return undefined;
+    if (stuffs.value === loading) return loading;
 
     let unwrapped = stuffs.value as List<Stuff>;
     if (unwrapped.size <= selected.value) return undefined;
@@ -20,8 +20,8 @@ export const useStuffStore = defineStore("stuff", () => {
   });
 
   const selectedStuffItems = computed(() => {
-    if (selectedStuffDetail.value == undefined) return undefined;
-    if (selectedStuffDetail.value == loading) return loading;
+    if (selectedStuffDetail.value === undefined) return undefined;
+    if (selectedStuffDetail.value === loading) return loading;
     return (selectedStuffDetail.value as StuffWithItems).items;
   });
 
@@ -34,8 +34,8 @@ export const useStuffStore = defineStore("stuff", () => {
   }
 
   function updateSelectedStuffDetail(strategy: StuffDetailGetStrategy) {
-    if (selectedStuff.value == undefined) selectedStuffDetail.value = undefined;
-    else if (selectedStuff.value == loading) selectedStuffDetail.value = loading;
+    if (selectedStuff.value === undefined) selectedStuffDetail.value = undefined;
+    else if (selectedStuff.value === loading) selectedStuffDetail.value = loading;
     else selectedStuffDetail.value = strategy.load(selectedStuff.value as Stuff);
   }
 

@@ -113,15 +113,15 @@ function showFoundApproveModal() {
 }
 
 function makeStatusTagColor(item: ItemInfoOnly) {
-  if (item.status == "USABLE") return "green";
-  if (item.status == "UNUSABLE") return "orange";
+  if (item.status === "USABLE") return "green";
+  if (item.status === "UNUSABLE") return "orange";
   return "red";
 }
 
 function makeStatusTagContent(item: ItemInfoOnly) {
-  if (item.status == "USABLE") return "대여가능";
-  if (item.status == "UNUSABLE") return "대여 중";
-  if (item.status == "INACTIVE") return "사용불가";
+  if (item.status === "USABLE") return "대여가능";
+  if (item.status === "UNUSABLE") return "대여 중";
+  if (item.status === "INACTIVE") return "사용불가";
   return "ERROR";
 }
 
@@ -136,9 +136,9 @@ function getRelativeTimeString(time: number) {
       <span class="numbering">{{ item.num }}</span>
       <section class="tags">
         <InfoTag v-bind="statusTagInfo"></InfoTag>
-        <InfoTag v-if="item.status == 'UNUSABLE'" v-bind="timestampTagInfo"></InfoTag>
+        <InfoTag v-if="item.status === 'UNUSABLE'" v-bind="timestampTagInfo"></InfoTag>
       </section>
-      <template v-if="viewMode == 'SHOW'">
+      <template v-if="viewMode === 'SHOW'">
         <button
           v-if="item.status === 'USABLE'"
           class="btn btn-primary btn-sm"
@@ -149,9 +149,9 @@ function getRelativeTimeString(time: number) {
         <button v-else class="btn btn-primary btn-sm" @click="showRentalRequestModal()" disabled>
           대여 신청
         </button>
-        <template v-if="userMode == 'STAFF' || userMode == 'MASTER'">
+        <template v-if="userMode === 'STAFF' || userMode === 'MASTER'">
           <button
-            v-if="item.status != 'INACTIVE'"
+            v-if="item.status !== 'INACTIVE'"
             class="btn btn-primary btn-sm"
             @click="showLostRequestModal()"
           >
@@ -164,7 +164,7 @@ function getRelativeTimeString(time: number) {
       </template>
       <template v-else>
         <button
-          v-if="viewMode == 'ADD' || isNew"
+          v-if="viewMode === 'ADD' || isNew"
           type="button"
           class="btn btn-danger btn-sm"
           @click="emit('popItem')"

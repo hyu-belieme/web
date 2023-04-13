@@ -23,15 +23,15 @@ watch(selectedStuffItems, (newVal) => {
 });
 
 watch(viewMode, (newVal) => {
-  if (newVal == "SHOW") {
+  if (newVal === "SHOW") {
     items.value = selectedStuffItems.value;
-  } else if (newVal == "ADD") {
+  } else if (newVal === "ADD") {
     items.value = List();
   }
 });
 
 function pushNewItem() {
-  if (items.value == loading || items.value == undefined) return;
+  if (items.value === loading || items.value === undefined) return;
   items.value = items.value.push({
     num: items.value.size + 1,
     status: "USABLE",
@@ -40,7 +40,7 @@ function pushNewItem() {
 }
 
 const popItem = () => {
-  if (items.value == loading || items.value == undefined) return;
+  if (items.value === loading || items.value === undefined) return;
   items.value = items.value.pop();
 };
 </script>
@@ -54,7 +54,7 @@ const popItem = () => {
       @pop-item="popItem"
     ></ItemListCell>
     <button
-      v-if="viewMode == 'EDIT' || viewMode == 'ADD'"
+      v-if="viewMode === 'EDIT' || viewMode === 'ADD'"
       type="button"
       class="btn btn-outline-primary btn mx-3"
       @click="pushNewItem()"

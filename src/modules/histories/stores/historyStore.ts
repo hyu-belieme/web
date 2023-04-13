@@ -39,7 +39,7 @@ export const useHistoryStore = defineStore("history", () => {
 
   const categorizeBy = (targetStatus: List<HistoryStatus>) => {
     var output: List<History> = List([]);
-    if (histories.value == undefined || histories.value == loading) return output;
+    if (histories.value === undefined || histories.value === loading) return output;
     for (var history of histories.value) {
       if (targetStatus.contains(history.status)) output = output.push(history);
     }
@@ -47,15 +47,15 @@ export const useHistoryStore = defineStore("history", () => {
   };
 
   const selectedHistory = computed(() => {
-    if (histories.value == loading) return loading;
-    if (histories.value == undefined) return undefined;
+    if (histories.value === loading) return loading;
+    if (histories.value === undefined) return undefined;
     const selectedCategory = selected.value.category;
     const selectedIndex = selected.value.index;
 
     var targetHistories = categorizedHistories.value.find((e) => {
-      return e.category == selectedCategory;
+      return e.category === selectedCategory;
     })?.histories;
-    if (targetHistories == undefined || targetHistories.size <= selectedIndex) return undefined;
+    if (targetHistories === undefined || targetHistories.size <= selectedIndex) return undefined;
     return targetHistories.get(selectedIndex);
   });
 

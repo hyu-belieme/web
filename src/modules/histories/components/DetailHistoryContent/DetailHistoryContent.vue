@@ -18,10 +18,10 @@ const { selectedHistory } = storeToRefs(historyStore);
 
 <template>
   <section class="history-info">
-    <template v-if="selectedHistory == loading">
+    <template v-if="selectedHistory === loading">
       <LoadingView></LoadingView>
     </template>
-    <template v-else-if="selectedHistory == undefined">
+    <template v-else-if="selectedHistory === undefined">
       <DataLoadFailView></DataLoadFailView>
     </template>
     <template v-else>
@@ -33,14 +33,20 @@ const { selectedHistory } = storeToRefs(historyStore);
       </section>
       <InfoList></InfoList>
       <section class="buttons">
-        <template v-if="selectedHistory.status == 'REQUESTED'">
-          <button v-if="userMode == 'STAFF' || userMode == 'MASTER'" class="btn btn-primary btn-sm">
+        <template v-if="selectedHistory.status === 'REQUESTED'">
+          <button
+            v-if="userMode === 'STAFF' || userMode === 'MASTER'"
+            class="btn btn-primary btn-sm"
+          >
             대여 승인
           </button>
           <button class="btn btn-danger btn-sm">신청 취소</button>
         </template>
-        <template v-else-if="selectedHistory.status == 'USING'">
-          <button v-if="userMode == 'STAFF' || userMode == 'MASTER'" class="btn btn-primary btn-sm">
+        <template v-else-if="selectedHistory.status === 'USING'">
+          <button
+            v-if="userMode === 'STAFF' || userMode === 'MASTER'"
+            class="btn btn-primary btn-sm"
+          >
             반납 확인
           </button>
         </template>

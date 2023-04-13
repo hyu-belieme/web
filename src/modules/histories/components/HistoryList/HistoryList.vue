@@ -29,7 +29,7 @@ const headerLabel = (category: HistoryCategory) => {
 
 const initSelected = () => {
   for (const histories of categorizedHistories.value) {
-    if (histories.histories.size != 0) {
+    if (histories.histories.size !== 0) {
       updateSelected({ category: histories.category, index: 0 });
       return;
     }
@@ -37,7 +37,7 @@ const initSelected = () => {
 };
 
 const updateSelected = (newVal: { category: HistoryCategory; index: number }) => {
-  if (JSON.stringify(newVal) == JSON.stringify(selected.value)) return;
+  if (JSON.stringify(newVal) === JSON.stringify(selected.value)) return;
   console.log(newVal);
   historyStore.updateSelected(newVal);
 };
@@ -81,7 +81,7 @@ initSelected();
           ></HistoryCell>
           <template
             v-if="
-              (histories.category == 'RETURNED' || histories.category == 'EXPIRED') &&
+              (histories.category === 'RETURNED' || histories.category === 'EXPIRED') &&
               histories.histories.size >= 5
             "
           >

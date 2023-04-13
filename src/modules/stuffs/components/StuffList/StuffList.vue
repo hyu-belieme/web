@@ -40,8 +40,8 @@ const updateStuffs = () => {
 };
 
 const updateSelected = (toSelect: number) => {
-  if (toSelect == selected.value) return;
-  if (detailStuffViewMode.value == "SHOW") {
+  if (toSelect === selected.value) return;
+  if (detailStuffViewMode.value === "SHOW") {
     stuffStore.updateSelected(toSelect);
     return;
   }
@@ -80,7 +80,7 @@ const ConfirmModalOnChangingStuffAtEditionMode = (toSelect: number) => {
       <StuffListCell
         v-for="(stuff, index) in (stuffs as List<Stuff>)"
         :key="stuff.name"
-        v-bind="{ stuff: stuff, selected: index == selected }"
+        v-bind="{ stuff: stuff, selected: index === selected }"
         @click="updateSelected(index)"
       ></StuffListCell>
     </template>

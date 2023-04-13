@@ -23,7 +23,7 @@ function updateStuff() {
     load: (stuffIdx: Stuff) => {
       // return undefined;
       // return null;
-      return stuffDummies.find((e) => e.name == stuffIdx.name);
+      return stuffDummies.find((e) => e.name === stuffIdx.name);
     }
   });
 }
@@ -31,10 +31,10 @@ function updateStuff() {
 
 <template>
   <section class="stuff-detail">
-    <template v-if="selectedStuffDetail == loading">
+    <template v-if="selectedStuffDetail === loading">
       <LoadingBox></LoadingBox>
     </template>
-    <template v-else-if="selectedStuffDetail == undefined">
+    <template v-else-if="selectedStuffDetail === undefined">
       <DataLoadFailView></DataLoadFailView>
     </template>
     <template v-else>

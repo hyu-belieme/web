@@ -23,7 +23,7 @@ const { userMode } = storeToRefs(userModeStore);
     <section class="label-and-desc">
       <section class="label">
         <section class="name">
-          <span v-if="viewMode == 'SHOW'">
+          <span v-if="viewMode === 'SHOW'">
             {{ (selectedStuffDetail as StuffWithItems).name }}
           </span>
           <input
@@ -31,14 +31,14 @@ const { userMode } = storeToRefs(userModeStore);
             type="text"
             class="form-control w-100 my-2"
             placeholder="물품 이름을 입력해주세요."
-            :value=" viewMode == 'EDIT' ? (selectedStuffDetail as StuffWithItems).name : ''"
+            :value=" viewMode === 'EDIT' ? (selectedStuffDetail as StuffWithItems).name : ''"
             aria-label="name"
             aria-describedby="basic-addon1"
           />
         </section>
-        <template v-if="userMode == 'STAFF' || userMode == 'MASTER'">
+        <template v-if="userMode === 'STAFF' || userMode === 'MASTER'">
           <section class="buttons">
-            <template v-if="viewMode == 'SHOW'">
+            <template v-if="viewMode === 'SHOW'">
               <button
                 class="btn btn-primary btn-sm"
                 @click="viewModeStore.changeDetailStuffViewMode('EDIT')"
@@ -70,7 +70,7 @@ const { userMode } = storeToRefs(userModeStore);
         </template>
       </section>
       <div class="desc">
-        <span v-if="viewMode == 'SHOW'" class="p-1">
+        <span v-if="viewMode === 'SHOW'" class="p-1">
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi sint corrupti illum
           quos. Dolorum architecto illum, veritatis asperiores odio exercitationem impedit natus.
           Modi magni, aut corporis impedit ullam nemo saepe!
@@ -79,7 +79,7 @@ const { userMode } = storeToRefs(userModeStore);
           v-else
           class="form-control h-100 fs-7"
           placeholder="물품 설명을 입력해주세요."
-          :value="viewMode == 'EDIT' ? 'Lorem ~~' : ''"
+          :value="viewMode === 'EDIT' ? 'Lorem ~~' : ''"
           id="floatingTextarea"
         ></textarea>
       </div>

@@ -52,7 +52,7 @@ function hideModal() {
         <div class="modal-footer">
           <slot name="footer">
             <button
-              v-if="rejectLabel != undefined"
+              v-if="rejectLabel !== undefined"
               type="button"
               class="btn btn-secondary"
               @click="$emit('reject')"
@@ -60,7 +60,7 @@ function hideModal() {
               {{ rejectLabel }}
             </button>
             <button
-              v-if="resolveLabel != undefined"
+              v-if="resolveLabel !== undefined"
               type="button"
               class="btn btn-primary"
               @click="$emit('resolve')"

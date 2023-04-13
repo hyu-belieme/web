@@ -15,10 +15,10 @@ export const useModalStore = defineStore("modal", () => {
   const _modals = readonly(modals);
 
   const addModal = (modal: Modal) => {
-    let idx = modals.value.findIndex((e) => e.key == modal.key);
+    let idx = modals.value.findIndex((e) => e.key === modal.key);
 
     modal.component = markRaw(modal.component);
-    if (idx == undefined) {
+    if (idx === undefined) {
       modals.value = modals.value.push(modal);
       return;
     }
@@ -26,8 +26,8 @@ export const useModalStore = defineStore("modal", () => {
   };
 
   function removeModal(key: string) {
-    let idx = modals.value.findIndex((e) => e.key == key);
-    if (idx == undefined) return;
+    let idx = modals.value.findIndex((e) => e.key === key);
+    if (idx === undefined) return;
     modals.value = modals.value.splice(idx, 1);
   }
 
