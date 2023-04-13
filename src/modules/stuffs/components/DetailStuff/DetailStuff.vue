@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import DataLoadErrorBox from "@common/components/DataLoadErrorBox/DataLoadErrorBox.vue";
-import LoadingBox from "@common/components/LoadingBox/LoadingBox.vue";
+import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
 import { loading } from "@common/types/Loading";
 import type { Stuff } from "@common/types/Models";
 
@@ -36,7 +35,7 @@ function updateStuff() {
       <LoadingBox></LoadingBox>
     </template>
     <template v-else-if="selectedStuffDetail == undefined">
-      <DataLoadErrorBox></DataLoadErrorBox>
+      <DataLoadFailView></DataLoadFailView>
     </template>
     <template v-else>
       <DetailStuffInfo></DetailStuffInfo>

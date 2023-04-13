@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import DataLoadErrorBox from "@common/components/DataLoadErrorBox/DataLoadErrorBox.vue";
-import LoadingBox from "@common/components/LoadingBox/LoadingBox.vue";
+import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
+import LoadingView from "@common/components/LoadingView/LoadingView.vue";
 import { useUserModeStore } from "@common/stores/userModeStore";
 import { loading } from "@common/types/Loading";
 
@@ -19,10 +19,10 @@ const { selectedHistory } = storeToRefs(historyStore);
 <template>
   <section class="history-info">
     <template v-if="selectedHistory == loading">
-      <LoadingBox></LoadingBox>
+      <LoadingView></LoadingView>
     </template>
     <template v-else-if="selectedHistory == undefined">
-      <DataLoadErrorBox></DataLoadErrorBox>
+      <DataLoadFailView></DataLoadFailView>
     </template>
     <template v-else>
       <section class="label">

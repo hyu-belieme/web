@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import DataLoadErrorBox from "@common/components/DataLoadErrorBox/DataLoadErrorBox.vue";
-import LoadingBox from "@common/components/LoadingBox/LoadingBox.vue";
+import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
+import LoadingView from "@common/components/LoadingView/LoadingView.vue";
 import { loading } from "@common/types/Loading";
 
 import historyDummies from "@^histories/assets/dummies/historyDummies";
@@ -59,10 +59,10 @@ initSelected();
 <template>
   <section class="history-list">
     <template v-if="histories === loading">
-      <LoadingBox></LoadingBox>
+      <LoadingView></LoadingView>
     </template>
     <template v-else-if="histories === undefined">
-      <DataLoadErrorBox></DataLoadErrorBox>
+      <DataLoadFailView></DataLoadFailView>
     </template>
     <template v-else>
       <template v-for="histories in categorizedHistories">

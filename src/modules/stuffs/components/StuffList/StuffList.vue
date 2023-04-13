@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
-import DataLoadErrorBox from "@common/components/DataLoadErrorBox/DataLoadErrorBox.vue";
-import LoadingBox from "@common/components/LoadingBox/LoadingBox.vue";
+import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
+import LoadingView from "@common/components/LoadingView/LoadingView.vue";
 import { useModalStore } from "@common/stores/modalStore";
 import { useModeStore } from "@common/stores/modeStore";
 import { loading } from "@common/types/Loading";
@@ -63,10 +63,10 @@ function updateStuffs() {
 <template>
   <section class="stuff-list">
     <template v-if="stuffs === loading">
-      <LoadingBox></LoadingBox>
+      <LoadingView></LoadingView>
     </template>
     <template v-else-if="stuffs === undefined">
-      <DataLoadErrorBox></DataLoadErrorBox>
+      <DataLoadFailView></DataLoadFailView>
     </template>
     <template v-else>
       <StuffListCell
