@@ -3,19 +3,19 @@ import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
 import LoadingView from "@common/components/LoadingView/LoadingView.vue";
 import { useModalStore } from "@common/stores/modalStore";
-import { useModeStore } from "@common/stores/modeStore";
 import { loading } from "@common/types/Loading";
 import type { Stuff } from "@common/types/Models";
 
 import stuffDummies from "@^stuffs/assets/dummies/stuffDummies";
 import StuffListCell from "@^stuffs/components/StuffListCell/StuffListCell.vue";
+import { useDetailStuffViewModeStore } from "@^stuffs/stores/DetailStuffViewModeStore";
 import { useStuffStore } from "@^stuffs/stores/stuffStore";
 
 import { storeToRefs } from "pinia";
 import type { List } from "immutable";
 
-const modeStore = useModeStore();
-const { detailStuffMode } = storeToRefs(modeStore);
+const detailStuffViewModeStore = useDetailStuffViewModeStore();
+const { detailStuffViewMode } = storeToRefs(detailStuffViewModeStore);
 
 const modalStore = useModalStore();
 
@@ -29,7 +29,7 @@ updateStuffs();
 
 function updateSelected(newVal: number) {
   if (newVal == selected.value) return;
-  if (detailStuffMode.value == "SHOW") {
+  if (detailStuffViewMode.value == "SHOW") {
     stuffStore.updateSelected(newVal);
     return;
   }
@@ -44,7 +44,7 @@ function updateSelected(newVal: number) {
     },
     resolve: () => {
       stuffStore.updateSelected(newVal);
-      modeStore.changeDetailStuffMode("SHOW");
+      detailStuffViewModeStore.changeDetailStuffViewMode("SHOW");
     },
     reject: () => {}
   });

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useModeStore } from "@common/stores/modeStore";
+import { useDetailStuffViewModeStore } from "@^stuffs/stores/DetailStuffViewModeStore";
 import { useUserModeStore } from "@common/stores/userModeStore";
 import type { StuffWithItems } from "@common/types/Models";
 
@@ -10,8 +10,8 @@ import { storeToRefs } from "pinia";
 const stuffStore = useStuffStore();
 const { selectedStuffDetail } = storeToRefs(stuffStore);
 
-const modeStore = useModeStore();
-const { detailStuffMode } = storeToRefs(modeStore);
+const viewModeStore = useDetailStuffViewModeStore();
+const viewMode = storeToRefs(viewModeStore).detailStuffViewMode;
 
 const userModeStore = useUserModeStore();
 const { userMode } = storeToRefs(userModeStore);
@@ -23,7 +23,7 @@ const { userMode } = storeToRefs(userModeStore);
     <section class="label-and-desc">
       <section class="label">
         <section class="name">
-          <span v-if="detailStuffMode == 'SHOW'">
+          <span v-if="viewMode == 'SHOW'">
             {{ (selectedStuffDetail as StuffWithItems).name }}
           </span>
           <input
@@ -31,23 +31,23 @@ const { userMode } = storeToRefs(userModeStore);
             type="text"
             class="form-control w-100 my-2"
             placeholder="물품 이름을 입력해주세요."
-            :value=" detailStuffMode == 'EDIT' ? (selectedStuffDetail as StuffWithItems).name : ''"
+            :value=" viewMode == 'EDIT' ? (selectedStuffDetail as StuffWithItems).name : ''"
             aria-label="name"
             aria-describedby="basic-addon1"
           />
         </section>
         <template v-if="userMode == 'STAFF' || userMode == 'MASTER'">
           <section class="buttons">
-            <template v-if="detailStuffMode == 'SHOW'">
+            <template v-if="viewMode == 'SHOW'">
               <button
                 class="btn btn-primary btn-sm"
-                @click="modeStore.changeDetailStuffMode('EDIT')"
+                @click="viewModeStore.changeDetailStuffViewMode('EDIT')"
               >
                 수정
               </button>
               <button
                 class="btn btn-primary btn-sm"
-                @click="modeStore.changeDetailStuffMode('ADD')"
+                @click="viewModeStore.changeDetailStuffViewMode('ADD')"
               >
                 추가
               </button>
@@ -55,13 +55,13 @@ const { userMode } = storeToRefs(userModeStore);
             <template v-else>
               <button
                 class="btn btn-primary btn-sm"
-                @click="modeStore.changeDetailStuffMode('SHOW')"
+                @click="viewModeStore.changeDetailStuffViewMode('SHOW')"
               >
                 저장
               </button>
               <button
                 class="btn btn-second btn-sm"
-                @click="modeStore.changeDetailStuffMode('SHOW')"
+                @click="viewModeStore.changeDetailStuffViewMode('SHOW')"
               >
                 취소
               </button>
@@ -70,7 +70,7 @@ const { userMode } = storeToRefs(userModeStore);
         </template>
       </section>
       <div class="desc">
-        <span v-if="detailStuffMode == 'SHOW'" class="p-1">
+        <span v-if="viewMode == 'SHOW'" class="p-1">
           Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi sint corrupti illum
           quos. Dolorum architecto illum, veritatis asperiores odio exercitationem impedit natus.
           Modi magni, aut corporis impedit ullam nemo saepe!
@@ -79,7 +79,7 @@ const { userMode } = storeToRefs(userModeStore);
           v-else
           class="form-control h-100 fs-7"
           placeholder="물품 설명을 입력해주세요."
-          :value="detailStuffMode == 'EDIT' ? 'Lorem ~~' : ''"
+          :value="viewMode == 'EDIT' ? 'Lorem ~~' : ''"
           id="floatingTextarea"
         ></textarea>
       </div>

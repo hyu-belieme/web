@@ -2,9 +2,10 @@
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import InfoTag from "@common/components/InfoTag/InfoTag.vue";
 import { useModalStore } from "@common/stores/modalStore";
-import { useModeStore } from "@common/stores/modeStore";
 import { useUserModeStore } from "@common/stores/userModeStore";
 import type { ItemInfoOnly } from "@common/types/Models";
+
+import { useDetailStuffViewModeStore } from "@^stuffs/stores/DetailStuffViewModeStore";
 
 import { storeToRefs } from "pinia";
 import { computed, getCurrentInstance } from "vue";
@@ -12,8 +13,8 @@ import { computed, getCurrentInstance } from "vue";
 const app = getCurrentInstance();
 const dayjs = app?.appContext.config.globalProperties.$dayjs;
 
-const modeStore = useModeStore();
-const { detailStuffMode } = storeToRefs(modeStore);
+const viewModeStore = useDetailStuffViewModeStore();
+const viewMode = storeToRefs(viewModeStore).detailStuffViewMode;
 
 const userModeStore = useUserModeStore();
 const { userMode } = storeToRefs(userModeStore);
@@ -137,7 +138,7 @@ function getRelativeTimeString(time: number) {
         <InfoTag v-bind="statusTagInfo"></InfoTag>
         <InfoTag v-if="item.status == 'UNUSABLE'" v-bind="timestampTagInfo"></InfoTag>
       </section>
-      <template v-if="detailStuffMode == 'SHOW'">
+      <template v-if="viewMode == 'SHOW'">
         <button
           v-if="item.status === 'USABLE'"
           class="btn btn-primary btn-sm"
@@ -163,7 +164,7 @@ function getRelativeTimeString(time: number) {
       </template>
       <template v-else>
         <button
-          v-if="detailStuffMode == 'ADD' || isNew"
+          v-if="viewMode == 'ADD' || isNew"
           type="button"
           class="btn btn-danger btn-sm"
           @click="emit('popItem')"
