@@ -13,7 +13,7 @@ export const useHistoryStore = defineStore("history", () => {
 
   const histories = ref<List<History> | Loading | undefined>(loading);
 
-  const categorizedHistories = computed(() => {
+  const categorizedHistoriesList = computed(() => {
     var output = List<CategorizedHistories>();
     HISTORY_CATEGORY_MAP.forEach((categoryMap) => {
       output = output.push({
@@ -31,7 +31,7 @@ export const useHistoryStore = defineStore("history", () => {
     if (histories.value === loading) return loading;
     if (histories.value === undefined) return undefined;
 
-    const targetHistories = categorizedHistories.value.find((e) => {
+    const targetHistories = categorizedHistoriesList.value.find((e) => {
       return e.category === selectedCategory;
     })?.histories;
 
@@ -62,7 +62,7 @@ export const useHistoryStore = defineStore("history", () => {
   return {
     selected: $selected,
     histories: $histories,
-    categorizedHistories,
+    categorizedHistoriesList,
     selectedHistory,
     updateSelected,
     updateHistories
@@ -81,14 +81,14 @@ const HISTORY_CATEGORY_MAP = List<{ category: HistoryCategory; targetStatus: Lis
 
 export type HistoryCategory = "REQUESTED" | "USING" | "LOST" | "RETURNED" | "EXPIRED";
 
+export interface CategorizedHistoryIndex {
+  category: HistoryCategory;
+  index: number;
+}
+
 interface CategorizedHistories {
   category: HistoryCategory;
   histories: List<History>;
-}
-
-interface CategorizedHistoryIndex {
-  category: HistoryCategory;
-  index: number;
 }
 
 interface HistoryGetStrategy {

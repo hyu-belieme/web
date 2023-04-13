@@ -1,54 +1,53 @@
 <script setup lang="ts">
 import InfoTag from "@common/components/InfoTag/InfoTag.vue";
-import type { History, User } from "@common/types/Models";
 import { useUserModeStore } from "@common/stores/userModeStore";
+import type { History, User } from "@common/types/Models";
 
 import { storeToRefs } from "pinia";
-import { computed, getCurrentInstance } from "vue";
+import { getCurrentInstance } from "vue";
+
+const TAG_SIZE = 6;
+
+const app = getCurrentInstance();
+const dayjs = app!.appContext.config.globalProperties.$dayjs;
+
+const userModeStore = useUserModeStore();
+const { userMode } = storeToRefs(userModeStore);
 
 const props = defineProps<{
   history: History;
   selected: boolean;
 }>();
 
-const app = getCurrentInstance();
-const dayjs = app?.appContext.config.globalProperties.$dayjs;
+const userTagInfo = () => {
+  const TAG_COLOR = "green";
 
-const userModeStore = useUserModeStore();
-const { userMode } = storeToRefs(userModeStore);
-
-const userTagInfo = computed(() => {
-  const tagColor = "green";
-  const tagSize = 6;
-
-  var userInfo = makeUserTagContent(props.history);
+  var userInfo = _makeUserTagContent(props.history);
   return {
-    color: tagColor,
-    size: tagSize,
+    color: TAG_COLOR,
+    size: TAG_SIZE,
     content: userInfo
   };
-});
-const timestampTagInfo = computed(() => {
-  const tagSize = 6;
+};
 
-  var timeInfo = makeTimestampTagContent(props.history);
+const timestampTagInfo = () => {
+  const TAG_COLOR = "orange";
+
+  var timeInfo = _makeTimestampTagContent(props.history);
   return {
-    color: "orange",
-    size: tagSize,
+    color: TAG_COLOR,
+    size: TAG_SIZE,
     content: timeInfo
   };
-});
-
-const entranceYearAndNameToString = (user: User) => {
-  if (user.entranceYear === undefined) return user.name;
-  return `${user.entranceYear % 100} ${user.name}`;
 };
-const makeUserTagContent = (history: History) => {
-  if (history.requester !== undefined) return entranceYearAndNameToString(history.requester);
-  if (history.lostManager !== undefined) return entranceYearAndNameToString(history.lostManager);
+
+const _makeUserTagContent = (history: History) => {
+  if (history.requester !== undefined) return _entranceYearAndNameToString(history.requester);
+  if (history.lostManager !== undefined) return _entranceYearAndNameToString(history.lostManager);
   return "ERROR";
 };
-const makeTimestampTagContent = (history: History) => {
+
+const _makeTimestampTagContent = (history: History) => {
   if (history.requestedAt !== undefined) {
     return dayjs.unix(history.requestedAt).fromNow();
   }
@@ -56,6 +55,11 @@ const makeTimestampTagContent = (history: History) => {
     return dayjs.unix(history.lostAt).fromNow();
   }
   return "ERROR";
+};
+
+const _entranceYearAndNameToString = (user: User) => {
+  if (user.entranceYear === undefined) return user.name;
+  return `${user.entranceYear % 100} ${user.name}`;
 };
 </script>
 
@@ -66,9 +70,9 @@ const makeTimestampTagContent = (history: History) => {
       <section class="tags">
         <InfoTag
           v-if="userMode === 'STAFF' || userMode === 'MASTER'"
-          v-bind="userTagInfo"
+          v-bind="userTagInfo()"
         ></InfoTag>
-        <InfoTag v-bind="timestampTagInfo"></InfoTag>
+        <InfoTag v-bind="timestampTagInfo()"></InfoTag>
       </section>
     </section>
     <div class="division-line"></div>
