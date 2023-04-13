@@ -58,12 +58,14 @@ const changingStuffAtEditionModeConfirmModal = (toSelect: number) => {
       content: "다른 물품을 선택하면 변경사항은 저장되지 않습니다. 이동하시겠습니끼?",
       resolveLabel: "확인"
     },
-    resolve: () => {
+    resolve: (_: any, key: string) => {
       stuffStore.updateSelected(toSelect);
       stuffDetailViewModeStore.changeStuffDetailViewMode("SHOW");
-      modalStore.removeModal("changeStuff");
+      modalStore.removeModal(key);
     },
-    reject: () => {}
+    reject: (_: any, key: string) => {
+      modalStore.removeModal(key);
+    }
   };
 };
 </script>

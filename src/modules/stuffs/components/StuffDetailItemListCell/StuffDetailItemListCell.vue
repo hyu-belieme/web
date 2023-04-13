@@ -39,13 +39,13 @@ const rentalRequestModal = {
       "신청을 한 후에 대여장소에서 관리자를 통해 대여 승인을 받고 대여 할 수 있습니다. 단, 해당 신청은 15분 후에 자동으로 만료됩니다.",
     resolveLabel: "신청하기"
   },
-  resolve: () => {
+  resolve: (_: any, key: string) => {
     console.log("대여 신청");
     console.log(props.item);
-    modalStore.removeModal("rentalRequest");
+    modalStore.removeModal(key);
   },
-  reject: () => {
-    modalStore.removeModal("rentalRequest");
+  reject: (_: any, key: string) => {
+    modalStore.removeModal(key);
   }
 };
 
@@ -58,13 +58,13 @@ const lostRequestModal = {
       "해당 물품을 분실하셨나요? 분실 등록 시 해당 물품은 사용 불가능 한 상태가 됩니다. 물품을 되찾게 된다면 반환 처리를 할 수 있지만 분실 기록은 남게 됩니다.",
     resolveLabel: "등록하기"
   },
-  resolve: () => {
+  resolve: (_: any, key: string) => {
     console.log("분실 등록");
     console.log(props.item);
-    modalStore.removeModal("LostRequest");
+    modalStore.removeModal(key);
   },
-  reject: () => {
-    modalStore.removeModal("LostRequest");
+  reject: (_: any, key: string) => {
+    modalStore.removeModal(key);
   }
 };
 
@@ -77,13 +77,13 @@ const foundApproveModal = {
       "분실한 물품을 찾으셨나요? 반환 확인 시 해당 묾품이 다시 사용가능해 집니다. 다시 물품을 분실된 상태로 만들 수 있지만 그렇게 할 시 새로운 기록은 남게 됩니다.",
     resolveLabel: "확인하기"
   },
-  resolve: () => {
+  resolve: (_: any, key: string) => {
     console.log("반환 확인");
     console.log(props.item);
-    modalStore.removeModal("FoundApprove");
+    modalStore.removeModal(key);
   },
-  reject: () => {
-    modalStore.removeModal("FoundApprove");
+  reject: (_: any, key: string) => {
+    modalStore.removeModal(key);
   }
 };
 

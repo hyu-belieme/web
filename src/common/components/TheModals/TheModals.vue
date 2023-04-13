@@ -10,12 +10,12 @@ const closeModal = (key: string) => {
   modalStore.removeModal(key);
 };
 
-const onResolve = (value: any, key: string, resolve: (value: any) => void) => {
-  resolve(value);
+const onResolve = (value: any, key: string, resolve: (value: any, key: string) => void) => {
+  resolve(value, key);
 };
 
-const onReject = (reason: any, key: string, reject: (reason: any) => void) => {
-  reject(reason);
+const onReject = (reason: any, key: string, reject: (reason: any, key: string) => void) => {
+  reject(reason, key);
 };
 </script>
 
