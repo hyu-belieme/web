@@ -12,7 +12,7 @@ export const useStuffStore = defineStore("stuff", () => {
   const selectedStuffItems = computed(() => {
     if (selectedStuffDetail.value === undefined) return undefined;
     if (selectedStuffDetail.value === loading) return loading;
-    return (selectedStuffDetail.value as StuffWithItems).items;
+    return selectedStuffDetail.value.items;
   });
 
   const updateSelected = (newVal: number) => {
@@ -34,9 +34,8 @@ export const useStuffStore = defineStore("stuff", () => {
     if (stuffs.value === undefined) return undefined;
     if (stuffs.value === loading) return loading;
 
-    let unwrapped = stuffs.value as List<Stuff>;
-    if (unwrapped.size <= selected.value) return undefined;
-    return unwrapped.get(selected.value);
+    if (stuffs.value.size <= selected.value) return undefined;
+    return stuffs.value.get(selected.value);
   };
 
   const $selected = readonly(selected);

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useModalStore, type Modal } from "@common/stores/modalStore.js";
+import type { List } from "immutable";
 import { storeToRefs } from "pinia";
 
 const modalStore = useModalStore();
@@ -20,13 +21,13 @@ const onReject = (reason: any, key: string, reject: (reason: any) => void) => {
 
 <template>
   <component
-    v-for="modal in modals"
-    :key="(modal as Modal).key"
-    :is="(modal as Modal).component"
-    v-bind="(modal as Modal).props"
-    @resolve="(value: any) => onResolve(value, (modal as Modal).key, (modal as Modal).resolve)"
-    @reject="(reason: any) => onReject(reason, (modal as Modal).key, (modal as Modal).reject)"
-    @close="() => closeModal((modal as Modal).key)"
+    v-for="modal in (modals as List<Modal>)"
+    :key="modal.key"
+    :is="modal.component"
+    v-bind="modal.props"
+    @resolve="(value: any) => onResolve(value, modal.key, modal.resolve)"
+    @reject="(reason: any) => onReject(reason, modal.key, modal.reject)"
+    @close="() => closeModal(modal.key)"
   >
   </component>
 </template>
