@@ -7,6 +7,7 @@ import type { Stuff } from "@common/types/Models";
 import stuffDummies from "@^stuffs/assets/dummies/stuffDummies";
 import StuffDetailContent from "@^stuffs/components/StuffDetailContent/StuffDetailContent.vue";
 import ItemList from "@^stuffs/components/StuffDetailItemList/StuffDetailItemList.vue";
+import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
 import { useStuffStore } from "@^stuffs/stores/stuffStore";
 
 import { storeToRefs } from "pinia";
@@ -21,6 +22,9 @@ onBeforeMount(() => {
 const stuffStore = useStuffStore();
 const { selectedStuffDetail } = storeToRefs(stuffStore);
 
+const viewModeStore = useStuffDetailViewModeStore();
+const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
+
 const updateSelectedStuff = () => {
   stuffStore.updateSelectedStuffDetail({
     load: (stuffIdx: Stuff) => {
@@ -34,7 +38,11 @@ const updateSelectedStuff = () => {
 
 <template>
   <section class="stuff-detail">
-    <template v-if="selectedStuffDetail === loading">
+    <template v-if="viewMode === 'ADD'">
+      <StuffDetailContent></StuffDetailContent>
+      <ItemList></ItemList>
+    </template>
+    <template v-else-if="selectedStuffDetail === loading">
       <LoadingView></LoadingView>
     </template>
     <template v-else-if="selectedStuffDetail === undefined">

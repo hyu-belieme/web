@@ -1,12 +1,26 @@
 <script setup lang="ts">
-import StuffList from "@^stuffs/components/StuffList/StuffList.vue";
 import StuffDetail from "@^stuffs/components/StuffDetailSection/StuffDetailSection.vue";
+import StuffList from "@^stuffs/components/StuffList/StuffList.vue";
+import StuffPageOnEmpty from "@^stuffs/components/StuffPageOnEmpty/StuffPageOnEmpty.vue";
+import { useStuffStore } from "@^stuffs/stores/stuffStore";
+
+import { loading } from "@common/types/Loading";
+
+import { storeToRefs } from "pinia";
+
+const stuffStore = useStuffStore();
+const { stuffs } = storeToRefs(stuffStore);
 </script>
 
 <template>
   <section class="stuff-list-page">
-    <StuffList></StuffList>
-    <StuffDetail></StuffDetail>
+    <template v-if="stuffs === loading || stuffs === undefined || stuffs.size !== 0">
+      <StuffList></StuffList>
+      <StuffDetail></StuffDetail>
+    </template>
+    <template v-else>
+      <StuffPageOnEmpty></StuffPageOnEmpty>
+    </template>
   </section>
 </template>
 

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { useUserModeStore } from "@common/stores/userModeStore";
-import { loading } from "@common/types/Loading";
 
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
 import { useStuffStore } from "@^stuffs/stores/stuffStore";
 
 import { storeToRefs } from "pinia";
+import type { StuffWithItems } from "~/src/common/types/Models";
 
 const stuffStore = useStuffStore();
 const { selectedStuffDetail } = storeToRefs(stuffStore);
@@ -19,73 +19,82 @@ const { userMode } = storeToRefs(userModeStore);
 
 <template>
   <section class="stuff-info">
-    <template v-if="selectedStuffDetail !== loading && selectedStuffDetail !== undefined">
-      <section class="icon">{{ selectedStuffDetail.thumbnail }}</section>
-      <section class="label-and-desc">
-        <section class="label">
-          <section class="name">
-            <span v-if="viewMode === 'SHOW'">
-              {{ selectedStuffDetail.name }}
-            </span>
-            <input
-              v-else
-              type="text"
-              class="form-control w-100 my-2"
-              placeholder="물품 이름을 입력해주세요."
-              :value="viewMode === 'EDIT' ? selectedStuffDetail.name : ''"
-              aria-label="name"
-              aria-describedby="basic-addon1"
-            />
-          </section>
-          <template v-if="userMode === 'STAFF' || userMode === 'MASTER'">
-            <section class="buttons">
-              <template v-if="viewMode === 'SHOW'">
-                <button
-                  class="btn btn-primary btn-sm"
-                  @click="viewModeStore.changeStuffDetailViewMode('EDIT')"
-                >
-                  수정
-                </button>
-                <button
-                  class="btn btn-primary btn-sm"
-                  @click="viewModeStore.changeStuffDetailViewMode('ADD')"
-                >
-                  추가
-                </button>
-              </template>
-              <template v-else>
-                <button
-                  class="btn btn-primary btn-sm"
-                  @click="viewModeStore.changeStuffDetailViewMode('SHOW')"
-                >
-                  저장
-                </button>
-                <button
-                  class="btn btn-second btn-sm"
-                  @click="viewModeStore.changeStuffDetailViewMode('SHOW')"
-                >
-                  취소
-                </button>
-              </template>
-            </section>
-          </template>
-        </section>
-        <div class="desc">
-          <span v-if="viewMode === 'SHOW'" class="p-1">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi sint corrupti illum
-            quos. Dolorum architecto illum, veritatis asperiores odio exercitationem impedit natus.
-            Modi magni, aut corporis impedit ullam nemo saepe!
+    <section class="thumbnail">
+      <span v-if="viewMode === 'SHOW'">
+        {{ (selectedStuffDetail as StuffWithItems).thumbnail }}
+      </span>
+      <input
+        v-else
+        type="text"
+        class="form-control edit-box"
+        :value="viewMode === 'EDIT' ? (selectedStuffDetail as StuffWithItems).thumbnail : ''"
+        aria-label="thumbnail"
+      />
+    </section>
+    <section class="label-and-desc">
+      <section class="label">
+        <section class="name">
+          <span v-if="viewMode === 'SHOW'">
+            {{ (selectedStuffDetail as StuffWithItems).name }}
           </span>
-          <textarea
+          <input
             v-else
-            class="form-control h-100 fs-7"
-            placeholder="물품 설명을 입력해주세요."
-            :value="viewMode === 'EDIT' ? 'Lorem ~~' : ''"
-            id="floatingTextarea"
-          ></textarea>
-        </div>
+            type="text"
+            class="form-control w-100 my-2"
+            placeholder="물품 이름을 입력해주세요."
+            :value="viewMode === 'EDIT' ? (selectedStuffDetail as StuffWithItems).name : ''"
+            aria-label="name"
+            aria-describedby="basic-addon1"
+          />
+        </section>
+        <template v-if="userMode === 'STAFF' || userMode === 'MASTER'">
+          <section class="buttons">
+            <template v-if="viewMode === 'SHOW'">
+              <button
+                class="btn btn-primary btn-sm"
+                @click="viewModeStore.changeStuffDetailViewMode('EDIT')"
+              >
+                수정
+              </button>
+              <button
+                class="btn btn-primary btn-sm"
+                @click="viewModeStore.changeStuffDetailViewMode('ADD')"
+              >
+                추가
+              </button>
+            </template>
+            <template v-else>
+              <button
+                class="btn btn-primary btn-sm"
+                @click="viewModeStore.changeStuffDetailViewMode('SHOW')"
+              >
+                저장
+              </button>
+              <button
+                class="btn btn-second btn-sm"
+                @click="viewModeStore.changeStuffDetailViewMode('SHOW')"
+              >
+                취소
+              </button>
+            </template>
+          </section>
+        </template>
       </section>
-    </template>
+      <div class="desc">
+        <span v-if="viewMode === 'SHOW'" class="p-1">
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi sint corrupti illum
+          quos. Dolorum architecto illum, veritatis asperiores odio exercitationem impedit natus.
+          Modi magni, aut corporis impedit ullam nemo saepe!
+        </span>
+        <textarea
+          v-else
+          class="form-control h-100 fs-7"
+          placeholder="물품 설명을 입력해주세요."
+          :value="viewMode === 'EDIT' ? 'Lorem ~~' : ''"
+          id="floatingTextarea"
+        ></textarea>
+      </div>
+    </section>
   </section>
 </template>
 
@@ -96,12 +105,22 @@ const { userMode } = storeToRefs(userModeStore);
 
   gap: map-get($map: $spacers, $key: 2);
 
-  .icon {
+  .thumbnail {
     width: 12rem;
     height: 12rem;
     line-height: 12rem;
     font-size: 10rem;
     text-align: center;
+
+    .edit-box {
+      width: 100%;
+      height: calc(100% - map-get($map: $spacers, $key: 2));
+
+      margin-top: map-get($map: $spacers, $key: 2);
+
+      font-size: 9rem;
+      text-align: center;
+    }
   }
 
   .label-and-desc {
