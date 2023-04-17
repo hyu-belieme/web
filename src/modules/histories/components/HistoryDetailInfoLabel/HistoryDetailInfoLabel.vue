@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
+
 import { loading } from "@common/types/Loading";
 
 import { useHistoryStore } from "@^histories/stores/historyStore";
-
-import { storeToRefs } from "pinia";
 
 const historyStore = useHistoryStore();
 const { selectedHistory } = storeToRefs(historyStore);

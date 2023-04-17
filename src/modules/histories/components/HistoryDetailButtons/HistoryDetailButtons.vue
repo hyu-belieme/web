@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
+
 import { useUserModeStore } from "@common/stores/userModeStore";
 import { loading } from "@common/types/Loading";
 
 import { useHistoryStore } from "@^histories/stores/historyStore";
-
-import { storeToRefs } from "pinia";
 
 const userModeStore = useUserModeStore();
 const { userMode } = storeToRefs(userModeStore);

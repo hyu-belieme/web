@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
+import { getCurrentInstance } from "vue";
+
 import InfoTag from "@common/components/InfoTag/InfoTag.vue";
 import { useUserModeStore } from "@common/stores/userModeStore";
 import type { History, User } from "@common/types/Models";
-
-import { storeToRefs } from "pinia";
-import { getCurrentInstance } from "vue";
 
 const TAG_SIZE = 6;
 

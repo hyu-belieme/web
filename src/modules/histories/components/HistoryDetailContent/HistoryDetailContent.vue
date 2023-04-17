@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
+
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
 import LoadingView from "@common/components/LoadingView/LoadingView.vue";
 import { loading } from "@common/types/Loading";
@@ -7,8 +9,6 @@ import ActionButtons from "@^histories/components/HistoryDetailButtons/HistoryDe
 import InfoLabel from "@^histories/components/HistoryDetailInfoLabel/HistoryDetailInfoLabel.vue";
 import InfoList from "@^histories/components/HistoryDetailInfoList/HistoryDetailInfoList.vue";
 import { useHistoryStore } from "@^histories/stores/historyStore";
-
-import { storeToRefs } from "pinia";
 
 const historyStore = useHistoryStore();
 const { selectedHistory } = storeToRefs(historyStore);

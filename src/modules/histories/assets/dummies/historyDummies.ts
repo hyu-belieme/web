@@ -1,5 +1,6 @@
-import type { History } from "@common/types/Models";
 import { List } from "immutable";
+
+import type { History } from "@common/types/Models";
 
 const historyDummies: List<History> = List([
   {

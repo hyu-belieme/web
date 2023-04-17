@@ -1,12 +1,26 @@
 <script setup lang="ts">
-import HistoryList from "@^histories/components/HistoryList/HistoryList.vue";
+import { storeToRefs } from "pinia";
+
+import { loading } from "@common/types/Loading";
+
 import HistoryDetail from "@^histories/components/HistoryDetailSection/HistoryDetailSection.vue";
+import HistoryList from "@^histories/components/HistoryList/HistoryList.vue";
+import HistoryPageOnEmpty from "@^histories/components/HistoryPageOnEmpty/HistoryPageOnEmpty.vue";
+import { useHistoryStore } from "@^histories/stores/historyStore";
+
+const historyStore = useHistoryStore();
+const { histories } = storeToRefs(historyStore);
 </script>
 
 <template>
   <section class="history-list-page">
-    <HistoryList></HistoryList>
-    <HistoryDetail></HistoryDetail>
+    <template v-if="histories === loading || histories === undefined || histories.size !== 0">
+      <HistoryList></HistoryList>
+      <HistoryDetail></HistoryDetail>
+    </template>
+    <template v-else>
+      <HistoryPageOnEmpty></HistoryPageOnEmpty>
+    </template>
   </section>
 </template>
 

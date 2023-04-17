@@ -1,9 +1,9 @@
-import { loading, type Loading } from "@common/types/Loading";
-import type { History, HistoryStatus } from "@common/types/Models";
-
 import { List } from "immutable";
 import { defineStore } from "pinia";
 import { computed, readonly, ref } from "vue";
+
+import { type Loading, loading } from "@common/types/Loading";
+import type { History, HistoryStatus } from "@common/types/Models";
 
 export const useHistoryStore = defineStore("history", () => {
   const selected = ref<CategorizedHistoryIndex>({

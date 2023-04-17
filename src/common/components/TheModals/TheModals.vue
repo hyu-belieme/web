@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { useModalStore, type Modal } from "@common/stores/modalStore.js";
 import type { List } from "immutable";
 import { storeToRefs } from "pinia";
+
+import { type Modal, useModalStore } from "@common/stores/modalStore.js";
 
 const modalStore = useModalStore();
 const { modals } = storeToRefs(modalStore);
