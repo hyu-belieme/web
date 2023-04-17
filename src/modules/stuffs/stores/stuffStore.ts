@@ -19,21 +19,35 @@ export const useStuffStore = defineStore("stuff", () => {
     selected.value = newVal;
   };
 
-  const updateStuffs = (strategy: StuffsGetStrategy) => {
-    stuffs.value = strategy.load();
+  const updateStuffs = (load: () => Promise<List<Stuff> | Loading | undefined>) => {
+    stuffs.value = loading;
+
+    load()
+      .then((result) => {
+        stuffs.value = result;
+      })
+      .catch((error) => {
+        console.log(error);
+        stuffs.value = undefined;
+      });
   };
 
-  const updateSelectedStuffDetail = (strategy: StuffDetailGetStrategy) => {
+  const updateSelectedStuffDetail = (
+    load: (_: Stuff) => Promise<StuffWithItems | Loading | undefined>
+  ) => {
     const targetStuff = _selectedStuff();
     if (targetStuff === undefined) selectedStuffDetail.value = undefined;
     else if (targetStuff === loading) selectedStuffDetail.value = loading;
-    else selectedStuffDetail.value = strategy.load(targetStuff);
+    else {
+      load(targetStuff).then((result) => {
+        selectedStuffDetail.value = result;
+      });
+    }
   };
 
   const _selectedStuff = () => {
     if (stuffs.value === undefined) return undefined;
     if (stuffs.value === loading) return loading;
-
     if (stuffs.value.size <= selected.value) return undefined;
     return stuffs.value.get(selected.value);
   };
@@ -52,11 +66,3 @@ export const useStuffStore = defineStore("stuff", () => {
     updateSelectedStuffDetail
   };
 });
-
-interface StuffsGetStrategy {
-  load: () => List<Stuff> | Loading | undefined;
-}
-
-interface StuffDetailGetStrategy {
-  load: (_: Stuff) => StuffWithItems | Loading | undefined;
-}

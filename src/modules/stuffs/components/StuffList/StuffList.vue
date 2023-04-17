@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { List } from "immutable";
+import { List } from "immutable";
 import { storeToRefs } from "pinia";
 import { onBeforeMount } from "vue";
 
@@ -10,7 +10,7 @@ import { useModalStore } from "@common/stores/modalStore";
 import { loading } from "@common/types/Loading";
 import type { Stuff } from "@common/types/Models";
 
-import stuffDummies from "@^stuffs/assets/dummies/stuffDummies";
+import { getAllStuffsInDept } from "@^stuffs/apis/stuffApis";
 import StuffListCell from "@^stuffs/components/StuffListCell/StuffListCell.vue";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore.js";
 import { useStuffStore } from "@^stuffs/stores/stuffStore";
@@ -29,14 +29,11 @@ const { stuffs, selected } = storeToRefs(stuffStore);
 
 const modalStore = useModalStore();
 
+const univCode = "HYU";
+const deptCode = "CSE";
+
 const updateStuffs = () => {
-  stuffStore.updateStuffs({
-    load: () => {
-      // return undefined;
-      // return loading;
-      return stuffDummies;
-    }
-  });
+  stuffStore.updateStuffs(async () => List(await getAllStuffsInDept(univCode, deptCode)));
 };
 
 const updateSelected = (toSelect: number) => {

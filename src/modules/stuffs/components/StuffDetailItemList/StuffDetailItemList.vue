@@ -14,10 +14,6 @@ onBeforeMount(() => {
   items.value = selectedStuffItems.value;
 
   watchEffect(() => {
-    items.value = selectedStuffItems.value;
-  });
-
-  watchEffect(() => {
     if (viewMode.value === "SHOW") {
       items.value = selectedStuffItems.value;
     } else if (viewMode.value === "ADD") {

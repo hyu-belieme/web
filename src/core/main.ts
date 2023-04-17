@@ -1,3 +1,4 @@
+import "axios";
 import "bootstrap";
 import dayjs from "dayjs";
 import "dayjs/locale/ko";
@@ -5,6 +6,7 @@ import localizedFormat from "dayjs/plugin/localizedFormat";
 import relativeTime from "dayjs/plugin/relativeTime";
 import "immutable";
 import { createPinia } from "pinia";
+import "uuid";
 import { createApp } from "vue";
 
 import App from "@core/App.vue";

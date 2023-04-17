@@ -5,9 +5,8 @@ import { onBeforeMount, watchEffect } from "vue";
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
 import LoadingView from "@common/components/LoadingView/LoadingView.vue";
 import { loading } from "@common/types/Loading";
-import type { Stuff } from "@common/types/Models";
 
-import stuffDummies from "@^stuffs/assets/dummies/stuffDummies";
+import { getStuff } from "@^stuffs/apis/stuffApis";
 import StuffDetailContent from "@^stuffs/components/StuffDetailContent/StuffDetailContent.vue";
 import ItemList from "@^stuffs/components/StuffDetailItemList/StuffDetailItemList.vue";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
@@ -25,14 +24,13 @@ const { selectedStuffDetail } = storeToRefs(stuffStore);
 const viewModeStore = useStuffDetailViewModeStore();
 const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
 
+const univCode = "HYU";
+const deptCode = "CSE";
+
 const updateSelectedStuff = () => {
-  stuffStore.updateSelectedStuffDetail({
-    load: (stuffIdx: Stuff) => {
-      // return undefined;
-      // return loading;
-      return stuffDummies.find((e) => e.name === stuffIdx.name);
-    }
-  });
+  stuffStore.updateSelectedStuffDetail(
+    async (stuffIdx) => await getStuff(univCode, deptCode, stuffIdx.name)
+  );
 };
 </script>
 
