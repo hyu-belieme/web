@@ -33,7 +33,15 @@ const univCode = "HYU";
 const deptCode = "CSE";
 
 const updateStuffs = () => {
-  stuffStore.updateStuffs(async () => List(await getAllStuffsInDept(univCode, deptCode)));
+  stuffStore.updateStuffs(loading);
+  getAllStuffsInDept(univCode, deptCode)
+    .then((response) => {
+      stuffStore.updateStuffs(List(response.data));
+    })
+    .catch((error) => {
+      console.error(error);
+      stuffStore.updateStuffs(undefined);
+    });
 };
 
 const updateSelected = (toSelect: number) => {

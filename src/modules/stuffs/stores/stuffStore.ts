@@ -9,6 +9,14 @@ export const useStuffStore = defineStore("stuff", () => {
   const selected = ref(0);
   const stuffs = ref<List<Stuff> | Loading | undefined>(loading);
   const selectedStuffDetail = ref<StuffWithItems | Loading | undefined>(loading);
+
+  const selectedStuff = computed(() => {
+    if (stuffs.value === undefined) return undefined;
+    if (stuffs.value === loading) return loading;
+    if (stuffs.value.size <= selected.value) return undefined;
+    return stuffs.value.get(selected.value);
+  });
+
   const selectedStuffItems = computed(() => {
     if (selectedStuffDetail.value === undefined) return undefined;
     if (selectedStuffDetail.value === loading) return loading;
@@ -19,37 +27,14 @@ export const useStuffStore = defineStore("stuff", () => {
     selected.value = newVal;
   };
 
-  const updateStuffs = (load: () => Promise<List<Stuff> | Loading | undefined>) => {
-    stuffs.value = loading;
-
-    load()
-      .then((result) => {
-        stuffs.value = result;
-      })
-      .catch((error) => {
-        console.log(error);
-        stuffs.value = undefined;
-      });
+  const updateStuffs = (_stuffs: List<Stuff> | Loading | undefined) => {
+    stuffs.value = _stuffs;
   };
 
   const updateSelectedStuffDetail = (
-    load: (_: Stuff) => Promise<StuffWithItems | Loading | undefined>
+    _selectedStuffDetail: StuffWithItems | Loading | undefined
   ) => {
-    const targetStuff = _selectedStuff();
-    if (targetStuff === undefined) selectedStuffDetail.value = undefined;
-    else if (targetStuff === loading) selectedStuffDetail.value = loading;
-    else {
-      load(targetStuff).then((result) => {
-        selectedStuffDetail.value = result;
-      });
-    }
-  };
-
-  const _selectedStuff = () => {
-    if (stuffs.value === undefined) return undefined;
-    if (stuffs.value === loading) return loading;
-    if (stuffs.value.size <= selected.value) return undefined;
-    return stuffs.value.get(selected.value);
+    selectedStuffDetail.value = _selectedStuffDetail;
   };
 
   const $selected = readonly(selected);
@@ -60,6 +45,7 @@ export const useStuffStore = defineStore("stuff", () => {
     selected: $selected,
     stuffs: $stuffs,
     selectedStuffDetail: $selectedStuffDetail,
+    selectedStuff,
     selectedStuffItems,
     updateSelected,
     updateStuffs,

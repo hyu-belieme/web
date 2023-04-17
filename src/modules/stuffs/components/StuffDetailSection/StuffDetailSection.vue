@@ -19,7 +19,7 @@ onBeforeMount(() => {
 });
 
 const stuffStore = useStuffStore();
-const { selectedStuffDetail } = storeToRefs(stuffStore);
+const { selectedStuffDetail, selectedStuff } = storeToRefs(stuffStore);
 
 const viewModeStore = useStuffDetailViewModeStore();
 const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
@@ -28,9 +28,19 @@ const univCode = "HYU";
 const deptCode = "CSE";
 
 const updateSelectedStuff = () => {
-  stuffStore.updateSelectedStuffDetail(
-    async (stuffIdx) => await getStuff(univCode, deptCode, stuffIdx.name)
-  );
+  if (selectedStuff.value === loading) stuffStore.updateSelectedStuffDetail(loading);
+  else if (selectedStuff.value === undefined) stuffStore.updateSelectedStuffDetail(undefined);
+  else {
+    stuffStore.updateSelectedStuffDetail(loading);
+    getStuff(univCode, deptCode, selectedStuff.value.name)
+      .then((response) => {
+        stuffStore.updateSelectedStuffDetail(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+        stuffStore.updateSelectedStuffDetail(undefined);
+      });
+  }
 };
 </script>
 
