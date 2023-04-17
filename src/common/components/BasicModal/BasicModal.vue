@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from "vue";
 import { Modal } from "bootstrap";
+import { onBeforeUnmount, onMounted, ref } from "vue";
 
 let modalEle = ref();
 let thisModalObj: Modal | undefined = undefined;

@@ -1,12 +1,12 @@
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
+
+import { loading } from "@common/types/Loading";
+
 import StuffDetail from "@^stuffs/components/StuffDetailSection/StuffDetailSection.vue";
 import StuffList from "@^stuffs/components/StuffList/StuffList.vue";
 import StuffPageOnEmpty from "@^stuffs/components/StuffPageOnEmpty/StuffPageOnEmpty.vue";
 import { useStuffStore } from "@^stuffs/stores/stuffStore";
-
-import { loading } from "@common/types/Loading";
-
-import { storeToRefs } from "pinia";
 
 const stuffStore = useStuffStore();
 const { stuffs } = storeToRefs(stuffStore);

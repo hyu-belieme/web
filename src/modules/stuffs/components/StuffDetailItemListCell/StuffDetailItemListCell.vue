@@ -1,14 +1,14 @@
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
+import { getCurrentInstance } from "vue";
+
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import InfoTag from "@common/components/InfoTag/InfoTag.vue";
-import { useModalStore, type Modal } from "@common/stores/modalStore";
+import { type Modal, useModalStore } from "@common/stores/modalStore";
 import { useUserModeStore } from "@common/stores/userModeStore";
 import type { ItemInfoOnly } from "@common/types/Models";
 
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
-
-import { storeToRefs } from "pinia";
-import { getCurrentInstance } from "vue";
 
 const TAG_SIZE = 6;
 

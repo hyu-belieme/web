@@ -1,5 +1,3 @@
-import App from "@core/App.vue";
-import router from "@core/router";
 import "bootstrap";
 import dayjs from "dayjs";
 import "dayjs/locale/ko";
@@ -8,6 +6,9 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import "immutable";
 import { createPinia } from "pinia";
 import { createApp } from "vue";
+
+import App from "@core/App.vue";
+import router from "@core/router";
 
 const app = createApp(App);
 

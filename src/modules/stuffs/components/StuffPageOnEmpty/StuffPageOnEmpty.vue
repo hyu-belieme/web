@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import StuffDetail from "@^stuffs/components/StuffDetailSection/StuffDetailSection.vue";
-import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
+import { storeToRefs } from "pinia";
 
 import { useUserModeStore } from "@common/stores/userModeStore";
 
-import { storeToRefs } from "pinia";
+import StuffDetail from "@^stuffs/components/StuffDetailSection/StuffDetailSection.vue";
+import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
 
 const userModeStore = useUserModeStore();
 const { userMode } = storeToRefs(userModeStore);

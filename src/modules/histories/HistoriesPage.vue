@@ -1,12 +1,12 @@
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
+
+import { loading } from "@common/types/Loading";
+
 import HistoryDetail from "@^histories/components/HistoryDetailSection/HistoryDetailSection.vue";
 import HistoryList from "@^histories/components/HistoryList/HistoryList.vue";
 import HistoryPageOnEmpty from "@^histories/components/HistoryPageOnEmpty/HistoryPageOnEmpty.vue";
 import { useHistoryStore } from "@^histories/stores/historyStore";
-
-import { loading } from "@common/types/Loading";
-
-import { storeToRefs } from "pinia";
 
 const historyStore = useHistoryStore();
 const { histories } = storeToRefs(historyStore);

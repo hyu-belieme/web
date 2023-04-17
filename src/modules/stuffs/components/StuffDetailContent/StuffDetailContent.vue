@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
+import type { StuffWithItems } from "~/src/common/types/Models";
+
 import { useUserModeStore } from "@common/stores/userModeStore";
 
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
 import { useStuffStore } from "@^stuffs/stores/stuffStore";
-
-import { storeToRefs } from "pinia";
-import type { StuffWithItems } from "~/src/common/types/Models";
 
 const stuffStore = useStuffStore();
 const { selectedStuffDetail } = storeToRefs(stuffStore);

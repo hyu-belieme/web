@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
+import { onBeforeMount } from "vue";
+
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
 import LoadingView from "@common/components/LoadingView/LoadingView.vue";
 import { loading } from "@common/types/Loading";
@@ -6,13 +9,10 @@ import { loading } from "@common/types/Loading";
 import historyDummies from "@^histories/assets/dummies/historyDummies";
 import HistoryCell from "@^histories/components/HistoryListCell/HistoryListCell.vue";
 import {
-  useHistoryStore,
+  type CategorizedHistoryIndex,
   type HistoryCategory,
-  type CategorizedHistoryIndex
+  useHistoryStore
 } from "@^histories/stores/historyStore";
-
-import { storeToRefs } from "pinia";
-import { onBeforeMount } from "vue";
 
 onBeforeMount(() => {
   updateHistories();

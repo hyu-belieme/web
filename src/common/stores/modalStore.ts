@@ -1,6 +1,6 @@
 import { List } from "immutable";
 import { defineStore } from "pinia";
-import { markRaw, readonly, ref, type Component } from "vue";
+import { type Component, markRaw, readonly, ref } from "vue";
 
 export interface Modal {
   key: string;

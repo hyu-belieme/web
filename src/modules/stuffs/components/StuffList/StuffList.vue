@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import type { List } from "immutable";
+import { storeToRefs } from "pinia";
+import { onBeforeMount } from "vue";
+
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
 import LoadingView from "@common/components/LoadingView/LoadingView.vue";
@@ -10,10 +14,6 @@ import stuffDummies from "@^stuffs/assets/dummies/stuffDummies";
 import StuffListCell from "@^stuffs/components/StuffListCell/StuffListCell.vue";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore.js";
 import { useStuffStore } from "@^stuffs/stores/stuffStore";
-
-import { storeToRefs } from "pinia";
-import type { List } from "immutable";
-import { onBeforeMount } from "vue";
 
 onBeforeMount(() => {
   stuffDetailViewModeStore.changeStuffDetailViewMode("SHOW");

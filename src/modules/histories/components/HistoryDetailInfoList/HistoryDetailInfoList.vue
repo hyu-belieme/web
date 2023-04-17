@@ -1,12 +1,12 @@
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
+import { getCurrentInstance } from "vue";
+
 import { loading } from "@common/types/Loading";
 import type { User } from "@common/types/Models";
 
 import InfoListCell from "@^histories/components/HistoryDetailInfoListCell/HistoryDetailInfoListCell.vue";
 import { useHistoryStore } from "@^histories/stores/historyStore";
-
-import { storeToRefs } from "pinia";
-import { getCurrentInstance } from "vue";
 
 const app = getCurrentInstance();
 const dayjs = app!.appContext.config.globalProperties.$dayjs;

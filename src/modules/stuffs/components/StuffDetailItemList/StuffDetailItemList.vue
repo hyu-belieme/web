@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { loading, type Loading } from "@common/types/Loading";
+import { List } from "immutable";
+import { storeToRefs } from "pinia";
+import { onBeforeMount, ref, watchEffect } from "vue";
+
+import { type Loading, loading } from "@common/types/Loading";
 import type { ItemInfoOnly } from "@common/types/Models";
 
 import ItemListCell from "@^stuffs/components/StuffDetailItemListCell/StuffDetailItemListCell.vue";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
 import { useStuffStore } from "@^stuffs/stores/stuffStore";
-
-import { List } from "immutable";
-import { storeToRefs } from "pinia";
-import { onBeforeMount, ref, watchEffect } from "vue";
 
 onBeforeMount(() => {
   items.value = selectedStuffItems.value;

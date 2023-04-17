@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
+import { onBeforeMount, watchEffect } from "vue";
+
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
 import LoadingView from "@common/components/LoadingView/LoadingView.vue";
 import { loading } from "@common/types/Loading";
@@ -9,9 +12,6 @@ import StuffDetailContent from "@^stuffs/components/StuffDetailContent/StuffDeta
 import ItemList from "@^stuffs/components/StuffDetailItemList/StuffDetailItemList.vue";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
 import { useStuffStore } from "@^stuffs/stores/stuffStore";
-
-import { storeToRefs } from "pinia";
-import { onBeforeMount, watchEffect } from "vue";
 
 onBeforeMount(() => {
   watchEffect(() => {
