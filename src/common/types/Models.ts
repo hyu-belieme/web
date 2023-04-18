@@ -72,4 +72,11 @@ export interface History extends HistoryInfoOnly {
 }
 
 export type ItemStatus = "USABLE" | "UNUSABLE" | "INACTIVE";
-export type HistoryStatus = "REQUESTED" | "USING" | "DELAYED" | "LOST" | "RETURNED" | "EXPIRED";
+export type HistoryStatus =
+  | "REQUESTED"
+  | "USING"
+  | "DELAYED"
+  | "LOST"
+  | "RETURNED"
+  | "FOUND"
+  | "EXPIRED";

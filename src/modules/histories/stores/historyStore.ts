@@ -74,7 +74,7 @@ const HISTORY_CATEGORY_MAP = List<{ category: HistoryCategory; targetStatus: Lis
     { category: "REQUESTED", targetStatus: List(["REQUESTED"]) },
     { category: "USING", targetStatus: List(["USING", "DELAYED"]) },
     { category: "LOST", targetStatus: List(["LOST"]) },
-    { category: "RETURNED", targetStatus: List(["RETURNED"]) },
+    { category: "RETURNED", targetStatus: List(["RETURNED", "FOUND"]) },
     { category: "EXPIRED", targetStatus: List(["EXPIRED"]) }
   ]
 );
