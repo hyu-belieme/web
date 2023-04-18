@@ -3,7 +3,7 @@ import type { AxiosResponse } from "axios";
 import { storeToRefs } from "pinia";
 import { getCurrentInstance } from "vue";
 
-import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder.js";
+import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import InfoTag from "@common/components/InfoTag/InfoTag.vue";
 import { type Modal, useModalStore } from "@common/stores/modalStore";
@@ -114,6 +114,7 @@ const statusTagInfo = () => {
 };
 
 const timestampTagInfo = () => {
+  // TODO: 서버 response의 item status를 바꾸고 그 후에 맞춰서 바꾸기
   const TIMESTAMP_TAG_COLOR = "orange";
 
   return {
@@ -124,12 +125,14 @@ const timestampTagInfo = () => {
 };
 
 const statusTagColor = (item: ItemInfoOnly) => {
+  // TODO: 서버 response의 item status를 바꾸고 그 후에 맞춰서 바꾸기
   if (item.status === "USABLE") return "green";
   if (item.status === "UNUSABLE") return "orange";
   return "red";
 };
 
 const statusTagContent = (item: ItemInfoOnly) => {
+  // TODO: 서버 response의 item status를 바꾸고 그 후에 맞춰서 바꾸기
   if (item.status === "USABLE") return "대여가능";
   if (item.status === "UNUSABLE") return "대여 중";
   if (item.status === "INACTIVE") return "사용불가";

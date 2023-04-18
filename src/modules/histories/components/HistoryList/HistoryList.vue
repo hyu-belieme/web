@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { List } from "immutable";
 import { storeToRefs } from "pinia";
-import { onBeforeMount, watch, watchEffect } from "vue";
+import { onBeforeMount, onBeforeUnmount, watch } from "vue";
 
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
 import LoadingView from "@common/components/LoadingView/LoadingView.vue";
@@ -17,17 +17,29 @@ import {
 } from "@^histories/stores/historyStore";
 
 onBeforeMount(() => {
-  watchEffect(() => {
-    if (userMode.value === "STAFF" || userMode.value === "MASTER") staffModeUpdateHistories();
-    else userModeUpdateHistories();
+  userModeAfterChangeHandlerKeys = userModeAfterChangeHandlerKeys.push(
+    userStore.addUserModeAfterChangeHandler(() => historyStore.turnOnReloadFlag())
+  );
+
+  watch(reloadFlag, () => {
+    if (reloadFlag.value) {
+      if (userMode.value === "STAFF" || userMode.value === "MASTER") staffModeUpdateHistories();
+      else userModeUpdateHistories();
+    }
   });
+  historyStore.turnOnReloadFlag();
 });
 
+onBeforeUnmount(() => {
+  userModeAfterChangeHandlerKeys.forEach((key) => userStore.deleteUserModeAfterChangeHandler(key));
+});
+
+let userModeAfterChangeHandlerKeys = List<string>();
 const userStore = useUserStore();
 const { user, userMode } = storeToRefs(userStore);
 
 const historyStore = useHistoryStore();
-const { histories, categorizedHistoriesList, selected } = storeToRefs(historyStore);
+const { reloadFlag, histories, categorizedHistoriesList, selected } = storeToRefs(historyStore);
 
 const univCode = "HYU";
 const deptCode = "CSE";

@@ -6,6 +6,7 @@ import { type Loading, loading } from "@common/types/Loading";
 import type { History, HistoryStatus } from "@common/types/Models";
 
 export const useHistoryStore = defineStore("history", () => {
+  const reloadFlag = ref(false);
   const selected = ref<CategorizedHistoryIndex>({
     category: "REQUESTED",
     index: 0
@@ -39,12 +40,17 @@ export const useHistoryStore = defineStore("history", () => {
     return targetHistories.get(selectedIndex);
   });
 
+  const turnOnReloadFlag = () => {
+    reloadFlag.value = true;
+  };
+
   const updateSelected = (newVal: CategorizedHistoryIndex) => {
     selected.value = newVal;
   };
 
   const updateHistories = (_histories: List<History> | Loading | undefined) => {
     histories.value = _histories;
+    reloadFlag.value = false;
   };
 
   const _categorizeBy = (targetStatus: List<HistoryStatus>) => {
@@ -56,14 +62,17 @@ export const useHistoryStore = defineStore("history", () => {
     return output;
   };
 
+  const $reloadFlag = readonly(reloadFlag);
   const $selected = readonly(selected);
   const $histories = readonly(histories);
 
   return {
+    reloadFlag: $reloadFlag,
     selected: $selected,
     histories: $histories,
     categorizedHistoriesList,
     selectedHistory,
+    turnOnReloadFlag,
     updateSelected,
     updateHistories
   };
