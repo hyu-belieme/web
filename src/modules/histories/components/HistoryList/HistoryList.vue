@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { List } from "immutable";
 import { storeToRefs } from "pinia";
-import { onBeforeMount } from "vue";
+import { onBeforeMount, watch, watchEffect } from "vue";
 
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
 import LoadingView from "@common/components/LoadingView/LoadingView.vue";
+import { useUserStore } from "@common/stores/userStore";
 import { loading } from "@common/types/Loading";
 
-import { getAllHistoryInDept } from "@^histories/apis/HistoryApis";
+import { getAllHistoryInDept, getAllRequesterHistoryInDept } from "@^histories/apis/HistoryApis";
 import HistoryCell from "@^histories/components/HistoryListCell/HistoryListCell.vue";
 import {
   type CategorizedHistoryIndex,
@@ -16,9 +17,14 @@ import {
 } from "@^histories/stores/historyStore";
 
 onBeforeMount(() => {
-  updateHistories();
-  initSelected();
+  watchEffect(() => {
+    if (userMode.value === "STAFF" || userMode.value === "MASTER") staffModeUpdateHistories();
+    else userModeUpdateHistories();
+  });
 });
+
+const userStore = useUserStore();
+const { user, userMode } = storeToRefs(userStore);
 
 const historyStore = useHistoryStore();
 const { histories, categorizedHistoriesList, selected } = storeToRefs(historyStore);
@@ -26,11 +32,34 @@ const { histories, categorizedHistoriesList, selected } = storeToRefs(historySto
 const univCode = "HYU";
 const deptCode = "CSE";
 
-const updateHistories = () => {
+const userModeUpdateHistories = () => {
+  if (user.value === undefined) historyStore.updateHistories(undefined);
+  else if (user.value === loading) historyStore.updateHistories(loading);
+  else {
+    historyStore.updateHistories(loading);
+    getAllRequesterHistoryInDept(
+      univCode,
+      deptCode,
+      user.value.university.code,
+      user.value.studentId
+    )
+      .then((response) => {
+        historyStore.updateHistories(List(response.data));
+        initSelected();
+      })
+      .catch((error) => {
+        console.error(error);
+        historyStore.updateHistories(undefined);
+      });
+  }
+};
+
+const staffModeUpdateHistories = () => {
   historyStore.updateHistories(loading);
   getAllHistoryInDept(univCode, deptCode)
     .then((response) => {
       historyStore.updateHistories(List(response.data));
+      initSelected();
     })
     .catch((error) => {
       console.error(error);

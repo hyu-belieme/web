@@ -18,7 +18,7 @@ export interface User {
   entranceYear?: number;
 }
 
-export interface UserWithSecureInfo {
+export interface UserWithSecureInfo extends User {
   university: University;
   studentId: string;
   name: string;
