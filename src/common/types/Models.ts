@@ -16,7 +16,16 @@ export interface User {
   studentId: string;
   name: string;
   entranceYear?: number;
-  loginInfo?: LoginInfo;
+}
+
+export interface UserWithSecureInfo {
+  university: University;
+  studentId: string;
+  name: string;
+  entranceYear?: number;
+  token: string;
+  createdAt: number;
+  approvedAt: number;
 }
 
 export interface StuffInfoOnly {

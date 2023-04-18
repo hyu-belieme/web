@@ -5,7 +5,7 @@ import { getCurrentInstance } from "vue";
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import InfoTag from "@common/components/InfoTag/InfoTag.vue";
 import { type Modal, useModalStore } from "@common/stores/modalStore";
-import { useUserModeStore } from "@common/stores/userModeStore";
+import { useUserStore } from "@common/stores/userStore";
 import type { ItemInfoOnly } from "@common/types/Models";
 
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
@@ -18,8 +18,8 @@ const dayjs = app!.appContext.config.globalProperties.$dayjs;
 const viewModeStore = useStuffDetailViewModeStore();
 const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
 
-const userModeStore = useUserModeStore();
-const { userMode } = storeToRefs(userModeStore);
+const userStore = useUserStore();
+const { userMode } = storeToRefs(userStore);
 
 const modalStore = useModalStore();
 

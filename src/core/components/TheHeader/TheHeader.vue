@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 
-import { useUserModeStore } from "@common/stores/userModeStore";
+import { useUserStore } from "@common/stores/userStore";
 
-const userModeStore = useUserModeStore();
-const { userMode } = storeToRefs(userModeStore);
+const userStore = useUserStore();
+const { userMode } = storeToRefs(userStore);
 
 const changeUserMode = () => {
-  if (userMode.value === "USER") userModeStore.changeUserMode("STAFF");
-  else userModeStore.changeUserMode("USER");
+  if (userMode.value === "USER") userStore.updateUserMode("STAFF");
+  else userStore.updateUserMode("USER");
 };
 </script>
 

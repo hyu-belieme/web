@@ -3,7 +3,7 @@ import { storeToRefs } from "pinia";
 import { getCurrentInstance } from "vue";
 
 import InfoTag from "@common/components/InfoTag/InfoTag.vue";
-import { useUserModeStore } from "@common/stores/userModeStore";
+import { useUserStore } from "@common/stores/userStore";
 import type { History, User } from "@common/types/Models";
 
 const TAG_SIZE = 6;
@@ -11,8 +11,8 @@ const TAG_SIZE = 6;
 const app = getCurrentInstance();
 const dayjs = app!.appContext.config.globalProperties.$dayjs;
 
-const userModeStore = useUserModeStore();
-const { userMode } = storeToRefs(userModeStore);
+const userStore = useUserStore();
+const { userMode } = storeToRefs(userStore);
 
 const props = defineProps<{
   history: History;

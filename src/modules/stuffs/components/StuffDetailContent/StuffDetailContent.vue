@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import type { StuffWithItems } from "~/src/common/types/Models";
 
-import { useUserModeStore } from "@common/stores/userModeStore";
+import { useUserStore } from "@common/stores/userStore";
+import type { StuffWithItems } from "@common/types/Models";
 
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
 import { useStuffStore } from "@^stuffs/stores/stuffStore";
@@ -13,8 +13,8 @@ const { selectedStuffDetail } = storeToRefs(stuffStore);
 const viewModeStore = useStuffDetailViewModeStore();
 const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
 
-const userModeStore = useUserModeStore();
-const { userMode } = storeToRefs(userModeStore);
+const userStore = useUserStore();
+const { userMode } = storeToRefs(userStore);
 </script>
 
 <template>

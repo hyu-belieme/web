@@ -1,10 +1,10 @@
 import axios from "axios";
 import { storeToRefs } from "pinia";
 
-import { useUserTokenStore } from "@common/stores/userTokenStore";
+import { useUserStore } from "@common/stores/userStore";
 
-const userTokenStore = useUserTokenStore();
-const { userToken } = storeToRefs(userTokenStore);
+const userStore = useUserStore();
+const { userToken } = storeToRefs(userStore);
 
 const createInstance = () =>
   axios.create({
