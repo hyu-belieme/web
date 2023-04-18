@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { List } from "immutable";
 import { storeToRefs } from "pinia";
 import { onBeforeMount } from "vue";
 
@@ -6,7 +7,7 @@ import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailVi
 import LoadingView from "@common/components/LoadingView/LoadingView.vue";
 import { loading } from "@common/types/Loading";
 
-import historyDummies from "@^histories/assets/dummies/historyDummies";
+import { getAllHistoryInDept } from "@^histories/apis/HistoryApis";
 import HistoryCell from "@^histories/components/HistoryListCell/HistoryListCell.vue";
 import {
   type CategorizedHistoryIndex,
@@ -22,14 +23,19 @@ onBeforeMount(() => {
 const historyStore = useHistoryStore();
 const { histories, categorizedHistoriesList, selected } = storeToRefs(historyStore);
 
+const univCode = "HYU";
+const deptCode = "CSE";
+
 const updateHistories = () => {
-  historyStore.updateHistories({
-    load: () => {
-      // return undefined;
-      // return loading;
-      return historyDummies;
-    }
-  });
+  historyStore.updateHistories(loading);
+  getAllHistoryInDept(univCode, deptCode)
+    .then((response) => {
+      historyStore.updateHistories(List(response.data));
+    })
+    .catch((error) => {
+      console.error(error);
+      historyStore.updateHistories(undefined);
+    });
 };
 
 const initSelected = () => {

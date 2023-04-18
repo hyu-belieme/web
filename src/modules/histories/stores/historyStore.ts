@@ -43,8 +43,8 @@ export const useHistoryStore = defineStore("history", () => {
     selected.value = newVal;
   };
 
-  const updateHistories = (strategy: HistoryGetStrategy) => {
-    histories.value = strategy.load();
+  const updateHistories = (_histories: List<History> | Loading | undefined) => {
+    histories.value = _histories;
   };
 
   const _categorizeBy = (targetStatus: List<HistoryStatus>) => {
@@ -89,8 +89,4 @@ export interface CategorizedHistoryIndex {
 interface CategorizedHistories {
   category: HistoryCategory;
   histories: List<History>;
-}
-
-interface HistoryGetStrategy {
-  load: () => List<History> | Loading | undefined;
 }
