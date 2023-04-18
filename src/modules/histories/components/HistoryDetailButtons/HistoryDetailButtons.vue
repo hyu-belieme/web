@@ -35,9 +35,6 @@ const rentalApproveModal = {
     const { stuffName, itemNum } = _getItemOfSelectedHistoryIndex();
     _addChangeItemRequestHandler(approveItem(univCode, deptCode, stuffName, itemNum));
     modalStore.removeModal(key);
-  },
-  reject: (_: any, key: string) => {
-    modalStore.removeModal(key);
   }
 };
 
@@ -52,9 +49,6 @@ const requestCancelModal = {
   resolve: (_: any, key: string) => {
     const { stuffName, itemNum } = _getItemOfSelectedHistoryIndex();
     _addChangeItemRequestHandler(cancelItem(univCode, deptCode, stuffName, itemNum));
-    modalStore.removeModal(key);
-  },
-  reject: (_: any, key: string) => {
     modalStore.removeModal(key);
   }
 };
@@ -71,9 +65,6 @@ const returnApproveModal = {
   resolve: (_: any, key: string) => {
     const { stuffName, itemNum } = _getItemOfSelectedHistoryIndex();
     _addChangeItemRequestHandler(returnItem(univCode, deptCode, stuffName, itemNum));
-    modalStore.removeModal(key);
-  },
-  reject: (_: any, key: string) => {
     modalStore.removeModal(key);
   }
 };

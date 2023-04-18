@@ -6,7 +6,7 @@ import { getCurrentInstance } from "vue";
 import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import InfoTag from "@common/components/InfoTag/InfoTag.vue";
-import { type Modal, useModalStore } from "@common/stores/modalStore";
+import { useModalStore } from "@common/stores/modalStore";
 import { useUserStore } from "@common/stores/userStore";
 import { loading } from "@common/types/Loading";
 import type { ItemInfoOnly } from "@common/types/Models";
@@ -55,9 +55,6 @@ const rentalRequestModal = {
       rentItem(univCode, deptCode, _getSelectedStuffName(), props.item.num)
     );
     modalStore.removeModal(key);
-  },
-  reject: (_: any, key: string) => {
-    modalStore.removeModal(key);
   }
 };
 
@@ -74,9 +71,6 @@ const lostRequestModal = {
     _addChangeItemRequestHandler(
       reportLostItem(univCode, deptCode, _getSelectedStuffName(), props.item.num)
     );
-    modalStore.removeModal(key);
-  },
-  reject: (_: any, key: string) => {
     modalStore.removeModal(key);
   }
 };
@@ -95,14 +89,7 @@ const foundApproveModal = {
       returnItem(univCode, deptCode, _getSelectedStuffName(), props.item.num)
     );
     modalStore.removeModal(key);
-  },
-  reject: (_: any, key: string) => {
-    modalStore.removeModal(key);
   }
-};
-
-const showModal = (modal: Modal) => {
-  modalStore.addModal(modal);
 };
 
 const statusTagInfo = () => {
@@ -155,8 +142,9 @@ const _addChangeItemRequestHandler = (promise: Promise<AxiosResponse<any, any>>)
     })
     .catch((error) => {
       console.error(error);
-      if (error.response) showModal(buildAlertModal("errorAlert", error.response.data.message));
-      else showModal(_networkErrorAlert);
+      if (error.response)
+        modalStore.addModal(buildAlertModal("errorAlert", error.response.data.message));
+      else modalStore.addModal(_networkErrorAlert);
     });
 };
 
@@ -178,14 +166,14 @@ const _networkErrorAlert = buildAlertModal(
         <button
           v-if="item.status === 'USABLE'"
           class="btn btn-primary btn-sm"
-          @click="showModal(rentalRequestModal)"
+          @click="modalStore.addModal(rentalRequestModal)"
         >
           대여 신청
         </button>
         <button
           v-else
           class="btn btn-primary btn-sm"
-          @click="showModal(rentalRequestModal)"
+          @click="modalStore.addModal(rentalRequestModal)"
           disabled
         >
           대여 신청
@@ -194,11 +182,15 @@ const _networkErrorAlert = buildAlertModal(
           <button
             v-if="item.status !== 'INACTIVE'"
             class="btn btn-primary btn-sm"
-            @click="showModal(lostRequestModal)"
+            @click="modalStore.addModal(lostRequestModal)"
           >
             분실 등록
           </button>
-          <button v-else class="btn btn-primary btn-sm" @click="showModal(foundApproveModal)">
+          <button
+            v-else
+            class="btn btn-primary btn-sm"
+            @click="modalStore.addModal(foundApproveModal)"
+          >
             반환 확인
           </button>
         </template>
