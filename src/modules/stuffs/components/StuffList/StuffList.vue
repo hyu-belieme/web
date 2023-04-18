@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { List } from "immutable";
 import { storeToRefs } from "pinia";
-import { onBeforeMount } from "vue";
+import { onBeforeMount, watchEffect } from "vue";
 
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
@@ -17,15 +17,19 @@ import { useStuffStore } from "@^stuffs/stores/stuffStore";
 
 onBeforeMount(() => {
   stuffDetailViewModeStore.changeStuffDetailViewMode("SHOW");
-  updateSelected(0);
-  updateStuffs();
+  stuffStore.turnOnReloadFlag();
+  watchEffect(() => {
+    if (reloadFlag.value) {
+      updateStuffs();
+    }
+  });
 });
 
 const stuffDetailViewModeStore = useStuffDetailViewModeStore();
 const { stuffDetailViewMode } = storeToRefs(stuffDetailViewModeStore);
 
 const stuffStore = useStuffStore();
-const { stuffs, selected } = storeToRefs(stuffStore);
+const { reloadFlag, stuffs, selected } = storeToRefs(stuffStore);
 
 const modalStore = useModalStore();
 
@@ -37,6 +41,7 @@ const updateStuffs = () => {
   getAllStuffsInDept(univCode, deptCode)
     .then((response) => {
       stuffStore.updateStuffs(List(response.data));
+      updateSelected(0);
     })
     .catch((error) => {
       console.error(error);

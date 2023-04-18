@@ -1,14 +1,19 @@
 <script setup lang="ts">
+import type { AxiosResponse } from "axios";
 import { storeToRefs } from "pinia";
 import { getCurrentInstance } from "vue";
 
+import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder.js";
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import InfoTag from "@common/components/InfoTag/InfoTag.vue";
 import { type Modal, useModalStore } from "@common/stores/modalStore";
 import { useUserStore } from "@common/stores/userStore";
+import { loading } from "@common/types/Loading";
 import type { ItemInfoOnly } from "@common/types/Models";
 
+import { rentItem, reportLostItem, returnItem } from "@^stuffs/apis/stuffApis";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
+import { useStuffStore } from "@^stuffs/stores/stuffStore";
 
 const TAG_SIZE = 6;
 
@@ -21,7 +26,13 @@ const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
 const userStore = useUserStore();
 const { userMode } = storeToRefs(userStore);
 
+const stuffStore = useStuffStore();
+const { selectedStuff } = storeToRefs(stuffStore);
+
 const modalStore = useModalStore();
+
+const univCode = "HYU";
+const deptCode = "CSE";
 
 const props = defineProps<{
   item: ItemInfoOnly;
@@ -40,8 +51,9 @@ const rentalRequestModal = {
     resolveLabel: "신청하기"
   },
   resolve: (_: any, key: string) => {
-    console.log("대여 신청");
-    console.log(props.item);
+    _addChangeItemRequestHandler(
+      rentItem(univCode, deptCode, _getSelectedStuffName(), props.item.num)
+    );
     modalStore.removeModal(key);
   },
   reject: (_: any, key: string) => {
@@ -59,8 +71,9 @@ const lostRequestModal = {
     resolveLabel: "등록하기"
   },
   resolve: (_: any, key: string) => {
-    console.log("분실 등록");
-    console.log(props.item);
+    _addChangeItemRequestHandler(
+      reportLostItem(univCode, deptCode, _getSelectedStuffName(), props.item.num)
+    );
     modalStore.removeModal(key);
   },
   reject: (_: any, key: string) => {
@@ -78,8 +91,9 @@ const foundApproveModal = {
     resolveLabel: "확인하기"
   },
   resolve: (_: any, key: string) => {
-    console.log("반환 확인");
-    console.log(props.item);
+    _addChangeItemRequestHandler(
+      returnItem(univCode, deptCode, _getSelectedStuffName(), props.item.num)
+    );
     modalStore.removeModal(key);
   },
   reject: (_: any, key: string) => {
@@ -125,6 +139,28 @@ const statusTagContent = (item: ItemInfoOnly) => {
 const relativeTimeString = (time: number) => {
   return dayjs.unix(time).fromNow();
 };
+
+const _getSelectedStuffName = () => {
+  if (selectedStuff.value === loading || selectedStuff.value === undefined) return "";
+  return selectedStuff.value.name;
+};
+
+const _addChangeItemRequestHandler = (promise: Promise<AxiosResponse<any, any>>) => {
+  promise
+    .then(() => {
+      stuffStore.turnOnReloadFlag();
+    })
+    .catch((error) => {
+      console.error(error);
+      if (error.response) showModal(buildAlertModal("errorAlert", error.response.data.message));
+      else showModal(_networkErrorAlert);
+    });
+};
+
+const _networkErrorAlert = buildAlertModal(
+  "networkErrorAlert",
+  "현재 네트워크가 불안하여 서버와 연결이 원할하지 못하거나 서버에 예상하지 못한 문제가 발생하였습니다. 잠시 후 다시 시도해 주세요."
+);
 </script>
 
 <template>

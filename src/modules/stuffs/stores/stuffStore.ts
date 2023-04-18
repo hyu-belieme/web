@@ -6,6 +6,7 @@ import { type Loading, loading } from "@common/types/Loading";
 import type { Stuff, StuffWithItems } from "@common/types/Models";
 
 export const useStuffStore = defineStore("stuff", () => {
+  const reloadFlag = ref(false);
   const selected = ref(0);
   const stuffs = ref<List<Stuff> | Loading | undefined>(loading);
   const selectedStuffDetail = ref<StuffWithItems | Loading | undefined>(loading);
@@ -23,12 +24,17 @@ export const useStuffStore = defineStore("stuff", () => {
     return selectedStuffDetail.value.items;
   });
 
+  const turnOnReloadFlag = () => {
+    reloadFlag.value = true;
+  };
+
   const updateSelected = (newVal: number) => {
     selected.value = newVal;
   };
 
   const updateStuffs = (_stuffs: List<Stuff> | Loading | undefined) => {
     stuffs.value = _stuffs;
+    reloadFlag.value = false;
   };
 
   const updateSelectedStuffDetail = (
@@ -37,16 +43,19 @@ export const useStuffStore = defineStore("stuff", () => {
     selectedStuffDetail.value = _selectedStuffDetail;
   };
 
+  const $reloadFlag = readonly(reloadFlag);
   const $selected = readonly(selected);
   const $stuffs = readonly(stuffs);
   const $selectedStuffDetail = readonly(selectedStuffDetail);
 
   return {
+    reloadFlag: $reloadFlag,
     selected: $selected,
     stuffs: $stuffs,
     selectedStuffDetail: $selectedStuffDetail,
     selectedStuff,
     selectedStuffItems,
+    turnOnReloadFlag,
     updateSelected,
     updateStuffs,
     updateSelectedStuffDetail
