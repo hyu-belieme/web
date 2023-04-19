@@ -137,7 +137,12 @@ const _networkErrorAlert = buildAlertModal(
               </button>
               <button
                 class="btn btn-second btn-sm"
-                @click="viewModeStore.changeStuffDetailViewMode('SHOW')"
+                @click="
+                  () => {
+                    viewModeStore.changeStuffDetailViewMode('SHOW');
+                    stuffStore.turnOnReloadFlag(true);
+                  }
+                "
               >
                 뒤로
               </button>
