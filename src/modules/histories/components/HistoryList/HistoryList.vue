@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { List } from "immutable";
 import { storeToRefs } from "pinia";
-import { onBeforeMount, onBeforeUnmount, watch } from "vue";
+import { onBeforeMount, watch } from "vue";
 
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
 import LoadingView from "@common/components/LoadingView/LoadingView.vue";
@@ -17,9 +17,9 @@ import {
 } from "@^histories/stores/historyStore";
 
 onBeforeMount(() => {
-  userModeAfterChangeHandlerKeys = userModeAfterChangeHandlerKeys.push(
-    userStore.addUserModeAfterChangeHandler(() => historyStore.turnOnReloadFlag())
-  );
+  watch(userMode, () => {
+    historyStore.turnOnReloadFlag();
+  });
 
   watch(reloadFlag, () => {
     if (reloadFlag.value) {
@@ -28,10 +28,6 @@ onBeforeMount(() => {
     }
   });
   historyStore.turnOnReloadFlag();
-});
-
-onBeforeUnmount(() => {
-  userModeAfterChangeHandlerKeys.forEach((key) => userStore.deleteUserModeAfterChangeHandler(key));
 });
 
 let userModeAfterChangeHandlerKeys = List<string>();
