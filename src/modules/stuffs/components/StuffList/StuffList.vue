@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { List } from "immutable";
+import type { List } from "immutable";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, watchEffect } from "vue";
 
@@ -39,8 +39,8 @@ const deptCode = "CSE";
 const updateStuffs = () => {
   stuffStore.updateStuffs(loading);
   getAllStuffsInDept(univCode, deptCode)
-    .then((response) => {
-      stuffStore.updateStuffs(List(response.data));
+    .then((data) => {
+      stuffStore.updateStuffs(data);
       updateSelected(0);
     })
     .catch((error) => {

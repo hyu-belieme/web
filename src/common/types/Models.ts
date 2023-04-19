@@ -1,74 +1,142 @@
-import type { List } from "immutable";
+import { List } from "immutable";
 
-export interface University {
-  code: string;
-  name: string;
+export class University {
+  public code: string;
+  public name: string;
+
+  constructor(oth: University) {
+    this.code = oth.code;
+    this.name = oth.name;
+  }
 }
 
-export interface LoginInfo {
-  token: string;
-  createdAt: number;
-  approvedAt: number;
+export class LoginInfo {
+  public token: string;
+  public createdAt: number;
+  public approvedAt: number;
+
+  constructor(oth: LoginInfo) {
+    this.token = oth.token;
+    this.createdAt = oth.createdAt;
+    this.approvedAt = oth.approvedAt;
+  }
 }
 
-export interface User {
-  university: University;
-  studentId: string;
-  name: string;
-  entranceYear?: number;
+export class User {
+  public university: University;
+  public studentId: string;
+  public name: string;
+  public entranceYear?: number;
+
+  constructor(oth: User) {
+    this.university = new University(oth.university);
+    this.studentId = oth.studentId;
+    this.name = oth.name;
+    this.entranceYear = oth.entranceYear;
+  }
 }
 
-export interface UserWithSecureInfo extends User {
-  university: University;
-  studentId: string;
-  name: string;
-  entranceYear?: number;
-  token: string;
-  createdAt: number;
-  approvedAt: number;
+export class UserWithSecureInfo extends User {
+  public token: string;
+  public createdAt: number;
+  public approvedAt: number;
+
+  constructor(oth: UserWithSecureInfo) {
+    super(oth);
+    this.token = oth.token;
+    this.createdAt = oth.createdAt;
+    this.approvedAt = oth.approvedAt;
+  }
 }
 
-export interface StuffInfoOnly {
-  thumbnail: string;
-  name: string;
+export class StuffInfoOnly {
+  public name: string;
+  public thumbnail: string;
+
+  constructor(oth: StuffInfoOnly) {
+    this.name = oth.name;
+    this.thumbnail = oth.thumbnail;
+  }
 }
 
-export interface Stuff extends StuffInfoOnly {
-  amount: number;
-  count: number;
+export class Stuff extends StuffInfoOnly {
+  public amount: number;
+  public count: number;
+
+  constructor(oth: Stuff) {
+    super(oth);
+    this.amount = oth.amount;
+    this.count = oth.count;
+  }
 }
 
-export interface StuffWithItems extends Stuff {
+export class StuffWithItems extends Stuff {
   items: List<ItemInfoOnly>;
+
+  constructor(oth: StuffWithItems) {
+    super(oth);
+    this.items = List(oth.items);
+  }
 }
 
-export interface ItemInfoOnly {
-  num: number;
-  status: string;
-  lastHistory: HistoryInfoOnly | null;
+export class ItemInfoOnly {
+  public num: number;
+  public status: string;
+  public lastHistory: HistoryInfoOnly | null;
+
+  constructor(oth: ItemInfoOnly) {
+    this.num = oth.num;
+    this.status = oth.status;
+    this.lastHistory = oth.lastHistory ? new HistoryInfoOnly(oth.lastHistory) : null;
+  }
 }
 
-export interface Item extends ItemInfoOnly {
-  stuff: StuffInfoOnly;
+export class Item extends ItemInfoOnly {
+  public stuff: StuffInfoOnly;
+
+  constructor(oth: Item) {
+    super(oth);
+    this.stuff = new StuffInfoOnly(oth.stuff);
+  }
 }
 
-export interface HistoryInfoOnly {
-  num: number;
-  status: HistoryStatus;
-  requester?: User;
-  approveManager?: User;
-  returnManager?: User;
-  lostManager?: User;
-  cancelManager?: User;
-  requestedAt?: number;
-  approvedAt?: number;
-  returnedAt?: number;
-  lostAt?: number;
-  canceledAt?: number;
+export class HistoryInfoOnly {
+  public num: number;
+  public status: HistoryStatus;
+  public requester?: User;
+  public approveManager?: User;
+  public returnManager?: User;
+  public lostManager?: User;
+  public cancelManager?: User;
+  public requestedAt?: number;
+  public approvedAt?: number;
+  public returnedAt?: number;
+  public lostAt?: number;
+  public canceledAt?: number;
+
+  constructor(oth: HistoryInfoOnly) {
+    this.num = oth.num;
+    this.status = oth.status;
+    this.requester = oth.requester ? new User(oth.requester) : undefined;
+    this.approveManager = oth.approveManager ? new User(oth.approveManager) : undefined;
+    this.returnManager = oth.returnManager ? new User(oth.returnManager) : undefined;
+    this.lostManager = oth.lostManager ? new User(oth.lostManager) : undefined;
+    this.cancelManager = oth.cancelManager ? new User(oth.cancelManager) : undefined;
+    this.requestedAt = oth.requestedAt;
+    this.approvedAt = oth.approvedAt;
+    this.returnedAt = oth.returnedAt;
+    this.lostAt = oth.lostAt;
+    this.canceledAt = oth.canceledAt;
+  }
 }
 
-export interface History extends HistoryInfoOnly {
-  item: Item;
+export class History extends HistoryInfoOnly {
+  public item: Item;
+
+  constructor(oth: History) {
+    super(oth);
+    this.item = new Item(oth.item);
+  }
 }
 
 export type ItemStatus = "USABLE" | "UNUSABLE" | "INACTIVE";

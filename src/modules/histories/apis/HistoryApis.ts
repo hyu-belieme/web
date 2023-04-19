@@ -1,9 +1,23 @@
+import { List } from "immutable";
+
 import serverApi from "@common/apis/beliemeApiInstance";
+import { History } from "@common/types/Models";
 
 export const getAllHistoryInDept = async (univCode: string, deptCode: string) => {
   var apiUrl = `universities/${univCode}/departments/${deptCode}/histories`;
 
-  return await serverApi().get(apiUrl);
+  return new Promise<List<History>>((resolve, reject) => {
+    serverApi()
+      .get<List<History>>(apiUrl)
+      .then((response) => {
+        let output = List<History>([]);
+        for (let history of response.data) {
+          output = output.push(new History(history));
+        }
+        resolve(output);
+      })
+      .catch((error) => reject(error));
+  });
 };
 
 export const getAllRequesterHistoryInDept = async (
@@ -14,7 +28,18 @@ export const getAllRequesterHistoryInDept = async (
 ) => {
   var apiUrl = `universities/${univCode}/departments/${deptCode}/histories?requester-university-code=${requesterUnivCode}&requester-student-id=${requesterStudentId}`;
 
-  return await serverApi().get(apiUrl);
+  return new Promise<List<History>>((resolve, reject) => {
+    serverApi()
+      .get<List<History>>(apiUrl)
+      .then((response) => {
+        let output = List<History>([]);
+        for (let history of response.data) {
+          output = output.push(new History(history));
+        }
+        resolve(output);
+      })
+      .catch((error) => reject(error));
+  });
 };
 
 export const getHistory = async (
@@ -26,7 +51,12 @@ export const getHistory = async (
 ) => {
   var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs/${stuffName}/items/${itemNum}/histories/${historyNum}`;
 
-  return await serverApi().get(apiUrl);
+  return new Promise<History>((resolve, reject) => {
+    serverApi()
+      .get<History>(apiUrl)
+      .then((response) => resolve(new History(response.data)))
+      .catch((error) => reject(error));
+  });
 };
 
 export const approveItem = async (
@@ -37,7 +67,12 @@ export const approveItem = async (
 ) => {
   var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs/${stuffCode}/items/${itemNum}/approve`;
 
-  return await serverApi().patch(apiUrl);
+  return new Promise<History>((resolve, reject) => {
+    serverApi()
+      .patch<History>(apiUrl)
+      .then((response) => resolve(new History(response.data)))
+      .catch((error) => reject(error));
+  });
 };
 
 export const returnItem = async (
@@ -48,7 +83,12 @@ export const returnItem = async (
 ) => {
   var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs/${stuffCode}/items/${itemNum}/return`;
 
-  return await serverApi().patch(apiUrl);
+  return new Promise<History>((resolve, reject) => {
+    serverApi()
+      .patch<History>(apiUrl)
+      .then((response) => resolve(new History(response.data)))
+      .catch((error) => reject(error));
+  });
 };
 
 export const cancelItem = async (
@@ -59,5 +99,10 @@ export const cancelItem = async (
 ) => {
   var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs/${stuffCode}/items/${itemNum}/cancel`;
 
-  return await serverApi().patch(apiUrl);
+  return new Promise<History>((resolve, reject) => {
+    serverApi()
+      .patch<History>(apiUrl)
+      .then((response) => resolve(new History(response.data)))
+      .catch((error) => reject(error));
+  });
 };

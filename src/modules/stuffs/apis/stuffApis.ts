@@ -1,16 +1,34 @@
+import { List } from "immutable";
+
 import serverApi from "@common/apis/beliemeApiInstance";
-import type { StuffInfoOnly } from "@common/types/Models";
+import { History, Item, Stuff, type StuffInfoOnly, StuffWithItems } from "@common/types/Models";
 
 export const getAllStuffsInDept = async (univCode: string, deptCode: string) => {
   var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs`;
 
-  return await serverApi().get(apiUrl);
+  return new Promise<List<Stuff>>((resolve, reject) => {
+    serverApi()
+      .get<List<Stuff>>(apiUrl)
+      .then((response) => {
+        let output = List<Stuff>([]);
+        for (let stuff of response.data) {
+          output = output.push(new Stuff(stuff));
+        }
+        resolve(output);
+      })
+      .catch((error) => reject(error));
+  });
 };
 
-export const getStuff = async (univCode: string, deptCode: string, stuffCode: string) => {
+export const getStuff = (univCode: string, deptCode: string, stuffCode: string) => {
   var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs/${stuffCode}`;
 
-  return await serverApi().get(apiUrl);
+  return new Promise<StuffWithItems>((resolve, reject) => {
+    serverApi()
+      .get<StuffWithItems>(apiUrl)
+      .then((response) => resolve(new StuffWithItems(response.data)))
+      .catch((error) => reject(error));
+  });
 };
 
 export const postNewStuff = async (
@@ -20,7 +38,12 @@ export const postNewStuff = async (
 ) => {
   var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs`;
 
-  return await serverApi().post(apiUrl, newStuff);
+  return new Promise<StuffWithItems>((resolve, reject) => {
+    serverApi()
+      .post<StuffWithItems>(apiUrl, newStuff)
+      .then((response) => resolve(new StuffWithItems(response.data)))
+      .catch((error) => reject(error));
+  });
 };
 
 export const editStuff = async (
@@ -31,13 +54,34 @@ export const editStuff = async (
 ) => {
   var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs/${stuffCode}`;
 
-  return await serverApi().patch(apiUrl, newStuffInfo);
+  return new Promise<StuffWithItems>((resolve, reject) => {
+    serverApi()
+      .patch<StuffWithItems>(apiUrl, newStuffInfo)
+      .then((response) => resolve(new StuffWithItems(response.data)))
+      .catch((error) => reject(error));
+  });
+};
+
+export const addNewItem = async (univCode: string, deptCode: string, stuffCode: string) => {
+  var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs/${stuffCode}/items`;
+
+  return new Promise<Item>((resolve, reject) => {
+    serverApi()
+      .patch<Item>(apiUrl)
+      .then((response) => resolve(new Item(response.data)))
+      .catch((error) => reject(error));
+  });
 };
 
 export const rentStuff = async (univCode: string, deptCode: string, stuffCode: string) => {
   var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs/${stuffCode}/reserve`;
 
-  return await serverApi().patch(apiUrl);
+  return new Promise<History>((resolve, reject) => {
+    serverApi()
+      .patch<History>(apiUrl)
+      .then((response) => resolve(new History(response.data)))
+      .catch((error) => reject(error));
+  });
 };
 
 export const rentItem = async (
@@ -48,7 +92,12 @@ export const rentItem = async (
 ) => {
   var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs/${stuffCode}/items/${itemNum}/reserve`;
 
-  return await serverApi().patch(apiUrl);
+  return new Promise<History>((resolve, reject) => {
+    serverApi()
+      .patch<History>(apiUrl)
+      .then((response) => resolve(new History(response.data)))
+      .catch((error) => reject(error));
+  });
 };
 
 export const reportLostItem = async (
@@ -59,7 +108,12 @@ export const reportLostItem = async (
 ) => {
   var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs/${stuffCode}/items/${itemNum}/lost`;
 
-  return await serverApi().patch(apiUrl);
+  return new Promise<History>((resolve, reject) => {
+    serverApi()
+      .patch<History>(apiUrl)
+      .then((response) => resolve(new History(response.data)))
+      .catch((error) => reject(error));
+  });
 };
 
 export const returnItem = async (
@@ -70,7 +124,12 @@ export const returnItem = async (
 ) => {
   var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs/${stuffCode}/items/${itemNum}/return`;
 
-  return await serverApi().patch(apiUrl);
+  return new Promise<History>((resolve, reject) => {
+    serverApi()
+      .patch<History>(apiUrl)
+      .then((response) => resolve(new History(response.data)))
+      .catch((error) => reject(error));
+  });
 };
 
 interface StuffPostRequestBody extends StuffInfoOnly {

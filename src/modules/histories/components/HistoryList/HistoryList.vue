@@ -51,8 +51,8 @@ const userModeUpdateHistories = () => {
       user.value.university.code,
       user.value.studentId
     )
-      .then((response) => {
-        historyStore.updateHistories(List(response.data));
+      .then((data) => {
+        historyStore.updateHistories(data);
         initSelected();
       })
       .catch((error) => {
@@ -65,8 +65,8 @@ const userModeUpdateHistories = () => {
 const staffModeUpdateHistories = () => {
   historyStore.updateHistories(loading);
   getAllHistoryInDept(univCode, deptCode)
-    .then((response) => {
-      historyStore.updateHistories(List(response.data));
+    .then((data) => {
+      historyStore.updateHistories(data);
       initSelected();
     })
     .catch((error) => {

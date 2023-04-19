@@ -33,8 +33,8 @@ const updateSelectedStuff = () => {
   else {
     stuffStore.updateSelectedStuffDetail(loading);
     getStuff(univCode, deptCode, selectedStuff.value.name)
-      .then((response) => {
-        stuffStore.updateSelectedStuffDetail(response.data);
+      .then((data) => {
+        stuffStore.updateSelectedStuffDetail(data);
       })
       .catch((error) => {
         console.error(error);

@@ -135,7 +135,7 @@ const _getSelectedStuffName = () => {
   return selectedStuff.value.name;
 };
 
-const _addChangeItemRequestHandler = (promise: Promise<AxiosResponse<any, any>>) => {
+const _addChangeItemRequestHandler = (promise: Promise<any>) => {
   promise
     .then(() => {
       stuffStore.turnOnReloadFlag();
