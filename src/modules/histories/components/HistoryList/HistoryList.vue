@@ -53,7 +53,6 @@ const userModeUpdateHistories = () => {
     )
       .then((data) => {
         historyStore.updateHistories(data);
-        initSelected();
       })
       .catch((error) => {
         console.error(error);
@@ -67,21 +66,11 @@ const staffModeUpdateHistories = () => {
   getAllHistoryInDept(univCode, deptCode)
     .then((data) => {
       historyStore.updateHistories(data);
-      initSelected();
     })
     .catch((error) => {
       console.error(error);
       historyStore.updateHistories(undefined);
     });
-};
-
-const initSelected = () => {
-  for (const categorizedHistories of categorizedHistoriesList.value) {
-    if (categorizedHistories.histories.size !== 0) {
-      updateSelected({ category: categorizedHistories.category, index: 0 });
-      return;
-    }
-  }
 };
 
 const updateSelected = (newVal: CategorizedHistoryIndex) => {

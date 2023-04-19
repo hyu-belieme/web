@@ -41,7 +41,6 @@ const updateStuffs = () => {
   getAllStuffsInDept(univCode, deptCode)
     .then((data) => {
       stuffStore.updateStuffs(data);
-      updateSelected(0);
     })
     .catch((error) => {
       console.error(error);

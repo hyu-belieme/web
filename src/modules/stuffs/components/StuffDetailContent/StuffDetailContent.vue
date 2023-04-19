@@ -41,7 +41,7 @@ const commitChange = () => {
     name: nameInput.value ? nameInput.value : "",
     thumbnail: thumbnailInput.value ? thumbnailInput.value : ""
   })
-    .then(() => stuffStore.turnOnReloadFlag())
+    .then(() => stuffStore.turnOnReloadFlag(true))
     .catch((error) => {
       console.error(error);
       if (error.response)

@@ -8,6 +8,7 @@ import type { Stuff, StuffWithItems } from "@common/types/Models";
 export const useStuffStore = defineStore("stuff", () => {
   const MAX_ITEM_NUM = 50;
 
+  let _storeSelectedFlag = false;
   const reloadFlag = ref(false);
   const selected = ref(0);
   const stuffs = ref<List<Stuff> | Loading | undefined>(loading);
@@ -27,8 +28,9 @@ export const useStuffStore = defineStore("stuff", () => {
     return selectedStuffDetail.value.items;
   });
 
-  const turnOnReloadFlag = () => {
+  const turnOnReloadFlag = (storeSelected: boolean = false) => {
     reloadFlag.value = true;
+    _storeSelectedFlag = storeSelected;
   };
 
   const updateSelected = (newVal: number) => {
@@ -37,6 +39,7 @@ export const useStuffStore = defineStore("stuff", () => {
 
   const updateStuffs = (_stuffs: List<Stuff> | Loading | undefined) => {
     stuffs.value = _stuffs;
+    if (!_storeSelectedFlag) updateSelected(0);
     reloadFlag.value = false;
   };
 

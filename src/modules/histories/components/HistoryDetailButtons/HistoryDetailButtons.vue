@@ -69,10 +69,10 @@ const returnApproveModal = {
   }
 };
 
-const _addChangeItemRequestHandler = (promise: Promise<AxiosResponse<any, any>>) => {
+const _addChangeItemRequestHandler = (promise: Promise<any>) => {
   promise
     .then(() => {
-      historyStore.turnOnReloadFlag();
+      historyStore.turnOnReloadFlag(true);
     })
     .catch((error) => {
       console.error(error);

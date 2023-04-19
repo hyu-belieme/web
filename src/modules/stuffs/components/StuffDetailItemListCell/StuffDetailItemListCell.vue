@@ -138,7 +138,7 @@ const _getSelectedStuffName = () => {
 const _addChangeItemRequestHandler = (promise: Promise<any>) => {
   promise
     .then(() => {
-      stuffStore.turnOnReloadFlag();
+      stuffStore.turnOnReloadFlag(true);
     })
     .catch((error) => {
       console.error(error);
