@@ -67,7 +67,7 @@ export const addNewItem = async (univCode: string, deptCode: string, stuffCode: 
 
   return new Promise<Item>((resolve, reject) => {
     serverApi()
-      .patch<Item>(apiUrl)
+      .post<Item>(apiUrl)
       .then((response) => resolve(new Item(response.data)))
       .catch((error) => reject(error));
   });
