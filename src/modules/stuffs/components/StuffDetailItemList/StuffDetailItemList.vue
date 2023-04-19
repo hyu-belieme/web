@@ -39,6 +39,7 @@ const selectedStuffItemsSize = () => {
 
 const pushNewItem = () => {
   if (items.value === loading || items.value === undefined) return;
+  if (viewMode.value === "ADD") stuffStore.increaseNewStuffAmount();
   items.value = items.value.push({
     num: items.value.size + 1,
     status: "USABLE",
@@ -48,6 +49,7 @@ const pushNewItem = () => {
 
 const popItem = () => {
   if (items.value === loading || items.value === undefined) return;
+  if (viewMode.value === "ADD") stuffStore.decreaseNewStuffAmount();
   items.value = items.value.pop();
 };
 </script>

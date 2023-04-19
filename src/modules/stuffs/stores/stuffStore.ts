@@ -6,10 +6,13 @@ import { type Loading, loading } from "@common/types/Loading";
 import type { Stuff, StuffWithItems } from "@common/types/Models";
 
 export const useStuffStore = defineStore("stuff", () => {
+  const MAX_ITEM_NUM = 50;
+
   const reloadFlag = ref(false);
   const selected = ref(0);
   const stuffs = ref<List<Stuff> | Loading | undefined>(loading);
   const selectedStuffDetail = ref<StuffWithItems | Loading | undefined>(loading);
+  const newStuffAmount = ref(0);
 
   const selectedStuff = computed(() => {
     if (stuffs.value === undefined) return undefined;
@@ -43,21 +46,40 @@ export const useStuffStore = defineStore("stuff", () => {
     selectedStuffDetail.value = _selectedStuffDetail;
   };
 
+  const resetNewStuffAmount = () => {
+    newStuffAmount.value = 0;
+  };
+
+  const increaseNewStuffAmount = () => {
+    if (newStuffAmount.value >= MAX_ITEM_NUM) return;
+    newStuffAmount.value++;
+  };
+
+  const decreaseNewStuffAmount = () => {
+    if (newStuffAmount.value <= 0) return;
+    newStuffAmount.value--;
+  };
+
   const $reloadFlag = readonly(reloadFlag);
   const $selected = readonly(selected);
   const $stuffs = readonly(stuffs);
   const $selectedStuffDetail = readonly(selectedStuffDetail);
+  const $newStuffAmount = readonly(newStuffAmount);
 
   return {
     reloadFlag: $reloadFlag,
     selected: $selected,
     stuffs: $stuffs,
     selectedStuffDetail: $selectedStuffDetail,
+    newStuffAmount: $newStuffAmount,
     selectedStuff,
     selectedStuffItems,
     turnOnReloadFlag,
     updateSelected,
     updateStuffs,
-    updateSelectedStuffDetail
+    updateSelectedStuffDetail,
+    resetNewStuffAmount,
+    increaseNewStuffAmount,
+    decreaseNewStuffAmount
   };
 });

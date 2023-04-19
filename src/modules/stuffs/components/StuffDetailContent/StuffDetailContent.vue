@@ -1,20 +1,79 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
+import { ref, watch } from "vue";
 
+import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
+import { useModalStore } from "@common/stores/modalStore";
 import { useUserStore } from "@common/stores/userStore";
 import type { StuffWithItems } from "@common/types/Models";
 
+import { editStuff, postNewStuff } from "@^stuffs/apis/stuffApis";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
 import { useStuffStore } from "@^stuffs/stores/stuffStore";
 
 const stuffStore = useStuffStore();
-const { selectedStuffDetail } = storeToRefs(stuffStore);
+const { selectedStuffDetail, newStuffAmount } = storeToRefs(stuffStore);
 
 const viewModeStore = useStuffDetailViewModeStore();
 const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
 
 const userStore = useUserStore();
 const { userMode } = storeToRefs(userStore);
+
+const modalStore = useModalStore();
+
+const thumbnailInput = ref<string>();
+const nameInput = ref<string>();
+const descInput = ref<string>();
+
+watch(viewMode, () => {
+  thumbnailInput.value =
+    viewMode.value === "EDIT" ? (selectedStuffDetail.value as StuffWithItems).thumbnail : "";
+
+  nameInput.value =
+    viewMode.value === "EDIT" ? (selectedStuffDetail.value as StuffWithItems).name : "";
+
+  descInput.value = viewMode.value === "EDIT" ? LOREM_IPSUM : "";
+});
+
+const commitChange = () => {
+  editStuff(univCode, deptCode, (selectedStuffDetail.value as StuffWithItems).name, {
+    name: nameInput.value ? nameInput.value : "",
+    thumbnail: thumbnailInput.value ? thumbnailInput.value : ""
+  })
+    .then(() => stuffStore.turnOnReloadFlag())
+    .catch((error) => {
+      console.error(error);
+      if (error.response)
+        modalStore.addModal(buildAlertModal("errorAlert", error.response.data.message));
+      else modalStore.addModal(_networkErrorAlert);
+    });
+};
+
+const commitAddNewStuff = () => {
+  postNewStuff(univCode, deptCode, {
+    name: nameInput.value ? nameInput.value : "",
+    thumbnail: thumbnailInput.value ? thumbnailInput.value : "",
+    amount: newStuffAmount.value
+  })
+    .then(() => stuffStore.turnOnReloadFlag())
+    .catch((error) => {
+      console.error(error);
+      if (error.response)
+        modalStore.addModal(buildAlertModal("errorAlert", error.response.data.message));
+      else modalStore.addModal(_networkErrorAlert);
+    });
+};
+
+const univCode = "HYU";
+const deptCode = "CSE";
+const LOREM_IPSUM =
+  "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi sint corrupti illum quos. Dolorum architecto illum, veritatis asperiores odio exercitationem impedit natus. Modi magni, aut corporis impedit ullam nemo saepe!";
+
+const _networkErrorAlert = buildAlertModal(
+  "networkErrorAlert",
+  "현재 네트워크가 불안하여 서버와 연결이 원할하지 못하거나 서버에 예상하지 못한 문제가 발생하였습니다. 잠시 후 다시 시도해 주세요."
+);
 </script>
 
 <template>
@@ -25,9 +84,9 @@ const { userMode } = storeToRefs(userStore);
       </span>
       <input
         v-else
+        v-model="thumbnailInput"
         type="text"
         class="form-control edit-box"
-        :value="viewMode === 'EDIT' ? (selectedStuffDetail as StuffWithItems).thumbnail : ''"
         aria-label="thumbnail"
       />
     </section>
@@ -39,10 +98,10 @@ const { userMode } = storeToRefs(userStore);
           </span>
           <input
             v-else
+            v-model="nameInput"
             type="text"
             class="form-control w-100 my-2"
             placeholder="물품 이름을 입력해주세요."
-            :value="viewMode === 'EDIT' ? (selectedStuffDetail as StuffWithItems).name : ''"
             aria-label="name"
             aria-describedby="basic-addon1"
           />
@@ -66,7 +125,13 @@ const { userMode } = storeToRefs(userStore);
             <template v-else>
               <button
                 class="btn btn-primary btn-sm"
-                @click="viewModeStore.changeStuffDetailViewMode('SHOW')"
+                @click="
+                  () => {
+                    if (viewMode === 'EDIT') commitChange();
+                    else if (viewMode === 'ADD') commitAddNewStuff();
+                    viewModeStore.changeStuffDetailViewMode('SHOW');
+                  }
+                "
               >
                 저장
               </button>
@@ -74,7 +139,7 @@ const { userMode } = storeToRefs(userStore);
                 class="btn btn-second btn-sm"
                 @click="viewModeStore.changeStuffDetailViewMode('SHOW')"
               >
-                취소
+                뒤로
               </button>
             </template>
           </section>
@@ -82,15 +147,13 @@ const { userMode } = storeToRefs(userStore);
       </section>
       <div class="desc">
         <span v-if="viewMode === 'SHOW'" class="p-1">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi sint corrupti illum
-          quos. Dolorum architecto illum, veritatis asperiores odio exercitationem impedit natus.
-          Modi magni, aut corporis impedit ullam nemo saepe!
+          {{ LOREM_IPSUM }}
         </span>
         <textarea
           v-else
+          v-model="descInput"
           class="form-control h-100 fs-7"
           placeholder="물품 설명을 입력해주세요."
-          :value="viewMode === 'EDIT' ? 'Lorem ~~' : ''"
           id="floatingTextarea"
         ></textarea>
       </div>

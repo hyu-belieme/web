@@ -1,4 +1,5 @@
 import serverApi from "@common/apis/beliemeApiInstance";
+import type { StuffInfoOnly } from "@common/types/Models";
 
 export const getAllStuffsInDept = async (univCode: string, deptCode: string) => {
   var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs`;
@@ -10,6 +11,27 @@ export const getStuff = async (univCode: string, deptCode: string, stuffCode: st
   var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs/${stuffCode}`;
 
   return await serverApi().get(apiUrl);
+};
+
+export const postNewStuff = async (
+  univCode: string,
+  deptCode: string,
+  newStuff: StuffPostRequestBody
+) => {
+  var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs`;
+
+  return await serverApi().post(apiUrl, newStuff);
+};
+
+export const editStuff = async (
+  univCode: string,
+  deptCode: string,
+  stuffCode: string,
+  newStuffInfo: StuffInfoOnly
+) => {
+  var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs/${stuffCode}`;
+
+  return await serverApi().patch(apiUrl, newStuffInfo);
 };
 
 export const rentStuff = async (univCode: string, deptCode: string, stuffCode: string) => {
@@ -50,3 +72,7 @@ export const returnItem = async (
 
   return await serverApi().patch(apiUrl);
 };
+
+interface StuffPostRequestBody extends StuffInfoOnly {
+  amount?: number;
+}
