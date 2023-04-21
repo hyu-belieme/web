@@ -3,6 +3,7 @@ import type { AxiosResponse } from "axios";
 import { storeToRefs } from "pinia";
 import { getCurrentInstance } from "vue";
 
+import { rentItem, reportLostItem, returnItem } from "@common/apis/beliemeApis";
 import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import InfoTag from "@common/components/InfoTag/InfoTag.vue";
@@ -11,7 +12,6 @@ import { useUserStore } from "@common/stores/userStore";
 import { loading } from "@common/types/Loading";
 import type { ItemInfoOnly } from "@common/types/Models";
 
-import { rentItem, reportLostItem, returnItem } from "@^stuffs/apis/stuffApis";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
 import { useStuffStore } from "@^stuffs/stores/stuffStore";
 

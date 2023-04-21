@@ -3,12 +3,12 @@ import { List } from "immutable";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, watch } from "vue";
 
+import { getAllHistoryInDept, getAllRequesterHistoryInDept } from "@common/apis/beliemeApis";
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
 import LoadingView from "@common/components/LoadingView/LoadingView.vue";
 import { useUserStore } from "@common/stores/userStore";
 import { loading } from "@common/types/Loading";
 
-import { getAllHistoryInDept, getAllRequesterHistoryInDept } from "@^histories/apis/HistoryApis";
 import HistoryCell from "@^histories/components/HistoryListCell/HistoryListCell.vue";
 import {
   type CategorizedHistoryIndex,

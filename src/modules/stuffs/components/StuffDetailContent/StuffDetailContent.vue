@@ -2,12 +2,12 @@
 import { storeToRefs } from "pinia";
 import { ref, watch } from "vue";
 
+import { editStuff, postNewStuff } from "@common/apis/beliemeApis";
 import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
 import { useModalStore } from "@common/stores/modalStore";
 import { useUserStore } from "@common/stores/userStore";
 import type { StuffWithItems } from "@common/types/Models";
 
-import { editStuff, postNewStuff } from "@^stuffs/apis/stuffApis";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
 import { useStuffStore } from "@^stuffs/stores/stuffStore";
 

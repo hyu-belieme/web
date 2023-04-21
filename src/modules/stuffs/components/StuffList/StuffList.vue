@@ -3,6 +3,7 @@ import type { List } from "immutable";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, watchEffect } from "vue";
 
+import { getAllStuffsInDept } from "@common/apis/beliemeApis";
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
 import LoadingView from "@common/components/LoadingView/LoadingView.vue";
@@ -10,7 +11,6 @@ import { useModalStore } from "@common/stores/modalStore";
 import { loading } from "@common/types/Loading";
 import type { Stuff } from "@common/types/Models";
 
-import { getAllStuffsInDept } from "@^stuffs/apis/stuffApis";
 import StuffListCell from "@^stuffs/components/StuffListCell/StuffListCell.vue";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore.js";
 import { useStuffStore } from "@^stuffs/stores/stuffStore";

@@ -2,11 +2,11 @@
 import { storeToRefs } from "pinia";
 import { onBeforeMount, watchEffect } from "vue";
 
+import { getStuff } from "@common/apis/beliemeApis";
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
 import LoadingView from "@common/components/LoadingView/LoadingView.vue";
 import { loading } from "@common/types/Loading";
 
-import { getStuff } from "@^stuffs/apis/stuffApis";
 import StuffDetailContent from "@^stuffs/components/StuffDetailContent/StuffDetailContent.vue";
 import ItemList from "@^stuffs/components/StuffDetailItemList/StuffDetailItemList.vue";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";

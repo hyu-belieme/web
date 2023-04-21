@@ -2,13 +2,13 @@
 import type { AxiosResponse } from "axios";
 import { storeToRefs } from "pinia";
 
+import { approveItem, cancelItem, returnItem } from "@common/apis/beliemeApis";
 import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import { useModalStore } from "@common/stores/modalStore";
 import { useUserStore } from "@common/stores/userStore";
 import { loading } from "@common/types/Loading";
 
-import { approveItem, cancelItem, returnItem } from "@^histories/apis/HistoryApis";
 import { useHistoryStore } from "@^histories/stores/historyStore";
 
 const userStore = useUserStore();
