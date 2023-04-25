@@ -8,6 +8,7 @@ import "immutable";
 import { createPinia } from "pinia";
 import "uuid";
 import { createApp } from "vue";
+import { VueQueryPlugin } from "vue-query";
 
 import App from "@core/App.vue";
 import router from "@core/router";
@@ -21,5 +22,7 @@ app.config.globalProperties.$dayjs = dayjs;
 
 app.use(createPinia());
 app.use(router);
+
+app.use(VueQueryPlugin);
 
 app.mount("#app");

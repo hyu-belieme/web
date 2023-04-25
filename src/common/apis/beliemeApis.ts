@@ -3,7 +3,14 @@ import { List } from "immutable";
 import { storeToRefs } from "pinia";
 
 import { useUserStore } from "@common/stores/userStore";
-import { History, Item, Stuff, type StuffInfoOnly, StuffWithItems } from "@common/types/Models";
+import {
+  History,
+  Item,
+  Stuff,
+  type StuffInfoOnly,
+  type StuffPostRequestBody,
+  StuffWithItems
+} from "@common/types/Models";
 
 const userStore = useUserStore();
 const { userToken } = storeToRefs(userStore);
@@ -232,7 +239,3 @@ const _createInstance = () => {
     headers: { "user-token": userToken.value }
   });
 };
-
-interface StuffPostRequestBody extends StuffInfoOnly {
-  amount?: number;
-}

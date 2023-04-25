@@ -79,6 +79,15 @@ export class StuffWithItems extends Stuff {
   }
 }
 
+export class StuffPostRequestBody extends StuffInfoOnly {
+  amount?: number;
+
+  constructor(oth: Stuff) {
+    super(oth);
+    this.amount = oth.amount;
+  }
+}
+
 export class ItemInfoOnly {
   public num: number;
   public status: string;

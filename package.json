@@ -27,6 +27,7 @@
     "uuid": "^9.0.0",
     "vue": "^3.2.47",
     "vue-moment": "^4.1.0",
+    "vue-query": "^1.26.0",
     "vue-router": "^4.1.6"
   },
   "devDependencies": {
