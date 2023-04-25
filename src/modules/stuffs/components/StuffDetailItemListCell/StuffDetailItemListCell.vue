@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { AxiosResponse } from "axios";
 import { storeToRefs } from "pinia";
 import { getCurrentInstance } from "vue";
 
@@ -7,6 +6,7 @@ import { rentItem, reportLostItem, returnItem } from "@common/apis/beliemeApis";
 import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import InfoTag from "@common/components/InfoTag/InfoTag.vue";
+import { useDeptStore } from "@common/stores/deptStore";
 import { useModalStore } from "@common/stores/modalStore";
 import { useUserStore } from "@common/stores/userStore";
 import { loading } from "@common/types/Loading";
@@ -31,8 +31,8 @@ const { selectedStuff } = storeToRefs(stuffStore);
 
 const modalStore = useModalStore();
 
-const univCode = "HYU";
-const deptCode = "CSE";
+const deptStore = useDeptStore();
+const { deptId } = storeToRefs(deptStore);
 
 const props = defineProps<{
   item: ItemInfoOnly;
@@ -52,7 +52,10 @@ const rentalRequestModal = {
   },
   resolve: (_: any, key: string) => {
     _addChangeItemRequestHandler(
-      rentItem(univCode, deptCode, _getSelectedStuffName(), props.item.num)
+      rentItem({
+        ..._getSelectedStuffId(),
+        itemNum: props.item.num
+      })
     );
     modalStore.removeModal(key);
   }
@@ -69,7 +72,10 @@ const lostRequestModal = {
   },
   resolve: (_: any, key: string) => {
     _addChangeItemRequestHandler(
-      reportLostItem(univCode, deptCode, _getSelectedStuffName(), props.item.num)
+      reportLostItem({
+        ..._getSelectedStuffId(),
+        itemNum: props.item.num
+      })
     );
     modalStore.removeModal(key);
   }
@@ -86,7 +92,10 @@ const foundApproveModal = {
   },
   resolve: (_: any, key: string) => {
     _addChangeItemRequestHandler(
-      returnItem(univCode, deptCode, _getSelectedStuffName(), props.item.num)
+      returnItem({
+        ..._getSelectedStuffId(),
+        itemNum: props.item.num
+      })
     );
     modalStore.removeModal(key);
   }
@@ -130,9 +139,15 @@ const relativeTimeString = (time: number) => {
   return dayjs.unix(time).fromNow();
 };
 
-const _getSelectedStuffName = () => {
-  if (selectedStuff.value === loading || selectedStuff.value === undefined) return "";
-  return selectedStuff.value.name;
+const _getSelectedStuffId = () => {
+  let stuffName = "";
+  if (selectedStuff.value !== loading && selectedStuff.value !== undefined) {
+    stuffName = selectedStuff.value.name;
+  }
+  return {
+    ...deptId.value,
+    stuffName
+  };
 };
 
 const _addChangeItemRequestHandler = (promise: Promise<any>) => {
@@ -142,9 +157,9 @@ const _addChangeItemRequestHandler = (promise: Promise<any>) => {
     })
     .catch((error) => {
       console.error(error);
-      if (error.response)
+      if (error.response) {
         modalStore.addModal(buildAlertModal("errorAlert", error.response.data.message));
-      else modalStore.addModal(_networkErrorAlert);
+      } else modalStore.addModal(_networkErrorAlert);
     });
 };
 

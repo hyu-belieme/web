@@ -5,6 +5,7 @@ import { onBeforeMount, watchEffect } from "vue";
 import { getStuff } from "@common/apis/beliemeApis";
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
 import LoadingView from "@common/components/LoadingView/LoadingView.vue";
+import { useDeptStore } from "@common/stores/deptStore";
 import { loading } from "@common/types/Loading";
 
 import StuffDetailContent from "@^stuffs/components/StuffDetailContent/StuffDetailContent.vue";
@@ -24,15 +25,18 @@ const { selectedStuffDetail, selectedStuff } = storeToRefs(stuffStore);
 const viewModeStore = useStuffDetailViewModeStore();
 const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
 
-const univCode = "HYU";
-const deptCode = "CSE";
+const deptStore = useDeptStore();
+const { deptId } = storeToRefs(deptStore);
 
 const updateSelectedStuff = () => {
   if (selectedStuff.value === loading) stuffStore.updateSelectedStuffDetail(loading);
   else if (selectedStuff.value === undefined) stuffStore.updateSelectedStuffDetail(undefined);
   else {
     stuffStore.updateSelectedStuffDetail(loading);
-    getStuff(univCode, deptCode, selectedStuff.value.name)
+    getStuff({
+      ...deptId.value,
+      stuffName: selectedStuff.value.name
+    })
       .then((data) => {
         stuffStore.updateSelectedStuffDetail(data);
       })

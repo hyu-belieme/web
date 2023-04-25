@@ -6,6 +6,7 @@ import { onBeforeMount, watch } from "vue";
 import { getAllHistoryInDept, getAllRequesterHistoryInDept } from "@common/apis/beliemeApis";
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
 import LoadingView from "@common/components/LoadingView/LoadingView.vue";
+import { useDeptStore } from "@common/stores/deptStore";
 import { useUserStore } from "@common/stores/userStore";
 import { loading } from "@common/types/Loading";
 
@@ -37,20 +38,18 @@ const { user, userMode } = storeToRefs(userStore);
 const historyStore = useHistoryStore();
 const { reloadFlag, histories, categorizedHistoriesList, selected } = storeToRefs(historyStore);
 
-const univCode = "HYU";
-const deptCode = "CSE";
+const deptStore = useDeptStore();
+const { deptId } = storeToRefs(deptStore);
 
 const userModeUpdateHistories = () => {
   if (user.value === undefined) historyStore.updateHistories(undefined);
   else if (user.value === loading) historyStore.updateHistories(loading);
   else {
     historyStore.updateHistories(loading);
-    getAllRequesterHistoryInDept(
-      univCode,
-      deptCode,
-      user.value.university.code,
-      user.value.studentId
-    )
+    getAllRequesterHistoryInDept(deptId.value, {
+      univCode: user.value.university.code,
+      studentId: user.value.studentId
+    })
       .then((data) => {
         historyStore.updateHistories(data);
       })
@@ -63,7 +62,7 @@ const userModeUpdateHistories = () => {
 
 const staffModeUpdateHistories = () => {
   historyStore.updateHistories(loading);
-  getAllHistoryInDept(univCode, deptCode)
+  getAllHistoryInDept(deptId.value)
     .then((data) => {
       historyStore.updateHistories(data);
     })

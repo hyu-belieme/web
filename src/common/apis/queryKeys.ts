@@ -1,34 +1,15 @@
+import type { HistoryId } from "@common/types/Models";
+import type { DepartmentId, StuffId, UserId } from "@common/types/Models";
+
 export const stuffKeys = {
   all: ["stuffs"] as const,
-  list: (univCode: string, deptCode: string) =>
-    [...stuffKeys.all, "list", univCode, deptCode] as const,
-  detail: (univCode: string, deptCode: string, stuffName: string) =>
-    [...stuffKeys.all, "detail", univCode, deptCode, stuffName] as const
+  list: (deptId: DepartmentId) => [...stuffKeys.all, "list", deptId] as const,
+  detail: (stuffId: StuffId) => [...stuffKeys.all, "detail", stuffId] as const
 };
 
 export const historyKeys = {
   all: ["histories"] as const,
-  list: (
-    univCode: string,
-    deptCode: string,
-    requesterIdx?: {
-      univCode: string;
-      name: string;
-    }
-  ) =>
-    [
-      ...historyKeys.all,
-      "list",
-      univCode,
-      deptCode,
-      requesterIdx?.univCode,
-      requesterIdx?.name
-    ] as const,
-  detail: (
-    univCode: string,
-    deptCode: string,
-    stuffName: string,
-    itemNum: number,
-    historyNum: number
-  ) => [...historyKeys.all, "detail", univCode, deptCode, stuffName, itemNum, historyNum] as const
+  list: (deptId: DepartmentId, requesterId?: UserId) =>
+    [...historyKeys.all, "list", deptId, requesterId] as const,
+  detail: (historyId: HistoryId) => [...historyKeys.all, "detail", historyId] as const
 };

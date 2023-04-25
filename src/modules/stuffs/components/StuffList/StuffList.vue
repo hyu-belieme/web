@@ -7,6 +7,7 @@ import { getAllStuffsInDept } from "@common/apis/beliemeApis";
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
 import LoadingView from "@common/components/LoadingView/LoadingView.vue";
+import { useDeptStore } from "@common/stores/deptStore";
 import { useModalStore } from "@common/stores/modalStore";
 import { loading } from "@common/types/Loading";
 import type { Stuff } from "@common/types/Models";
@@ -33,12 +34,12 @@ const { reloadFlag, stuffs, selected } = storeToRefs(stuffStore);
 
 const modalStore = useModalStore();
 
-const univCode = "HYU";
-const deptCode = "CSE";
+const deptStore = useDeptStore();
+const { deptId } = storeToRefs(deptStore);
 
 const updateStuffs = () => {
   stuffStore.updateStuffs(loading);
-  getAllStuffsInDept(univCode, deptCode)
+  getAllStuffsInDept(deptId.value)
     .then((data) => {
       stuffStore.updateStuffs(data);
     })

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { AxiosResponse } from "axios";
 import { storeToRefs } from "pinia";
 
 import { approveItem, cancelItem, returnItem } from "@common/apis/beliemeApis";
 import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
+import { useDeptStore } from "@common/stores/deptStore";
 import { useModalStore } from "@common/stores/modalStore";
 import { useUserStore } from "@common/stores/userStore";
 import { loading } from "@common/types/Loading";
@@ -19,8 +19,8 @@ const { selectedHistory } = storeToRefs(historyStore);
 
 const modalStore = useModalStore();
 
-const univCode = "HYU";
-const deptCode = "CSE";
+const deptStore = useDeptStore();
+const { deptId } = storeToRefs(deptStore);
 
 const rentalApproveModal = {
   key: "rentalApprove",
@@ -32,8 +32,7 @@ const rentalApproveModal = {
     resolveLabel: "승인하기"
   },
   resolve: (_: any, key: string) => {
-    const { stuffName, itemNum } = _getItemOfSelectedHistoryIndex();
-    _addChangeItemRequestHandler(approveItem(univCode, deptCode, stuffName, itemNum));
+    _addChangeItemRequestHandler(approveItem(_getItemOfSelectedHistoryIndex()));
     modalStore.removeModal(key);
   }
 };
@@ -47,8 +46,7 @@ const requestCancelModal = {
     resolveLabel: "취소하기"
   },
   resolve: (_: any, key: string) => {
-    const { stuffName, itemNum } = _getItemOfSelectedHistoryIndex();
-    _addChangeItemRequestHandler(cancelItem(univCode, deptCode, stuffName, itemNum));
+    _addChangeItemRequestHandler(cancelItem(_getItemOfSelectedHistoryIndex()));
     modalStore.removeModal(key);
   }
 };
@@ -63,8 +61,7 @@ const returnApproveModal = {
     resolveLabel: "승인하기"
   },
   resolve: (_: any, key: string) => {
-    const { stuffName, itemNum } = _getItemOfSelectedHistoryIndex();
-    _addChangeItemRequestHandler(returnItem(univCode, deptCode, stuffName, itemNum));
+    _addChangeItemRequestHandler(returnItem(_getItemOfSelectedHistoryIndex()));
     modalStore.removeModal(key);
   }
 };
@@ -83,15 +80,16 @@ const _addChangeItemRequestHandler = (promise: Promise<any>) => {
 };
 
 const _getItemOfSelectedHistoryIndex = () => {
-  if (selectedHistory.value === loading || selectedHistory.value === undefined) {
-    return {
-      stuffName: "",
-      itemNum: 0
-    };
+  let stuffName = "",
+    itemNum = 0;
+  if (selectedHistory.value !== loading && selectedHistory.value !== undefined) {
+    stuffName = selectedHistory.value.item.stuff.name;
+    itemNum = selectedHistory.value.item.num;
   }
   return {
-    stuffName: selectedHistory.value.item.stuff.name,
-    itemNum: selectedHistory.value.item.num
+    ...deptId.value,
+    stuffName: stuffName,
+    itemNum: itemNum
   };
 };
 

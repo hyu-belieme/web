@@ -4,8 +4,10 @@ import { ref, watch } from "vue";
 
 import { editStuff, postNewStuff } from "@common/apis/beliemeApis";
 import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
+import { useDeptStore } from "@common/stores/deptStore";
 import { useModalStore } from "@common/stores/modalStore";
 import { useUserStore } from "@common/stores/userStore";
+import { loading } from "@common/types/Loading";
 import type { StuffWithItems } from "@common/types/Models";
 
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
@@ -19,6 +21,9 @@ const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
 
 const userStore = useUserStore();
 const { userMode } = storeToRefs(userStore);
+
+const deptStore = useDeptStore();
+const { deptId } = storeToRefs(deptStore);
 
 const modalStore = useModalStore();
 
@@ -37,7 +42,7 @@ watch(viewMode, () => {
 });
 
 const commitChange = () => {
-  editStuff(univCode, deptCode, (selectedStuffDetail.value as StuffWithItems).name, {
+  editStuff(_getSelectedStuffId(), {
     name: nameInput.value ? nameInput.value : "",
     thumbnail: thumbnailInput.value ? thumbnailInput.value : ""
   })
@@ -51,7 +56,7 @@ const commitChange = () => {
 };
 
 const commitAddNewStuff = () => {
-  postNewStuff(univCode, deptCode, {
+  postNewStuff(deptId.value, {
     name: nameInput.value ? nameInput.value : "",
     thumbnail: thumbnailInput.value ? thumbnailInput.value : "",
     amount: newStuffAmount.value
@@ -65,8 +70,16 @@ const commitAddNewStuff = () => {
     });
 };
 
-const univCode = "HYU";
-const deptCode = "CSE";
+const _getSelectedStuffId = () => {
+  let stuffName = "";
+  if (selectedStuffDetail.value !== loading && selectedStuffDetail.value !== undefined) {
+    stuffName = selectedStuffDetail.value.name;
+  }
+  return {
+    ...deptId.value,
+    stuffName
+  };
+};
 const LOREM_IPSUM =
   "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi sint corrupti illum quos. Dolorum architecto illum, veritatis asperiores odio exercitationem impedit natus. Modi magni, aut corporis impedit ullam nemo saepe!";
 

@@ -1,5 +1,29 @@
 import { List } from "immutable";
 
+export interface UniversityId {
+  univCode: string;
+}
+
+export interface DepartmentId extends UniversityId {
+  deptCode: string;
+}
+
+export interface UserId extends UniversityId {
+  studentId: string;
+}
+
+export interface StuffId extends DepartmentId {
+  stuffName: string;
+}
+
+export interface ItemId extends StuffId {
+  itemNum: number;
+}
+
+export interface HistoryId extends ItemId {
+  historyNum: number;
+}
+
 export class University {
   public code: string;
   public name: string;

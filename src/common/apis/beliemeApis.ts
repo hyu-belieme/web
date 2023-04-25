@@ -4,18 +4,24 @@ import { storeToRefs } from "pinia";
 
 import { useUserStore } from "@common/stores/userStore";
 import {
+  type DepartmentId,
   History,
+  type HistoryId,
   Item,
+  type ItemId,
   Stuff,
+  type StuffId,
   type StuffInfoOnly,
   type StuffPostRequestBody,
-  StuffWithItems
+  StuffWithItems,
+  type UserId
 } from "@common/types/Models";
 
 const userStore = useUserStore();
 const { userToken } = storeToRefs(userStore);
 
-export const getAllStuffsInDept = async (univCode: string, deptCode: string) => {
+export const getAllStuffsInDept = async (deptId: DepartmentId) => {
+  const { univCode, deptCode } = deptId;
   var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs`;
 
   return new Promise<List<Stuff>>((resolve, reject) => {
@@ -32,8 +38,9 @@ export const getAllStuffsInDept = async (univCode: string, deptCode: string) => 
   });
 };
 
-export const getStuff = (univCode: string, deptCode: string, stuffCode: string) => {
-  var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs/${stuffCode}`;
+export const getStuff = (stuffId: StuffId) => {
+  const { univCode, deptCode, stuffName } = stuffId;
+  var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs/${stuffName}`;
 
   return new Promise<StuffWithItems>((resolve, reject) => {
     _createInstance()
@@ -43,11 +50,8 @@ export const getStuff = (univCode: string, deptCode: string, stuffCode: string) 
   });
 };
 
-export const postNewStuff = async (
-  univCode: string,
-  deptCode: string,
-  newStuff: StuffPostRequestBody
-) => {
+export const postNewStuff = async (deptId: DepartmentId, newStuff: StuffPostRequestBody) => {
+  const { univCode, deptCode } = deptId;
   var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs`;
 
   return new Promise<StuffWithItems>((resolve, reject) => {
@@ -58,13 +62,9 @@ export const postNewStuff = async (
   });
 };
 
-export const editStuff = async (
-  univCode: string,
-  deptCode: string,
-  stuffCode: string,
-  newStuffInfo: StuffInfoOnly
-) => {
-  var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs/${stuffCode}`;
+export const editStuff = async (stuffId: StuffId, newStuffInfo: StuffInfoOnly) => {
+  const { univCode, deptCode, stuffName } = stuffId;
+  var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs/${stuffName}`;
 
   return new Promise<StuffWithItems>((resolve, reject) => {
     _createInstance()
@@ -74,8 +74,9 @@ export const editStuff = async (
   });
 };
 
-export const addNewItem = async (univCode: string, deptCode: string, stuffCode: string) => {
-  var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs/${stuffCode}/items`;
+export const addNewItem = async (stuffId: StuffId) => {
+  const { univCode, deptCode, stuffName } = stuffId;
+  var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs/${stuffName}/items`;
 
   return new Promise<Item>((resolve, reject) => {
     _createInstance()
@@ -85,7 +86,8 @@ export const addNewItem = async (univCode: string, deptCode: string, stuffCode: 
   });
 };
 
-export const getAllHistoryInDept = async (univCode: string, deptCode: string) => {
+export const getAllHistoryInDept = async (deptId: DepartmentId) => {
+  const { univCode, deptCode } = deptId;
   var apiUrl = `universities/${univCode}/departments/${deptCode}/histories`;
 
   return new Promise<List<History>>((resolve, reject) => {
@@ -102,12 +104,10 @@ export const getAllHistoryInDept = async (univCode: string, deptCode: string) =>
   });
 };
 
-export const getAllRequesterHistoryInDept = async (
-  univCode: string,
-  deptCode: string,
-  requesterUnivCode: string,
-  requesterStudentId: string
-) => {
+export const getAllRequesterHistoryInDept = async (deptId: DepartmentId, userId: UserId) => {
+  const { univCode, deptCode } = deptId;
+  const requesterUnivCode = userId.univCode;
+  const requesterStudentId = userId.studentId;
   var apiUrl = `universities/${univCode}/departments/${deptCode}/histories?requester-university-code=${requesterUnivCode}&requester-student-id=${requesterStudentId}`;
 
   return new Promise<List<History>>((resolve, reject) => {
@@ -124,13 +124,8 @@ export const getAllRequesterHistoryInDept = async (
   });
 };
 
-export const getHistory = async (
-  univCode: string,
-  deptCode: string,
-  stuffName: string,
-  itemNum: number,
-  historyNum: number
-) => {
+export const getHistory = async (historyId: HistoryId) => {
+  const { univCode, deptCode, stuffName, itemNum, historyNum } = historyId;
   var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs/${stuffName}/items/${itemNum}/histories/${historyNum}`;
 
   return new Promise<History>((resolve, reject) => {
@@ -141,8 +136,9 @@ export const getHistory = async (
   });
 };
 
-export const rentStuff = async (univCode: string, deptCode: string, stuffCode: string) => {
-  var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs/${stuffCode}/reserve`;
+export const rentStuff = async (stuffId: StuffId) => {
+  const { univCode, deptCode, stuffName } = stuffId;
+  var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs/${stuffName}/reserve`;
 
   return new Promise<History>((resolve, reject) => {
     _createInstance()
@@ -152,13 +148,29 @@ export const rentStuff = async (univCode: string, deptCode: string, stuffCode: s
   });
 };
 
-export const rentItem = async (
-  univCode: string,
-  deptCode: string,
-  stuffCode: string,
-  itemNum: number
-) => {
-  var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs/${stuffCode}/items/${itemNum}/reserve`;
+export const rentItem = async (itemId: ItemId) => {
+  const { univCode, deptCode, stuffName, itemNum } = itemId;
+  var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs/${stuffName}/items/${itemNum}/reserve`;
+
+  return new Promise<History>((resolve, reject) => {
+    _createInstance()
+      .patch<History>(apiUrl)
+      .then((response) => resolve(new History(response.data)))
+      .catch((error) => {
+        if (error.response) {
+          reject(error.response.data.message);
+        } else {
+          reject(
+            "현재 네트워크가 불안하여 서버와 연결이 원할하지 못하거나 서버에 예상하지 못한 문제가 발생하였습니다. 잠시 후 다시 시도해 주세요."
+          );
+        }
+      });
+  });
+};
+
+export const reportLostItem = async (itemId: ItemId) => {
+  const { univCode, deptCode, stuffName, itemNum } = itemId;
+  var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs/${stuffName}/items/${itemNum}/lost`;
 
   return new Promise<History>((resolve, reject) => {
     _createInstance()
@@ -168,13 +180,9 @@ export const rentItem = async (
   });
 };
 
-export const reportLostItem = async (
-  univCode: string,
-  deptCode: string,
-  stuffCode: string,
-  itemNum: number
-) => {
-  var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs/${stuffCode}/items/${itemNum}/lost`;
+export const approveItem = async (itemId: ItemId) => {
+  const { univCode, deptCode, stuffName, itemNum } = itemId;
+  var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs/${stuffName}/items/${itemNum}/approve`;
 
   return new Promise<History>((resolve, reject) => {
     _createInstance()
@@ -184,13 +192,9 @@ export const reportLostItem = async (
   });
 };
 
-export const approveItem = async (
-  univCode: string,
-  deptCode: string,
-  stuffCode: string,
-  itemNum: number
-) => {
-  var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs/${stuffCode}/items/${itemNum}/approve`;
+export const returnItem = async (itemId: ItemId) => {
+  const { univCode, deptCode, stuffName, itemNum } = itemId;
+  var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs/${stuffName}/items/${itemNum}/return`;
 
   return new Promise<History>((resolve, reject) => {
     _createInstance()
@@ -200,29 +204,9 @@ export const approveItem = async (
   });
 };
 
-export const returnItem = async (
-  univCode: string,
-  deptCode: string,
-  stuffCode: string,
-  itemNum: number
-) => {
-  var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs/${stuffCode}/items/${itemNum}/return`;
-
-  return new Promise<History>((resolve, reject) => {
-    _createInstance()
-      .patch<History>(apiUrl)
-      .then((response) => resolve(new History(response.data)))
-      .catch((error) => reject(error));
-  });
-};
-
-export const cancelItem = async (
-  univCode: string,
-  deptCode: string,
-  stuffCode: string,
-  itemNum: number
-) => {
-  var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs/${stuffCode}/items/${itemNum}/cancel`;
+export const cancelItem = async (itemId: ItemId) => {
+  const { univCode, deptCode, stuffName, itemNum } = itemId;
+  var apiUrl = `universities/${univCode}/departments/${deptCode}/stuffs/${stuffName}/items/${itemNum}/cancel`;
 
   return new Promise<History>((resolve, reject) => {
     _createInstance()

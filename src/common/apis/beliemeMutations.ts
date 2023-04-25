@@ -14,7 +14,11 @@ import {
 } from "@common/apis/beliemeApis";
 import { historyKeys, stuffKeys } from "@common/apis/queryKeys";
 import type {
+  DepartmentId,
+  HistoryId,
+  ItemId,
   Stuff,
+  StuffId,
   StuffInfoOnly,
   StuffPostRequestBody,
   StuffWithItems
@@ -22,177 +26,132 @@ import type {
 
 const queryClient = useQueryClient();
 
-export const usePostNewStuffMutation = (univCode: string, deptCode: string) => {
-  return useMutation(
-    (newStuff: StuffPostRequestBody) => postNewStuff(univCode, deptCode, newStuff),
-    {
-      onSuccess: (data) => _addNewStuffToListCache(univCode, deptCode, data),
-      onError: () => queryClient.invalidateQueries(stuffKeys.list(univCode, deptCode))
-    }
-  );
+export const usePostNewStuffMutation = (deptId: DepartmentId) => {
+  return useMutation((newStuff: StuffPostRequestBody) => postNewStuff(deptId, newStuff), {
+    onSuccess: (data) => _addNewStuffToListCache(deptId, data),
+    onError: () => queryClient.invalidateQueries(stuffKeys.list(deptId))
+  });
 };
 
-export const useEditStuffMutation = (univCode: string, deptCode: string, stuffName: string) => {
-  return useMutation(
-    (newStuff: StuffInfoOnly) => editStuff(univCode, deptCode, stuffName, newStuff),
-    {
-      onSuccess: (data) => {
-        _updateStuffOnListCache(univCode, deptCode, data);
-        _updateStuffDetailCache(univCode, deptCode, stuffName, data);
-      },
-      onError: () => {
-        queryClient.invalidateQueries(stuffKeys.list(univCode, deptCode));
-        queryClient.invalidateQueries(stuffKeys.detail(univCode, deptCode, stuffName));
-      }
+export const useEditStuffMutation = (stuffId: StuffId) => {
+  return useMutation((newStuff: StuffInfoOnly) => editStuff(stuffId, newStuff), {
+    onSuccess: (data) => {
+      _updateStuffOnListCache(stuffId, data);
+      _updateStuffDetailCache(stuffId, data);
+    },
+    onError: () => {
+      queryClient.invalidateQueries(stuffKeys.list(stuffId));
+      queryClient.invalidateQueries(stuffKeys.detail(stuffId));
     }
-  );
+  });
 };
 
-export const useAddItemMutation = (univCode: string, deptCode: string, stuffName: string) => {
-  return useMutation(() => addNewItem(univCode, deptCode, stuffName), {
+export const useAddItemMutation = (stuffId: StuffId) => {
+  return useMutation(() => addNewItem(stuffId), {
     // TODO: addNewItem의 response가 바뀌면 바꾸기
     // onSuccess: (data) => {
-    //   _updateStuffOnListCache(univCode, deptCode, data);
-    //   _updateStuffDetailCache(univCode, deptCode, stuffName, data);
+    //   _updateStuffOnListCache(stuffId, data);
+    //   _updateStuffDetailCache(stuffId, data);
     // },
     onSettled: () => {
-      queryClient.invalidateQueries(stuffKeys.list(univCode, deptCode));
-      queryClient.invalidateQueries(stuffKeys.detail(univCode, deptCode, stuffName));
+      queryClient.invalidateQueries(stuffKeys.list(stuffId));
+      queryClient.invalidateQueries(stuffKeys.detail(stuffId));
     }
   });
 };
 
-export const useRentStuffMutation = (univCode: string, deptCode: string, stuffName: string) => {
-  return useMutation(() => rentStuff(univCode, deptCode, stuffName), {
+export const useRentStuffMutation = (stuffId: StuffId) => {
+  return useMutation(() => rentStuff(stuffId), {
     onSettled: () => {
-      queryClient.invalidateQueries(stuffKeys.list(univCode, deptCode));
-      queryClient.invalidateQueries(stuffKeys.detail(univCode, deptCode, stuffName));
+      queryClient.invalidateQueries(stuffKeys.list(stuffId));
+      queryClient.invalidateQueries(stuffKeys.detail(stuffId));
     }
   });
 };
 
-export const useRentItemMutation = (
-  univCode: string,
-  deptCode: string,
-  stuffName: string,
-  itemNum: number
-) => {
-  return useMutation(() => rentItem(univCode, deptCode, stuffName, itemNum), {
+export const useRentItemMutation = (itemId: ItemId) => {
+  return useMutation(() => rentItem(itemId), {
     onSettled: () => {
-      queryClient.invalidateQueries(stuffKeys.list(univCode, deptCode));
-      queryClient.invalidateQueries(stuffKeys.detail(univCode, deptCode, stuffName));
+      queryClient.invalidateQueries(stuffKeys.list(itemId));
+      queryClient.invalidateQueries(stuffKeys.detail(itemId));
     }
   });
 };
 
-export const useReportLostItemMutation = (
-  univCode: string,
-  deptCode: string,
-  stuffName: string,
-  itemNum: number
-) => {
-  return useMutation(() => reportLostItem(univCode, deptCode, stuffName, itemNum), {
+export const useReportLostItemMutation = (itemId: ItemId) => {
+  return useMutation(() => reportLostItem(itemId), {
     onSettled: () => {
-      queryClient.invalidateQueries(stuffKeys.list(univCode, deptCode));
-      queryClient.invalidateQueries(stuffKeys.detail(univCode, deptCode, stuffName));
+      queryClient.invalidateQueries(stuffKeys.list(itemId));
+      queryClient.invalidateQueries(stuffKeys.detail(itemId));
     }
   });
 };
 
-export const useApproveItemMutation = (
-  univCode: string,
-  deptCode: string,
-  stuffName: string,
-  itemNum: number,
-  historyNum: number
-) => {
-  return useMutation(() => approveItem(univCode, deptCode, stuffName, itemNum), {
+export const useApproveItemMutation = (historyId: HistoryId) => {
+  return useMutation(() => approveItem(historyId), {
     onSettled: () => {
       queryClient.invalidateQueries({
-        queryKey: stuffKeys.list(univCode, deptCode),
+        queryKey: stuffKeys.list(historyId),
         exact: true
       });
       queryClient.invalidateQueries({
-        queryKey: stuffKeys.detail(univCode, deptCode, stuffName),
+        queryKey: stuffKeys.detail(historyId),
         exact: true
       });
-      queryClient.invalidateQueries(historyKeys.list(univCode, deptCode));
-      queryClient.invalidateQueries(
-        historyKeys.detail(univCode, deptCode, stuffName, itemNum, historyNum)
-      );
+      queryClient.invalidateQueries(historyKeys.list(historyId));
+      queryClient.invalidateQueries(historyKeys.detail(historyId));
     }
   });
 };
 
-export const useReturnItemMutation = (
-  univCode: string,
-  deptCode: string,
-  stuffName: string,
-  itemNum: number,
-  historyNum: number
-) => {
-  return useMutation(() => returnItem(univCode, deptCode, stuffName, itemNum), {
+export const useReturnItemMutation = (historyId: HistoryId) => {
+  return useMutation(() => returnItem(historyId), {
     onSettled: () => {
       queryClient.invalidateQueries({
-        queryKey: stuffKeys.list(univCode, deptCode),
+        queryKey: stuffKeys.list(historyId),
         exact: true
       });
       queryClient.invalidateQueries({
-        queryKey: stuffKeys.detail(univCode, deptCode, stuffName),
+        queryKey: stuffKeys.detail(historyId),
         exact: true
       });
-      queryClient.invalidateQueries(historyKeys.list(univCode, deptCode));
-      queryClient.invalidateQueries(
-        historyKeys.detail(univCode, deptCode, stuffName, itemNum, historyNum)
-      );
+      queryClient.invalidateQueries(historyKeys.list(historyId));
+      queryClient.invalidateQueries(historyKeys.detail(historyId));
     }
   });
 };
 
-export const useCancelItemMutation = (
-  univCode: string,
-  deptCode: string,
-  stuffName: string,
-  itemNum: number,
-  historyNum: number
-) => {
-  return useMutation(() => cancelItem(univCode, deptCode, stuffName, itemNum), {
+export const useCancelItemMutation = (historyId: HistoryId) => {
+  return useMutation(() => cancelItem(historyId), {
     onSettled: () => {
       queryClient.invalidateQueries({
-        queryKey: stuffKeys.list(univCode, deptCode),
+        queryKey: stuffKeys.list(historyId),
         exact: true
       });
       queryClient.invalidateQueries({
-        queryKey: stuffKeys.detail(univCode, deptCode, stuffName),
+        queryKey: stuffKeys.detail(historyId),
         exact: true
       });
-      queryClient.invalidateQueries(historyKeys.list(univCode, deptCode));
-      queryClient.invalidateQueries(
-        historyKeys.detail(univCode, deptCode, stuffName, itemNum, historyNum)
-      );
+      queryClient.invalidateQueries(historyKeys.list(historyId));
+      queryClient.invalidateQueries(historyKeys.detail(historyId));
     }
   });
 };
 
-const _addNewStuffToListCache = (univCode: string, deptCode: string, data: Stuff) => {
-  queryClient.setQueryData(stuffKeys.list(univCode, deptCode), (prev: List<Stuff> | undefined) => {
+const _addNewStuffToListCache = (deptId: DepartmentId, data: Stuff) => {
+  queryClient.setQueryData(stuffKeys.list(deptId), (prev: List<Stuff> | undefined) => {
     if (prev === undefined) return List<Stuff>([data]);
     return prev.push(data);
   });
 };
 
-const _updateStuffOnListCache = (univCode: string, deptCode: string, data: Stuff) => {
-  queryClient.setQueryData(stuffKeys.list(univCode, deptCode), (prev: List<Stuff> | undefined) => {
+const _updateStuffOnListCache = (deptId: DepartmentId, data: Stuff) => {
+  queryClient.setQueryData(stuffKeys.list(deptId), (prev: List<Stuff> | undefined) => {
     if (prev === undefined) return List<Stuff>([data]);
     return prev.map((target) => (target.name === data.name ? data : target));
   });
 };
 
-const _updateStuffDetailCache = (
-  univCode: string,
-  deptCode: string,
-  stuffName: string,
-  data: StuffWithItems
-) => {
-  queryClient.setQueryData(stuffKeys.detail(univCode, deptCode, stuffName), data);
+const _updateStuffDetailCache = (stuffId: StuffId, data: StuffWithItems) => {
+  queryClient.setQueryData(stuffKeys.detail(stuffId), data);
 };

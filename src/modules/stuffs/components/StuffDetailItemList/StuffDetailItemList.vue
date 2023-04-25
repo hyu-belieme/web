@@ -6,6 +6,7 @@ import { onBeforeMount, ref, watchEffect } from "vue";
 import { addNewItem } from "@common/apis/beliemeApis";
 import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
+import { useDeptStore } from "@common/stores/deptStore";
 import { useModalStore } from "@common/stores/modalStore";
 import { type Loading, loading } from "@common/types/Loading";
 import type { ItemInfoOnly } from "@common/types/Models";
@@ -31,6 +32,9 @@ const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
 
 const stuffStore = useStuffStore();
 const { selectedStuff, selectedStuffItems } = storeToRefs(stuffStore);
+
+const deptStore = useDeptStore();
+const { deptId } = storeToRefs(deptStore);
 
 const modalStore = useModalStore();
 
@@ -67,9 +71,8 @@ const addItemModal = {
     resolveLabel: "추가하기"
   },
   resolve: (_: any, key: string) => {
-    const { univCode, deptCode, stuffName } = _getSelectedStuffIndex();
     modalStore.removeModal(key);
-    _addChangeItemRequestHandler(addNewItem(univCode, deptCode, stuffName));
+    _addChangeItemRequestHandler(addNewItem(_getSelectedStuffId()));
   }
 };
 
@@ -97,18 +100,14 @@ const _addNewItemOnList = () => {
   });
 };
 
-const _getSelectedStuffIndex = () => {
-  if (selectedStuff.value === loading || selectedStuff.value === undefined) {
-    return {
-      univCode: "",
-      deptCode: "",
-      stuffName: ""
-    };
+const _getSelectedStuffId = () => {
+  let stuffName = "";
+  if (selectedStuff.value !== loading && selectedStuff.value !== undefined) {
+    stuffName = selectedStuff.value.name;
   }
   return {
-    univCode: "HYU",
-    deptCode: "CSE",
-    stuffName: selectedStuff.value.name
+    ...deptId.value,
+    stuffName
   };
 };
 

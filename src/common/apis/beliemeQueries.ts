@@ -8,47 +8,28 @@ import {
   getStuff
 } from "@common/apis/beliemeApis";
 import { historyKeys, stuffKeys } from "@common/apis/queryKeys";
+import type { DepartmentId, HistoryId, StuffId, UserId } from "@common/types/Models";
 
-export const useStuffListQuery = (univCode: string, deptCode: string) => {
-  return useQuery(stuffKeys.list(univCode, deptCode), () => getAllStuffsInDept(univCode, deptCode));
+export const useStuffListQuery = (deptId: DepartmentId) => {
+  return useQuery(stuffKeys.list(deptId), () => getAllStuffsInDept(deptId));
 };
 
-export const useStuffDetailQuery = (univCode: string, deptCode: string, stuffName: string) => {
-  return useQuery(stuffKeys.detail(univCode, deptCode, stuffName), () =>
-    getStuff(univCode, deptCode, stuffName)
-  );
+export const useStuffDetailQuery = (stuffId: StuffId) => {
+  return useQuery(stuffKeys.detail(stuffId), () => getStuff(stuffId));
 };
 
-export const useHistoryListQuery = (
-  univCode: string,
-  deptCode: string,
-  requesterIdx?: {
-    univCode: string;
-    name: string;
-  }
-) => {
-  return useQuery(historyKeys.list(univCode, deptCode, requesterIdx), () => {
-    if (requesterIdx === undefined) {
-      return getAllHistoryInDept(univCode, deptCode);
+export const useHistoryListQuery = (deptId: DepartmentId, requesterId?: UserId) => {
+  return useQuery(historyKeys.list(deptId, requesterId), () => {
+    if (requesterId === undefined) {
+      return getAllHistoryInDept(deptId);
     } else {
-      return getAllRequesterHistoryInDept(
-        univCode,
-        deptCode,
-        requesterIdx.univCode,
-        requesterIdx.name
-      );
+      return getAllRequesterHistoryInDept(deptId, requesterId);
     }
   });
 };
 
-export const useHistoryDetailQuery = (
-  univCode: string,
-  deptCode: string,
-  stuffName: string,
-  itemNum: number,
-  historyNum: number
-) => {
-  return useQuery(historyKeys.detail(univCode, deptCode, stuffName, itemNum, historyNum), () => {
-    return getHistory(univCode, deptCode, stuffName, itemNum, historyNum);
+export const useHistoryDetailQuery = (historyId: HistoryId) => {
+  return useQuery(historyKeys.detail(historyId), () => {
+    return getHistory(historyId);
   });
 };
