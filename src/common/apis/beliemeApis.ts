@@ -4,11 +4,13 @@ import { storeToRefs } from "pinia";
 
 import { useUserStore } from "@common/stores/userStore";
 import {
+  BeliemeError,
   type DepartmentId,
   History,
   type HistoryId,
   Item,
   type ItemId,
+  NETWORK_ERROR,
   Stuff,
   type StuffId,
   type StuffInfoOnly,
@@ -34,7 +36,7 @@ export const getAllStuffsInDept = async (deptId: DepartmentId) => {
         }
         resolve(output);
       })
-      .catch((error) => reject(error));
+      .catch(_handleError(reject));
   });
 };
 
@@ -46,7 +48,7 @@ export const getStuff = (stuffId: StuffId) => {
     _createInstance()
       .get<StuffWithItems>(apiUrl)
       .then((response) => resolve(new StuffWithItems(response.data)))
-      .catch((error) => reject(error));
+      .catch(_handleError(reject));
   });
 };
 
@@ -58,7 +60,7 @@ export const postNewStuff = async (deptId: DepartmentId, newStuff: StuffPostRequ
     _createInstance()
       .post<StuffWithItems>(apiUrl, newStuff)
       .then((response) => resolve(new StuffWithItems(response.data)))
-      .catch((error) => reject(error));
+      .catch(_handleError(reject));
   });
 };
 
@@ -70,7 +72,7 @@ export const editStuff = async (stuffId: StuffId, newStuffInfo: StuffInfoOnly) =
     _createInstance()
       .patch<StuffWithItems>(apiUrl, newStuffInfo)
       .then((response) => resolve(new StuffWithItems(response.data)))
-      .catch((error) => reject(error));
+      .catch(_handleError(reject));
   });
 };
 
@@ -82,7 +84,7 @@ export const addNewItem = async (stuffId: StuffId) => {
     _createInstance()
       .post<Item>(apiUrl)
       .then((response) => resolve(new Item(response.data)))
-      .catch((error) => reject(error));
+      .catch(_handleError(reject));
   });
 };
 
@@ -100,7 +102,7 @@ export const getAllHistoryInDept = async (deptId: DepartmentId) => {
         }
         resolve(output);
       })
-      .catch((error) => reject(error));
+      .catch(_handleError(reject));
   });
 };
 
@@ -120,7 +122,7 @@ export const getAllRequesterHistoryInDept = async (deptId: DepartmentId, userId:
         }
         resolve(output);
       })
-      .catch((error) => reject(error));
+      .catch(_handleError(reject));
   });
 };
 
@@ -132,7 +134,7 @@ export const getHistory = async (historyId: HistoryId) => {
     _createInstance()
       .get<History>(apiUrl)
       .then((response) => resolve(new History(response.data)))
-      .catch((error) => reject(error));
+      .catch(_handleError(reject));
   });
 };
 
@@ -144,7 +146,7 @@ export const rentStuff = async (stuffId: StuffId) => {
     _createInstance()
       .patch<History>(apiUrl)
       .then((response) => resolve(new History(response.data)))
-      .catch((error) => reject(error));
+      .catch(_handleError(reject));
   });
 };
 
@@ -156,15 +158,7 @@ export const rentItem = async (itemId: ItemId) => {
     _createInstance()
       .patch<History>(apiUrl)
       .then((response) => resolve(new History(response.data)))
-      .catch((error) => {
-        if (error.response) {
-          reject(error.response.data.message);
-        } else {
-          reject(
-            "현재 네트워크가 불안하여 서버와 연결이 원할하지 못하거나 서버에 예상하지 못한 문제가 발생하였습니다. 잠시 후 다시 시도해 주세요."
-          );
-        }
-      });
+      .catch(_handleError(reject));
   });
 };
 
@@ -176,7 +170,7 @@ export const reportLostItem = async (itemId: ItemId) => {
     _createInstance()
       .patch<History>(apiUrl)
       .then((response) => resolve(new History(response.data)))
-      .catch((error) => reject(error));
+      .catch(_handleError(reject));
   });
 };
 
@@ -188,7 +182,7 @@ export const approveItem = async (itemId: ItemId) => {
     _createInstance()
       .patch<History>(apiUrl)
       .then((response) => resolve(new History(response.data)))
-      .catch((error) => reject(error));
+      .catch(_handleError(reject));
   });
 };
 
@@ -200,7 +194,7 @@ export const returnItem = async (itemId: ItemId) => {
     _createInstance()
       .patch<History>(apiUrl)
       .then((response) => resolve(new History(response.data)))
-      .catch((error) => reject(error));
+      .catch(_handleError(reject));
   });
 };
 
@@ -212,14 +206,24 @@ export const cancelItem = async (itemId: ItemId) => {
     _createInstance()
       .patch<History>(apiUrl)
       .then((response) => resolve(new History(response.data)))
-      .catch((error) => reject(error));
+      .catch(_handleError(reject));
   });
 };
 
-const _createInstance = () => {
+function _createInstance() {
   return axios.create({
     baseURL: "http://localhost:8080/",
     timeout: 1000,
     headers: { "user-token": userToken.value }
   });
-};
+}
+
+function _handleError(reject: (_?: any) => void) {
+  return (error: any) => {
+    if (error.response) {
+      reject(new BeliemeError(error.response.data));
+    } else {
+      reject(NETWORK_ERROR);
+    }
+  };
+}
