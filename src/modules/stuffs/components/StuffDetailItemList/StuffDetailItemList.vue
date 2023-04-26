@@ -2,14 +2,14 @@
 import { List } from "immutable";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, ref, watchEffect } from "vue";
+import { useMutation, useQuery, useQueryClient } from "vue-query";
 
-import { addNewItem } from "@common/apis/beliemeApis";
+import { addNewItem, getStuff } from "@common/apis/beliemeApis";
+import { stuffKeys } from "@common/apis/queryKeys";
 import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
-import { useDeptStore } from "@common/stores/deptStore";
 import { useModalStore } from "@common/stores/modalStore";
-import { type Loading, loading } from "@common/types/Loading";
-import type { ItemInfoOnly } from "@common/types/Models";
+import type { BeliemeError, Item, ItemInfoOnly } from "@common/types/Models";
 
 import ItemListCell from "@^stuffs/components/StuffDetailItemListCell/StuffDetailItemListCell.vue";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
@@ -17,10 +17,10 @@ import { useStuffStore } from "@^stuffs/stores/stuffStore";
 
 onBeforeMount(() => {
   watchEffect(() => {
-    if (viewMode.value === "SHOW") {
-      items.value = selectedStuffItems.value;
-    } else if (viewMode.value === "ADD") {
-      items.value = List();
+    if (viewMode.value === "ADD") items.value = List();
+    else {
+      if (data.value === undefined) items.value = List();
+      else items.value = data.value.items;
     }
   });
 });
@@ -31,20 +31,18 @@ const viewModeStore = useStuffDetailViewModeStore();
 const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
 
 const stuffStore = useStuffStore();
-const { selectedStuff, selectedStuffItems } = storeToRefs(stuffStore);
-
-const deptStore = useDeptStore();
-const { deptId } = storeToRefs(deptStore);
+const { selectedId } = storeToRefs(stuffStore);
 
 const modalStore = useModalStore();
 
-const items = ref<Loading | List<ItemInfoOnly> | undefined>(undefined);
+const queryClient = useQueryClient();
+
+const { data } = useQuery(stuffKeys.detail(), () => getStuff(selectedId.value));
+
+const items = ref<List<ItemInfoOnly>>(List([]));
 
 const selectedStuffItemsSize = () => {
-  if (selectedStuffItems.value === loading || selectedStuffItems.value === undefined) {
-    return 0;
-  }
-  return selectedStuffItems.value.size;
+  return data.value ? data.value.items.size : 0;
 };
 
 const pushNewItem = () => {
@@ -57,7 +55,6 @@ const pushNewItem = () => {
 };
 
 const popItem = () => {
-  if (items.value === loading || items.value === undefined) return;
   if (viewMode.value === "ADD") stuffStore.decreaseNewStuffAmount();
   items.value = items.value.pop();
 };
@@ -72,26 +69,22 @@ const addItemModal = {
   },
   resolve: (_: any, key: string) => {
     modalStore.removeModal(key);
-    _addChangeItemRequestHandler(addNewItem(_getSelectedStuffId()));
+    addNewItemMutation.mutate();
   }
 };
 
-const _addChangeItemRequestHandler = (promise: Promise<any>) => {
-  promise
-    .then(() => {
-      items.value = _addNewItemOnList();
-    })
-    .catch((error) => {
-      console.error(error);
-      if (error.response)
-        modalStore.addModal(buildAlertModal("errorAlert", error.response.data.message));
-      else modalStore.addModal(_networkErrorAlert);
-    });
-};
+const addNewItemMutation = useMutation<Item, BeliemeError>(() => addNewItem(selectedId.value), {
+  onSettled: () => {
+    queryClient.invalidateQueries(stuffKeys.list());
+    queryClient.invalidateQueries(stuffKeys.detail());
+  },
+  onError: (error) => {
+    console.error(error);
+    modalStore.addModal(buildAlertModal("errorAlert", error.message));
+  }
+});
 
 const _addNewItemOnList = () => {
-  if (items.value === loading) return loading;
-  if (items.value === undefined) return undefined;
   if (items.value.size >= MAX_ITEM_NUM) return items.value;
   return items.value.push({
     num: items.value.size + 1,
@@ -99,42 +92,24 @@ const _addNewItemOnList = () => {
     lastHistory: null
   });
 };
-
-const _getSelectedStuffId = () => {
-  let stuffName = "";
-  if (selectedStuff.value !== loading && selectedStuff.value !== undefined) {
-    stuffName = selectedStuff.value.name;
-  }
-  return {
-    ...deptId.value,
-    stuffName
-  };
-};
-
-const _networkErrorAlert = buildAlertModal(
-  "networkErrorAlert",
-  "현재 네트워크가 불안하여 서버와 연결이 원할하지 못하거나 서버에 예상하지 못한 문제가 발생하였습니다. 잠시 후 다시 시도해 주세요."
-);
 </script>
 
 <template>
   <section class="item-list">
-    <template v-if="items !== loading && items !== undefined">
-      <ItemListCell
-        v-for="(item, index) of items"
-        :key="index"
-        v-bind="{ item: item, isNew: index >= selectedStuffItemsSize() }"
-        @pop-item="popItem"
-      ></ItemListCell>
-      <button
-        v-if="viewMode === 'EDIT' || viewMode === 'ADD'"
-        type="button"
-        class="btn btn-outline-primary btn mx-3"
-        @click="pushNewItem()"
-      >
-        <i class="bi bi-plus-lg"></i>
-      </button>
-    </template>
+    <ItemListCell
+      v-for="(item, index) of items"
+      :key="index"
+      v-bind="{ item: item, isNew: index >= selectedStuffItemsSize() }"
+      @pop-item="popItem"
+    ></ItemListCell>
+    <button
+      v-if="viewMode === 'EDIT' || viewMode === 'ADD'"
+      type="button"
+      class="btn btn-outline-primary btn mx-3"
+      @click="pushNewItem()"
+    >
+      <i class="bi bi-plus-lg"></i>
+    </button>
   </section>
 </template>
 

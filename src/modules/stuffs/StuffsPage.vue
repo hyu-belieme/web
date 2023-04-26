@@ -1,20 +1,26 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
+import { useQuery } from "vue-query";
 
-import { loading } from "@common/types/Loading";
+import { getAllStuffsInDept } from "@common/apis/beliemeApis";
+import { stuffKeys } from "@common/apis/queryKeys";
+import { useDeptStore } from "@common/stores/deptStore";
 
 import StuffDetail from "@^stuffs/components/StuffDetailSection/StuffDetailSection.vue";
 import StuffList from "@^stuffs/components/StuffList/StuffList.vue";
 import StuffPageOnEmpty from "@^stuffs/components/StuffPageOnEmpty/StuffPageOnEmpty.vue";
-import { useStuffStore } from "@^stuffs/stores/stuffStore";
 
-const stuffStore = useStuffStore();
-const { stuffs } = storeToRefs(stuffStore);
+const deptStore = useDeptStore();
+const { deptId } = storeToRefs(deptStore);
+
+const { data, isLoading, isError, isSuccess } = useQuery(stuffKeys.list(), () =>
+  getAllStuffsInDept(deptId.value)
+);
 </script>
 
 <template>
   <section class="stuff-list-page">
-    <template v-if="stuffs === loading || stuffs === undefined || stuffs.size !== 0">
+    <template v-if="isLoading || isError || (isSuccess && data?.size !== 0)">
       <StuffList></StuffList>
       <StuffDetail></StuffDetail>
     </template>

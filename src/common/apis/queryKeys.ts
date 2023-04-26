@@ -1,10 +1,9 @@
-import type { HistoryId } from "@common/types/Models";
-import type { DepartmentId, StuffId, UserId } from "@common/types/Models";
+import type { DepartmentId, HistoryId, UserId } from "@common/types/Models";
 
 export const stuffKeys = {
   all: ["stuffs"] as const,
-  list: (deptId: DepartmentId) => [...stuffKeys.all, "list", deptId] as const,
-  detail: (stuffId: StuffId) => [...stuffKeys.all, "detail", stuffId] as const
+  list: () => [...stuffKeys.all, "list"] as const,
+  detail: () => [...stuffKeys.all, "detail"] as const
 };
 
 export const historyKeys = {

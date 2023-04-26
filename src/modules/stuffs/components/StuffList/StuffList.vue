@@ -1,16 +1,15 @@
 <script setup lang="ts">
-import type { List } from "immutable";
 import { storeToRefs } from "pinia";
 import { onBeforeMount, watchEffect } from "vue";
+import { useQuery, useQueryClient } from "vue-query";
 
 import { getAllStuffsInDept } from "@common/apis/beliemeApis";
+import { stuffKeys } from "@common/apis/queryKeys";
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
 import LoadingView from "@common/components/LoadingView/LoadingView.vue";
 import { useDeptStore } from "@common/stores/deptStore";
 import { useModalStore } from "@common/stores/modalStore";
-import { loading } from "@common/types/Loading";
-import type { Stuff } from "@common/types/Models";
 
 import StuffListCell from "@^stuffs/components/StuffListCell/StuffListCell.vue";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore.js";
@@ -18,48 +17,47 @@ import { useStuffStore } from "@^stuffs/stores/stuffStore";
 
 onBeforeMount(() => {
   stuffDetailViewModeStore.changeStuffDetailViewMode("SHOW");
-  stuffStore.turnOnReloadFlag();
   watchEffect(() => {
-    if (reloadFlag.value) {
-      updateStuffs();
-    }
+    if (data.value === undefined) return;
+
+    const selectedStuff = data.value.get(selected.value);
+    if (selectedStuff === undefined) return;
+
+    stuffStore.updateSelectedId({
+      ...deptId.value,
+      stuffName: selectedStuff.name
+    });
+    queryClient.invalidateQueries(stuffKeys.detail());
   });
+  updateSelected(0);
 });
+
+const modalStore = useModalStore();
 
 const stuffDetailViewModeStore = useStuffDetailViewModeStore();
 const { stuffDetailViewMode } = storeToRefs(stuffDetailViewModeStore);
 
-const stuffStore = useStuffStore();
-const { reloadFlag, stuffs, selected } = storeToRefs(stuffStore);
-
-const modalStore = useModalStore();
-
 const deptStore = useDeptStore();
 const { deptId } = storeToRefs(deptStore);
 
-const updateStuffs = () => {
-  stuffStore.updateStuffs(loading);
+const stuffStore = useStuffStore();
+const { selected } = storeToRefs(stuffStore);
+
+const { data, isLoading, isSuccess } = useQuery(stuffKeys.list(), () =>
   getAllStuffsInDept(deptId.value)
-    .then((data) => {
-      stuffStore.updateStuffs(data);
-    })
-    .catch((error) => {
-      console.error(error);
-      stuffStore.updateStuffs(undefined);
-    });
-};
+);
+
+const queryClient = useQueryClient();
 
 const updateSelected = (toSelect: number) => {
-  if (toSelect === selected.value) return;
   if (stuffDetailViewMode.value === "SHOW") {
     stuffStore.updateSelected(toSelect);
     return;
   }
-
-  modalStore.addModal(changingStuffAtEditionModeConfirmModal(toSelect));
+  modalStore.addModal(_changingStuffAtEditionModeConfirmModal(toSelect));
 };
 
-const changingStuffAtEditionModeConfirmModal = (toSelect: number) => {
+const _changingStuffAtEditionModeConfirmModal = (toSelect: number) => {
   return {
     key: "changeStuff",
     component: BasicModal,
@@ -82,19 +80,19 @@ const changingStuffAtEditionModeConfirmModal = (toSelect: number) => {
 
 <template>
   <section class="stuff-list">
-    <template v-if="stuffs === loading">
-      <LoadingView></LoadingView>
-    </template>
-    <template v-else-if="stuffs === undefined">
-      <DataLoadFailView></DataLoadFailView>
-    </template>
-    <template v-else>
+    <template v-if="isSuccess">
       <StuffListCell
-        v-for="(stuff, index) of (stuffs as List<Stuff>)"
+        v-for="(stuff, index) of data"
         :key="stuff.name"
         v-bind="{ stuff: stuff, selected: index === selected }"
-        @click="updateSelected(index)"
+        @click="() => updateSelected(index)"
       ></StuffListCell>
+    </template>
+    <template v-else-if="isLoading">
+      <LoadingView></LoadingView>
+    </template>
+    <template v-else>
+      <DataLoadFailView></DataLoadFailView>
     </template>
   </section>
 </template>

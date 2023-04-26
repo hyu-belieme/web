@@ -1,51 +1,24 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { onBeforeMount, watchEffect } from "vue";
+import { useQuery } from "vue-query";
 
 import { getStuff } from "@common/apis/beliemeApis";
+import { stuffKeys } from "@common/apis/queryKeys";
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
 import LoadingView from "@common/components/LoadingView/LoadingView.vue";
-import { useDeptStore } from "@common/stores/deptStore";
-import { loading } from "@common/types/Loading";
 
 import StuffDetailContent from "@^stuffs/components/StuffDetailContent/StuffDetailContent.vue";
 import ItemList from "@^stuffs/components/StuffDetailItemList/StuffDetailItemList.vue";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
 import { useStuffStore } from "@^stuffs/stores/stuffStore";
 
-onBeforeMount(() => {
-  watchEffect(() => {
-    updateSelectedStuff();
-  });
-});
-
 const stuffStore = useStuffStore();
-const { selectedStuffDetail, selectedStuff } = storeToRefs(stuffStore);
+const { selectedId } = storeToRefs(stuffStore);
 
 const viewModeStore = useStuffDetailViewModeStore();
 const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
 
-const deptStore = useDeptStore();
-const { deptId } = storeToRefs(deptStore);
-
-const updateSelectedStuff = () => {
-  if (selectedStuff.value === loading) stuffStore.updateSelectedStuffDetail(loading);
-  else if (selectedStuff.value === undefined) stuffStore.updateSelectedStuffDetail(undefined);
-  else {
-    stuffStore.updateSelectedStuffDetail(loading);
-    getStuff({
-      ...deptId.value,
-      stuffName: selectedStuff.value.name
-    })
-      .then((data) => {
-        stuffStore.updateSelectedStuffDetail(data);
-      })
-      .catch((error) => {
-        console.error(error);
-        stuffStore.updateSelectedStuffDetail(undefined);
-      });
-  }
-};
+const { isSuccess, isLoading } = useQuery(stuffKeys.detail(), () => getStuff(selectedId.value));
 </script>
 
 <template>
@@ -54,15 +27,15 @@ const updateSelectedStuff = () => {
       <StuffDetailContent></StuffDetailContent>
       <ItemList></ItemList>
     </template>
-    <template v-else-if="selectedStuffDetail === loading">
-      <LoadingView></LoadingView>
-    </template>
-    <template v-else-if="selectedStuffDetail === undefined">
-      <DataLoadFailView></DataLoadFailView>
-    </template>
-    <template v-else>
+    <template v-else-if="isSuccess">
       <StuffDetailContent></StuffDetailContent>
       <ItemList></ItemList>
+    </template>
+    <template v-else-if="isLoading">
+      <LoadingView></LoadingView>
+    </template>
+    <template v-else>
+      <DataLoadFailView></DataLoadFailView>
     </template>
   </section>
 </template>

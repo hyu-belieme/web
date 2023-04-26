@@ -1,24 +1,33 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { getCurrentInstance } from "vue";
+import { useMutation, useQueryClient } from "vue-query";
 
 import { rentItem, reportLostItem, returnItem } from "@common/apis/beliemeApis";
+import { stuffKeys } from "@common/apis/queryKeys";
 import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import InfoTag from "@common/components/InfoTag/InfoTag.vue";
-import { useDeptStore } from "@common/stores/deptStore";
 import { useModalStore } from "@common/stores/modalStore";
 import { useUserStore } from "@common/stores/userStore";
-import { loading } from "@common/types/Loading";
-import type { ItemInfoOnly } from "@common/types/Models";
+import type { BeliemeError, History, ItemInfoOnly } from "@common/types/Models";
 
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
 import { useStuffStore } from "@^stuffs/stores/stuffStore";
+
+const emit = defineEmits(["popItem"]);
+
+const props = defineProps<{
+  item: ItemInfoOnly;
+  isNew: boolean;
+}>();
 
 const TAG_SIZE = 6;
 
 const app = getCurrentInstance();
 const dayjs = app!.appContext.config.globalProperties.$dayjs;
+
+const modalStore = useModalStore();
 
 const viewModeStore = useStuffDetailViewModeStore();
 const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
@@ -27,19 +36,30 @@ const userStore = useUserStore();
 const { userMode } = storeToRefs(userStore);
 
 const stuffStore = useStuffStore();
-const { selectedStuff } = storeToRefs(stuffStore);
+const { selectedId } = storeToRefs(stuffStore);
 
-const modalStore = useModalStore();
+const rentalRequestMutation = _changeItemRequestMutation(() =>
+  rentItem({
+    ...selectedId.value,
+    itemNum: props.item.num
+  })
+);
 
-const deptStore = useDeptStore();
-const { deptId } = storeToRefs(deptStore);
+const lostRequestMutation = _changeItemRequestMutation(() =>
+  reportLostItem({
+    ...selectedId.value,
+    itemNum: props.item.num
+  })
+);
 
-const props = defineProps<{
-  item: ItemInfoOnly;
-  isNew: boolean;
-}>();
+const foundApproveMutation = _changeItemRequestMutation(() =>
+  returnItem({
+    ...selectedId.value,
+    itemNum: props.item.num
+  })
+);
 
-const emit = defineEmits(["popItem"]);
+const queryClient = useQueryClient();
 
 const rentalRequestModal = {
   key: "rentalRequest",
@@ -51,12 +71,7 @@ const rentalRequestModal = {
     resolveLabel: "신청하기"
   },
   resolve: (_: any, key: string) => {
-    _addChangeItemRequestHandler(
-      rentItem({
-        ..._getSelectedStuffId(),
-        itemNum: props.item.num
-      })
-    );
+    rentalRequestMutation.mutate();
     modalStore.removeModal(key);
   }
 };
@@ -71,12 +86,7 @@ const lostRequestModal = {
     resolveLabel: "등록하기"
   },
   resolve: (_: any, key: string) => {
-    _addChangeItemRequestHandler(
-      reportLostItem({
-        ..._getSelectedStuffId(),
-        itemNum: props.item.num
-      })
-    );
+    lostRequestMutation.mutate();
     modalStore.removeModal(key);
   }
 };
@@ -91,12 +101,7 @@ const foundApproveModal = {
     resolveLabel: "확인하기"
   },
   resolve: (_: any, key: string) => {
-    _addChangeItemRequestHandler(
-      returnItem({
-        ..._getSelectedStuffId(),
-        itemNum: props.item.num
-      })
-    );
+    foundApproveMutation.mutate();
     modalStore.removeModal(key);
   }
 };
@@ -139,34 +144,18 @@ const relativeTimeString = (time: number) => {
   return dayjs.unix(time).fromNow();
 };
 
-const _getSelectedStuffId = () => {
-  let stuffName = "";
-  if (selectedStuff.value !== loading && selectedStuff.value !== undefined) {
-    stuffName = selectedStuff.value.name;
-  }
-  return {
-    ...deptId.value,
-    stuffName
-  };
-};
-
-const _addChangeItemRequestHandler = (promise: Promise<any>) => {
-  promise
-    .then(() => {
-      stuffStore.turnOnReloadFlag(true);
-    })
-    .catch((error) => {
+function _changeItemRequestMutation(mutationFn: () => Promise<History>) {
+  return useMutation<History, BeliemeError>(mutationFn, {
+    onSettled: () => {
+      queryClient.invalidateQueries(stuffKeys.list());
+      queryClient.invalidateQueries(stuffKeys.detail());
+    },
+    onError: (error) => {
       console.error(error);
-      if (error.response) {
-        modalStore.addModal(buildAlertModal("errorAlert", error.response.data.message));
-      } else modalStore.addModal(_networkErrorAlert);
-    });
-};
-
-const _networkErrorAlert = buildAlertModal(
-  "networkErrorAlert",
-  "현재 네트워크가 불안하여 서버와 연결이 원할하지 못하거나 서버에 예상하지 못한 문제가 발생하였습니다. 잠시 후 다시 시도해 주세요."
-);
+      modalStore.addModal(buildAlertModal("errorAlert", error.message));
+    }
+  });
+}
 </script>
 
 <template>

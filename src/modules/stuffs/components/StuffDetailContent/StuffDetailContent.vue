@@ -1,20 +1,29 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { ref, watch } from "vue";
+import { onBeforeMount, ref, watch } from "vue";
+import { useMutation, useQuery, useQueryClient } from "vue-query";
 
-import { editStuff, postNewStuff } from "@common/apis/beliemeApis";
+import { editStuff, getStuff, postNewStuff } from "@common/apis/beliemeApis";
+import { stuffKeys } from "@common/apis/queryKeys";
 import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
 import { useDeptStore } from "@common/stores/deptStore";
 import { useModalStore } from "@common/stores/modalStore";
 import { useUserStore } from "@common/stores/userStore";
-import { loading } from "@common/types/Loading";
-import type { StuffWithItems } from "@common/types/Models";
+import type { BeliemeError, StuffWithItems } from "@common/types/Models";
 
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
 import { useStuffStore } from "@^stuffs/stores/stuffStore";
 
-const stuffStore = useStuffStore();
-const { selectedStuffDetail, newStuffAmount } = storeToRefs(stuffStore);
+onBeforeMount(() => {
+  watch(viewMode, () => {
+    _initInputVale();
+  });
+});
+
+const LOREM_IPSUM =
+  "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi sint corrupti illum quos. Dolorum architecto illum, veritatis asperiores odio exercitationem impedit natus. Modi magni, aut corporis impedit ullam nemo saepe!";
+
+const modalStore = useModalStore();
 
 const viewModeStore = useStuffDetailViewModeStore();
 const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
@@ -25,76 +34,77 @@ const { userMode } = storeToRefs(userStore);
 const deptStore = useDeptStore();
 const { deptId } = storeToRefs(deptStore);
 
-const modalStore = useModalStore();
+const stuffStore = useStuffStore();
+const { selectedId, newStuffAmount } = storeToRefs(stuffStore);
 
-const thumbnailInput = ref<string>();
-const nameInput = ref<string>();
-const descInput = ref<string>();
+const { data } = useQuery(stuffKeys.detail(), () => getStuff(selectedId.value));
 
-watch(viewMode, () => {
-  thumbnailInput.value =
-    viewMode.value === "EDIT" ? (selectedStuffDetail.value as StuffWithItems).thumbnail : "";
+const queryClient = useQueryClient();
 
-  nameInput.value =
-    viewMode.value === "EDIT" ? (selectedStuffDetail.value as StuffWithItems).name : "";
+const thumbnailInput = ref<string>("");
+const nameInput = ref<string>("");
+const descInput = ref<string>("");
 
-  descInput.value = viewMode.value === "EDIT" ? LOREM_IPSUM : "";
-});
-
-const commitChange = () => {
-  editStuff(_getSelectedStuffId(), {
-    name: nameInput.value ? nameInput.value : "",
-    thumbnail: thumbnailInput.value ? thumbnailInput.value : ""
-  })
-    .then(() => stuffStore.turnOnReloadFlag(true))
-    .catch((error) => {
+const commitChangeMutation = useMutation<StuffWithItems, BeliemeError>(
+  () =>
+    editStuff(selectedId.value, {
+      name: nameInput.value,
+      thumbnail: thumbnailInput.value
+    }),
+  {
+    onSettled: () => {
+      queryClient.invalidateQueries(stuffKeys.list());
+      queryClient.invalidateQueries(stuffKeys.detail());
+    },
+    onSuccess: () => {
+      viewModeStore.changeStuffDetailViewMode("SHOW");
+    },
+    onError: (error) => {
       console.error(error);
-      if (error.response)
-        modalStore.addModal(buildAlertModal("errorAlert", error.response.data.message));
-      else modalStore.addModal(_networkErrorAlert);
-    });
-};
-
-const commitAddNewStuff = () => {
-  postNewStuff(deptId.value, {
-    name: nameInput.value ? nameInput.value : "",
-    thumbnail: thumbnailInput.value ? thumbnailInput.value : "",
-    amount: newStuffAmount.value
-  })
-    .then(() => stuffStore.turnOnReloadFlag())
-    .catch((error) => {
-      console.error(error);
-      if (error.response)
-        modalStore.addModal(buildAlertModal("errorAlert", error.response.data.message));
-      else modalStore.addModal(_networkErrorAlert);
-    });
-};
-
-const _getSelectedStuffId = () => {
-  let stuffName = "";
-  if (selectedStuffDetail.value !== loading && selectedStuffDetail.value !== undefined) {
-    stuffName = selectedStuffDetail.value.name;
+      modalStore.addModal(buildAlertModal("errorAlert", error.message));
+    }
   }
-  return {
-    ...deptId.value,
-    stuffName
-  };
-};
-const LOREM_IPSUM =
-  "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi sint corrupti illum quos. Dolorum architecto illum, veritatis asperiores odio exercitationem impedit natus. Modi magni, aut corporis impedit ullam nemo saepe!";
-
-const _networkErrorAlert = buildAlertModal(
-  "networkErrorAlert",
-  "현재 네트워크가 불안하여 서버와 연결이 원할하지 못하거나 서버에 예상하지 못한 문제가 발생하였습니다. 잠시 후 다시 시도해 주세요."
 );
+
+const commitAddNewStuffMutation = useMutation<StuffWithItems, BeliemeError>(
+  () =>
+    postNewStuff(deptId.value, {
+      name: nameInput.value,
+      thumbnail: thumbnailInput.value,
+      amount: newStuffAmount.value
+    }),
+  {
+    onSettled: () => {
+      queryClient.invalidateQueries(stuffKeys.list());
+      queryClient.invalidateQueries(stuffKeys.detail());
+    },
+    onSuccess: () => {
+      viewModeStore.changeStuffDetailViewMode("SHOW");
+    },
+    onError: (error) => {
+      console.error(error);
+      modalStore.addModal(buildAlertModal("errorAlert", error.message));
+    }
+  }
+);
+
+const _initInputVale = () => {
+  if (data.value === undefined) {
+    thumbnailInput.value = "";
+    nameInput.value = "";
+    descInput.value = "";
+    return;
+  }
+  thumbnailInput.value = viewMode.value === "EDIT" ? data.value.thumbnail : "";
+  nameInput.value = viewMode.value === "EDIT" ? data.value.name : "";
+  descInput.value = viewMode.value === "EDIT" ? LOREM_IPSUM : "";
+};
 </script>
 
 <template>
   <section class="stuff-info">
     <section class="thumbnail">
-      <span v-if="viewMode === 'SHOW'">
-        {{ (selectedStuffDetail as StuffWithItems).thumbnail }}
-      </span>
+      <span v-if="viewMode === 'SHOW'">{{ data?.thumbnail }}</span>
       <input
         v-else
         v-model="thumbnailInput"
@@ -106,9 +116,7 @@ const _networkErrorAlert = buildAlertModal(
     <section class="label-and-desc">
       <section class="label">
         <section class="name">
-          <span v-if="viewMode === 'SHOW'">
-            {{ (selectedStuffDetail as StuffWithItems).name }}
-          </span>
+          <span v-if="viewMode === 'SHOW'">{{ data?.name }}</span>
           <input
             v-else
             v-model="nameInput"
@@ -140,9 +148,8 @@ const _networkErrorAlert = buildAlertModal(
                 class="btn btn-primary btn-sm"
                 @click="
                   () => {
-                    if (viewMode === 'EDIT') commitChange();
-                    else if (viewMode === 'ADD') commitAddNewStuff();
-                    viewModeStore.changeStuffDetailViewMode('SHOW');
+                    if (viewMode === 'EDIT') commitChangeMutation.mutate();
+                    else if (viewMode === 'ADD') commitAddNewStuffMutation.mutate();
                   }
                 "
               >
@@ -153,7 +160,6 @@ const _networkErrorAlert = buildAlertModal(
                 @click="
                   () => {
                     viewModeStore.changeStuffDetailViewMode('SHOW');
-                    stuffStore.turnOnReloadFlag(true);
                   }
                 "
               >
