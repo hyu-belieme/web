@@ -1,21 +1,23 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
+import { useQuery } from "vue-query";
 
-import { loading } from "@common/types/Loading";
+import { getHistory } from "@common/apis/beliemeApis";
+import { historyKeys } from "@common/apis/queryKeys";
 
 import { useHistoryStore } from "@^histories/stores/historyStore";
 
 const historyStore = useHistoryStore();
-const { selectedHistory } = storeToRefs(historyStore);
+const { selectedId } = storeToRefs(historyStore);
+
+const { isSuccess, data } = useQuery(historyKeys.detail(), () => getHistory(selectedId.value));
 </script>
 
 <template>
-  <template v-if="selectedHistory !== loading && selectedHistory !== undefined">
+  <template v-if="isSuccess">
     <section class="label">
-      <section class="thumbnail">{{ selectedHistory.item.stuff.thumbnail }}</section>
-      <section class="name">
-        {{ selectedHistory.item.stuff.name }} #{{ selectedHistory.item.num }}
-      </section>
+      <section class="thumbnail">{{ data?.item.stuff.thumbnail }}</section>
+      <section class="name">{{ data?.item.stuff.name }} #{{ data?.item.num }}</section>
     </section>
   </template>
 </template>

@@ -1,81 +1,65 @@
 <script setup lang="ts">
-import { List } from "immutable";
 import { storeToRefs } from "pinia";
-import { onBeforeMount, watch } from "vue";
+import { computed, onBeforeMount, watch, watchEffect } from "vue";
+import { useQuery, useQueryClient } from "vue-query";
 
 import { getAllHistoryInDept, getAllRequesterHistoryInDept } from "@common/apis/beliemeApis";
+import { historyKeys } from "@common/apis/queryKeys";
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
 import LoadingView from "@common/components/LoadingView/LoadingView.vue";
 import { useDeptStore } from "@common/stores/deptStore";
 import { useUserStore } from "@common/stores/userStore";
-import { loading } from "@common/types/Loading";
 
 import HistoryCell from "@^histories/components/HistoryListCell/HistoryListCell.vue";
-import {
-  type CategorizedHistoryIndex,
-  type HistoryCategory,
-  useHistoryStore
-} from "@^histories/stores/historyStore";
+import { useHistoryStore } from "@^histories/stores/historyStore";
+import { CategorizeHistories, type HistoryCategory } from "@^histories/utils/historyCategorizer";
 
 onBeforeMount(() => {
   watch(userMode, () => {
-    historyStore.turnOnReloadFlag();
+    queryClient.invalidateQueries(historyKeys.list());
+    historyStore.updateSelected(0, 0);
   });
 
-  watch(reloadFlag, () => {
-    if (reloadFlag.value) {
-      if (userMode.value === "STAFF" || userMode.value === "MASTER") staffModeUpdateHistories();
-      else userModeUpdateHistories();
-    }
+  watchEffect(() => {
+    if (categorizedHistoriesList.value === undefined) return;
+
+    const selectedHistory = categorizedHistoriesList.value
+      .get(selectedSection.value)
+      ?.histories.get(selectedIndex.value);
+    if (selectedHistory === undefined) return;
+
+    historyStore.updateSelectedId({
+      ...deptId.value,
+      stuffName: selectedHistory.item.stuff.name,
+      itemNum: selectedHistory.item.num,
+      historyNum: selectedHistory.num
+    });
+    queryClient.invalidateQueries(historyKeys.detail());
   });
-  historyStore.turnOnReloadFlag();
+  historyStore.updateSelected(0, 0);
 });
 
-let userModeAfterChangeHandlerKeys = List<string>();
 const userStore = useUserStore();
 const { user, userMode } = storeToRefs(userStore);
-
-const historyStore = useHistoryStore();
-const { reloadFlag, histories, categorizedHistoriesList, selected } = storeToRefs(historyStore);
 
 const deptStore = useDeptStore();
 const { deptId } = storeToRefs(deptStore);
 
-const userModeUpdateHistories = () => {
-  if (user.value === undefined) historyStore.updateHistories(undefined);
-  else if (user.value === loading) historyStore.updateHistories(loading);
-  else {
-    historyStore.updateHistories(loading);
-    getAllRequesterHistoryInDept(deptId.value, {
+const historyStore = useHistoryStore();
+const { selectedSection, selectedIndex } = storeToRefs(historyStore);
+
+const { data, isLoading, isSuccess } = useQuery(historyKeys.list(), () => {
+  if (userMode.value === "USER")
+    return getAllRequesterHistoryInDept(deptId.value, {
       univCode: user.value.university.code,
       studentId: user.value.studentId
-    })
-      .then((data) => {
-        historyStore.updateHistories(data);
-      })
-      .catch((error) => {
-        console.error(error);
-        historyStore.updateHistories(undefined);
-      });
-  }
-};
-
-const staffModeUpdateHistories = () => {
-  historyStore.updateHistories(loading);
-  getAllHistoryInDept(deptId.value)
-    .then((data) => {
-      historyStore.updateHistories(data);
-    })
-    .catch((error) => {
-      console.error(error);
-      historyStore.updateHistories(undefined);
     });
-};
+  return getAllHistoryInDept(deptId.value);
+});
 
-const updateSelected = (newVal: CategorizedHistoryIndex) => {
-  if (JSON.stringify(newVal) === JSON.stringify(selected.value)) return;
-  historyStore.updateSelected(newVal);
-};
+const categorizedHistoriesList = computed(() => CategorizeHistories(data.value));
+
+const queryClient = useQueryClient();
 
 const headerLabel = (category: HistoryCategory) => {
   switch (category) {
@@ -95,42 +79,35 @@ const headerLabel = (category: HistoryCategory) => {
 
 <template>
   <section class="history-list">
-    <template v-if="histories === loading">
-      <LoadingView></LoadingView>
-    </template>
-    <template v-else-if="histories === undefined">
-      <DataLoadFailView></DataLoadFailView>
-    </template>
-    <template v-else>
-      <template v-for="categorizedHistories of categorizedHistoriesList">
-        <section v-if="categorizedHistories.histories.size > 0">
-          <section class="cell-header">{{ headerLabel(categorizedHistories.category) }}</section>
-          <HistoryCell
-            v-for="(history, index) of categorizedHistories.histories"
-            key="history"
-            v-bind="{
-              history: history,
-              selected:
-                JSON.stringify(selected) ===
-                JSON.stringify({ category: categorizedHistories.category, index: index })
-            }"
-            @click="updateSelected({ category: categorizedHistories.category, index: index })"
-          ></HistoryCell>
-          <template
-            v-if="
-              (categorizedHistories.category === 'RETURNED' ||
-                categorizedHistories.category === 'EXPIRED') &&
-              categorizedHistories.histories.size >= 5
-            "
-          >
-            <section class="cell-hider">
-              <span>더 보기</span>
-              <i class="bi bi-chevron-down"></i>
-            </section>
-          </template>
+    <template
+      v-if="isSuccess"
+      v-for="(categorizedHistories, sectionIndex) of categorizedHistoriesList"
+    >
+      <section class="cell-header">{{ headerLabel(categorizedHistories.category) }}</section>
+      <HistoryCell
+        v-for="(history, index) of categorizedHistories.histories"
+        key="history"
+        v-bind="{
+          history: history,
+          selected: selectedSection === sectionIndex && selectedIndex === index
+        }"
+        @click="historyStore.updateSelected(sectionIndex, index)"
+      ></HistoryCell>
+      <template
+        v-if="
+          (categorizedHistories.category === 'RETURNED' ||
+            categorizedHistories.category === 'EXPIRED') &&
+          categorizedHistories.histories.size >= 5
+        "
+      >
+        <section class="cell-hider">
+          <span>더 보기</span>
+          <i class="bi bi-chevron-down"></i>
         </section>
       </template>
     </template>
+    <LoadingView v-else-if="isLoading"></LoadingView>
+    <DataLoadFailView v-else></DataLoadFailView>
   </section>
 </template>
 

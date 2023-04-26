@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { getCurrentInstance } from "vue";
+import { useQuery } from "vue-query";
 
-import { loading } from "@common/types/Loading";
+import { getHistory } from "@common/apis/beliemeApis";
+import { historyKeys } from "@common/apis/queryKeys";
 import type { User } from "@common/types/Models";
 
 import InfoListCell from "@^histories/components/HistoryDetailInfoListCell/HistoryDetailInfoListCell.vue";
@@ -12,7 +14,9 @@ const app = getCurrentInstance();
 const dayjs = app!.appContext.config.globalProperties.$dayjs;
 
 const historyStore = useHistoryStore();
-const { selectedHistory } = storeToRefs(historyStore);
+const { selectedId } = storeToRefs(historyStore);
+
+const { isSuccess, data } = useQuery(historyKeys.detail(), () => getHistory(selectedId.value));
 
 const timeToString = (time: number) => {
   return dayjs.unix(time).format("llll");
@@ -24,63 +28,63 @@ const nameAndStudentIdFormat = (user: User) => {
 </script>
 
 <template>
-  <template v-if="selectedHistory !== undefined && selectedHistory !== loading">
+  <template v-if="isSuccess">
     <section class="info-list">
       <InfoListCell
-        v-if="selectedHistory.requestedAt !== undefined"
-        v-bind="{ keyword: '대여 요청된 시각', value: timeToString(selectedHistory.requestedAt) }"
+        v-if="data?.requestedAt !== undefined"
+        v-bind="{ keyword: '대여 요청된 시각', value: timeToString(data?.requestedAt) }"
       ></InfoListCell>
       <InfoListCell
-        v-if="selectedHistory.approvedAt !== undefined"
-        v-bind="{ keyword: '대여 승인된 시각', value: timeToString(selectedHistory.approvedAt) }"
+        v-if="data?.approvedAt !== undefined"
+        v-bind="{ keyword: '대여 승인된 시각', value: timeToString(data?.approvedAt) }"
       ></InfoListCell>
       <InfoListCell
-        v-if="selectedHistory.lostAt !== undefined"
-        v-bind="{ keyword: '분실 등록된 시각', value: timeToString(selectedHistory.lostAt) }"
+        v-if="data?.lostAt !== undefined"
+        v-bind="{ keyword: '분실 등록된 시각', value: timeToString(data?.lostAt) }"
       ></InfoListCell>
       <InfoListCell
-        v-if="selectedHistory.returnedAt !== undefined"
-        v-bind="{ keyword: '반납 승인된 시각', value: timeToString(selectedHistory.returnedAt) }"
+        v-if="data?.returnedAt !== undefined"
+        v-bind="{ keyword: '반납 승인된 시각', value: timeToString(data?.returnedAt) }"
       ></InfoListCell>
       <InfoListCell
-        v-if="selectedHistory.canceledAt !== undefined"
-        v-bind="{ keyword: '취소된 시각', value: timeToString(selectedHistory.canceledAt) }"
+        v-if="data?.canceledAt !== undefined"
+        v-bind="{ keyword: '취소된 시각', value: timeToString(data?.canceledAt) }"
       ></InfoListCell>
     </section>
     <section class="info-list">
       <InfoListCell
-        v-if="selectedHistory.requester !== undefined"
+        v-if="data?.requester !== undefined"
         v-bind="{
           keyword: '대여 요청자',
-          value: nameAndStudentIdFormat(selectedHistory.requester)
+          value: nameAndStudentIdFormat(data?.requester)
         }"
       ></InfoListCell>
       <InfoListCell
-        v-if="selectedHistory.approveManager !== undefined"
+        v-if="data?.approveManager !== undefined"
         v-bind="{
           keyword: '대여 승인 담당자',
-          value: nameAndStudentIdFormat(selectedHistory.approveManager)
+          value: nameAndStudentIdFormat(data?.approveManager)
         }"
       ></InfoListCell>
       <InfoListCell
-        v-if="selectedHistory.lostManager !== undefined"
+        v-if="data?.lostManager !== undefined"
         v-bind="{
           keyword: '분실 등록 담당자',
-          value: nameAndStudentIdFormat(selectedHistory.lostManager)
+          value: nameAndStudentIdFormat(data?.lostManager)
         }"
       ></InfoListCell>
       <InfoListCell
-        v-if="selectedHistory.returnManager !== undefined"
+        v-if="data?.returnManager !== undefined"
         v-bind="{
           keyword: '반납 승인 담당자',
-          value: nameAndStudentIdFormat(selectedHistory.returnManager)
+          value: nameAndStudentIdFormat(data?.returnManager)
         }"
       ></InfoListCell>
       <InfoListCell
-        v-if="selectedHistory.cancelManager !== undefined"
+        v-if="data?.cancelManager !== undefined"
         v-bind="{
           keyword: '취소 요청자',
-          value: nameAndStudentIdFormat(selectedHistory.cancelManager)
+          value: nameAndStudentIdFormat(data?.cancelManager)
         }"
       ></InfoListCell>
     </section>

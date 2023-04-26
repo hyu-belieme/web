@@ -1,26 +1,34 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
+import { useMutation, useQuery, useQueryClient } from "vue-query";
 
-import { approveItem, cancelItem, returnItem } from "@common/apis/beliemeApis";
+import { approveItem, cancelItem, getHistory, returnItem } from "@common/apis/beliemeApis";
+import { historyKeys } from "@common/apis/queryKeys";
 import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
-import { useDeptStore } from "@common/stores/deptStore";
 import { useModalStore } from "@common/stores/modalStore";
 import { useUserStore } from "@common/stores/userStore";
-import { loading } from "@common/types/Loading";
+import type { BeliemeError, History } from "@common/types/Models";
 
 import { useHistoryStore } from "@^histories/stores/historyStore";
+
+const modalStore = useModalStore();
 
 const userStore = useUserStore();
 const { userMode } = storeToRefs(userStore);
 
 const historyStore = useHistoryStore();
-const { selectedHistory } = storeToRefs(historyStore);
+const { selectedId } = storeToRefs(historyStore);
 
-const modalStore = useModalStore();
+const { isSuccess, data } = useQuery(historyKeys.detail(), () => getHistory(selectedId.value));
 
-const deptStore = useDeptStore();
-const { deptId } = storeToRefs(deptStore);
+const queryClient = useQueryClient();
+
+const rentalApproveMutation = _changeItemRequestMutation(() => approveItem(selectedId.value));
+
+const cancelRequestMutation = _changeItemRequestMutation(() => cancelItem(selectedId.value));
+
+const returnApproveMutation = _changeItemRequestMutation(() => returnItem(selectedId.value));
 
 const rentalApproveModal = {
   key: "rentalApprove",
@@ -32,7 +40,7 @@ const rentalApproveModal = {
     resolveLabel: "승인하기"
   },
   resolve: (_: any, key: string) => {
-    _addChangeItemRequestHandler(approveItem(_getItemOfSelectedHistoryIndex()));
+    rentalApproveMutation.mutate();
     modalStore.removeModal(key);
   }
 };
@@ -46,7 +54,7 @@ const requestCancelModal = {
     resolveLabel: "취소하기"
   },
   resolve: (_: any, key: string) => {
-    _addChangeItemRequestHandler(cancelItem(_getItemOfSelectedHistoryIndex()));
+    cancelRequestMutation.mutate();
     modalStore.removeModal(key);
   }
 };
@@ -61,47 +69,29 @@ const returnApproveModal = {
     resolveLabel: "승인하기"
   },
   resolve: (_: any, key: string) => {
-    _addChangeItemRequestHandler(returnItem(_getItemOfSelectedHistoryIndex()));
+    returnApproveMutation.mutate();
     modalStore.removeModal(key);
   }
 };
 
-const _addChangeItemRequestHandler = (promise: Promise<any>) => {
-  promise
-    .then(() => {
-      historyStore.turnOnReloadFlag(true);
-    })
-    .catch((error) => {
+function _changeItemRequestMutation(mutationFn: () => Promise<History>) {
+  return useMutation<History, BeliemeError>(mutationFn, {
+    onSettled: () => {
+      queryClient.invalidateQueries(historyKeys.list());
+      queryClient.invalidateQueries(historyKeys.detail());
+      historyStore.updateSelected(0, 0);
+    },
+    onError: (error) => {
       console.error(error);
-      if (error.response)
-        modalStore.addModal(buildAlertModal("errorAlert", error.response.data.message));
-      else modalStore.addModal(_networkErrorAlert);
-    });
-};
-
-const _getItemOfSelectedHistoryIndex = () => {
-  let stuffName = "",
-    itemNum = 0;
-  if (selectedHistory.value !== loading && selectedHistory.value !== undefined) {
-    stuffName = selectedHistory.value.item.stuff.name;
-    itemNum = selectedHistory.value.item.num;
-  }
-  return {
-    ...deptId.value,
-    stuffName: stuffName,
-    itemNum: itemNum
-  };
-};
-
-const _networkErrorAlert = buildAlertModal(
-  "networkErrorAlert",
-  "현재 네트워크가 불안하여 서버와 연결이 원할하지 못하거나 서버에 예상하지 못한 문제가 발생하였습니다. 잠시 후 다시 시도해 주세요."
-);
+      modalStore.addModal(buildAlertModal("errorAlert", error.message));
+    }
+  });
+}
 </script>
 
 <template>
-  <section v-if="selectedHistory !== loading && selectedHistory !== undefined" class="buttons">
-    <template v-if="selectedHistory.status === 'REQUESTED'">
+  <section v-if="isSuccess" class="buttons">
+    <template v-if="data?.status === 'REQUESTED'">
       <button
         v-if="userMode === 'STAFF' || userMode === 'MASTER'"
         class="btn btn-primary btn-sm"
@@ -113,9 +103,7 @@ const _networkErrorAlert = buildAlertModal(
         신청 취소
       </button>
     </template>
-    <template
-      v-else-if="selectedHistory.status === 'USING' || selectedHistory.status === 'DELAYED'"
-    >
+    <template v-else-if="data?.status === 'USING' || data?.status === 'DELAYED'">
       <button
         v-if="userMode === 'STAFF' || userMode === 'MASTER'"
         class="btn btn-primary btn-sm"

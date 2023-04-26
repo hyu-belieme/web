@@ -1,20 +1,35 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
+import { useQuery } from "vue-query";
 
-import { loading } from "@common/types/Loading";
+import { getAllHistoryInDept, getAllRequesterHistoryInDept } from "@common/apis/beliemeApis";
+import { historyKeys } from "@common/apis/queryKeys";
+import { useDeptStore } from "@common/stores/deptStore";
+import { useUserStore } from "@common/stores/userStore";
 
 import HistoryDetail from "@^histories/components/HistoryDetailSection/HistoryDetailSection.vue";
 import HistoryList from "@^histories/components/HistoryList/HistoryList.vue";
 import HistoryPageOnEmpty from "@^histories/components/HistoryPageOnEmpty/HistoryPageOnEmpty.vue";
-import { useHistoryStore } from "@^histories/stores/historyStore";
 
-const historyStore = useHistoryStore();
-const { histories } = storeToRefs(historyStore);
+const userStore = useUserStore();
+const { user, userMode } = storeToRefs(userStore);
+
+const deptStore = useDeptStore();
+const { deptId } = storeToRefs(deptStore);
+
+const { data, isLoading, isError, isSuccess } = useQuery(historyKeys.list(), () => {
+  if (userMode.value === "USER")
+    return getAllRequesterHistoryInDept(deptId.value, {
+      univCode: user.value.university.code,
+      studentId: user.value.studentId
+    });
+  return getAllHistoryInDept(deptId.value);
+});
 </script>
 
 <template>
   <section class="history-list-page">
-    <template v-if="histories === loading || histories === undefined || histories.size !== 0">
+    <template v-if="isLoading || isError || (isSuccess && data?.size !== 0)">
       <HistoryList></HistoryList>
       <HistoryDetail></HistoryDetail>
     </template>
