@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { computed, readonly, ref } from "vue";
 
 import userDummy from "@common/assets/dummies/newUserDummy";
-import type { UserWithSecureInfo } from "@common/types/NewModels";
+import type { UserWithSecureInfo } from "@common/types/Models";
 
 type UserMode = "USER" | "STAFF" | "MASTER";
 

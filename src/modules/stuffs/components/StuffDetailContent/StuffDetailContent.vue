@@ -9,7 +9,7 @@ import { build as buildAlertModal } from "@common/components/AlertModal/utils/al
 import { useModalStore } from "@common/stores/modalStore";
 import { useDeptStore } from "@common/stores/newDeptStore";
 import { useUserStore } from "@common/stores/newUserStore";
-import type { BeliemeError, StuffWithItems } from "@common/types/NewModels";
+import type { BeliemeError, StuffWithItems } from "@common/types/Models";
 
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
 import { useStuffStore } from "@^stuffs/stores/stuffStore";

@@ -8,7 +8,7 @@ import { build as buildAlertModal } from "@common/components/AlertModal/utils/al
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import { useModalStore } from "@common/stores/modalStore";
 import { useUserStore } from "@common/stores/newUserStore";
-import type { BeliemeError, History } from "@common/types/NewModels";
+import type { BeliemeError, History } from "@common/types/Models";
 
 import { useHistoryStore } from "@^histories/stores/historyStore";
 

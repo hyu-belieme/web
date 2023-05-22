@@ -10,7 +10,7 @@ import { stuffKeys } from "@common/apis/queryKeys";
 import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import { useModalStore } from "@common/stores/modalStore";
-import type { BeliemeError, Item, ItemInfoOnly } from "@common/types/NewModels";
+import type { BeliemeError, Item, ItemInfoOnly } from "@common/types/Models";
 
 import ItemListCell from "@^stuffs/components/StuffDetailItemListCell/StuffDetailItemListCell.vue";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";

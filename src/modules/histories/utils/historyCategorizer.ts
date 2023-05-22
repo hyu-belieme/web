@@ -1,6 +1,6 @@
 import { List } from "immutable";
 
-import type { History, HistoryStatus } from "@common/types/NewModels";
+import type { History, HistoryStatus } from "@common/types/Models";
 
 export const CategorizeHistories = (histories: List<History> | undefined) => {
   if (histories === undefined) return undefined;

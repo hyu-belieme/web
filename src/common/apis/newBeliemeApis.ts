@@ -13,7 +13,7 @@ import {
   type StuffPostRequestBody,
   StuffRequestBody,
   StuffWithItems
-} from "@common/types/NewModels";
+} from "@common/types/Models";
 
 const userStore = useUserStore();
 const { userToken } = storeToRefs(userStore);

@@ -5,7 +5,7 @@ import { useQuery } from "vue-query";
 
 import { getHistory } from "@common/apis/newBeliemeApis";
 import { historyKeys } from "@common/apis/queryKeys";
-import type { User } from "@common/types/NewModels";
+import type { User } from "@common/types/Models";
 
 import InfoListCell from "@^histories/components/HistoryDetailInfoListCell/HistoryDetailInfoListCell.vue";
 import { useHistoryStore } from "@^histories/stores/historyStore";

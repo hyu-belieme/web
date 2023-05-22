@@ -1,4 +1,4 @@
-import type { UserWithSecureInfo } from "@common/types/NewModels";
+import type { UserWithSecureInfo } from "@common/types/Models";
 
 const userDummy: UserWithSecureInfo = {
   id: "31383941-3930-3237-3036-464534333241",
