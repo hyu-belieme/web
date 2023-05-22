@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 
-import { useUserStore } from "@common/stores/newUserStore";
+import { useUserStore } from "@common/stores/userStore";
 
 import StuffDetail from "@^stuffs/components/StuffDetailSection/StuffDetailSection.vue";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";

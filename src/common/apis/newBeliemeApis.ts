@@ -2,7 +2,7 @@ import axios from "axios";
 import { List } from "immutable";
 import { storeToRefs } from "pinia";
 
-import { useUserStore } from "@common/stores/newUserStore";
+import { useUserStore } from "@common/stores/userStore";
 import {
   BeliemeError,
   History,

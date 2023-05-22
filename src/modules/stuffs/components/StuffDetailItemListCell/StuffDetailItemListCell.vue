@@ -10,7 +10,7 @@ import { build as buildAlertModal } from "@common/components/AlertModal/utils/al
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import InfoTag from "@common/components/InfoTag/InfoTag.vue";
 import { useModalStore } from "@common/stores/modalStore";
-import { useUserStore } from "@common/stores/newUserStore";
+import { useUserStore } from "@common/stores/userStore";
 import type { BeliemeError, History, ItemInfoOnly } from "@common/types/Models";
 
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";

@@ -7,7 +7,7 @@ import { historyKeys } from "@common/apis/queryKeys";
 import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import { useModalStore } from "@common/stores/modalStore";
-import { useUserStore } from "@common/stores/newUserStore";
+import { useUserStore } from "@common/stores/userStore";
 import type { BeliemeError, History } from "@common/types/Models";
 
 import { useHistoryStore } from "@^histories/stores/historyStore";

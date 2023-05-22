@@ -8,7 +8,7 @@ import { historyKeys } from "@common/apis/queryKeys";
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
 import LoadingView from "@common/components/LoadingView/LoadingView.vue";
 import { useDeptStore } from "@common/stores/deptStore";
-import { useUserStore } from "@common/stores/newUserStore";
+import { useUserStore } from "@common/stores/userStore";
 
 import HistoryCell from "@^histories/components/HistoryListCell/HistoryListCell.vue";
 import { useHistoryStore } from "@^histories/stores/historyStore";

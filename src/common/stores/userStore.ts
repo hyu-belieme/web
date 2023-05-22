@@ -6,7 +6,7 @@ import type { UserWithSecureInfo } from "@common/types/Models";
 
 type UserMode = "USER" | "STAFF" | "MASTER";
 
-export const useUserStore = defineStore("newUser", () => {
+export const useUserStore = defineStore("user", () => {
   const user = ref<UserWithSecureInfo>(userDummy);
 
   const userMode = ref<UserMode>("USER");

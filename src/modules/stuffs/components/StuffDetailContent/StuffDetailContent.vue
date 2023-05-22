@@ -8,7 +8,7 @@ import { stuffKeys } from "@common/apis/queryKeys";
 import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
 import { useDeptStore } from "@common/stores/deptStore";
 import { useModalStore } from "@common/stores/modalStore";
-import { useUserStore } from "@common/stores/newUserStore";
+import { useUserStore } from "@common/stores/userStore";
 import type { BeliemeError, StuffWithItems } from "@common/types/Models";
 
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
