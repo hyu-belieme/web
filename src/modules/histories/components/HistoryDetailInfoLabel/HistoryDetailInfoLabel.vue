@@ -1,16 +1,7 @@
 <script setup lang="ts">
-import { storeToRefs } from "pinia";
-import { useQuery } from "vue-query";
+import { getHistoryDetailQuery } from "@^histories/queries/HistoryQueries";
 
-import { getHistory } from "@common/apis/beliemeApis";
-import { historyKeys } from "@common/apis/queryKeys";
-
-import { useHistoryStore } from "@^histories/stores/historyStore";
-
-const historyStore = useHistoryStore();
-const { selectedId } = storeToRefs(historyStore);
-
-const { isSuccess, data } = useQuery(historyKeys.detail(), () => getHistory(selectedId.value));
+const { isSuccess, data } = getHistoryDetailQuery();
 </script>
 
 <template>

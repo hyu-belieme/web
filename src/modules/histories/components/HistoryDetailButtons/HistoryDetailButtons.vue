@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { useMutation, useQuery, useQueryClient } from "vue-query";
+import { useMutation, useQueryClient } from "vue-query";
 
-import { approveItem, cancelItem, getHistory, returnItem } from "@common/apis/beliemeApis";
+import { approveItem, cancelItem, returnItem } from "@common/apis/beliemeApis";
 import { historyKeys } from "@common/apis/queryKeys";
 import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
@@ -10,6 +10,7 @@ import { useModalStore } from "@common/stores/modalStore";
 import { useUserStore } from "@common/stores/userStore";
 import type { BeliemeError, History } from "@common/types/Models";
 
+import { getHistoryDetailQuery } from "@^histories/queries/HistoryQueries";
 import { useHistoryStore } from "@^histories/stores/historyStore";
 
 const modalStore = useModalStore();
@@ -20,7 +21,7 @@ const { userMode } = storeToRefs(userStore);
 const historyStore = useHistoryStore();
 const { selectedId } = storeToRefs(historyStore);
 
-const { isSuccess, data } = useQuery(historyKeys.detail(), () => getHistory(selectedId.value));
+const { isSuccess, data } = getHistoryDetailQuery();
 
 const queryClient = useQueryClient();
 

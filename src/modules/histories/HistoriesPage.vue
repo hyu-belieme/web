@@ -1,26 +1,10 @@
 <script setup lang="ts">
-import { storeToRefs } from "pinia";
-import { useQuery } from "vue-query";
-
-import { getAllHistoryInDept, getAllRequesterHistoryInDept } from "@common/apis/beliemeApis";
-import { historyKeys } from "@common/apis/queryKeys";
-import { useDeptStore } from "@common/stores/deptStore";
-import { useUserStore } from "@common/stores/userStore";
-
 import HistoryDetail from "@^histories/components/HistoryDetailSection/HistoryDetailSection.vue";
 import HistoryList from "@^histories/components/HistoryList/HistoryList.vue";
 import HistoryPageOnEmpty from "@^histories/components/HistoryPageOnEmpty/HistoryPageOnEmpty.vue";
+import { getHistoryListQuery } from "@^histories/queries/HistoryQueries";
 
-const userStore = useUserStore();
-const { user, userMode } = storeToRefs(userStore);
-
-const deptStore = useDeptStore();
-const { deptId } = storeToRefs(deptStore);
-
-const { data, isLoading, isError, isSuccess } = useQuery(historyKeys.list(), () => {
-  if (userMode.value === "USER") return getAllRequesterHistoryInDept(deptId.value, user.value.id);
-  return getAllHistoryInDept(deptId.value);
-});
+const { data, isLoading, isError, isSuccess } = getHistoryListQuery();
 </script>
 
 <template>

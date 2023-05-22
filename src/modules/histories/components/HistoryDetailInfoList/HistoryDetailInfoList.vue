@@ -1,22 +1,15 @@
 <script setup lang="ts">
-import { storeToRefs } from "pinia";
 import { getCurrentInstance } from "vue";
-import { useQuery } from "vue-query";
 
-import { getHistory } from "@common/apis/beliemeApis";
-import { historyKeys } from "@common/apis/queryKeys";
 import type { User } from "@common/types/Models";
 
 import InfoListCell from "@^histories/components/HistoryDetailInfoListCell/HistoryDetailInfoListCell.vue";
-import { useHistoryStore } from "@^histories/stores/historyStore";
+import { getHistoryDetailQuery } from "@^histories/queries/HistoryQueries";
 
 const app = getCurrentInstance();
 const dayjs = app!.appContext.config.globalProperties.$dayjs;
 
-const historyStore = useHistoryStore();
-const { selectedId } = storeToRefs(historyStore);
-
-const { isSuccess, data } = useQuery(historyKeys.detail(), () => getHistory(selectedId.value));
+const { isSuccess, data } = getHistoryDetailQuery();
 
 const timeToString = (time: number) => {
   return dayjs.unix(time).format("llll");

@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { computed, onBeforeMount, watch, watchEffect } from "vue";
-import { useQuery, useQueryClient } from "vue-query";
+import { useQueryClient } from "vue-query";
 
-import { getAllHistoryInDept, getAllRequesterHistoryInDept } from "@common/apis/beliemeApis";
 import { historyKeys } from "@common/apis/queryKeys";
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
 import LoadingView from "@common/components/LoadingView/LoadingView.vue";
-import { useDeptStore } from "@common/stores/deptStore";
 import { useUserStore } from "@common/stores/userStore";
 
 import HistoryCell from "@^histories/components/HistoryListCell/HistoryListCell.vue";
+import { getHistoryListQuery } from "@^histories/queries/HistoryQueries";
 import { useHistoryStore } from "@^histories/stores/historyStore";
 import { CategorizeHistories, type HistoryCategory } from "@^histories/utils/historyCategorizer";
 
@@ -35,18 +34,12 @@ onBeforeMount(() => {
 });
 
 const userStore = useUserStore();
-const { user, userMode } = storeToRefs(userStore);
-
-const deptStore = useDeptStore();
-const { deptId } = storeToRefs(deptStore);
+const { userMode } = storeToRefs(userStore);
 
 const historyStore = useHistoryStore();
 const { selectedSection, selectedIndex } = storeToRefs(historyStore);
 
-const { data, isLoading, isSuccess } = useQuery(historyKeys.list(), () => {
-  if (userMode.value === "USER") return getAllRequesterHistoryInDept(deptId.value, user.value.id);
-  return getAllHistoryInDept(deptId.value);
-});
+const { data, isLoading, isSuccess } = getHistoryListQuery();
 
 const categorizedHistoriesList = computed(() => CategorizeHistories(data.value));
 
