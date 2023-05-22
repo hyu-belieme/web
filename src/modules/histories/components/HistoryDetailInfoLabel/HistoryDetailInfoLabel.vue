@@ -2,7 +2,7 @@
 import { storeToRefs } from "pinia";
 import { useQuery } from "vue-query";
 
-import { getHistory } from "@common/apis/newBeliemeApis";
+import { getHistory } from "@common/apis/beliemeApis";
 import { historyKeys } from "@common/apis/queryKeys";
 
 import { useHistoryStore } from "@^histories/stores/historyStore";

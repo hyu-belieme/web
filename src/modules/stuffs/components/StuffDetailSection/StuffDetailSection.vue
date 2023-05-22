@@ -2,7 +2,7 @@
 import { storeToRefs } from "pinia";
 import { useQuery } from "vue-query";
 
-import { getStuff } from "@common/apis/newBeliemeApis";
+import { getStuff } from "@common/apis/beliemeApis";
 import { stuffKeys } from "@common/apis/queryKeys";
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
 import LoadingView from "@common/components/LoadingView/LoadingView.vue";

@@ -3,7 +3,7 @@ import { storeToRefs } from "pinia";
 import { onBeforeMount, ref, watch } from "vue";
 import { useMutation, useQuery, useQueryClient } from "vue-query";
 
-import { editStuff, getStuff, postNewStuff } from "@common/apis/newBeliemeApis";
+import { editStuff, getStuff, postNewStuff } from "@common/apis/beliemeApis";
 import { stuffKeys } from "@common/apis/queryKeys";
 import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
 import { useDeptStore } from "@common/stores/deptStore";

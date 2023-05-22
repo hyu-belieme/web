@@ -3,7 +3,7 @@ import { storeToRefs } from "pinia";
 import { getCurrentInstance } from "vue";
 import { useQuery } from "vue-query";
 
-import { getHistory } from "@common/apis/newBeliemeApis";
+import { getHistory } from "@common/apis/beliemeApis";
 import { historyKeys } from "@common/apis/queryKeys";
 import type { User } from "@common/types/Models";
 

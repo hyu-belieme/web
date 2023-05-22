@@ -3,7 +3,7 @@ import { storeToRefs } from "pinia";
 import { computed, onBeforeMount, watch, watchEffect } from "vue";
 import { useQuery, useQueryClient } from "vue-query";
 
-import { getAllHistoryInDept, getAllRequesterHistoryInDept } from "@common/apis/newBeliemeApis";
+import { getAllHistoryInDept, getAllRequesterHistoryInDept } from "@common/apis/beliemeApis";
 import { historyKeys } from "@common/apis/queryKeys";
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
 import LoadingView from "@common/components/LoadingView/LoadingView.vue";

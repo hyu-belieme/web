@@ -2,7 +2,7 @@
 import { storeToRefs } from "pinia";
 import { useQuery } from "vue-query";
 
-import { getAllStuffsInDept } from "@common/apis/newBeliemeApis";
+import { getAllStuffsInDept } from "@common/apis/beliemeApis";
 import { stuffKeys } from "@common/apis/queryKeys";
 import { useDeptStore } from "@common/stores/deptStore";
 

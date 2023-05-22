@@ -4,7 +4,7 @@ import { NIL as NIL_UUID } from "uuid";
 import { getCurrentInstance } from "vue";
 import { useMutation, useQueryClient } from "vue-query";
 
-import { rentItem, reportLostItem, returnItem } from "@common/apis/newBeliemeApis";
+import { rentItem, reportLostItem, returnItem } from "@common/apis/beliemeApis";
 import { stuffKeys } from "@common/apis/queryKeys";
 import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";

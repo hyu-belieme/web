@@ -2,7 +2,7 @@
 import { storeToRefs } from "pinia";
 import { useMutation, useQuery, useQueryClient } from "vue-query";
 
-import { approveItem, cancelItem, getHistory, returnItem } from "@common/apis/newBeliemeApis";
+import { approveItem, cancelItem, getHistory, returnItem } from "@common/apis/beliemeApis";
 import { historyKeys } from "@common/apis/queryKeys";
 import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
