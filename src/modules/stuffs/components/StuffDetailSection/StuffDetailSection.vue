@@ -1,24 +1,18 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { useQuery } from "vue-query";
 
-import { getStuff } from "@common/apis/beliemeApis";
-import { stuffKeys } from "@common/apis/queryKeys";
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
 import LoadingView from "@common/components/LoadingView/LoadingView.vue";
 
 import StuffDetailContent from "@^stuffs/components/StuffDetailContent/StuffDetailContent.vue";
 import ItemList from "@^stuffs/components/StuffDetailItemList/StuffDetailItemList.vue";
+import { getStuffDetailQuery } from "@^stuffs/queries/stuffQueries";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
-import { useStuffStore } from "@^stuffs/stores/stuffStore";
-
-const stuffStore = useStuffStore();
-const { selectedId } = storeToRefs(stuffStore);
 
 const viewModeStore = useStuffDetailViewModeStore();
 const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
 
-const { isSuccess, isLoading } = useQuery(stuffKeys.detail(), () => getStuff(selectedId.value));
+const { isSuccess, isLoading } = getStuffDetailQuery();
 </script>
 
 <template>
