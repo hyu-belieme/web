@@ -4,7 +4,7 @@ import { useQuery } from "vue-query";
 
 import { getAllStuffsInDept } from "@common/apis/newBeliemeApis";
 import { stuffKeys } from "@common/apis/queryKeys";
-import { useDeptStore } from "@common/stores/newDeptStore";
+import { useDeptStore } from "@common/stores/deptStore";
 
 import StuffDetail from "@^stuffs/components/StuffDetailSection/StuffDetailSection.vue";
 import StuffList from "@^stuffs/components/StuffList/StuffList.vue";

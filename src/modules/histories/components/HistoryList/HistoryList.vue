@@ -7,7 +7,7 @@ import { getAllHistoryInDept, getAllRequesterHistoryInDept } from "@common/apis/
 import { historyKeys } from "@common/apis/queryKeys";
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
 import LoadingView from "@common/components/LoadingView/LoadingView.vue";
-import { useDeptStore } from "@common/stores/newDeptStore";
+import { useDeptStore } from "@common/stores/deptStore";
 import { useUserStore } from "@common/stores/newUserStore";
 
 import HistoryCell from "@^histories/components/HistoryListCell/HistoryListCell.vue";

@@ -4,7 +4,7 @@ import { useQuery } from "vue-query";
 
 import { getAllHistoryInDept, getAllRequesterHistoryInDept } from "@common/apis/newBeliemeApis";
 import { historyKeys } from "@common/apis/queryKeys";
-import { useDeptStore } from "@common/stores/newDeptStore";
+import { useDeptStore } from "@common/stores/deptStore";
 import { useUserStore } from "@common/stores/newUserStore";
 
 import HistoryDetail from "@^histories/components/HistoryDetailSection/HistoryDetailSection.vue";

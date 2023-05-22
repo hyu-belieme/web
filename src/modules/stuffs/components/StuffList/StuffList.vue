@@ -8,8 +8,8 @@ import { stuffKeys } from "@common/apis/queryKeys";
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
 import LoadingView from "@common/components/LoadingView/LoadingView.vue";
+import { useDeptStore } from "@common/stores/deptStore";
 import { useModalStore } from "@common/stores/modalStore";
-import { useDeptStore } from "@common/stores/newDeptStore";
 
 import StuffListCell from "@^stuffs/components/StuffListCell/StuffListCell.vue";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore.js";
