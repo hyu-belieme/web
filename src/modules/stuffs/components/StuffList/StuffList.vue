@@ -77,7 +77,7 @@ const _changingStuffAtEditionModeConfirmModal = (toSelect: number) => {
 
 <template>
   <section class="stuff-list">
-    <template v-if="isSuccess && data != undefined">
+    <template v-if="isSuccess && data !== undefined">
       <StuffListCell
         v-for="(stuff, index) of data"
         :key="stuff.name"
