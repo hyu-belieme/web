@@ -13,7 +13,7 @@ import { useModalStore } from "@common/stores/modalStore";
 import type { BeliemeError, Item, ItemInfoOnly } from "@common/types/Models";
 
 import ItemListCell from "@^stuffs/components/StuffDetailItemListCell/StuffDetailItemListCell.vue";
-import { getStuffDetailQuery } from "@^stuffs/queries/stuffQueries";
+import { getStuffDetailQuery, invalidateStuffDetailQuery } from "@^stuffs/queries/stuffQueries";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
 import { useStuffStore } from "@^stuffs/stores/stuffStore";
 
@@ -74,7 +74,7 @@ const addItemModal = {
 const addNewItemMutation = useMutation<Item, BeliemeError>(() => addNewItem(selectedId.value), {
   onSettled: () => {
     queryClient.invalidateQueries(stuffKeys.list());
-    queryClient.invalidateQueries(stuffKeys.detail());
+    invalidateStuffDetailQuery(queryClient);
   },
   onError: (error) => {
     console.error(error);

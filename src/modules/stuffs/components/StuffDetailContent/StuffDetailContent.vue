@@ -11,7 +11,7 @@ import { useModalStore } from "@common/stores/modalStore";
 import { useUserStore } from "@common/stores/userStore";
 import type { BeliemeError, StuffWithItems } from "@common/types/Models";
 
-import { getStuffDetailQuery } from "@^stuffs/queries/stuffQueries";
+import { getStuffDetailQuery, invalidateStuffDetailQuery } from "@^stuffs/queries/stuffQueries";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
 import { useStuffStore } from "@^stuffs/stores/stuffStore";
 
@@ -55,7 +55,7 @@ const commitChangeMutation = useMutation<StuffWithItems, BeliemeError>(
   {
     onSettled: () => {
       queryClient.invalidateQueries(stuffKeys.list());
-      queryClient.invalidateQueries(stuffKeys.detail());
+      invalidateStuffDetailQuery(queryClient);
     },
     onSuccess: () => {
       viewModeStore.changeStuffDetailViewMode("SHOW");
@@ -78,7 +78,7 @@ const commitAddNewStuffMutation = useMutation<StuffWithItems, BeliemeError>(
   {
     onSettled: () => {
       queryClient.invalidateQueries(stuffKeys.list());
-      queryClient.invalidateQueries(stuffKeys.detail());
+      invalidateStuffDetailQuery(queryClient);
     },
     onSuccess: () => {
       viewModeStore.changeStuffDetailViewMode("SHOW");

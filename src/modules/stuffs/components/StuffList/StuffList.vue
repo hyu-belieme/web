@@ -10,7 +10,11 @@ import LoadingView from "@common/components/LoadingView/LoadingView.vue";
 import { useModalStore } from "@common/stores/modalStore";
 
 import StuffListCell from "@^stuffs/components/StuffListCell/StuffListCell.vue";
-import { getStuffListQuery } from "@^stuffs/queries/stuffQueries";
+import {
+  getStuffDetailQuery,
+  getStuffListQuery,
+  invalidateStuffDetailQueryAfterCacheCheck
+} from "@^stuffs/queries/stuffQueries";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore.js";
 import { useStuffStore } from "@^stuffs/stores/stuffStore";
 
@@ -23,7 +27,7 @@ onBeforeMount(() => {
     if (selectedStuff === undefined) return;
 
     stuffStore.updateSelectedId(selectedStuff.id);
-    queryClient.invalidateQueries(stuffKeys.detail());
+    invalidateStuffDetailQueryAfterCacheCheck(queryClient);
   });
   updateSelectedIdx(0);
 });
@@ -37,6 +41,7 @@ const stuffStore = useStuffStore();
 const { selectedIdx } = storeToRefs(stuffStore);
 
 const { data, isLoading, isSuccess } = getStuffListQuery();
+const { isStale } = getStuffDetailQuery();
 
 const queryClient = useQueryClient();
 

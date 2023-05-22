@@ -13,6 +13,7 @@ import { useModalStore } from "@common/stores/modalStore";
 import { useUserStore } from "@common/stores/userStore";
 import type { BeliemeError, History, ItemInfoOnly } from "@common/types/Models";
 
+import { invalidateStuffDetailQuery } from "@^stuffs/queries/stuffQueries";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
 import { useStuffStore } from "@^stuffs/stores/stuffStore";
 
@@ -133,7 +134,7 @@ function _changeItemRequestMutation(mutationFn: () => Promise<History>) {
   return useMutation<History, BeliemeError>(mutationFn, {
     onSettled: () => {
       queryClient.invalidateQueries(stuffKeys.list());
-      queryClient.invalidateQueries(stuffKeys.detail());
+      invalidateStuffDetailQuery(queryClient);
     },
     onError: (error) => {
       console.error(error);
