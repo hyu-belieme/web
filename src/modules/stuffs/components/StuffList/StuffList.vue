@@ -1,17 +1,16 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { onBeforeMount, watchEffect } from "vue";
-import { useQuery, useQueryClient } from "vue-query";
+import { useQueryClient } from "vue-query";
 
-import { getAllStuffsInDept } from "@common/apis/beliemeApis";
 import { stuffKeys } from "@common/apis/queryKeys";
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
 import LoadingView from "@common/components/LoadingView/LoadingView.vue";
-import { useDeptStore } from "@common/stores/deptStore";
 import { useModalStore } from "@common/stores/modalStore";
 
 import StuffListCell from "@^stuffs/components/StuffListCell/StuffListCell.vue";
+import { getStuffListQuery } from "@^stuffs/queries/stuffQueries";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore.js";
 import { useStuffStore } from "@^stuffs/stores/stuffStore";
 
@@ -34,15 +33,10 @@ const modalStore = useModalStore();
 const stuffDetailViewModeStore = useStuffDetailViewModeStore();
 const { stuffDetailViewMode } = storeToRefs(stuffDetailViewModeStore);
 
-const deptStore = useDeptStore();
-const { deptId } = storeToRefs(deptStore);
-
 const stuffStore = useStuffStore();
 const { selectedIdx } = storeToRefs(stuffStore);
 
-const { data, isLoading, isSuccess } = useQuery(stuffKeys.list(), () =>
-  getAllStuffsInDept(deptId.value)
-);
+const { data, isLoading, isSuccess } = getStuffListQuery();
 
 const queryClient = useQueryClient();
 

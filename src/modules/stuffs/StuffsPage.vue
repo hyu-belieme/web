@@ -1,21 +1,17 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { useQuery } from "vue-query";
 
-import { getAllStuffsInDept } from "@common/apis/beliemeApis";
-import { stuffKeys } from "@common/apis/queryKeys";
 import { useDeptStore } from "@common/stores/deptStore";
 
 import StuffDetail from "@^stuffs/components/StuffDetailSection/StuffDetailSection.vue";
 import StuffList from "@^stuffs/components/StuffList/StuffList.vue";
 import StuffPageOnEmpty from "@^stuffs/components/StuffPageOnEmpty/StuffPageOnEmpty.vue";
+import { getStuffListQuery } from "@^stuffs/queries/stuffQueries";
 
 const deptStore = useDeptStore();
 const { deptId } = storeToRefs(deptStore);
 
-const { data, isLoading, isError, isSuccess } = useQuery(stuffKeys.list(), () =>
-  getAllStuffsInDept(deptId.value)
-);
+const { data, isLoading, isError, isSuccess } = getStuffListQuery();
 </script>
 
 <template>

@@ -3,9 +3,9 @@ import { List } from "immutable";
 import { storeToRefs } from "pinia";
 import { NIL as NIL_UUID } from "uuid";
 import { onBeforeMount, ref, watchEffect } from "vue";
-import { useMutation, useQuery, useQueryClient } from "vue-query";
+import { useMutation, useQueryClient } from "vue-query";
 
-import { addNewItem, getStuff } from "@common/apis/beliemeApis";
+import { addNewItem } from "@common/apis/beliemeApis";
 import { stuffKeys } from "@common/apis/queryKeys";
 import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
@@ -13,6 +13,7 @@ import { useModalStore } from "@common/stores/modalStore";
 import type { BeliemeError, Item, ItemInfoOnly } from "@common/types/Models";
 
 import ItemListCell from "@^stuffs/components/StuffDetailItemListCell/StuffDetailItemListCell.vue";
+import { getStuffDetailQuery } from "@^stuffs/queries/stuffQueries";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
 import { useStuffStore } from "@^stuffs/stores/stuffStore";
 
@@ -38,7 +39,7 @@ const modalStore = useModalStore();
 
 const queryClient = useQueryClient();
 
-const { data } = useQuery(stuffKeys.detail(), () => getStuff(selectedId.value));
+const { data } = getStuffDetailQuery();
 
 const items = ref<List<ItemInfoOnly>>(List([]));
 

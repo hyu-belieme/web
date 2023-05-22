@@ -8,7 +8,7 @@ import "immutable";
 import { createPinia } from "pinia";
 import "uuid";
 import { createApp } from "vue";
-import { VueQueryPlugin } from "vue-query";
+import { VueQueryPlugin, type VueQueryPluginOptions } from "vue-query";
 
 import App from "@core/App.vue";
 import router from "@core/router";
@@ -23,6 +23,16 @@ app.config.globalProperties.$dayjs = dayjs;
 app.use(createPinia());
 app.use(router);
 
-app.use(VueQueryPlugin);
+const vueQueryPluginOptions: VueQueryPluginOptions = {
+  queryClientConfig: {
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: false
+      }
+    }
+  }
+};
+
+app.use(VueQueryPlugin, vueQueryPluginOptions);
 
 app.mount("#app");
