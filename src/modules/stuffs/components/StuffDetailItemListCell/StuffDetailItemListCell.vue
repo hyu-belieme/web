@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
+import { NIL as NIL_UUID } from "uuid";
 import { getCurrentInstance } from "vue";
 import { useMutation, useQueryClient } from "vue-query";
 
-import { rentItem, reportLostItem, returnItem } from "@common/apis/beliemeApis";
+import { rentItem, reportLostItem, returnItem } from "@common/apis/newBeliemeApis";
 import { stuffKeys } from "@common/apis/queryKeys";
 import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import InfoTag from "@common/components/InfoTag/InfoTag.vue";
 import { useModalStore } from "@common/stores/modalStore";
-import { useUserStore } from "@common/stores/userStore";
-import type { BeliemeError, History, ItemInfoOnly } from "@common/types/Models";
+import { useUserStore } from "@common/stores/newUserStore";
+import type { BeliemeError, History, ItemInfoOnly } from "@common/types/NewModels";
 
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
 import { useStuffStore } from "@^stuffs/stores/stuffStore";
@@ -19,7 +20,6 @@ const emit = defineEmits(["popItem"]);
 
 const props = defineProps<{
   item: ItemInfoOnly;
-  isNew: boolean;
 }>();
 
 const TAG_SIZE = 6;
@@ -38,26 +38,11 @@ const { userMode } = storeToRefs(userStore);
 const stuffStore = useStuffStore();
 const { selectedId } = storeToRefs(stuffStore);
 
-const rentalRequestMutation = _changeItemRequestMutation(() =>
-  rentItem({
-    ...selectedId.value,
-    itemNum: props.item.num
-  })
-);
+const rentalRequestMutation = _changeItemRequestMutation(() => rentItem(selectedId.value));
 
-const lostRequestMutation = _changeItemRequestMutation(() =>
-  reportLostItem({
-    ...selectedId.value,
-    itemNum: props.item.num
-  })
-);
+const lostRequestMutation = _changeItemRequestMutation(() => reportLostItem(selectedId.value));
 
-const foundApproveMutation = _changeItemRequestMutation(() =>
-  returnItem({
-    ...selectedId.value,
-    itemNum: props.item.num
-  })
-);
+const foundApproveMutation = _changeItemRequestMutation(() => returnItem(selectedId.value));
 
 const queryClient = useQueryClient();
 
@@ -201,7 +186,7 @@ function _changeItemRequestMutation(mutationFn: () => Promise<History>) {
       </template>
       <template v-else>
         <button
-          v-if="viewMode === 'ADD' || isNew"
+          v-if="viewMode === 'ADD' || item.id === NIL_UUID"
           type="button"
           class="btn btn-danger btn-sm"
           @click="emit('popItem')"

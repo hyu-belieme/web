@@ -3,13 +3,13 @@ import { storeToRefs } from "pinia";
 import { onBeforeMount, ref, watch } from "vue";
 import { useMutation, useQuery, useQueryClient } from "vue-query";
 
-import { editStuff, getStuff, postNewStuff } from "@common/apis/beliemeApis";
+import { editStuff, getStuff, postNewStuff } from "@common/apis/newBeliemeApis";
 import { stuffKeys } from "@common/apis/queryKeys";
 import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
-import { useDeptStore } from "@common/stores/deptStore";
 import { useModalStore } from "@common/stores/modalStore";
-import { useUserStore } from "@common/stores/userStore";
-import type { BeliemeError, StuffWithItems } from "@common/types/Models";
+import { useDeptStore } from "@common/stores/newDeptStore";
+import { useUserStore } from "@common/stores/newUserStore";
+import type { BeliemeError, StuffWithItems } from "@common/types/NewModels";
 
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
 import { useStuffStore } from "@^stuffs/stores/stuffStore";
@@ -68,7 +68,8 @@ const commitChangeMutation = useMutation<StuffWithItems, BeliemeError>(
 
 const commitAddNewStuffMutation = useMutation<StuffWithItems, BeliemeError>(
   () =>
-    postNewStuff(deptId.value, {
+    postNewStuff({
+      departmentId: deptId.value,
       name: nameInput.value,
       thumbnail: thumbnailInput.value,
       amount: newStuffAmount.value

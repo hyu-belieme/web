@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { List } from "immutable";
 import { storeToRefs } from "pinia";
+import { NIL as NIL_UUID } from "uuid";
 import { onBeforeMount, ref, watchEffect } from "vue";
 import { useMutation, useQuery, useQueryClient } from "vue-query";
 
-import { addNewItem, getStuff } from "@common/apis/beliemeApis";
+import { addNewItem, getStuff } from "@common/apis/newBeliemeApis";
 import { stuffKeys } from "@common/apis/queryKeys";
 import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import { useModalStore } from "@common/stores/modalStore";
-import type { BeliemeError, Item, ItemInfoOnly } from "@common/types/Models";
+import type { BeliemeError, Item, ItemInfoOnly } from "@common/types/NewModels";
 
 import ItemListCell from "@^stuffs/components/StuffDetailItemListCell/StuffDetailItemListCell.vue";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
@@ -40,10 +41,6 @@ const queryClient = useQueryClient();
 const { data } = useQuery(stuffKeys.detail(), () => getStuff(selectedId.value));
 
 const items = ref<List<ItemInfoOnly>>(List([]));
-
-const selectedStuffItemsSize = () => {
-  return data.value ? data.value.items.size : 0;
-};
 
 const pushNewItem = () => {
   if (viewMode.value === "ADD") {
@@ -87,6 +84,7 @@ const addNewItemMutation = useMutation<Item, BeliemeError>(() => addNewItem(sele
 const _addNewItemOnList = () => {
   if (items.value.size >= MAX_ITEM_NUM) return items.value;
   return items.value.push({
+    id: NIL_UUID,
     num: items.value.size + 1,
     status: "USABLE",
     lastHistory: null
@@ -99,7 +97,7 @@ const _addNewItemOnList = () => {
     <ItemListCell
       v-for="(item, index) of items"
       :key="index"
-      v-bind="{ item: item, isNew: index >= selectedStuffItemsSize() }"
+      v-bind="{ item: item }"
       @pop-item="popItem"
     ></ItemListCell>
     <button

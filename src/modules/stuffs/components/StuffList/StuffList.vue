@@ -3,13 +3,13 @@ import { storeToRefs } from "pinia";
 import { onBeforeMount, watchEffect } from "vue";
 import { useQuery, useQueryClient } from "vue-query";
 
-import { getAllStuffsInDept } from "@common/apis/beliemeApis";
+import { getAllStuffsInDept } from "@common/apis/newBeliemeApis";
 import { stuffKeys } from "@common/apis/queryKeys";
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
 import LoadingView from "@common/components/LoadingView/LoadingView.vue";
-import { useDeptStore } from "@common/stores/deptStore";
 import { useModalStore } from "@common/stores/modalStore";
+import { useDeptStore } from "@common/stores/newDeptStore";
 
 import StuffListCell from "@^stuffs/components/StuffListCell/StuffListCell.vue";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore.js";
@@ -23,10 +23,7 @@ onBeforeMount(() => {
     const selectedStuff = data.value.get(selected.value);
     if (selectedStuff === undefined) return;
 
-    stuffStore.updateSelectedId({
-      ...deptId.value,
-      stuffName: selectedStuff.name
-    });
+    stuffStore.updateSelectedId(selectedStuff.id);
     queryClient.invalidateQueries(stuffKeys.detail());
   });
   updateSelected(0);
@@ -80,7 +77,7 @@ const _changingStuffAtEditionModeConfirmModal = (toSelect: number) => {
 
 <template>
   <section class="stuff-list">
-    <template v-if="isSuccess">
+    <template v-if="isSuccess && data != undefined">
       <StuffListCell
         v-for="(stuff, index) of data"
         :key="stuff.name"

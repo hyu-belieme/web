@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import InfoTag from "@common/components/InfoTag/InfoTag.vue";
-import type { Stuff } from "@common/types/Models";
+import type { Stuff } from "@common/types/NewModels";
 
 defineProps<{
   stuff: Stuff;

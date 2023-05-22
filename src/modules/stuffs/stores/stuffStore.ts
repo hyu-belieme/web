@@ -1,20 +1,19 @@
 import { defineStore } from "pinia";
+import { NIL as NIL_UUID } from "uuid";
 import { readonly, ref } from "vue";
-
-import type { StuffId } from "@common/types/Models";
 
 export const useStuffStore = defineStore("stuff", () => {
   const MAX_ITEM_NUM = 50;
 
   const selected = ref(0);
-  const selectedId = ref<StuffId>({ univCode: "", deptCode: "", stuffName: "" });
+  const selectedId = ref<string>(NIL_UUID);
   const newStuffAmount = ref(0);
 
   const updateSelected = (newVal: number) => {
     selected.value = newVal;
   };
 
-  const updateSelectedId = (id: StuffId) => {
+  const updateSelectedId = (id: string) => {
     selectedId.value = id;
   };
 
