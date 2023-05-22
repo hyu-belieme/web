@@ -20,13 +20,13 @@ onBeforeMount(() => {
   watchEffect(() => {
     if (data.value === undefined) return;
 
-    const selectedStuff = data.value.get(selected.value);
+    const selectedStuff = data.value.get(selectedIdx.value);
     if (selectedStuff === undefined) return;
 
     stuffStore.updateSelectedId(selectedStuff.id);
     queryClient.invalidateQueries(stuffKeys.detail());
   });
-  updateSelected(0);
+  updateSelectedIdx(0);
 });
 
 const modalStore = useModalStore();
@@ -38,7 +38,7 @@ const deptStore = useDeptStore();
 const { deptId } = storeToRefs(deptStore);
 
 const stuffStore = useStuffStore();
-const { selected } = storeToRefs(stuffStore);
+const { selectedIdx } = storeToRefs(stuffStore);
 
 const { data, isLoading, isSuccess } = useQuery(stuffKeys.list(), () =>
   getAllStuffsInDept(deptId.value)
@@ -46,9 +46,9 @@ const { data, isLoading, isSuccess } = useQuery(stuffKeys.list(), () =>
 
 const queryClient = useQueryClient();
 
-const updateSelected = (toSelect: number) => {
+const updateSelectedIdx = (toSelect: number) => {
   if (stuffDetailViewMode.value === "SHOW") {
-    stuffStore.updateSelected(toSelect);
+    stuffStore.updateSelectedIdx(toSelect);
     return;
   }
   modalStore.addModal(_changingStuffAtEditionModeConfirmModal(toSelect));
@@ -64,7 +64,7 @@ const _changingStuffAtEditionModeConfirmModal = (toSelect: number) => {
       resolveLabel: "확인"
     },
     resolve: (_: any, key: string) => {
-      stuffStore.updateSelected(toSelect);
+      stuffStore.updateSelectedIdx(toSelect);
       stuffDetailViewModeStore.changeStuffDetailViewMode("SHOW");
       modalStore.removeModal(key);
     },
@@ -81,8 +81,8 @@ const _changingStuffAtEditionModeConfirmModal = (toSelect: number) => {
       <StuffListCell
         v-for="(stuff, index) of data"
         :key="stuff.name"
-        v-bind="{ stuff: stuff, selected: index === selected }"
-        @click="() => updateSelected(index)"
+        v-bind="{ stuff: stuff, selected: index === selectedIdx }"
+        @click="() => updateSelectedIdx(index)"
       ></StuffListCell>
     </template>
     <template v-else-if="isLoading">
