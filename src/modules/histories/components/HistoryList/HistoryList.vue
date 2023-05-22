@@ -3,12 +3,12 @@ import { storeToRefs } from "pinia";
 import { computed, onBeforeMount, watch, watchEffect } from "vue";
 import { useQuery, useQueryClient } from "vue-query";
 
-import { getAllHistoryInDept, getAllRequesterHistoryInDept } from "@common/apis/beliemeApis";
+import { getAllHistoryInDept, getAllRequesterHistoryInDept } from "@common/apis/newBeliemeApis";
 import { historyKeys } from "@common/apis/queryKeys";
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
 import LoadingView from "@common/components/LoadingView/LoadingView.vue";
-import { useDeptStore } from "@common/stores/deptStore";
-import { useUserStore } from "@common/stores/userStore";
+import { useDeptStore } from "@common/stores/newDeptStore";
+import { useUserStore } from "@common/stores/newUserStore";
 
 import HistoryCell from "@^histories/components/HistoryListCell/HistoryListCell.vue";
 import { useHistoryStore } from "@^histories/stores/historyStore";
@@ -28,12 +28,7 @@ onBeforeMount(() => {
       ?.histories.get(selectedIndex.value);
     if (selectedHistory === undefined) return;
 
-    historyStore.updateSelectedId({
-      ...deptId.value,
-      stuffName: selectedHistory.item.stuff.name,
-      itemNum: selectedHistory.item.num,
-      historyNum: selectedHistory.num
-    });
+    historyStore.updateSelectedId(selectedHistory.id);
     queryClient.invalidateQueries(historyKeys.detail());
   });
   historyStore.updateSelected(0, 0);
@@ -49,11 +44,7 @@ const historyStore = useHistoryStore();
 const { selectedSection, selectedIndex } = storeToRefs(historyStore);
 
 const { data, isLoading, isSuccess } = useQuery(historyKeys.list(), () => {
-  if (userMode.value === "USER")
-    return getAllRequesterHistoryInDept(deptId.value, {
-      univCode: user.value.university.code,
-      studentId: user.value.studentId
-    });
+  if (userMode.value === "USER") return getAllRequesterHistoryInDept(deptId.value, user.value.id);
   return getAllHistoryInDept(deptId.value);
 });
 
@@ -80,7 +71,7 @@ const headerLabel = (category: HistoryCategory) => {
 <template>
   <section class="history-list">
     <template
-      v-if="isSuccess"
+      v-if="isSuccess && categorizedHistoriesList !== undefined"
       v-for="(categorizedHistories, sectionIndex) of categorizedHistoriesList"
     >
       <section class="cell-header">{{ headerLabel(categorizedHistories.category) }}</section>

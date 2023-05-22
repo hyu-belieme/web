@@ -3,9 +3,9 @@ import { storeToRefs } from "pinia";
 import { getCurrentInstance } from "vue";
 import { useQuery } from "vue-query";
 
-import { getHistory } from "@common/apis/beliemeApis";
+import { getHistory } from "@common/apis/newBeliemeApis";
 import { historyKeys } from "@common/apis/queryKeys";
-import type { User } from "@common/types/Models";
+import type { User } from "@common/types/NewModels";
 
 import InfoListCell from "@^histories/components/HistoryDetailInfoListCell/HistoryDetailInfoListCell.vue";
 import { useHistoryStore } from "@^histories/stores/historyStore";

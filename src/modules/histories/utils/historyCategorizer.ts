@@ -1,6 +1,6 @@
 import { List } from "immutable";
 
-import type { History, HistoryStatus } from "@common/types/Models";
+import type { History, HistoryStatus } from "@common/types/NewModels";
 
 export const CategorizeHistories = (histories: List<History> | undefined) => {
   if (histories === undefined) return undefined;
@@ -24,15 +24,16 @@ const _categorizeBy = (histories: List<History>, targetStatus: List<HistoryStatu
   return output;
 };
 
-const HISTORY_CATEGORY_MAP = List<{ category: HistoryCategory; targetStatus: List<HistoryStatus> }>(
-  [
-    { category: "REQUESTED", targetStatus: List(["REQUESTED"]) },
-    { category: "USING", targetStatus: List(["USING", "DELAYED"]) },
-    { category: "LOST", targetStatus: List(["LOST"]) },
-    { category: "RETURNED", targetStatus: List(["RETURNED", "FOUND"]) },
-    { category: "EXPIRED", targetStatus: List(["EXPIRED"]) }
-  ]
-);
+const HISTORY_CATEGORY_MAP = List<{
+  category: HistoryCategory;
+  targetStatus: List<HistoryStatus>;
+}>([
+  { category: "REQUESTED", targetStatus: List(["REQUESTED"]) },
+  { category: "USING", targetStatus: List(["USING", "DELAYED"]) },
+  { category: "LOST", targetStatus: List(["LOST"]) },
+  { category: "RETURNED", targetStatus: List(["RETURNED", "FOUND"]) },
+  { category: "EXPIRED", targetStatus: List(["EXPIRED"]) }
+]);
 
 export type HistoryCategory = "REQUESTED" | "USING" | "LOST" | "RETURNED" | "EXPIRED";
 

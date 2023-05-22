@@ -3,8 +3,8 @@ import { storeToRefs } from "pinia";
 import { getCurrentInstance } from "vue";
 
 import InfoTag from "@common/components/InfoTag/InfoTag.vue";
-import { useUserStore } from "@common/stores/userStore";
-import type { History, User } from "@common/types/Models";
+import { useUserStore } from "@common/stores/newUserStore";
+import type { History, User } from "@common/types/NewModels";
 
 const TAG_SIZE = 6;
 
