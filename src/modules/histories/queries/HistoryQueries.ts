@@ -25,6 +25,8 @@ const { deptId } = storeToRefs(deptStore);
 const historyStore = useHistoryStore();
 const { selectedId } = storeToRefs(historyStore);
 
+let shouldResetIndex = true;
+
 let historyListQuery: undefined | UseQueryReturnType<List<History>, unknown> = undefined;
 let historyDetailQuery: undefined | UseQueryReturnType<History, unknown> = undefined;
 
@@ -32,14 +34,21 @@ let historyDetailCache: QueryCache<string, History>;
 
 export const getHistoryListQuery = () => {
   if (historyListQuery === undefined) {
-    historyListQuery = useQuery<List<History>>(historyKeys.list(), () => {
-      if (userMode.value === "USER") {
-        return getAllRequesterHistoryInDept(deptId.value, user.value.id);
-      }
-      return getAllHistoryInDept(deptId.value);
+    historyListQuery = useQuery<List<History>>(historyKeys.list(), async () => {
+      const historyList = await _getHistoryList();
+      if (shouldResetIndex) historyStore.updateSelected(0, 0);
+      shouldResetIndex = false;
+      return historyList;
     });
   }
   return historyListQuery;
+};
+
+const _getHistoryList = () => {
+  if (userMode.value === "USER") {
+    return getAllRequesterHistoryInDept(deptId.value, user.value.id);
+  }
+  return getAllHistoryInDept(deptId.value);
 };
 
 export const getHistoryDetailQuery = () => {
@@ -54,12 +63,17 @@ export const getHistoryDetailQuery = () => {
   return historyDetailQuery;
 };
 
+export const invalidateHistoryListQueryAndResetIndex = (queryClient: QueryClient) => {
+  shouldResetIndex = true;
+  queryClient.invalidateQueries(historyKeys.list());
+};
+
 export const invalidateHistoryDetailQuery = (queryClient: QueryClient) => {
   historyDetailCache.clearCache();
   queryClient.invalidateQueries(historyKeys.detail());
 };
 
-export const invalidateStuffDetailQueryAfterCacheCheck = (queryClient: QueryClient) => {
+export const invalidateHistoryDetailQueryAfterCacheCheck = (queryClient: QueryClient) => {
   let resultFromCache = historyDetailCache.getCachedData(selectedId.value);
   if (resultFromCache === undefined) {
     queryClient.invalidateQueries(historyKeys.detail());

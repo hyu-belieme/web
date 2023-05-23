@@ -10,7 +10,11 @@ import { useModalStore } from "@common/stores/modalStore";
 import { useUserStore } from "@common/stores/userStore";
 import type { BeliemeError, History } from "@common/types/Models";
 
-import { getHistoryDetailQuery } from "@^histories/queries/HistoryQueries";
+import {
+  getHistoryDetailQuery,
+  invalidateHistoryDetailQuery,
+  invalidateHistoryListQueryAndResetIndex
+} from "@^histories/queries/HistoryQueries";
 import { useHistoryStore } from "@^histories/stores/historyStore";
 
 const modalStore = useModalStore();
@@ -78,9 +82,8 @@ const returnApproveModal = {
 function _changeItemRequestMutation(mutationFn: () => Promise<History>) {
   return useMutation<History, BeliemeError>(mutationFn, {
     onSettled: () => {
-      queryClient.invalidateQueries(historyKeys.list());
-      queryClient.invalidateQueries(historyKeys.detail());
-      historyStore.updateSelected(0, 0);
+      invalidateHistoryListQueryAndResetIndex(queryClient);
+      invalidateHistoryDetailQuery(queryClient);
     },
     onError: (error) => {
       console.error(error);

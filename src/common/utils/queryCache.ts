@@ -17,7 +17,6 @@ export default class QueryCache<KeyType, DataType> {
 
   public getCachedData(key: KeyType) {
     let cache = this.cacheMap.get(key);
-    console.log(cache);
     if (cache === undefined) return undefined;
     if (Date.now() >= cache.refreshTime) return undefined;
     return cache.data;

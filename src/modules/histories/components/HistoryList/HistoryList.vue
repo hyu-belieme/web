@@ -9,14 +9,17 @@ import LoadingView from "@common/components/LoadingView/LoadingView.vue";
 import { useUserStore } from "@common/stores/userStore";
 
 import HistoryCell from "@^histories/components/HistoryListCell/HistoryListCell.vue";
-import { getHistoryListQuery } from "@^histories/queries/HistoryQueries";
+import {
+  getHistoryListQuery,
+  invalidateHistoryDetailQueryAfterCacheCheck,
+  invalidateHistoryListQueryAndResetIndex
+} from "@^histories/queries/HistoryQueries";
 import { useHistoryStore } from "@^histories/stores/historyStore";
 import { CategorizeHistories, type HistoryCategory } from "@^histories/utils/historyCategorizer";
 
 onBeforeMount(() => {
   watch(userMode, () => {
-    queryClient.invalidateQueries(historyKeys.list());
-    historyStore.updateSelected(0, 0);
+    invalidateHistoryListQueryAndResetIndex(queryClient);
   });
 
   watchEffect(() => {
@@ -28,7 +31,7 @@ onBeforeMount(() => {
     if (selectedHistory === undefined) return;
 
     historyStore.updateSelectedId(selectedHistory.id);
-    queryClient.invalidateQueries(historyKeys.detail());
+    invalidateHistoryDetailQueryAfterCacheCheck(queryClient);
   });
   historyStore.updateSelected(0, 0);
 });
