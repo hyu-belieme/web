@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { onBeforeMount, watchEffect } from "vue";
+import { onBeforeMount, watch, watchEffect } from "vue";
 import { useQueryClient } from "vue-query";
 
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
@@ -18,16 +18,10 @@ import { useStuffStore } from "@^stuffs/stores/stuffStore";
 
 onBeforeMount(() => {
   stuffDetailViewModeStore.changeStuffDetailViewMode("SHOW");
-  watchEffect(() => {
+  watch(selectedId, () => {
     if (data.value === undefined) return;
-
-    const selectedStuff = data.value.get(selectedIdx.value);
-    if (selectedStuff === undefined) return;
-
-    stuffStore.updateSelectedId(selectedStuff.id);
     invalidateStuffDetailQueryAfterCacheCheck(queryClient);
   });
-  updateSelectedIdx(0);
 });
 
 const modalStore = useModalStore();
@@ -36,21 +30,21 @@ const stuffDetailViewModeStore = useStuffDetailViewModeStore();
 const { stuffDetailViewMode } = storeToRefs(stuffDetailViewModeStore);
 
 const stuffStore = useStuffStore();
-const { selectedIdx } = storeToRefs(stuffStore);
+const { selectedId } = storeToRefs(stuffStore);
 
 const { data, isLoading, isSuccess } = getStuffListQuery();
 
 const queryClient = useQueryClient();
 
-const updateSelectedIdx = (toSelect: number) => {
+const updateSelectedId = (newSelectedId: string) => {
   if (stuffDetailViewMode.value === "SHOW") {
-    stuffStore.updateSelectedIdx(toSelect);
+    stuffStore.updateSelectedId(newSelectedId);
     return;
   }
-  modalStore.addModal(_changingStuffAtEditionModeConfirmModal(toSelect));
+  modalStore.addModal(_changingStuffAtEditionModeConfirmModal(newSelectedId));
 };
 
-const _changingStuffAtEditionModeConfirmModal = (toSelect: number) => {
+const _changingStuffAtEditionModeConfirmModal = (newSelectedId: string) => {
   return {
     key: "changeStuff",
     component: BasicModal,
@@ -60,7 +54,7 @@ const _changingStuffAtEditionModeConfirmModal = (toSelect: number) => {
       resolveLabel: "확인"
     },
     resolve: (_: any, key: string) => {
-      stuffStore.updateSelectedIdx(toSelect);
+      stuffStore.updateSelectedId(newSelectedId);
       stuffDetailViewModeStore.changeStuffDetailViewMode("SHOW");
       modalStore.removeModal(key);
     },
@@ -75,10 +69,10 @@ const _changingStuffAtEditionModeConfirmModal = (toSelect: number) => {
   <section class="stuff-list">
     <template v-if="isSuccess && data !== undefined">
       <StuffListCell
-        v-for="(stuff, index) of data"
+        v-for="stuff of data"
         :key="stuff.name"
-        v-bind="{ stuff: stuff, selected: index === selectedIdx }"
-        @click="() => updateSelectedIdx(index)"
+        v-bind="{ stuff: stuff, selected: stuff.id === selectedId }"
+        @click="() => updateSelectedId(stuff.id)"
       ></StuffListCell>
     </template>
     <template v-else-if="isLoading">
