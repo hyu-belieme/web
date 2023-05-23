@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { computed, onBeforeMount, watch, watchEffect } from "vue";
+import { computed, onBeforeMount, watch } from "vue";
 import { useQueryClient } from "vue-query";
 
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
@@ -21,25 +21,16 @@ onBeforeMount(() => {
     invalidateHistoryListQueryAndResetIndex(queryClient);
   });
 
-  watchEffect(() => {
-    if (categorizedHistoriesList.value === undefined) return;
-
-    const selectedHistory = categorizedHistoriesList.value
-      .get(selectedSection.value)
-      ?.histories.get(selectedIndex.value);
-    if (selectedHistory === undefined) return;
-
-    historyStore.updateSelectedId(selectedHistory.id);
+  watch(selectedId, () => {
     invalidateHistoryDetailQueryAfterCacheCheck(queryClient);
   });
-  historyStore.updateSelected(0, 0);
 });
 
 const userStore = useUserStore();
 const { userMode } = storeToRefs(userStore);
 
 const historyStore = useHistoryStore();
-const { selectedSection, selectedIndex } = storeToRefs(historyStore);
+const { selectedId } = storeToRefs(historyStore);
 
 const { data, isLoading, isSuccess, isFetching } = getHistoryListQuery();
 
@@ -73,17 +64,17 @@ const headerLabel = (category: HistoryCategory) => {
   <section class="history-list">
     <template
       v-if="dataLoadStatus === 'Success' && categorizedHistoriesList !== undefined"
-      v-for="(categorizedHistories, sectionIndex) of categorizedHistoriesList"
+      v-for="categorizedHistories of categorizedHistoriesList"
     >
       <section class="cell-header">{{ headerLabel(categorizedHistories.category) }}</section>
       <HistoryCell
-        v-for="(history, index) of categorizedHistories.histories"
+        v-for="history of categorizedHistories.histories"
         key="history"
         v-bind="{
           history: history,
-          selected: selectedSection === sectionIndex && selectedIndex === index
+          selected: selectedId === history.id
         }"
-        @click="historyStore.updateSelected(sectionIndex, index)"
+        @click="historyStore.updateSelectedId(history.id)"
       ></HistoryCell>
       <template
         v-if="
