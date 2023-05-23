@@ -1,6 +1,6 @@
 import type { List } from "immutable";
 import { storeToRefs } from "pinia";
-import { QueryClient, type UseQueryReturnType, useQuery } from "vue-query";
+import { QueryClient, useQuery } from "vue-query";
 
 import { getAllStuffsInDept, getStuff } from "@common/apis/beliemeApis";
 import { stuffKeys } from "@common/apis/queryKeys";
@@ -17,30 +17,22 @@ const { deptId } = storeToRefs(deptStore);
 const stuffStore = useStuffStore();
 const { selectedId } = storeToRefs(stuffStore);
 
-let stuffListQuery: undefined | UseQueryReturnType<List<Stuff>, unknown> = undefined;
-let stuffDetailQuery: undefined | UseQueryReturnType<StuffWithItems, unknown> = undefined;
-
 let stuffDetailCache: QueryCache<string, StuffWithItems>;
 
 export const getStuffListQuery = () => {
-  if (stuffListQuery === undefined) {
-    stuffListQuery = useQuery<List<Stuff>>(stuffKeys.list(), () =>
-      getAllStuffsInDept(deptId.value)
-    );
-  }
-  return stuffListQuery;
+  return useQuery<List<Stuff>>(stuffKeys.list(), () => getAllStuffsInDept(deptId.value));
 };
 
 export const getStuffDetailQuery = () => {
-  if (stuffDetailQuery === undefined) {
-    stuffDetailQuery = useQuery<StuffWithItems>(stuffKeys.detail(), async () => {
-      const stuff = await getStuff(selectedId.value);
-      stuffDetailCache.updateCacheData(selectedId.value, stuff);
-      return stuff;
-    });
+  if (stuffDetailCache === undefined) {
     stuffDetailCache = new QueryCache(GLOBAL_STALE_TIME);
   }
-  return stuffDetailQuery;
+
+  return useQuery<StuffWithItems>(stuffKeys.detail(), async () => {
+    const stuff = await getStuff(selectedId.value);
+    stuffDetailCache.updateCacheData(selectedId.value, stuff);
+    return stuff;
+  });
 };
 
 export const invalidateStuffDetailQuery = (queryClient: QueryClient) => {

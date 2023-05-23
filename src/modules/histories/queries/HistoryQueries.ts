@@ -1,6 +1,6 @@
 import type { List } from "immutable";
 import { storeToRefs } from "pinia";
-import { QueryClient, type UseQueryReturnType, useQuery } from "vue-query";
+import { QueryClient, useQuery } from "vue-query";
 
 import {
   getAllHistoryInDept,
@@ -27,33 +27,27 @@ const { selectedId } = storeToRefs(historyStore);
 
 let shouldResetIndex = true;
 
-let historyListQuery: undefined | UseQueryReturnType<List<History>, unknown> = undefined;
-let historyDetailQuery: undefined | UseQueryReturnType<History, unknown> = undefined;
-
 let historyDetailCache: QueryCache<string, History>;
 
 export const getHistoryListQuery = () => {
-  if (historyListQuery === undefined) {
-    historyListQuery = useQuery<List<History>>(historyKeys.list(), async () => {
-      const historyList = await _getHistoryList();
-      if (shouldResetIndex) historyStore.updateSelected(0, 0);
-      shouldResetIndex = false;
-      return historyList;
-    });
-  }
-  return historyListQuery;
+  return useQuery<List<History>>(historyKeys.list(), async () => {
+    const historyList = await _getHistoryList();
+    if (shouldResetIndex) historyStore.updateSelected(0, 0);
+    shouldResetIndex = false;
+    return historyList;
+  });
 };
 
 export const getHistoryDetailQuery = () => {
-  if (historyDetailQuery === undefined) {
-    historyDetailQuery = useQuery<History>(historyKeys.detail(), async () => {
-      const history = await getHistory(selectedId.value);
-      historyDetailCache.updateCacheData(selectedId.value, history);
-      return history;
-    });
+  if (historyDetailCache === undefined) {
     historyDetailCache = new QueryCache(GLOBAL_STALE_TIME);
   }
-  return historyDetailQuery;
+
+  return useQuery<History>(historyKeys.detail(), async () => {
+    const history = await getHistory(selectedId.value);
+    historyDetailCache.updateCacheData(selectedId.value, history);
+    return history;
+  });
 };
 
 export const invalidateHistoryListQueryAndResetIndex = (queryClient: QueryClient) => {
