@@ -23,6 +23,7 @@ let _stuffDetailCache: QueryCache<string, StuffWithItems>;
 export const getStuffListQuery = () => {
   return useQuery<List<Stuff>>(stuffKeys.list(), async () => {
     let stuffList = await getAllStuffsInDept(deptId.value);
+    stuffList = _sortByStuffName(stuffList);
     stuffStore.updateSelectedId(_getInitialSelectedIdx(stuffList));
     return stuffList;
   });
@@ -62,4 +63,10 @@ function _getInitialSelectedIdx(stuffList: List<Stuff>) {
   const selected = stuffList.find((value) => value.id === selectedId.value);
   if (selected === undefined) return stuffList.get(0)!.id;
   return selected.id;
+}
+
+function _sortByStuffName(stuffList: List<Stuff>) {
+  return stuffList.sort((left, right) =>
+    left.name > right.name ? 1 : left.name < right.name ? -1 : 0
+  );
 }
