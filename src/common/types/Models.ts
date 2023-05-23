@@ -107,7 +107,7 @@ export class StuffPostRequestBody extends StuffRequestBody {
 export class ItemInfoOnly {
   public id: string;
   public num: number;
-  public status: string;
+  public status: ItemStatus;
   public lastHistory: HistoryInfoOnly | null;
 
   constructor(oth: ItemInfoOnly) {
@@ -184,7 +184,7 @@ export const NETWORK_ERROR = {
     "현재 네트워크가 불안하여 서버와 연결이 원할하지 못하거나 서버에 예상하지 못한 문제가 발생하였습니다. 잠시 후 다시 시도해 주세요."
 } as const;
 
-export type ItemStatus = "USABLE" | "UNUSABLE" | "INACTIVE";
+export type ItemStatus = "USABLE" | "REQUESTED" | "USING" | "LOST";
 export type HistoryStatus =
   | "REQUESTED"
   | "USING"

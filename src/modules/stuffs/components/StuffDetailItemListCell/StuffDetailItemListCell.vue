@@ -101,25 +101,35 @@ const timestampTagInfo = () => {
   // TODO: 서버 response의 item status를 바꾸고 그 후에 맞춰서 바꾸기
   const TIMESTAMP_TAG_COLOR = "orange";
 
+  let content = "ERROR";
+  if (props.item.status === "REQUESTED") {
+    content = relativeTimeString(props.item.lastHistory?.requestedAt!);
+  } else if (props.item.status === "USING") {
+    content = relativeTimeString(props.item.lastHistory?.approvedAt!);
+  } else if (props.item.status === "LOST") {
+    content = relativeTimeString(props.item.lastHistory?.lostAt!);
+  }
+
   return {
     size: TAG_SIZE,
     color: TIMESTAMP_TAG_COLOR,
-    content: relativeTimeString(props.item.lastHistory?.approvedAt!)
+    content: content
   };
 };
 
 const statusTagColor = (item: ItemInfoOnly) => {
   // TODO: 서버 response의 item status를 바꾸고 그 후에 맞춰서 바꾸기
   if (item.status === "USABLE") return "green";
-  if (item.status === "UNUSABLE") return "orange";
+  if (item.status === "REQUESTED" || item.status === "USING") return "orange";
   return "red";
 };
 
 const statusTagContent = (item: ItemInfoOnly) => {
   // TODO: 서버 response의 item status를 바꾸고 그 후에 맞춰서 바꾸기
   if (item.status === "USABLE") return "대여가능";
-  if (item.status === "UNUSABLE") return "대여 중";
-  if (item.status === "INACTIVE") return "사용불가";
+  if (item.status === "REQUESTED") return "예약됨";
+  if (item.status === "USING") return "대여중";
+  if (item.status === "LOST") return "사용불가";
   return "ERROR";
 };
 
@@ -147,7 +157,10 @@ function _changeItemRequestMutation(mutationFn: () => Promise<History>) {
       <span class="numbering">{{ item.num }}</span>
       <section class="tags">
         <InfoTag v-bind="statusTagInfo()"></InfoTag>
-        <InfoTag v-if="item.status === 'UNUSABLE'" v-bind="timestampTagInfo()"></InfoTag>
+        <InfoTag
+          v-if="item.status === 'USING' || item.status === 'REQUESTED'"
+          v-bind="timestampTagInfo()"
+        ></InfoTag>
       </section>
       <template v-if="viewMode === 'SHOW'">
         <button
@@ -167,7 +180,7 @@ function _changeItemRequestMutation(mutationFn: () => Promise<History>) {
         </button>
         <template v-if="userMode === 'STAFF' || userMode === 'MASTER'">
           <button
-            v-if="item.status !== 'INACTIVE'"
+            v-if="item.status !== 'LOST'"
             class="btn btn-primary btn-sm"
             @click="modalStore.addModal(lostRequestModal)"
           >
