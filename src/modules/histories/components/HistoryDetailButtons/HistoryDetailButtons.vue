@@ -3,7 +3,6 @@ import { storeToRefs } from "pinia";
 import { useMutation, useQueryClient } from "vue-query";
 
 import { approveItem, cancelItem, returnItem } from "@common/apis/beliemeApis";
-import { historyKeys } from "@common/apis/queryKeys";
 import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import { useModalStore } from "@common/stores/modalStore";
@@ -15,25 +14,21 @@ import {
   invalidateHistoryDetailQuery,
   invalidateHistoryListQueryAndResetIndex
 } from "@^histories/queries/HistoryQueries";
-import { useHistoryStore } from "@^histories/stores/historyStore";
 
 const modalStore = useModalStore();
 
 const userStore = useUserStore();
 const { userMode } = storeToRefs(userStore);
 
-const historyStore = useHistoryStore();
-const { selectedId } = storeToRefs(historyStore);
-
 const { isSuccess, data } = getHistoryDetailQuery();
 
 const queryClient = useQueryClient();
 
-const rentalApproveMutation = _changeItemRequestMutation(() => approveItem(selectedId.value));
+const rentalApproveMutation = _changeItemRequestMutation(() => approveItem(data.value!.item.id));
 
-const cancelRequestMutation = _changeItemRequestMutation(() => cancelItem(selectedId.value));
+const cancelRequestMutation = _changeItemRequestMutation(() => cancelItem(data.value!.item.id));
 
-const returnApproveMutation = _changeItemRequestMutation(() => returnItem(selectedId.value));
+const returnApproveMutation = _changeItemRequestMutation(() => returnItem(data.value!.item.id));
 
 const rentalApproveModal = {
   key: "rentalApprove",
@@ -94,8 +89,8 @@ function _changeItemRequestMutation(mutationFn: () => Promise<History>) {
 </script>
 
 <template>
-  <section v-if="isSuccess" class="buttons">
-    <template v-if="data?.status === 'REQUESTED'">
+  <section v-if="isSuccess && data !== undefined" class="buttons">
+    <template v-if="data.status === 'REQUESTED'">
       <button
         v-if="userMode === 'STAFF' || userMode === 'MASTER'"
         class="btn btn-primary btn-sm"
@@ -107,7 +102,7 @@ function _changeItemRequestMutation(mutationFn: () => Promise<History>) {
         신청 취소
       </button>
     </template>
-    <template v-else-if="data?.status === 'USING' || data?.status === 'DELAYED'">
+    <template v-else-if="data.status === 'USING' || data.status === 'DELAYED'">
       <button
         v-if="userMode === 'STAFF' || userMode === 'MASTER'"
         class="btn btn-primary btn-sm"

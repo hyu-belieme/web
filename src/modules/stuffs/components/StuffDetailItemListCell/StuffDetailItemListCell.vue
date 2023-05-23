@@ -36,14 +36,11 @@ const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
 const userStore = useUserStore();
 const { userMode } = storeToRefs(userStore);
 
-const stuffStore = useStuffStore();
-const { selectedId } = storeToRefs(stuffStore);
+const rentalRequestMutation = _changeItemRequestMutation(() => rentItem(props.item.id));
 
-const rentalRequestMutation = _changeItemRequestMutation(() => rentItem(selectedId.value));
+const lostRequestMutation = _changeItemRequestMutation(() => reportLostItem(props.item.id));
 
-const lostRequestMutation = _changeItemRequestMutation(() => reportLostItem(selectedId.value));
-
-const foundApproveMutation = _changeItemRequestMutation(() => returnItem(selectedId.value));
+const foundApproveMutation = _changeItemRequestMutation(() => returnItem(props.item.id));
 
 const queryClient = useQueryClient();
 
