@@ -9,7 +9,6 @@ import {
   Item,
   NETWORK_ERROR,
   Stuff,
-  type StuffInfoOnly,
   type StuffPostRequestBody,
   StuffRequestBody,
   StuffWithItems
@@ -86,7 +85,9 @@ export const getAllHistoryInDept = async (deptId: string) => {
 
   return new Promise<List<History>>((resolve, reject) => {
     _createInstance()
-      .get<List<History>>(apiUrl)
+      .get<List<History>>(apiUrl, {
+        timeout: 5000
+      })
       .then((response) => {
         let output = List<History>([]);
         for (let history of response.data) {
