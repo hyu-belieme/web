@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import HistoryDetailContent from "@^histories/components/HistoryDetailContent/HistoryDetailContent.vue";
 import ProcedureDesc from "@^histories/components/ProcedureDesc/ProcedureDesc.vue";
+
+const props = defineProps<{
+  inheritStatus: "Loading" | "Success" | "Error";
+}>();
 </script>
 
 <template>
   <section class="history-detail">
-    <HistoryDetailContent></HistoryDetailContent>
+    <HistoryDetailContent :inheritStatus="inheritStatus"></HistoryDetailContent>
     <ProcedureDesc></ProcedureDesc>
   </section>
 </template>

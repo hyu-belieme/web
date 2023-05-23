@@ -1,17 +1,24 @@
 <script setup lang="ts">
+import { computed } from "vue";
+
 import HistoryDetail from "@^histories/components/HistoryDetailSection/HistoryDetailSection.vue";
 import HistoryList from "@^histories/components/HistoryList/HistoryList.vue";
 import HistoryPageOnEmpty from "@^histories/components/HistoryPageOnEmpty/HistoryPageOnEmpty.vue";
 import { getHistoryListQuery } from "@^histories/queries/HistoryQueries";
 
-const { data, isLoading, isError, isSuccess } = getHistoryListQuery();
+const { data, isLoading, isError, isSuccess, isFetching } = getHistoryListQuery();
+const dataLoadStatus = computed(() => {
+  if (isFetching.value || isLoading.value) return "Loading";
+  if (isSuccess.value) return "Success";
+  return "Error";
+});
 </script>
 
 <template>
   <section class="history-list-page">
     <template v-if="isLoading || isError || (isSuccess && data?.size !== 0)">
       <HistoryList></HistoryList>
-      <HistoryDetail></HistoryDetail>
+      <HistoryDetail :inheritStatus="dataLoadStatus"></HistoryDetail>
     </template>
     <template v-else>
       <HistoryPageOnEmpty></HistoryPageOnEmpty>

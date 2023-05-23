@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from "vue";
+
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
 import LoadingView from "@common/components/LoadingView/LoadingView.vue";
 
@@ -7,17 +9,30 @@ import InfoLabel from "@^histories/components/HistoryDetailInfoLabel/HistoryDeta
 import InfoList from "@^histories/components/HistoryDetailInfoList/HistoryDetailInfoList.vue";
 import { getHistoryDetailQuery } from "@^histories/queries/HistoryQueries";
 
-const { isLoading, isSuccess } = getHistoryDetailQuery();
+const props = defineProps<{
+  inheritStatus: "Loading" | "Success" | "Error";
+}>();
+
+const { isFetching, isLoading, isSuccess } = getHistoryDetailQuery();
+
+const dataLoadStatus = computed(() => {
+  if (props.inheritStatus === "Loading") return "Loading";
+  if (props.inheritStatus === "Error") return "Error";
+
+  if (isFetching.value || isLoading.value) return "Loading";
+  if (isSuccess.value) return "Success";
+  return "Error";
+});
 </script>
 
 <template>
   <section class="history-info">
-    <template v-if="isSuccess">
+    <template v-if="dataLoadStatus === 'Success'">
       <InfoLabel></InfoLabel>
       <InfoList></InfoList>
       <ActionButtons></ActionButtons>
     </template>
-    <template v-else-if="isLoading">
+    <template v-else-if="dataLoadStatus === 'Loading'">
       <LoadingView></LoadingView>
     </template>
     <template v-else>

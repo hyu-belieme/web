@@ -1,24 +1,25 @@
 <script setup lang="ts">
-import { storeToRefs } from "pinia";
-
-import { useDeptStore } from "@common/stores/deptStore";
+import { computed } from "vue";
 
 import StuffDetail from "@^stuffs/components/StuffDetailSection/StuffDetailSection.vue";
 import StuffList from "@^stuffs/components/StuffList/StuffList.vue";
 import StuffPageOnEmpty from "@^stuffs/components/StuffPageOnEmpty/StuffPageOnEmpty.vue";
 import { getStuffListQuery } from "@^stuffs/queries/stuffQueries";
 
-const deptStore = useDeptStore();
-const { deptId } = storeToRefs(deptStore);
+const { data, isLoading, isError, isSuccess, isFetching } = getStuffListQuery();
 
-const { data, isLoading, isError, isSuccess } = getStuffListQuery();
+const dataLoadStatus = computed(() => {
+  if (isFetching.value || isLoading.value) return "Loading";
+  if (isSuccess.value) return "Success";
+  return "Error";
+});
 </script>
 
 <template>
   <section class="stuff-list-page">
     <template v-if="isLoading || isError || (isSuccess && data?.size !== 0)">
       <StuffList></StuffList>
-      <StuffDetail></StuffDetail>
+      <StuffDetail :inherit-status="dataLoadStatus"></StuffDetail>
     </template>
     <template v-else>
       <StuffPageOnEmpty></StuffPageOnEmpty>

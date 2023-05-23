@@ -28,7 +28,7 @@ const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
       </section>
     </template>
     <template v-else>
-      <StuffDetail></StuffDetail>
+      <StuffDetail inherit-status="Success"></StuffDetail>
     </template>
   </section>
 </template>

@@ -3,7 +3,6 @@ import { storeToRefs } from "pinia";
 import { onBeforeMount, watchEffect } from "vue";
 import { useQueryClient } from "vue-query";
 
-import { stuffKeys } from "@common/apis/queryKeys";
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
 import LoadingView from "@common/components/LoadingView/LoadingView.vue";
@@ -11,7 +10,6 @@ import { useModalStore } from "@common/stores/modalStore";
 
 import StuffListCell from "@^stuffs/components/StuffListCell/StuffListCell.vue";
 import {
-  getStuffDetailQuery,
   getStuffListQuery,
   invalidateStuffDetailQueryAfterCacheCheck
 } from "@^stuffs/queries/stuffQueries";
@@ -41,7 +39,6 @@ const stuffStore = useStuffStore();
 const { selectedIdx } = storeToRefs(stuffStore);
 
 const { data, isLoading, isSuccess } = getStuffListQuery();
-const { isStale } = getStuffDetailQuery();
 
 const queryClient = useQueryClient();
 

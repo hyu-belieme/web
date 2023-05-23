@@ -3,7 +3,6 @@ import { storeToRefs } from "pinia";
 import { computed, onBeforeMount, watch, watchEffect } from "vue";
 import { useQueryClient } from "vue-query";
 
-import { historyKeys } from "@common/apis/queryKeys";
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
 import LoadingView from "@common/components/LoadingView/LoadingView.vue";
 import { useUserStore } from "@common/stores/userStore";
@@ -42,11 +41,17 @@ const { userMode } = storeToRefs(userStore);
 const historyStore = useHistoryStore();
 const { selectedSection, selectedIndex } = storeToRefs(historyStore);
 
-const { data, isLoading, isSuccess } = getHistoryListQuery();
+const { data, isLoading, isSuccess, isFetching } = getHistoryListQuery();
 
 const categorizedHistoriesList = computed(() => CategorizeHistories(data.value));
 
 const queryClient = useQueryClient();
+
+const dataLoadStatus = computed(() => {
+  if (isFetching.value || isLoading.value) return "Loading";
+  if (isSuccess.value) return "Success";
+  return "Error";
+});
 
 const headerLabel = (category: HistoryCategory) => {
   switch (category) {
@@ -67,7 +72,7 @@ const headerLabel = (category: HistoryCategory) => {
 <template>
   <section class="history-list">
     <template
-      v-if="isSuccess && categorizedHistoriesList !== undefined"
+      v-if="dataLoadStatus === 'Success' && categorizedHistoriesList !== undefined"
       v-for="(categorizedHistories, sectionIndex) of categorizedHistoriesList"
     >
       <section class="cell-header">{{ headerLabel(categorizedHistories.category) }}</section>
@@ -93,7 +98,7 @@ const headerLabel = (category: HistoryCategory) => {
         </section>
       </template>
     </template>
-    <LoadingView v-else-if="isLoading"></LoadingView>
+    <LoadingView v-else-if="dataLoadStatus === 'Loading'"></LoadingView>
     <DataLoadFailView v-else></DataLoadFailView>
   </section>
 </template>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
+import { computed } from "vue";
 
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
 import LoadingView from "@common/components/LoadingView/LoadingView.vue";
@@ -9,23 +10,32 @@ import ItemList from "@^stuffs/components/StuffDetailItemList/StuffDetailItemLis
 import { getStuffDetailQuery } from "@^stuffs/queries/stuffQueries";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
 
+const props = defineProps<{
+  inheritStatus: "Loading" | "Success" | "Error";
+}>();
+
 const viewModeStore = useStuffDetailViewModeStore();
 const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
 
-const { isSuccess, isLoading } = getStuffDetailQuery();
+const { isSuccess, isLoading, isFetching } = getStuffDetailQuery();
+
+const dataLoadStatus = computed(() => {
+  if (props.inheritStatus === "Loading") return "Loading";
+  if (props.inheritStatus === "Error") return "Error";
+
+  if (isFetching.value || isLoading.value) return "Loading";
+  if (viewMode.value === "ADD" || isSuccess.value) return "Success";
+  return "Error";
+});
 </script>
 
 <template>
   <section class="stuff-detail">
-    <template v-if="viewMode === 'ADD'">
+    <template v-if="dataLoadStatus === 'Success'">
       <StuffDetailContent></StuffDetailContent>
       <ItemList></ItemList>
     </template>
-    <template v-else-if="isSuccess">
-      <StuffDetailContent></StuffDetailContent>
-      <ItemList></ItemList>
-    </template>
-    <template v-else-if="isLoading">
+    <template v-else-if="dataLoadStatus === 'Loading'">
       <LoadingView></LoadingView>
     </template>
     <template v-else>

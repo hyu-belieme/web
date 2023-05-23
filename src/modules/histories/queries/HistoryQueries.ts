@@ -44,13 +44,6 @@ export const getHistoryListQuery = () => {
   return historyListQuery;
 };
 
-const _getHistoryList = () => {
-  if (userMode.value === "USER") {
-    return getAllRequesterHistoryInDept(deptId.value, user.value.id);
-  }
-  return getAllHistoryInDept(deptId.value);
-};
-
 export const getHistoryDetailQuery = () => {
   if (historyDetailQuery === undefined) {
     historyDetailQuery = useQuery<History>(historyKeys.detail(), async () => {
@@ -80,4 +73,11 @@ export const invalidateHistoryDetailQueryAfterCacheCheck = (queryClient: QueryCl
     return;
   }
   queryClient.setQueryData(historyKeys.detail(), resultFromCache);
+};
+
+const _getHistoryList = () => {
+  if (userMode.value === "USER") {
+    return getAllRequesterHistoryInDept(deptId.value, user.value.id);
+  }
+  return getAllHistoryInDept(deptId.value);
 };
