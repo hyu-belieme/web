@@ -11,6 +11,7 @@ import { GLOBAL_STALE_TIME } from "@common/utils/Globals";
 import QueryCache from "@common/utils/queryCache";
 
 import { useStuffStore } from "@^stuffs/stores/stuffStore";
+import { sortStuffList } from "@^stuffs/utils/stuffSorter";
 
 const deptStore = useDeptStore();
 const { deptId } = storeToRefs(deptStore);
@@ -23,8 +24,8 @@ let _stuffDetailCache: QueryCache<string, StuffWithItems>;
 export const getStuffListQuery = () => {
   return useQuery<List<Stuff>>(stuffKeys.list(), async () => {
     let stuffList = await getAllStuffsInDept(deptId.value);
-    stuffList = _sortByStuffName(stuffList);
-    stuffStore.updateSelectedId(_getInitialSelectedIdx(stuffList));
+    stuffList = sortStuffList(stuffList);
+    stuffStore.updateSelectedId(_getInitialSelectedId(stuffList));
     return stuffList;
   });
 };
@@ -57,16 +58,10 @@ export const invalidateStuffDetailQueryAfterCacheCheck = (queryClient: QueryClie
   return;
 };
 
-function _getInitialSelectedIdx(stuffList: List<Stuff>) {
+function _getInitialSelectedId(stuffList: List<Stuff>) {
   if (stuffList.isEmpty()) return NIL_UUID;
 
   const selected = stuffList.find((value) => value.id === selectedId.value);
   if (selected === undefined) return stuffList.get(0)!.id;
   return selected.id;
-}
-
-function _sortByStuffName(stuffList: List<Stuff>) {
-  return stuffList.sort((left, right) =>
-    left.name > right.name ? 1 : left.name < right.name ? -1 : 0
-  );
 }
