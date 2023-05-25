@@ -10,10 +10,18 @@ import { stuffKeys } from "@common/apis/queryKeys";
 import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import { useModalStore } from "@common/stores/modalStore";
-import type { BeliemeError, Item, ItemInfoOnly } from "@common/types/Models";
+import type { BeliemeError, Item, ItemInfoOnly, StuffWithItems } from "@common/types/Models";
 
 import ItemListCell from "@^stuffs/components/StuffDetailItemListCell/StuffDetailItemListCell.vue";
-import { getStuffDetailQuery, invalidateStuffDetailQuery } from "@^stuffs/queries/stuffQueries";
+import {
+  getStuffDetailQuery,
+  getStuffListQuery,
+  invalidateStuffDetailQuery,
+  invalidateStuffDetailQueryAfterCacheCheck,
+  invalidateStuffListQuery,
+  setStuffDetailQueryCacheData,
+  setStuffListQueryData
+} from "@^stuffs/queries/stuffQueries";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
 import { useStuffStore } from "@^stuffs/stores/stuffStore";
 
@@ -40,6 +48,8 @@ const modalStore = useModalStore();
 const queryClient = useQueryClient();
 
 const { data } = getStuffDetailQuery();
+
+const { data: listData } = getStuffListQuery();
 
 const items = ref<List<ItemInfoOnly>>(List([]));
 
@@ -71,16 +81,27 @@ const addItemModal = {
   }
 };
 
-const addNewItemMutation = useMutation<Item, BeliemeError>(() => addNewItem(selectedId.value), {
-  onSettled: () => {
-    queryClient.invalidateQueries(stuffKeys.list());
-    invalidateStuffDetailQuery(queryClient);
-  },
-  onError: (error) => {
-    console.error(error);
-    modalStore.addModal(buildAlertModal("errorAlert", error.message));
+const addNewItemMutation = useMutation<StuffWithItems, BeliemeError>(
+  () => addNewItem(selectedId.value),
+  {
+    onSuccess: (response) => {
+      if (listData.value !== undefined) {
+        setStuffDetailQueryCacheData(response);
+
+        let newStuffList = listData.value.filter((e) => e.id !== response.id);
+        newStuffList = newStuffList.push(response);
+        setStuffListQueryData(queryClient, newStuffList, response.id);
+        invalidateStuffDetailQueryAfterCacheCheck(queryClient);
+      }
+    },
+    onError: (error) => {
+      console.error(error);
+      invalidateStuffListQuery(queryClient);
+      invalidateStuffDetailQuery(queryClient);
+      modalStore.addModal(buildAlertModal("errorAlert", error.message));
+    }
   }
-});
+);
 
 const _addNewItemOnList = () => {
   if (items.value.size >= MAX_ITEM_NUM) return items.value;

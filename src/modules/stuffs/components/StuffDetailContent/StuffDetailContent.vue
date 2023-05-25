@@ -4,14 +4,21 @@ import { onBeforeMount, ref, watch } from "vue";
 import { useMutation, useQueryClient } from "vue-query";
 
 import { editStuff, postNewStuff } from "@common/apis/beliemeApis";
-import { stuffKeys } from "@common/apis/queryKeys";
 import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
 import { useDeptStore } from "@common/stores/deptStore";
 import { useModalStore } from "@common/stores/modalStore";
 import { useUserStore } from "@common/stores/userStore";
 import type { BeliemeError, StuffWithItems } from "@common/types/Models";
 
-import { getStuffDetailQuery, invalidateStuffDetailQuery } from "@^stuffs/queries/stuffQueries";
+import {
+  getStuffDetailQuery,
+  getStuffListQuery,
+  invalidateStuffDetailQuery,
+  invalidateStuffDetailQueryAfterCacheCheck,
+  invalidateStuffListQuery,
+  setStuffDetailQueryCacheData,
+  setStuffListQueryData
+} from "@^stuffs/queries/stuffQueries";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
 import { useStuffStore } from "@^stuffs/stores/stuffStore";
 
@@ -40,6 +47,8 @@ const { selectedId, newStuffAmount } = storeToRefs(stuffStore);
 
 const { data } = getStuffDetailQuery();
 
+const { data: listData } = getStuffListQuery();
+
 const queryClient = useQueryClient();
 
 const thumbnailInput = ref<string>("");
@@ -53,15 +62,21 @@ const commitChangeMutation = useMutation<StuffWithItems, BeliemeError>(
       thumbnail: thumbnailInput.value
     }),
   {
-    onSettled: () => {
-      queryClient.invalidateQueries(stuffKeys.list());
-      invalidateStuffDetailQuery(queryClient);
-    },
-    onSuccess: () => {
+    onSuccess: (response) => {
+      if (listData.value !== undefined) {
+        setStuffDetailQueryCacheData(response);
+
+        let newStuffList = listData.value.filter((e) => e.id !== response.id);
+        newStuffList = newStuffList.push(response);
+        setStuffListQueryData(queryClient, newStuffList, response.id);
+        invalidateStuffDetailQueryAfterCacheCheck(queryClient);
+      }
       viewModeStore.changeStuffDetailViewMode("SHOW");
     },
     onError: (error) => {
       console.error(error);
+      invalidateStuffListQuery(queryClient);
+      invalidateStuffDetailQuery(queryClient);
       modalStore.addModal(buildAlertModal("errorAlert", error.message));
     }
   }
@@ -76,15 +91,22 @@ const commitAddNewStuffMutation = useMutation<StuffWithItems, BeliemeError>(
       amount: newStuffAmount.value
     }),
   {
-    onSettled: () => {
-      queryClient.invalidateQueries(stuffKeys.list());
-      invalidateStuffDetailQuery(queryClient);
-    },
-    onSuccess: () => {
+    onSuccess: (response) => {
+      if (listData.value !== undefined) {
+        setStuffDetailQueryCacheData(response);
+
+        let newStuffList = listData.value.filter((e) => e.id !== response.id);
+        newStuffList = newStuffList.push(response);
+        setStuffListQueryData(queryClient, newStuffList, response.id);
+        invalidateStuffDetailQueryAfterCacheCheck(queryClient);
+      }
+
       viewModeStore.changeStuffDetailViewMode("SHOW");
     },
     onError: (error) => {
       console.error(error);
+      invalidateStuffListQuery(queryClient);
+      invalidateStuffDetailQuery(queryClient);
       modalStore.addModal(buildAlertModal("errorAlert", error.message));
     }
   }

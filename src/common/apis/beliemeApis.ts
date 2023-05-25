@@ -6,7 +6,6 @@ import { useUserStore } from "@common/stores/userStore";
 import {
   BeliemeError,
   History,
-  Item,
   NETWORK_ERROR,
   Stuff,
   type StuffPostRequestBody,
@@ -70,12 +69,12 @@ export const editStuff = async (stuffId: string, newStuffInfo: StuffRequestBody)
 export const addNewItem = async (stuffId: string) => {
   var apiUrl = `items`;
 
-  return new Promise<Item>((resolve, reject) => {
+  return new Promise<StuffWithItems>((resolve, reject) => {
     _createInstance()
-      .post<Item>(apiUrl, {
+      .post<StuffWithItems>(apiUrl, {
         stuffId: stuffId
       })
-      .then((response) => resolve(new Item(response.data)))
+      .then((response) => resolve(new StuffWithItems(response.data)))
       .catch(_handleError(reject));
   });
 };

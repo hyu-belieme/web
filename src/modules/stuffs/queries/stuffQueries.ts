@@ -25,7 +25,7 @@ export const getStuffListQuery = () => {
   return useQuery<List<Stuff>>(stuffKeys.list(), async () => {
     let stuffList = await getAllStuffsInDept(deptId.value);
     stuffList = sortStuffList(stuffList);
-    stuffStore.updateSelectedId(_getInitialSelectedId(stuffList));
+    stuffStore.updateSelectedId(_convertIdToFirstIdIfNotExist(selectedId.value, stuffList));
     return stuffList;
   });
 };
@@ -37,15 +37,18 @@ export const getStuffDetailQuery = () => {
 
   return useQuery<StuffWithItems>(stuffKeys.detail(), async () => {
     const stuff = await getStuff(selectedId.value);
-    _stuffDetailCache.updateCacheData(selectedId.value, stuff);
+    _stuffDetailCache.updateCacheData(stuff.id, stuff);
     return stuff;
   });
 };
 
+export function invalidateStuffListQuery(queryClient: QueryClient) {
+  queryClient.invalidateQueries(stuffKeys.list());
+}
+
 export const invalidateStuffDetailQuery = (queryClient: QueryClient) => {
   _stuffDetailCache.clearCache();
   queryClient.invalidateQueries(stuffKeys.detail());
-  return;
 };
 
 export const invalidateStuffDetailQueryAfterCacheCheck = (queryClient: QueryClient) => {
@@ -55,13 +58,26 @@ export const invalidateStuffDetailQueryAfterCacheCheck = (queryClient: QueryClie
     return;
   }
   queryClient.setQueryData(stuffKeys.detail(), resultFromCache);
-  return;
 };
 
-function _getInitialSelectedId(stuffList: List<Stuff>) {
+export function setStuffListQueryData(
+  queryClient: QueryClient,
+  newList: List<Stuff>,
+  newSelectedId: string
+) {
+  newList = sortStuffList(newList);
+  queryClient.setQueryData(stuffKeys.list(), newList);
+  stuffStore.updateSelectedId(_convertIdToFirstIdIfNotExist(newSelectedId, newList));
+}
+
+export function setStuffDetailQueryCacheData(newStuff: StuffWithItems) {
+  _stuffDetailCache.updateCacheData(newStuff.id, newStuff);
+}
+
+function _convertIdToFirstIdIfNotExist(id: string, stuffList: List<Stuff>) {
   if (stuffList.isEmpty()) return NIL_UUID;
 
-  const selected = stuffList.find((value) => value.id === selectedId.value);
+  const selected = stuffList.find((value) => value.id === id);
   if (selected === undefined) return stuffList.get(0)!.id;
   return selected.id;
 }
