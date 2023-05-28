@@ -10,19 +10,14 @@ import { useUserStore } from "@common/stores/userStore";
 import HistoryCell from "@^histories/components/HistoryListCell/HistoryListCell.vue";
 import {
   getHistoryListQuery,
-  invalidateHistoryDetailQueryAfterCacheCheck,
-  invalidateHistoryListQueryAndResetIndex
+  invalidateHistoryListQuery
 } from "@^histories/queries/HistoryQueries";
 import { useHistoryStore } from "@^histories/stores/historyStore";
 import { CategorizeHistories, type HistoryCategory } from "@^histories/utils/historyCategorizer";
 
 onBeforeMount(() => {
   watch(userMode, () => {
-    invalidateHistoryListQueryAndResetIndex(queryClient);
-  });
-
-  watch(selectedId, () => {
-    invalidateHistoryDetailQueryAfterCacheCheck(queryClient);
+    invalidateHistoryListQuery(queryClient);
   });
 });
 

@@ -1,10 +1,15 @@
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
 import { computed } from "vue";
 
 import HistoryDetail from "@^histories/components/HistoryDetailSection/HistoryDetailSection.vue";
 import HistoryList from "@^histories/components/HistoryList/HistoryList.vue";
 import HistoryPageOnEmpty from "@^histories/components/HistoryPageOnEmpty/HistoryPageOnEmpty.vue";
 import { getHistoryListQuery } from "@^histories/queries/HistoryQueries";
+import { useHistoryStore } from "@^histories/stores/historyStore";
+
+const historyStore = useHistoryStore();
+const { selectedId } = storeToRefs(historyStore);
 
 const { data, isLoading, isError, isSuccess, isFetching } = getHistoryListQuery();
 const dataLoadStatus = computed(() => {
@@ -18,7 +23,7 @@ const dataLoadStatus = computed(() => {
   <section class="history-list-page">
     <template v-if="isLoading || isError || (isSuccess && data?.size !== 0)">
       <HistoryList></HistoryList>
-      <HistoryDetail :inheritStatus="dataLoadStatus"></HistoryDetail>
+      <HistoryDetail :inheritStatus="dataLoadStatus" :key="selectedId"></HistoryDetail>
     </template>
     <template v-else>
       <HistoryPageOnEmpty></HistoryPageOnEmpty>

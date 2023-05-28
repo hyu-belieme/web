@@ -12,7 +12,7 @@ import type { BeliemeError, History } from "@common/types/Models";
 import {
   getHistoryDetailQuery,
   invalidateHistoryDetailQuery,
-  invalidateHistoryListQueryAndResetIndex
+  invalidateHistoryListQuery
 } from "@^histories/queries/HistoryQueries";
 
 const modalStore = useModalStore();
@@ -77,7 +77,7 @@ const returnApproveModal = {
 function _changeItemRequestMutation(mutationFn: () => Promise<History>) {
   return useMutation<History, BeliemeError>(mutationFn, {
     onSettled: () => {
-      invalidateHistoryListQueryAndResetIndex(queryClient);
+      invalidateHistoryListQuery(queryClient);
       invalidateHistoryDetailQuery(queryClient);
     },
     onError: (error) => {

@@ -7,5 +7,5 @@ export const stuffKeys = {
 export const historyKeys = {
   all: ["histories"] as const,
   list: () => [...historyKeys.all, "list"] as const,
-  detail: () => [...historyKeys.all, "detail"] as const
+  detail: (id: string) => [...historyKeys.all, "detail", id] as const
 };
