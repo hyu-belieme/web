@@ -10,8 +10,6 @@ import "uuid";
 import { createApp } from "vue";
 import { VueQueryPlugin, type VueQueryPluginOptions } from "vue-query";
 
-import { GLOBAL_STALE_TIME } from "@common/utils/Globals";
-
 import App from "@core/App.vue";
 import router from "@core/router";
 
@@ -29,7 +27,7 @@ const vueQueryPluginOptions: VueQueryPluginOptions = {
   queryClientConfig: {
     defaultOptions: {
       queries: {
-        staleTime: GLOBAL_STALE_TIME
+        staleTime: 20000
       }
     }
   }
