@@ -15,7 +15,6 @@ import type { BeliemeError, History, ItemInfoOnly } from "@common/types/Models";
 
 import { invalidateStuffDetailQuery } from "@^stuffs/queries/stuffQueries";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
-import { useStuffStore } from "@^stuffs/stores/stuffStore";
 
 const emit = defineEmits(["popItem"]);
 

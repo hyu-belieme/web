@@ -6,20 +6,18 @@ import { onBeforeMount, ref, watchEffect } from "vue";
 import { useMutation, useQueryClient } from "vue-query";
 
 import { addNewItem } from "@common/apis/beliemeApis";
-import { stuffKeys } from "@common/apis/queryKeys";
 import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import { useModalStore } from "@common/stores/modalStore";
-import type { BeliemeError, Item, ItemInfoOnly, StuffWithItems } from "@common/types/Models";
+import type { BeliemeError, ItemInfoOnly, StuffWithItems } from "@common/types/Models";
 
 import ItemListCell from "@^stuffs/components/StuffDetailItemListCell/StuffDetailItemListCell.vue";
 import {
   getStuffDetailQuery,
   getStuffListQuery,
   invalidateStuffDetailQuery,
-  invalidateStuffDetailQueryAfterCacheCheck,
   invalidateStuffListQuery,
-  setStuffDetailQueryCacheData,
+  setStuffDetailQueryData,
   setStuffListQueryData
 } from "@^stuffs/queries/stuffQueries";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
@@ -86,12 +84,10 @@ const addNewItemMutation = useMutation<StuffWithItems, BeliemeError>(
   {
     onSuccess: (response) => {
       if (listData.value !== undefined) {
-        setStuffDetailQueryCacheData(response);
-
         let newStuffList = listData.value.filter((e) => e.id !== response.id);
         newStuffList = newStuffList.push(response);
         setStuffListQueryData(queryClient, newStuffList, response.id);
-        invalidateStuffDetailQueryAfterCacheCheck(queryClient);
+        setStuffDetailQueryData(queryClient, response);
       }
     },
     onError: (error) => {

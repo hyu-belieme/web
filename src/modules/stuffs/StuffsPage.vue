@@ -1,10 +1,15 @@
 <script setup lang="ts">
+import { storeToRefs } from "pinia";
 import { computed } from "vue";
 
 import StuffDetail from "@^stuffs/components/StuffDetailSection/StuffDetailSection.vue";
 import StuffList from "@^stuffs/components/StuffList/StuffList.vue";
 import StuffPageOnEmpty from "@^stuffs/components/StuffPageOnEmpty/StuffPageOnEmpty.vue";
 import { getStuffListQuery } from "@^stuffs/queries/stuffQueries";
+import { useStuffStore } from "@^stuffs/stores/stuffStore";
+
+const stuffStore = useStuffStore();
+const { selectedId } = storeToRefs(stuffStore);
 
 const { data, isLoading, isError, isSuccess, isFetching } = getStuffListQuery();
 
@@ -19,7 +24,7 @@ const dataLoadStatus = computed(() => {
   <section class="stuff-list-page">
     <template v-if="isLoading || isError || (isSuccess && data?.size !== 0)">
       <StuffList></StuffList>
-      <StuffDetail :inherit-status="dataLoadStatus"></StuffDetail>
+      <StuffDetail :inherit-status="dataLoadStatus" :key="selectedId"></StuffDetail>
     </template>
     <template v-else>
       <StuffPageOnEmpty></StuffPageOnEmpty>

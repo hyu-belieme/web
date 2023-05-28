@@ -14,9 +14,8 @@ import {
   getStuffDetailQuery,
   getStuffListQuery,
   invalidateStuffDetailQuery,
-  invalidateStuffDetailQueryAfterCacheCheck,
   invalidateStuffListQuery,
-  setStuffDetailQueryCacheData,
+  setStuffDetailQueryData,
   setStuffListQueryData
 } from "@^stuffs/queries/stuffQueries";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
@@ -64,12 +63,10 @@ const commitChangeMutation = useMutation<StuffWithItems, BeliemeError>(
   {
     onSuccess: (response) => {
       if (listData.value !== undefined) {
-        setStuffDetailQueryCacheData(response);
-
         let newStuffList = listData.value.filter((e) => e.id !== response.id);
         newStuffList = newStuffList.push(response);
         setStuffListQueryData(queryClient, newStuffList, response.id);
-        invalidateStuffDetailQueryAfterCacheCheck(queryClient);
+        setStuffDetailQueryData(queryClient, response);
       }
       viewModeStore.changeStuffDetailViewMode("SHOW");
     },
@@ -93,12 +90,10 @@ const commitAddNewStuffMutation = useMutation<StuffWithItems, BeliemeError>(
   {
     onSuccess: (response) => {
       if (listData.value !== undefined) {
-        setStuffDetailQueryCacheData(response);
-
         let newStuffList = listData.value.filter((e) => e.id !== response.id);
         newStuffList = newStuffList.push(response);
         setStuffListQueryData(queryClient, newStuffList, response.id);
-        invalidateStuffDetailQueryAfterCacheCheck(queryClient);
+        setStuffDetailQueryData(queryClient, response);
       }
 
       viewModeStore.changeStuffDetailViewMode("SHOW");

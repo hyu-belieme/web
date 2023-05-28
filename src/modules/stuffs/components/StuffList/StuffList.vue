@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { onBeforeMount, watch, watchEffect } from "vue";
-import { useQueryClient } from "vue-query";
+import { onBeforeMount } from "vue";
 
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
@@ -9,19 +8,12 @@ import LoadingView from "@common/components/LoadingView/LoadingView.vue";
 import { useModalStore } from "@common/stores/modalStore";
 
 import StuffListCell from "@^stuffs/components/StuffListCell/StuffListCell.vue";
-import {
-  getStuffListQuery,
-  invalidateStuffDetailQueryAfterCacheCheck
-} from "@^stuffs/queries/stuffQueries";
+import { getStuffListQuery } from "@^stuffs/queries/stuffQueries";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore.js";
 import { useStuffStore } from "@^stuffs/stores/stuffStore";
 
 onBeforeMount(() => {
   stuffDetailViewModeStore.changeStuffDetailViewMode("SHOW");
-  watch(selectedId, () => {
-    if (data.value === undefined) return;
-    invalidateStuffDetailQueryAfterCacheCheck(queryClient);
-  });
 });
 
 const modalStore = useModalStore();
@@ -33,8 +25,6 @@ const stuffStore = useStuffStore();
 const { selectedId } = storeToRefs(stuffStore);
 
 const { data, isLoading, isSuccess } = getStuffListQuery();
-
-const queryClient = useQueryClient();
 
 const updateSelectedId = (newSelectedId: string) => {
   if (stuffDetailViewMode.value === "SHOW") {
