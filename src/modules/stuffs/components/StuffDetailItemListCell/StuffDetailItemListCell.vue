@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import { List } from "immutable";
 import { storeToRefs } from "pinia";
 import { NIL as NIL_UUID } from "uuid";
 import { getCurrentInstance } from "vue";
 import { useMutation, useQueryClient } from "vue-query";
 
 import { rentItem, reportLostItem, returnItem } from "@common/apis/beliemeApis";
-import { stuffKeys } from "@common/apis/queryKeys";
+import { historyKeys, stuffKeys } from "@common/apis/queryKeys";
 import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import InfoTag from "@common/components/InfoTag/InfoTag.vue";
@@ -13,6 +14,8 @@ import { useModalStore } from "@common/stores/modalStore";
 import { useUserStore } from "@common/stores/userStore";
 import type { BeliemeError, History, ItemInfoOnly } from "@common/types/Models";
 
+import { getHistoryListQuery } from "@^histories/components/utils/utils";
+import { sortHistoryList } from "@^histories/utils/historySorter";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
 import { useStuffSelectedStore } from "@^stuffs/stores/stuffSelectedStore";
 
@@ -37,6 +40,8 @@ const { userMode } = storeToRefs(userStore);
 
 const stuffStore = useStuffSelectedStore();
 const { selectedId } = storeToRefs(stuffStore);
+
+// const { isStale: isListDataStale } = getHistoryListQuery();
 
 const rentalRequestMutation = _changeItemRequestMutation(() => rentItem(props.item.id));
 
@@ -144,6 +149,10 @@ function _changeItemRequestMutation(mutationFn: () => Promise<History>) {
     onSettled: () => {
       queryClient.invalidateQueries(stuffKeys.list());
       queryClient.invalidateQueries(stuffKeys.detail(selectedId.value));
+    },
+    onSuccess: (response) => {
+      queryClient.invalidateQueries(historyKeys.list());
+      queryClient.setQueryData(historyKeys.detail(response.id), response);
     },
     onError: (error) => {
       console.error(error);

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { List } from "immutable";
 import { storeToRefs } from "pinia";
 import { useMutation, useQueryClient } from "vue-query";
 
@@ -10,12 +11,15 @@ import { useModalStore } from "@common/stores/modalStore";
 import { useUserStore } from "@common/stores/userStore";
 import type { BeliemeError, History } from "@common/types/Models";
 
-import { getHistoryDetailQuery } from "@^histories/components/utils/utils";
+import { getHistoryDetailQuery, getHistoryListQuery } from "@^histories/components/utils/utils";
+import { sortHistoryList } from "@^histories/utils/historySorter";
 
 const modalStore = useModalStore();
 
 const userStore = useUserStore();
 const { userMode } = storeToRefs(userStore);
+
+const { isStale: isListDataStale } = getHistoryListQuery();
 
 const { isSuccess, data } = getHistoryDetailQuery();
 
@@ -73,12 +77,24 @@ const returnApproveModal = {
 
 function _changeItemRequestMutation(mutationFn: () => Promise<History>) {
   return useMutation<History, BeliemeError>(mutationFn, {
-    onSettled: () => {
-      queryClient.invalidateQueries(historyKeys.list());
-      queryClient.invalidateQueries(historyKeys.list());
+    onSuccess: (response) => {
+      if (isListDataStale.value) {
+        queryClient.invalidateQueries({ queryKey: historyKeys.list() });
+      } else {
+        queryClient.setQueryData(historyKeys.list(), (oldData: List<History> | undefined) => {
+          if (oldData === undefined) return List<History>();
+          let newHistoryList = oldData.filter((e) => e.id !== response.id);
+          newHistoryList = newHistoryList.push(response);
+          newHistoryList = sortHistoryList(newHistoryList);
+          return newHistoryList;
+        });
+      }
+      queryClient.setQueryData(historyKeys.detail(response.id), response);
     },
     onError: (error) => {
       console.error(error);
+      queryClient.invalidateQueries(historyKeys.list());
+      queryClient.invalidateQueries({ queryKey: historyKeys.detail() });
       modalStore.addModal(buildAlertModal("errorAlert", error.message));
     }
   });
