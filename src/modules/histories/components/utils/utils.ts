@@ -13,7 +13,7 @@ import { useDeptStore } from "@common/stores/deptStore";
 import { useUserStore } from "@common/stores/userStore";
 import type { History } from "@common/types/Models";
 
-import { useHistoryStore } from "@^histories/stores/historyStore";
+import { useHistorySelectedStore } from "@^histories/stores/historySelectedStore";
 import { sortHistoryList } from "@^histories/utils/historySorter";
 
 const userStore = useUserStore();
@@ -22,14 +22,16 @@ const { user, userMode } = storeToRefs(userStore);
 const deptStore = useDeptStore();
 const { deptId } = storeToRefs(deptStore);
 
-const historyStore = useHistoryStore();
-const { selectedId } = storeToRefs(historyStore);
+const historySelectedStore = useHistorySelectedStore();
+const { selectedId } = storeToRefs(historySelectedStore);
 
 export const getHistoryListQuery = () => {
   return useQuery<List<History>>(historyKeys.list(), async () => {
     let historyList = await _getHistoryList();
     historyList = sortHistoryList(historyList);
-    historyStore.updateSelectedId(convertIdToFirstIdIfNotExist(selectedId.value, historyList));
+    historySelectedStore.updateSelectedId(
+      convertIdToFirstIdIfNotExist(selectedId.value, historyList)
+    );
     return historyList;
   });
 };

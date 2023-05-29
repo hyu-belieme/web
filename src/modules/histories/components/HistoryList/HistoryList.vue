@@ -13,7 +13,7 @@ import {
   convertIdToFirstIdIfNotExist,
   getHistoryListQuery
 } from "@^histories/components/utils/utils";
-import { useHistoryStore } from "@^histories/stores/historyStore";
+import { useHistorySelectedStore } from "@^histories/stores/historySelectedStore";
 import { CategorizeHistories, type HistoryCategory } from "@^histories/utils/historyCategorizer";
 
 onBeforeMount(() => {
@@ -25,8 +25,8 @@ onBeforeMount(() => {
 const userStore = useUserStore();
 const { userMode } = storeToRefs(userStore);
 
-const historyStore = useHistoryStore();
-const { selectedId } = storeToRefs(historyStore);
+const historySelectedStore = useHistorySelectedStore();
+const { selectedId } = storeToRefs(historySelectedStore);
 
 const { data, isLoading, isSuccess, isFetching } = getHistoryListQuery();
 
@@ -42,7 +42,7 @@ const dataLoadStatus = computed(() => {
 
 const updateSelectedId = (newSelectedId: string) => {
   if (data.value !== undefined) {
-    historyStore.updateSelectedId(convertIdToFirstIdIfNotExist(newSelectedId, data.value));
+    historySelectedStore.updateSelectedId(convertIdToFirstIdIfNotExist(newSelectedId, data.value));
   }
 };
 

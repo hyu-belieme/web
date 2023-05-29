@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { NIL as NIL_UUID } from "uuid";
 import { readonly, ref } from "vue";
 
-export const useHistoryStore = defineStore("history", () => {
+export const useHistorySelectedStore = defineStore("historySelected", () => {
   const selectedId = ref<string>(NIL_UUID);
 
   const updateSelectedId = (id: string) => {

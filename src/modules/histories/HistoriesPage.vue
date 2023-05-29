@@ -6,10 +6,10 @@ import HistoryDetail from "@^histories/components/HistoryDetailSection/HistoryDe
 import HistoryList from "@^histories/components/HistoryList/HistoryList.vue";
 import HistoryPageOnEmpty from "@^histories/components/HistoryPageOnEmpty/HistoryPageOnEmpty.vue";
 import { getHistoryListQuery } from "@^histories/components/utils/utils";
-import { useHistoryStore } from "@^histories/stores/historyStore";
+import { useHistorySelectedStore } from "@^histories/stores/historySelectedStore";
 
-const historyStore = useHistoryStore();
-const { selectedId } = storeToRefs(historyStore);
+const historySelectedStore = useHistorySelectedStore();
+const { selectedId } = storeToRefs(historySelectedStore);
 
 const { data, isLoading, isError, isSuccess, isFetching } = getHistoryListQuery();
 const dataLoadStatus = computed(() => {
