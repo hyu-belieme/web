@@ -10,7 +10,7 @@ import { useModalStore } from "@common/stores/modalStore";
 import StuffListCell from "@^stuffs/components/StuffListCell/StuffListCell.vue";
 import { convertIdToFirstIdIfNotExist, getStuffListQuery } from "@^stuffs/components/utils/utils";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore.js";
-import { useStuffStore } from "@^stuffs/stores/stuffStore";
+import { useStuffSelectedStore } from "@^stuffs/stores/stuffSelectedStore";
 
 onBeforeMount(() => {
   stuffDetailViewModeStore.changeStuffDetailViewMode("SHOW");
@@ -21,7 +21,7 @@ const modalStore = useModalStore();
 const stuffDetailViewModeStore = useStuffDetailViewModeStore();
 const { stuffDetailViewMode } = storeToRefs(stuffDetailViewModeStore);
 
-const stuffStore = useStuffStore();
+const stuffStore = useStuffSelectedStore();
 const { selectedId } = storeToRefs(stuffStore);
 
 const { data, isLoading, isSuccess } = getStuffListQuery();

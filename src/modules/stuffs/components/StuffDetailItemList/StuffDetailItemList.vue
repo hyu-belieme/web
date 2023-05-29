@@ -18,8 +18,9 @@ import {
   getStuffDetailQuery,
   getStuffListQuery
 } from "@^stuffs/components/utils/utils";
+import { useNewStuffInfo } from "@^stuffs/stores/newStuffInfoStore";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
-import { useStuffStore } from "@^stuffs/stores/stuffStore";
+import { useStuffSelectedStore } from "@^stuffs/stores/stuffSelectedStore";
 import { sortStuffList } from "@^stuffs/utils/stuffSorter";
 
 onBeforeMount(() => {
@@ -37,8 +38,10 @@ const MAX_ITEM_NUM = 50;
 const viewModeStore = useStuffDetailViewModeStore();
 const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
 
-const stuffStore = useStuffStore();
+const stuffStore = useStuffSelectedStore();
 const { selectedId } = storeToRefs(stuffStore);
+
+const newStuffInfoStore = useNewStuffInfo();
 
 const modalStore = useModalStore();
 
@@ -52,7 +55,7 @@ const items = ref<List<ItemInfoOnly>>(List([]));
 
 const pushNewItem = () => {
   if (viewMode.value === "ADD") {
-    stuffStore.increaseNewStuffAmount();
+    newStuffInfoStore.increaseNewAmount();
     items.value = _addNewItemOnList();
   } else if (viewMode.value === "EDIT") {
     modalStore.addModal(addItemModal);
@@ -60,7 +63,7 @@ const pushNewItem = () => {
 };
 
 const popItem = () => {
-  if (viewMode.value === "ADD") stuffStore.decreaseNewStuffAmount();
+  if (viewMode.value === "ADD") newStuffInfoStore.decreaseNewAmount();
   items.value = items.value.pop();
 };
 

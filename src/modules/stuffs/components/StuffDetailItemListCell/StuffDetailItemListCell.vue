@@ -14,7 +14,7 @@ import { useUserStore } from "@common/stores/userStore";
 import type { BeliemeError, History, ItemInfoOnly } from "@common/types/Models";
 
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
-import { useStuffStore } from "@^stuffs/stores/stuffStore";
+import { useStuffSelectedStore } from "@^stuffs/stores/stuffSelectedStore";
 
 const emit = defineEmits(["popItem"]);
 
@@ -35,7 +35,7 @@ const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
 const userStore = useUserStore();
 const { userMode } = storeToRefs(userStore);
 
-const stuffStore = useStuffStore();
+const stuffStore = useStuffSelectedStore();
 const { selectedId } = storeToRefs(stuffStore);
 
 const rentalRequestMutation = _changeItemRequestMutation(() => rentItem(props.item.id));

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { onBeforeMount, ref, watch } from "vue";
+import { onBeforeMount, watch } from "vue";
 import { useMutation, useQueryClient } from "vue-query";
 
 import { editStuff, postNewStuff } from "@common/apis/beliemeApis";
@@ -16,13 +16,14 @@ import {
   getStuffDetailQuery,
   getStuffListQuery
 } from "@^stuffs/components/utils/utils";
+import { useNewStuffInfo } from "@^stuffs/stores/newStuffInfoStore";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
-import { useStuffStore } from "@^stuffs/stores/stuffStore";
+import { useStuffSelectedStore } from "@^stuffs/stores/stuffSelectedStore";
 import { sortStuffList } from "@^stuffs/utils/stuffSorter";
 
 onBeforeMount(() => {
   watch(viewMode, () => {
-    _initInputVale();
+    _initInputValue();
   });
 });
 
@@ -40,8 +41,11 @@ const { userMode } = storeToRefs(userStore);
 const deptStore = useDeptStore();
 const { deptId } = storeToRefs(deptStore);
 
-const stuffStore = useStuffStore();
-const { selectedId, newStuffAmount } = storeToRefs(stuffStore);
+const stuffStore = useStuffSelectedStore();
+const { selectedId } = storeToRefs(stuffStore);
+
+const newStuffInfoStore = useNewStuffInfo();
+const { newName, newThumbnail, newDesc, newAmount } = storeToRefs(newStuffInfoStore);
 
 const { data } = getStuffDetailQuery();
 
@@ -49,15 +53,11 @@ const { data: listData } = getStuffListQuery();
 
 const queryClient = useQueryClient();
 
-const thumbnailInput = ref<string>("");
-const nameInput = ref<string>("");
-const descInput = ref<string>("");
-
 const commitChangeMutation = useMutation<StuffWithItems, BeliemeError>(
   () =>
     editStuff(selectedId.value, {
-      name: nameInput.value,
-      thumbnail: thumbnailInput.value
+      name: newName.value,
+      thumbnail: newThumbnail.value
     }),
   {
     onSuccess: (response) => {
@@ -84,9 +84,9 @@ const commitAddNewStuffMutation = useMutation<StuffWithItems, BeliemeError>(
   () =>
     postNewStuff({
       departmentId: deptId.value,
-      name: nameInput.value,
-      thumbnail: thumbnailInput.value,
-      amount: newStuffAmount.value
+      name: newName.value,
+      thumbnail: newThumbnail.value,
+      amount: newAmount.value
     }),
   {
     onSuccess: (response) => {
@@ -110,16 +110,16 @@ const commitAddNewStuffMutation = useMutation<StuffWithItems, BeliemeError>(
   }
 );
 
-const _initInputVale = () => {
+const _initInputValue = () => {
   if (data.value === undefined) {
-    thumbnailInput.value = "";
-    nameInput.value = "";
-    descInput.value = "";
+    newName.value = "";
+    newThumbnail.value = "";
+    newDesc.value = "";
     return;
   }
-  thumbnailInput.value = viewMode.value === "EDIT" ? data.value.thumbnail : "";
-  nameInput.value = viewMode.value === "EDIT" ? data.value.name : "";
-  descInput.value = viewMode.value === "EDIT" ? LOREM_IPSUM : "";
+  newName.value = viewMode.value === "EDIT" ? data.value.name : "";
+  newThumbnail.value = viewMode.value === "EDIT" ? data.value.thumbnail : "";
+  newDesc.value = viewMode.value === "EDIT" ? LOREM_IPSUM : "";
 };
 </script>
 
@@ -129,7 +129,7 @@ const _initInputVale = () => {
       <span v-if="viewMode === 'SHOW'">{{ data?.thumbnail }}</span>
       <input
         v-else
-        v-model="thumbnailInput"
+        v-model="newThumbnail"
         type="text"
         class="form-control edit-box"
         aria-label="thumbnail"
@@ -141,7 +141,7 @@ const _initInputVale = () => {
           <span v-if="viewMode === 'SHOW'">{{ data?.name }}</span>
           <input
             v-else
-            v-model="nameInput"
+            v-model="newName"
             type="text"
             class="form-control w-100 my-2"
             placeholder="물품 이름을 입력해주세요."
@@ -197,7 +197,7 @@ const _initInputVale = () => {
         </span>
         <textarea
           v-else
-          v-model="descInput"
+          v-model="newDesc"
           class="form-control h-100 fs-7"
           placeholder="물품 설명을 입력해주세요."
           id="floatingTextarea"

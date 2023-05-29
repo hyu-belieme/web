@@ -6,9 +6,9 @@ import StuffDetail from "@^stuffs/components/StuffDetailSection/StuffDetailSecti
 import StuffList from "@^stuffs/components/StuffList/StuffList.vue";
 import StuffPageOnEmpty from "@^stuffs/components/StuffPageOnEmpty/StuffPageOnEmpty.vue";
 import { getStuffListQuery } from "@^stuffs/components/utils/utils";
-import { useStuffStore } from "@^stuffs/stores/stuffStore";
+import { useStuffSelectedStore } from "@^stuffs/stores/stuffSelectedStore";
 
-const stuffStore = useStuffStore();
+const stuffStore = useStuffSelectedStore();
 const { selectedId } = storeToRefs(stuffStore);
 
 const { data, isLoading, isError, isSuccess, isFetching } = getStuffListQuery();

@@ -8,13 +8,13 @@ import { stuffKeys } from "@common/apis/queryKeys";
 import { useDeptStore } from "@common/stores/deptStore";
 import type { Stuff, StuffWithItems } from "@common/types/Models";
 
-import { useStuffStore } from "@^stuffs/stores/stuffStore";
+import { useStuffSelectedStore } from "@^stuffs/stores/stuffSelectedStore";
 import { sortStuffList } from "@^stuffs/utils/stuffSorter";
 
 const deptStore = useDeptStore();
 const { deptId } = storeToRefs(deptStore);
 
-const stuffStore = useStuffStore();
+const stuffStore = useStuffSelectedStore();
 const { selectedId } = storeToRefs(stuffStore);
 
 export const getStuffListQuery = () => {
