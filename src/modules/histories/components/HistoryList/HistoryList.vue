@@ -9,10 +9,7 @@ import LoadingView from "@common/components/LoadingView/LoadingView.vue";
 import { useUserStore } from "@common/stores/userStore";
 
 import HistoryCell from "@^histories/components/HistoryListCell/HistoryListCell.vue";
-import {
-  convertIdToFirstIdIfNotExist,
-  getHistoryListQuery
-} from "@^histories/components/utils/utils";
+import { getHistoryListQuery } from "@^histories/components/utils/utils";
 import { useHistorySelectedStore } from "@^histories/stores/historySelectedStore";
 import { CategorizeHistories, type HistoryCategory } from "@^histories/utils/historyCategorizer";
 
@@ -41,9 +38,7 @@ const dataLoadStatus = computed(() => {
 });
 
 const updateSelectedId = (newSelectedId: string) => {
-  if (data.value !== undefined) {
-    historySelectedStore.updateSelectedId(convertIdToFirstIdIfNotExist(newSelectedId, data.value));
-  }
+  historySelectedStore.updateSelectedId(newSelectedId);
 };
 
 const headerLabel = (category: HistoryCategory) => {

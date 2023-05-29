@@ -14,14 +14,13 @@ import type { BeliemeError, ItemInfoOnly, StuffWithItems } from "@common/types/M
 
 import ItemListCell from "@^stuffs/components/StuffDetailItemListCell/StuffDetailItemListCell.vue";
 import {
-  convertIdToFirstIdIfNotExist,
   getStuffDetailQuery,
-  getStuffListQuery
+  getStuffListQuery,
+  reloadStuffDataUsingCacheAndResponse
 } from "@^stuffs/components/utils/utils";
 import { useNewStuffInfo } from "@^stuffs/stores/newStuffInfoStore";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
 import { useStuffSelectedStore } from "@^stuffs/stores/stuffSelectedStore";
-import { sortStuffList } from "@^stuffs/utils/stuffSorter";
 
 onBeforeMount(() => {
   watchEffect(() => {
@@ -49,7 +48,7 @@ const queryClient = useQueryClient();
 
 const { data } = getStuffDetailQuery();
 
-const { data: listData } = getStuffListQuery();
+const { isStale: isListDataStale } = getStuffListQuery();
 
 const items = ref<List<ItemInfoOnly>>(List([]));
 
@@ -85,14 +84,7 @@ const addNewItemMutation = useMutation<StuffWithItems, BeliemeError>(
   () => addNewItem(selectedId.value),
   {
     onSuccess: (response) => {
-      if (listData.value !== undefined) {
-        let newStuffList = listData.value.filter((e) => e.id !== response.id);
-        newStuffList = newStuffList.push(response);
-        newStuffList = sortStuffList(newStuffList);
-        queryClient.setQueryData(stuffKeys.list(), newStuffList);
-        queryClient.setQueryData(stuffKeys.detail(response.id), response);
-        stuffStore.updateSelectedId(convertIdToFirstIdIfNotExist(response.id, newStuffList));
-      }
+      reloadStuffDataUsingCacheAndResponse(queryClient, response, isListDataStale.value);
     },
     onError: (error) => {
       console.error(error);

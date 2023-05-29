@@ -8,7 +8,7 @@ import LoadingView from "@common/components/LoadingView/LoadingView.vue";
 import { useModalStore } from "@common/stores/modalStore";
 
 import StuffListCell from "@^stuffs/components/StuffListCell/StuffListCell.vue";
-import { convertIdToFirstIdIfNotExist, getStuffListQuery } from "@^stuffs/components/utils/utils";
+import { getStuffListQuery } from "@^stuffs/components/utils/utils";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore.js";
 import { useStuffSelectedStore } from "@^stuffs/stores/stuffSelectedStore";
 
@@ -28,9 +28,7 @@ const { data, isLoading, isSuccess } = getStuffListQuery();
 
 const updateSelectedId = (newSelectedId: string) => {
   if (stuffDetailViewMode.value === "SHOW") {
-    if (data.value !== undefined) {
-      stuffStore.updateSelectedId(convertIdToFirstIdIfNotExist(newSelectedId, data.value));
-    }
+    stuffStore.updateSelectedId(newSelectedId);
     return;
   }
   modalStore.addModal(_changingStuffAtEditionModeConfirmModal(newSelectedId));
@@ -46,9 +44,7 @@ const _changingStuffAtEditionModeConfirmModal = (newSelectedId: string) => {
       resolveLabel: "확인"
     },
     resolve: (_: any, key: string) => {
-      if (data.value !== undefined) {
-        stuffStore.updateSelectedId(convertIdToFirstIdIfNotExist(newSelectedId, data.value));
-      }
+      stuffStore.updateSelectedId(newSelectedId);
       stuffDetailViewModeStore.changeStuffDetailViewMode("SHOW");
       modalStore.removeModal(key);
     },

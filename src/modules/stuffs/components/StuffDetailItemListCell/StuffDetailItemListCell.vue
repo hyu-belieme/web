@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { List } from "immutable";
 import { storeToRefs } from "pinia";
 import { NIL as NIL_UUID } from "uuid";
 import { getCurrentInstance } from "vue";
@@ -14,8 +13,6 @@ import { useModalStore } from "@common/stores/modalStore";
 import { useUserStore } from "@common/stores/userStore";
 import type { BeliemeError, History, ItemInfoOnly } from "@common/types/Models";
 
-import { getHistoryListQuery } from "@^histories/components/utils/utils";
-import { sortHistoryList } from "@^histories/utils/historySorter";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
 import { useStuffSelectedStore } from "@^stuffs/stores/stuffSelectedStore";
 

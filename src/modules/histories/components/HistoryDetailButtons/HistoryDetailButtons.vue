@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { List } from "immutable";
 import { storeToRefs } from "pinia";
 import { useMutation, useQueryClient } from "vue-query";
 
@@ -11,8 +10,11 @@ import { useModalStore } from "@common/stores/modalStore";
 import { useUserStore } from "@common/stores/userStore";
 import type { BeliemeError, History } from "@common/types/Models";
 
-import { getHistoryDetailQuery, getHistoryListQuery } from "@^histories/components/utils/utils";
-import { sortHistoryList } from "@^histories/utils/historySorter";
+import {
+  getHistoryDetailQuery,
+  getHistoryListQuery,
+  reloadHistoryDataUsingCacheAndResponse
+} from "@^histories/components/utils/utils";
 
 const modalStore = useModalStore();
 
@@ -78,18 +80,7 @@ const returnApproveModal = {
 function _changeItemRequestMutation(mutationFn: () => Promise<History>) {
   return useMutation<History, BeliemeError>(mutationFn, {
     onSuccess: (response) => {
-      if (isListDataStale.value) {
-        queryClient.invalidateQueries({ queryKey: historyKeys.list() });
-      } else {
-        queryClient.setQueryData(historyKeys.list(), (oldData: List<History> | undefined) => {
-          if (oldData === undefined) return List<History>();
-          let newHistoryList = oldData.filter((e) => e.id !== response.id);
-          newHistoryList = newHistoryList.push(response);
-          newHistoryList = sortHistoryList(newHistoryList);
-          return newHistoryList;
-        });
-      }
-      queryClient.setQueryData(historyKeys.detail(response.id), response);
+      reloadHistoryDataUsingCacheAndResponse(queryClient, response, isListDataStale.value);
     },
     onError: (error) => {
       console.error(error);

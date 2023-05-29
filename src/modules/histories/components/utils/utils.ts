@@ -1,7 +1,7 @@
-import type { List } from "immutable";
+import { List } from "immutable";
 import { storeToRefs } from "pinia";
 import { NIL as NIL_UUID } from "uuid";
-import { useQuery } from "vue-query";
+import { QueryClient, useQuery } from "vue-query";
 
 import {
   getAllHistoryInDept,
@@ -30,7 +30,7 @@ export const getHistoryListQuery = () => {
     let historyList = await _getHistoryList();
     historyList = sortHistoryList(historyList);
     historySelectedStore.updateSelectedId(
-      convertIdToFirstIdIfNotExist(selectedId.value, historyList)
+      _convertIdToFirstIdIfNotExist(selectedId.value, historyList)
     );
     return historyList;
   });
@@ -42,7 +42,26 @@ export const getHistoryDetailQuery = () => {
   );
 };
 
-export function convertIdToFirstIdIfNotExist(id: string, historyList: List<History>) {
+export function reloadHistoryDataUsingCacheAndResponse(
+  queryClient: QueryClient,
+  response: History,
+  isListDataStale: boolean
+) {
+  if (isListDataStale) {
+    queryClient.invalidateQueries({ queryKey: historyKeys.list() });
+  } else {
+    queryClient.setQueryData(historyKeys.list(), (oldData: List<History> | undefined) => {
+      if (oldData === undefined) return List<History>();
+      let newHistoryList = oldData.filter((e) => e.id !== response.id);
+      newHistoryList = newHistoryList.push(response);
+      newHistoryList = sortHistoryList(newHistoryList);
+      return newHistoryList;
+    });
+  }
+  queryClient.setQueryData(historyKeys.detail(response.id), response);
+}
+
+function _convertIdToFirstIdIfNotExist(id: string, historyList: List<History>) {
   if (historyList.isEmpty()) return NIL_UUID;
 
   const selected = historyList.find((value) => value.id === id);

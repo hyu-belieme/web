@@ -12,14 +12,13 @@ import { useUserStore } from "@common/stores/userStore";
 import type { BeliemeError, StuffWithItems } from "@common/types/Models";
 
 import {
-  convertIdToFirstIdIfNotExist,
   getStuffDetailQuery,
-  getStuffListQuery
+  getStuffListQuery,
+  reloadStuffDataUsingCacheAndResponse
 } from "@^stuffs/components/utils/utils";
 import { useNewStuffInfo } from "@^stuffs/stores/newStuffInfoStore";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
 import { useStuffSelectedStore } from "@^stuffs/stores/stuffSelectedStore";
-import { sortStuffList } from "@^stuffs/utils/stuffSorter";
 
 onBeforeMount(() => {
   watch(viewMode, () => {
@@ -49,7 +48,7 @@ const { newName, newThumbnail, newDesc, newAmount } = storeToRefs(newStuffInfoSt
 
 const { data } = getStuffDetailQuery();
 
-const { data: listData } = getStuffListQuery();
+const { isStale: isListDataStale } = getStuffListQuery();
 
 const queryClient = useQueryClient();
 
@@ -61,14 +60,7 @@ const commitChangeMutation = useMutation<StuffWithItems, BeliemeError>(
     }),
   {
     onSuccess: (response) => {
-      if (listData.value !== undefined) {
-        let newStuffList = listData.value.filter((e) => e.id !== response.id);
-        newStuffList = newStuffList.push(response);
-        newStuffList = sortStuffList(newStuffList);
-        queryClient.setQueryData(stuffKeys.list(), newStuffList);
-        queryClient.setQueryData(stuffKeys.detail(response.id), response);
-        stuffStore.updateSelectedId(convertIdToFirstIdIfNotExist(response.id, newStuffList));
-      }
+      reloadStuffDataUsingCacheAndResponse(queryClient, response, isListDataStale.value);
       viewModeStore.changeStuffDetailViewMode("SHOW");
     },
     onError: (error) => {
@@ -90,15 +82,7 @@ const commitAddNewStuffMutation = useMutation<StuffWithItems, BeliemeError>(
     }),
   {
     onSuccess: (response) => {
-      if (listData.value !== undefined) {
-        let newStuffList = listData.value.filter((e) => e.id !== response.id);
-        newStuffList = newStuffList.push(response);
-        newStuffList = sortStuffList(newStuffList);
-        queryClient.setQueryData(stuffKeys.list(), newStuffList);
-        queryClient.setQueryData(stuffKeys.detail(response.id), response);
-        stuffStore.updateSelectedId(convertIdToFirstIdIfNotExist(response.id, newStuffList));
-      }
-
+      reloadStuffDataUsingCacheAndResponse(queryClient, response, isListDataStale.value);
       viewModeStore.changeStuffDetailViewMode("SHOW");
     },
     onError: (error) => {
