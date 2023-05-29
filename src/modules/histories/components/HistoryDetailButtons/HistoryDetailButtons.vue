@@ -3,17 +3,14 @@ import { storeToRefs } from "pinia";
 import { useMutation, useQueryClient } from "vue-query";
 
 import { approveItem, cancelItem, returnItem } from "@common/apis/beliemeApis";
+import { historyKeys } from "@common/apis/queryKeys";
 import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import { useModalStore } from "@common/stores/modalStore";
 import { useUserStore } from "@common/stores/userStore";
 import type { BeliemeError, History } from "@common/types/Models";
 
-import {
-  getHistoryDetailQuery,
-  invalidateHistoryDetailQuery,
-  invalidateHistoryListQuery
-} from "@^histories/queries/HistoryQueries";
+import { getHistoryDetailQuery } from "@^histories/components/utils/utils";
 
 const modalStore = useModalStore();
 
@@ -77,8 +74,8 @@ const returnApproveModal = {
 function _changeItemRequestMutation(mutationFn: () => Promise<History>) {
   return useMutation<History, BeliemeError>(mutationFn, {
     onSettled: () => {
-      invalidateHistoryListQuery(queryClient);
-      invalidateHistoryDetailQuery(queryClient);
+      queryClient.invalidateQueries(historyKeys.list());
+      queryClient.invalidateQueries(historyKeys.list());
     },
     onError: (error) => {
       console.error(error);

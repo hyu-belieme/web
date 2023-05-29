@@ -7,7 +7,7 @@ import LoadingView from "@common/components/LoadingView/LoadingView.vue";
 import ActionButtons from "@^histories/components/HistoryDetailButtons/HistoryDetailButtons.vue";
 import InfoLabel from "@^histories/components/HistoryDetailInfoLabel/HistoryDetailInfoLabel.vue";
 import InfoList from "@^histories/components/HistoryDetailInfoList/HistoryDetailInfoList.vue";
-import { getHistoryDetailQuery } from "@^histories/queries/HistoryQueries";
+import { getHistoryDetailQuery } from "@^histories/components/utils/utils";
 
 const props = defineProps<{
   inheritStatus: "Loading" | "Success" | "Error";

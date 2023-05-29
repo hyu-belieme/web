@@ -3,21 +3,22 @@ import { storeToRefs } from "pinia";
 import { computed, onBeforeMount, watch } from "vue";
 import { useQueryClient } from "vue-query";
 
+import { historyKeys } from "@common/apis/queryKeys";
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
 import LoadingView from "@common/components/LoadingView/LoadingView.vue";
 import { useUserStore } from "@common/stores/userStore";
 
 import HistoryCell from "@^histories/components/HistoryListCell/HistoryListCell.vue";
 import {
-  getHistoryListQuery,
-  invalidateHistoryListQuery
-} from "@^histories/queries/HistoryQueries";
+  convertIdToFirstIdIfNotExist,
+  getHistoryListQuery
+} from "@^histories/components/utils/utils";
 import { useHistoryStore } from "@^histories/stores/historyStore";
 import { CategorizeHistories, type HistoryCategory } from "@^histories/utils/historyCategorizer";
 
 onBeforeMount(() => {
   watch(userMode, () => {
-    invalidateHistoryListQuery(queryClient);
+    queryClient.invalidateQueries(historyKeys.list());
   });
 });
 
@@ -38,6 +39,12 @@ const dataLoadStatus = computed(() => {
   if (isSuccess.value) return "Success";
   return "Error";
 });
+
+const updateSelectedId = (newSelectedId: string) => {
+  if (data.value !== undefined) {
+    historyStore.updateSelectedId(convertIdToFirstIdIfNotExist(newSelectedId, data.value));
+  }
+};
 
 const headerLabel = (category: HistoryCategory) => {
   switch (category) {
@@ -69,7 +76,7 @@ const headerLabel = (category: HistoryCategory) => {
           history: history,
           selected: selectedId === history.id
         }"
-        @click="historyStore.updateSelectedId(history.id)"
+        @click="updateSelectedId(history.id)"
       ></HistoryCell>
       <template
         v-if="

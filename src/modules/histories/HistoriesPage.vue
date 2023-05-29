@@ -5,7 +5,7 @@ import { computed } from "vue";
 import HistoryDetail from "@^histories/components/HistoryDetailSection/HistoryDetailSection.vue";
 import HistoryList from "@^histories/components/HistoryList/HistoryList.vue";
 import HistoryPageOnEmpty from "@^histories/components/HistoryPageOnEmpty/HistoryPageOnEmpty.vue";
-import { getHistoryListQuery } from "@^histories/queries/HistoryQueries";
+import { getHistoryListQuery } from "@^histories/components/utils/utils";
 import { useHistoryStore } from "@^histories/stores/historyStore";
 
 const historyStore = useHistoryStore();

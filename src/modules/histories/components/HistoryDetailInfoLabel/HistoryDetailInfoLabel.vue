@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { getHistoryDetailQuery } from "@^histories/queries/HistoryQueries";
+import { getHistoryDetailQuery } from "@^histories/components/utils/utils";
 
 const { isSuccess, data } = getHistoryDetailQuery();
 </script>
 
 <template>
-  <template v-if="isSuccess">
+  <template v-if="isSuccess && data !== undefined">
     <section class="label">
-      <section class="thumbnail">{{ data?.item.stuff.thumbnail }}</section>
-      <section class="name">{{ data?.item.stuff.name }} #{{ data?.item.num }}</section>
+      <section class="thumbnail">{{ data.item.stuff.thumbnail }}</section>
+      <section class="name">{{ data.item.stuff.name }} #{{ data.item.num }}</section>
     </section>
   </template>
 </template>
