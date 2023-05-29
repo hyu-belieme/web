@@ -6,6 +6,7 @@ import { onBeforeMount, ref, watchEffect } from "vue";
 import { useMutation, useQueryClient } from "vue-query";
 
 import { addNewItem } from "@common/apis/beliemeApis";
+import { stuffKeys } from "@common/apis/queryKeys";
 import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import { useModalStore } from "@common/stores/modalStore";
@@ -13,15 +14,13 @@ import type { BeliemeError, ItemInfoOnly, StuffWithItems } from "@common/types/M
 
 import ItemListCell from "@^stuffs/components/StuffDetailItemListCell/StuffDetailItemListCell.vue";
 import {
+  convertIdToFirstIdIfNotExist,
   getStuffDetailQuery,
-  getStuffListQuery,
-  invalidateStuffDetailQuery,
-  invalidateStuffListQuery,
-  setStuffDetailQueryData,
-  setStuffListQueryData
-} from "@^stuffs/queries/stuffQueries";
+  getStuffListQuery
+} from "@^stuffs/components/utils/utils";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
 import { useStuffStore } from "@^stuffs/stores/stuffStore";
+import { sortStuffList } from "@^stuffs/utils/stuffSorter";
 
 onBeforeMount(() => {
   watchEffect(() => {
@@ -86,14 +85,16 @@ const addNewItemMutation = useMutation<StuffWithItems, BeliemeError>(
       if (listData.value !== undefined) {
         let newStuffList = listData.value.filter((e) => e.id !== response.id);
         newStuffList = newStuffList.push(response);
-        setStuffListQueryData(queryClient, newStuffList, response.id);
-        setStuffDetailQueryData(queryClient, response);
+        newStuffList = sortStuffList(newStuffList);
+        queryClient.setQueryData(stuffKeys.list(), newStuffList);
+        queryClient.setQueryData(stuffKeys.detail(response.id), response);
+        stuffStore.updateSelectedId(convertIdToFirstIdIfNotExist(response.id, newStuffList));
       }
     },
     onError: (error) => {
       console.error(error);
-      invalidateStuffListQuery(queryClient);
-      invalidateStuffDetailQuery(queryClient);
+      queryClient.invalidateQueries(stuffKeys.list());
+      queryClient.invalidateQueries(stuffKeys.detail(selectedId.value));
       modalStore.addModal(buildAlertModal("errorAlert", error.message));
     }
   }

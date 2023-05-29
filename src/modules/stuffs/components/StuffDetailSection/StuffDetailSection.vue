@@ -7,7 +7,7 @@ import LoadingView from "@common/components/LoadingView/LoadingView.vue";
 
 import StuffDetailContent from "@^stuffs/components/StuffDetailContent/StuffDetailContent.vue";
 import ItemList from "@^stuffs/components/StuffDetailItemList/StuffDetailItemList.vue";
-import { getStuffDetailQuery } from "@^stuffs/queries/stuffQueries";
+import { getStuffDetailQuery } from "@^stuffs/components/utils/utils";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
 
 const props = defineProps<{

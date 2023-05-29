@@ -4,6 +4,7 @@ import { onBeforeMount, ref, watch } from "vue";
 import { useMutation, useQueryClient } from "vue-query";
 
 import { editStuff, postNewStuff } from "@common/apis/beliemeApis";
+import { stuffKeys } from "@common/apis/queryKeys";
 import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
 import { useDeptStore } from "@common/stores/deptStore";
 import { useModalStore } from "@common/stores/modalStore";
@@ -11,15 +12,13 @@ import { useUserStore } from "@common/stores/userStore";
 import type { BeliemeError, StuffWithItems } from "@common/types/Models";
 
 import {
+  convertIdToFirstIdIfNotExist,
   getStuffDetailQuery,
-  getStuffListQuery,
-  invalidateStuffDetailQuery,
-  invalidateStuffListQuery,
-  setStuffDetailQueryData,
-  setStuffListQueryData
-} from "@^stuffs/queries/stuffQueries";
+  getStuffListQuery
+} from "@^stuffs/components/utils/utils";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
 import { useStuffStore } from "@^stuffs/stores/stuffStore";
+import { sortStuffList } from "@^stuffs/utils/stuffSorter";
 
 onBeforeMount(() => {
   watch(viewMode, () => {
@@ -65,15 +64,17 @@ const commitChangeMutation = useMutation<StuffWithItems, BeliemeError>(
       if (listData.value !== undefined) {
         let newStuffList = listData.value.filter((e) => e.id !== response.id);
         newStuffList = newStuffList.push(response);
-        setStuffListQueryData(queryClient, newStuffList, response.id);
-        setStuffDetailQueryData(queryClient, response);
+        newStuffList = sortStuffList(newStuffList);
+        queryClient.setQueryData(stuffKeys.list(), newStuffList);
+        queryClient.setQueryData(stuffKeys.detail(response.id), response);
+        stuffStore.updateSelectedId(convertIdToFirstIdIfNotExist(response.id, newStuffList));
       }
       viewModeStore.changeStuffDetailViewMode("SHOW");
     },
     onError: (error) => {
       console.error(error);
-      invalidateStuffListQuery(queryClient);
-      invalidateStuffDetailQuery(queryClient);
+      queryClient.invalidateQueries(stuffKeys.list());
+      queryClient.invalidateQueries(stuffKeys.detail(selectedId.value));
       modalStore.addModal(buildAlertModal("errorAlert", error.message));
     }
   }
@@ -92,16 +93,18 @@ const commitAddNewStuffMutation = useMutation<StuffWithItems, BeliemeError>(
       if (listData.value !== undefined) {
         let newStuffList = listData.value.filter((e) => e.id !== response.id);
         newStuffList = newStuffList.push(response);
-        setStuffListQueryData(queryClient, newStuffList, response.id);
-        setStuffDetailQueryData(queryClient, response);
+        newStuffList = sortStuffList(newStuffList);
+        queryClient.setQueryData(stuffKeys.list(), newStuffList);
+        queryClient.setQueryData(stuffKeys.detail(response.id), response);
+        stuffStore.updateSelectedId(convertIdToFirstIdIfNotExist(response.id, newStuffList));
       }
 
       viewModeStore.changeStuffDetailViewMode("SHOW");
     },
     onError: (error) => {
       console.error(error);
-      invalidateStuffListQuery(queryClient);
-      invalidateStuffDetailQuery(queryClient);
+      queryClient.invalidateQueries(stuffKeys.list());
+      queryClient.invalidateQueries(stuffKeys.detail(selectedId.value));
       modalStore.addModal(buildAlertModal("errorAlert", error.message));
     }
   }

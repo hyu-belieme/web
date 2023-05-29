@@ -13,8 +13,8 @@ import { useModalStore } from "@common/stores/modalStore";
 import { useUserStore } from "@common/stores/userStore";
 import type { BeliemeError, History, ItemInfoOnly } from "@common/types/Models";
 
-import { invalidateStuffDetailQuery } from "@^stuffs/queries/stuffQueries";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
+import { useStuffStore } from "@^stuffs/stores/stuffStore";
 
 const emit = defineEmits(["popItem"]);
 
@@ -34,6 +34,9 @@ const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
 
 const userStore = useUserStore();
 const { userMode } = storeToRefs(userStore);
+
+const stuffStore = useStuffStore();
+const { selectedId } = storeToRefs(stuffStore);
 
 const rentalRequestMutation = _changeItemRequestMutation(() => rentItem(props.item.id));
 
@@ -140,7 +143,7 @@ function _changeItemRequestMutation(mutationFn: () => Promise<History>) {
   return useMutation<History, BeliemeError>(mutationFn, {
     onSettled: () => {
       queryClient.invalidateQueries(stuffKeys.list());
-      invalidateStuffDetailQuery(queryClient);
+      queryClient.invalidateQueries(stuffKeys.detail(selectedId.value));
     },
     onError: (error) => {
       console.error(error);

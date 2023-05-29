@@ -5,7 +5,7 @@ import { computed } from "vue";
 import StuffDetail from "@^stuffs/components/StuffDetailSection/StuffDetailSection.vue";
 import StuffList from "@^stuffs/components/StuffList/StuffList.vue";
 import StuffPageOnEmpty from "@^stuffs/components/StuffPageOnEmpty/StuffPageOnEmpty.vue";
-import { getStuffListQuery } from "@^stuffs/queries/stuffQueries";
+import { getStuffListQuery } from "@^stuffs/components/utils/utils";
 import { useStuffStore } from "@^stuffs/stores/stuffStore";
 
 const stuffStore = useStuffStore();
