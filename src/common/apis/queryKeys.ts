@@ -13,6 +13,9 @@ export const stuffKeys = {
 export const historyKeys = {
   all: () => ["histories"] as const,
   list: () => [...historyKeys.all(), "list"] as const,
+  listByDept: (deptId: string) => [...historyKeys.list(), deptId, "-"] as const,
+  listByDeptAndRequester: (deptId: string, requesterId: string) =>
+    [...historyKeys.list(), deptId, requesterId] as const,
   detail: (id?: string) => {
     if (id === undefined) return [...historyKeys.all(), "detail"] as const;
     return [...historyKeys.all(), "detail", id] as const;

@@ -1,26 +1,14 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { computed, onBeforeMount, watch } from "vue";
-import { useQueryClient } from "vue-query";
+import { computed } from "vue";
 
-import { historyKeys } from "@common/apis/queryKeys";
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
 import LoadingView from "@common/components/LoadingView/LoadingView.vue";
-import { useUserStore } from "@common/stores/userStore";
 
 import HistoryCell from "@^histories/components/HistoryListCell/HistoryListCell.vue";
 import { getHistoryListQuery } from "@^histories/components/utils/utils";
 import { useHistorySelectedStore } from "@^histories/stores/historySelectedStore";
 import { CategorizeHistories, type HistoryCategory } from "@^histories/utils/historyCategorizer";
-
-onBeforeMount(() => {
-  watch(userMode, () => {
-    queryClient.invalidateQueries(historyKeys.list());
-  });
-});
-
-const userStore = useUserStore();
-const { userMode } = storeToRefs(userStore);
 
 const historySelectedStore = useHistorySelectedStore();
 const { selectedId } = storeToRefs(historySelectedStore);
@@ -28,8 +16,6 @@ const { selectedId } = storeToRefs(historySelectedStore);
 const { data, isLoading, isSuccess, isFetching } = getHistoryListQuery();
 
 const categorizedHistoriesList = computed(() => CategorizeHistories(data.value));
-
-const queryClient = useQueryClient();
 
 const dataLoadStatus = computed(() => {
   if (isFetching.value || isLoading.value) return "Loading";

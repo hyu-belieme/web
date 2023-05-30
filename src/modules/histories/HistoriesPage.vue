@@ -1,33 +1,17 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { computed } from "vue";
 
-import HistoryDetail from "@^histories/components/HistoryDetailSection/HistoryDetailSection.vue";
-import HistoryList from "@^histories/components/HistoryList/HistoryList.vue";
-import HistoryPageOnEmpty from "@^histories/components/HistoryPageOnEmpty/HistoryPageOnEmpty.vue";
-import { getHistoryListQuery } from "@^histories/components/utils/utils";
-import { useHistorySelectedStore } from "@^histories/stores/historySelectedStore";
+import { useUserStore } from "@common/stores/userStore";
 
-const historySelectedStore = useHistorySelectedStore();
-const { selectedId } = storeToRefs(historySelectedStore);
+import HistoryEmptyPageRouter from "@^histories/components/HistoryEmptyPageRouter/HistoryEmptyPageRouter.vue";
 
-const { data, isLoading, isError, isSuccess, isFetching } = getHistoryListQuery();
-const dataLoadStatus = computed(() => {
-  if (isFetching.value || isLoading.value) return "Loading";
-  if (isSuccess.value) return "Success";
-  return "Error";
-});
+const userStore = useUserStore();
+const { userMode } = storeToRefs(userStore);
 </script>
 
 <template>
-  <section class="history-list-page">
-    <template v-if="isLoading || isError || (isSuccess && data?.size !== 0)">
-      <HistoryList></HistoryList>
-      <HistoryDetail :inheritStatus="dataLoadStatus" :key="selectedId"></HistoryDetail>
-    </template>
-    <template v-else>
-      <HistoryPageOnEmpty></HistoryPageOnEmpty>
-    </template>
+  <section class="history-list-page" :key="userMode">
+    <HistoryEmptyPageRouter></HistoryEmptyPageRouter>
   </section>
 </template>
 

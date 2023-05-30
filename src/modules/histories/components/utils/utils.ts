@@ -26,8 +26,21 @@ const historySelectedStore = useHistorySelectedStore();
 const { selectedId } = storeToRefs(historySelectedStore);
 
 export const getHistoryListQuery = () => {
-  return useQuery<List<History>>(historyKeys.list(), async () => {
-    let historyList = await _getHistoryList();
+  if (userMode.value === "USER") {
+    return useQuery<List<History>>(
+      historyKeys.listByDeptAndRequester(deptId.value, user.value.id),
+      async () => {
+        let historyList = await getAllRequesterHistoryInDept(deptId.value, user.value.id);
+        historyList = sortHistoryList(historyList);
+        historySelectedStore.updateSelectedId(
+          _convertIdToFirstIdIfNotExist(selectedId.value, historyList)
+        );
+        return historyList;
+      }
+    );
+  }
+  return useQuery<List<History>>(historyKeys.listByDept(deptId.value), async () => {
+    let historyList = await getAllHistoryInDept(deptId.value);
     historyList = sortHistoryList(historyList);
     historySelectedStore.updateSelectedId(
       _convertIdToFirstIdIfNotExist(selectedId.value, historyList)
@@ -47,10 +60,20 @@ export function reloadHistoryDataUsingCacheAndResponse(
   response: History,
   isListDataStale: boolean
 ) {
+  const curListKey =
+    userMode.value === "USER"
+      ? historyKeys.listByDeptAndRequester(deptId.value, user.value.id)
+      : historyKeys.listByDept(deptId.value);
+
+  const othListKey =
+    userMode.value === "USER"
+      ? historyKeys.listByDept(deptId.value)
+      : historyKeys.listByDeptAndRequester(deptId.value, user.value.id);
+
   if (isListDataStale) {
-    queryClient.invalidateQueries({ queryKey: historyKeys.list() });
+    queryClient.invalidateQueries(curListKey);
   } else {
-    queryClient.setQueryData(historyKeys.list(), (oldData: List<History> | undefined) => {
+    queryClient.setQueryData(curListKey, (oldData: List<History> | undefined) => {
       if (oldData === undefined) return List<History>();
       let newHistoryList = oldData.filter((e) => e.id !== response.id);
       newHistoryList = newHistoryList.push(response);
@@ -58,6 +81,7 @@ export function reloadHistoryDataUsingCacheAndResponse(
       return newHistoryList;
     });
   }
+  queryClient.invalidateQueries(othListKey);
   queryClient.setQueryData(historyKeys.detail(response.id), response);
 }
 
@@ -67,11 +91,4 @@ function _convertIdToFirstIdIfNotExist(id: string, historyList: List<History>) {
   const selected = historyList.find((value) => value.id === id);
   if (selected === undefined) return historyList.get(0)!.id;
   return selected.id;
-}
-
-function _getHistoryList() {
-  if (userMode.value === "USER") {
-    return getAllRequesterHistoryInDept(deptId.value, user.value.id);
-  }
-  return getAllHistoryInDept(deptId.value);
 }

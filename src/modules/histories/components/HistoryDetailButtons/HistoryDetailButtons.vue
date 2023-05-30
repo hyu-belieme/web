@@ -6,6 +6,7 @@ import { approveItem, cancelItem, returnItem } from "@common/apis/beliemeApis";
 import { historyKeys } from "@common/apis/queryKeys";
 import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
+import { useDeptStore } from "@common/stores/deptStore";
 import { useModalStore } from "@common/stores/modalStore";
 import { useUserStore } from "@common/stores/userStore";
 import type { BeliemeError, History } from "@common/types/Models";
@@ -18,8 +19,11 @@ import {
 
 const modalStore = useModalStore();
 
+const deptStore = useDeptStore();
+const { deptId } = storeToRefs(deptStore);
+
 const userStore = useUserStore();
-const { userMode } = storeToRefs(userStore);
+const { user, userMode } = storeToRefs(userStore);
 
 const { isStale: isListDataStale } = getHistoryListQuery();
 
@@ -84,7 +88,10 @@ function _changeItemRequestMutation(mutationFn: () => Promise<History>) {
     },
     onError: (error) => {
       console.error(error);
-      queryClient.invalidateQueries(historyKeys.list());
+      queryClient.invalidateQueries(historyKeys.listByDept(deptId.value));
+      queryClient.invalidateQueries(
+        historyKeys.listByDeptAndRequester(deptId.value, user.value.id)
+      );
       queryClient.invalidateQueries({ queryKey: historyKeys.detail() });
       modalStore.addModal(buildAlertModal("errorAlert", error.message));
     }

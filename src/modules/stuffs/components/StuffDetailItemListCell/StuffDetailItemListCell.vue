@@ -152,7 +152,7 @@ function _changeItemRequestMutation(mutationFn: () => Promise<History>) {
       queryClient.invalidateQueries(stuffKeys.detail(selectedId.value));
     },
     onSuccess: (response) => {
-      queryClient.invalidateQueries(historyKeys.list());
+      queryClient.invalidateQueries({ queryKey: historyKeys.list() });
       queryClient.setQueryData(historyKeys.detail(response.id), response);
     },
     onError: (error) => {
