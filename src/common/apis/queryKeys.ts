@@ -1,6 +1,9 @@
 export const stuffKeys = {
   all: () => ["stuffs"] as const,
-  list: () => [...stuffKeys.all(), "list"] as const,
+  list: (deptId?: string) => {
+    if (deptId === undefined) return [...stuffKeys.all(), "list"] as const;
+    return [...stuffKeys.all(), "list", deptId] as const;
+  },
   detail: (id?: string) => {
     if (id === undefined) return [...stuffKeys.all(), "detail"] as const;
     return [...stuffKeys.all(), "detail", id] as const;

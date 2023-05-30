@@ -9,6 +9,7 @@ import { addNewItem } from "@common/apis/beliemeApis";
 import { stuffKeys } from "@common/apis/queryKeys";
 import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
+import { useDeptStore } from "@common/stores/deptStore";
 import { useModalStore } from "@common/stores/modalStore";
 import type { BeliemeError, ItemInfoOnly, StuffWithItems } from "@common/types/Models";
 
@@ -36,6 +37,9 @@ const MAX_ITEM_NUM = 50;
 
 const viewModeStore = useStuffDetailViewModeStore();
 const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
+
+const deptStore = useDeptStore();
+const { deptId } = storeToRefs(deptStore);
 
 const stuffStore = useStuffSelectedStore();
 const { selectedId } = storeToRefs(stuffStore);
@@ -88,7 +92,7 @@ const addNewItemMutation = useMutation<StuffWithItems, BeliemeError>(
     },
     onError: (error) => {
       console.error(error);
-      queryClient.invalidateQueries(stuffKeys.list());
+      queryClient.invalidateQueries(stuffKeys.list(deptId.value));
       queryClient.invalidateQueries(stuffKeys.detail(selectedId.value));
       modalStore.addModal(buildAlertModal("errorAlert", error.message));
     }

@@ -18,7 +18,7 @@ const stuffStore = useStuffSelectedStore();
 const { selectedId } = storeToRefs(stuffStore);
 
 export const getStuffListQuery = () => {
-  return useQuery<List<Stuff>>(stuffKeys.list(), async () => {
+  return useQuery<List<Stuff>>(stuffKeys.list(deptId.value), async () => {
     let stuffList = await getAllStuffsInDept(deptId.value);
     stuffList = sortStuffList(stuffList);
     stuffStore.updateSelectedId(_convertIdToFirstIdIfNotExist(selectedId.value, stuffList));
@@ -38,9 +38,9 @@ export function reloadStuffDataUsingCacheAndResponse(
   isListDataStale: boolean
 ) {
   if (isListDataStale) {
-    queryClient.invalidateQueries(stuffKeys.list());
+    queryClient.invalidateQueries(stuffKeys.list(deptId.value));
   } else {
-    queryClient.setQueryData(stuffKeys.list(), (oldData?: List<Stuff>) => {
+    queryClient.setQueryData(stuffKeys.list(deptId.value), (oldData?: List<Stuff>) => {
       if (oldData === undefined) return List<Stuff>();
       let newStuffList = oldData.filter((e) => e.id !== response.id);
       newStuffList = newStuffList.push(response);

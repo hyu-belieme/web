@@ -9,6 +9,7 @@ import { historyKeys, stuffKeys } from "@common/apis/queryKeys";
 import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import InfoTag from "@common/components/InfoTag/InfoTag.vue";
+import { useDeptStore } from "@common/stores/deptStore";
 import { useModalStore } from "@common/stores/modalStore";
 import { useUserStore } from "@common/stores/userStore";
 import type { BeliemeError, History, ItemInfoOnly } from "@common/types/Models";
@@ -34,6 +35,9 @@ const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
 
 const userStore = useUserStore();
 const { userMode } = storeToRefs(userStore);
+
+const deptStore = useDeptStore();
+const { deptId } = storeToRefs(deptStore);
 
 const stuffStore = useStuffSelectedStore();
 const { selectedId } = storeToRefs(stuffStore);
@@ -144,7 +148,7 @@ const relativeTimeString = (time: number) => {
 function _changeItemRequestMutation(mutationFn: () => Promise<History>) {
   return useMutation<History, BeliemeError>(mutationFn, {
     onSettled: () => {
-      queryClient.invalidateQueries(stuffKeys.list());
+      queryClient.invalidateQueries(stuffKeys.list(deptId.value));
       queryClient.invalidateQueries(stuffKeys.detail(selectedId.value));
     },
     onSuccess: (response) => {

@@ -65,7 +65,7 @@ const commitChangeMutation = useMutation<StuffWithItems, BeliemeError>(
     },
     onError: (error) => {
       console.error(error);
-      queryClient.invalidateQueries(stuffKeys.list());
+      queryClient.invalidateQueries(stuffKeys.list(deptId.value));
       queryClient.invalidateQueries(stuffKeys.detail(selectedId.value));
       modalStore.addModal(buildAlertModal("errorAlert", error.message));
     }
@@ -87,7 +87,7 @@ const commitAddNewStuffMutation = useMutation<StuffWithItems, BeliemeError>(
     },
     onError: (error) => {
       console.error(error);
-      queryClient.invalidateQueries(stuffKeys.list());
+      queryClient.invalidateQueries(stuffKeys.list(deptId.value));
       queryClient.invalidateQueries(stuffKeys.detail(selectedId.value));
       modalStore.addModal(buildAlertModal("errorAlert", error.message));
     }
