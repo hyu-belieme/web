@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import type { List } from "immutable";
 import { storeToRefs } from "pinia";
 import { onBeforeMount } from "vue";
 
@@ -7,49 +6,35 @@ import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
 import LoadingView from "@common/components/LoadingView/LoadingView.vue";
 import { useModalStore } from "@common/stores/modalStore";
-import { loading } from "@common/types/Loading";
-import type { Stuff } from "@common/types/Models";
 
-import stuffDummies from "@^stuffs/assets/dummies/stuffDummies";
 import StuffListCell from "@^stuffs/components/StuffListCell/StuffListCell.vue";
+import { getStuffListQuery } from "@^stuffs/components/utils/utils";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore.js";
-import { useStuffStore } from "@^stuffs/stores/stuffStore";
+import { useStuffSelectedStore } from "@^stuffs/stores/stuffSelectedStore";
 
 onBeforeMount(() => {
   stuffDetailViewModeStore.changeStuffDetailViewMode("SHOW");
-  updateSelected(0);
-  updateStuffs();
 });
+
+const modalStore = useModalStore();
 
 const stuffDetailViewModeStore = useStuffDetailViewModeStore();
 const { stuffDetailViewMode } = storeToRefs(stuffDetailViewModeStore);
 
-const stuffStore = useStuffStore();
-const { stuffs, selected } = storeToRefs(stuffStore);
+const stuffStore = useStuffSelectedStore();
+const { selectedId } = storeToRefs(stuffStore);
 
-const modalStore = useModalStore();
+const { data, isLoading, isSuccess } = getStuffListQuery();
 
-const updateStuffs = () => {
-  stuffStore.updateStuffs({
-    load: () => {
-      // return undefined;
-      // return loading;
-      return stuffDummies;
-    }
-  });
-};
-
-const updateSelected = (toSelect: number) => {
-  if (toSelect === selected.value) return;
+const updateSelectedId = (newSelectedId: string) => {
   if (stuffDetailViewMode.value === "SHOW") {
-    stuffStore.updateSelected(toSelect);
+    stuffStore.updateSelectedId(newSelectedId);
     return;
   }
-
-  modalStore.addModal(changingStuffAtEditionModeConfirmModal(toSelect));
+  modalStore.addModal(_changingStuffAtEditionModeConfirmModal(newSelectedId));
 };
 
-const changingStuffAtEditionModeConfirmModal = (toSelect: number) => {
+const _changingStuffAtEditionModeConfirmModal = (newSelectedId: string) => {
   return {
     key: "changeStuff",
     component: BasicModal,
@@ -59,7 +44,7 @@ const changingStuffAtEditionModeConfirmModal = (toSelect: number) => {
       resolveLabel: "확인"
     },
     resolve: (_: any, key: string) => {
-      stuffStore.updateSelected(toSelect);
+      stuffStore.updateSelectedId(newSelectedId);
       stuffDetailViewModeStore.changeStuffDetailViewMode("SHOW");
       modalStore.removeModal(key);
     },
@@ -72,19 +57,19 @@ const changingStuffAtEditionModeConfirmModal = (toSelect: number) => {
 
 <template>
   <section class="stuff-list">
-    <template v-if="stuffs === loading">
+    <template v-if="isSuccess && data !== undefined">
+      <StuffListCell
+        v-for="stuff of data"
+        :key="stuff.name"
+        v-bind="{ stuff: stuff, selected: stuff.id === selectedId }"
+        @click="() => updateSelectedId(stuff.id)"
+      ></StuffListCell>
+    </template>
+    <template v-else-if="isLoading">
       <LoadingView></LoadingView>
     </template>
-    <template v-else-if="stuffs === undefined">
-      <DataLoadFailView></DataLoadFailView>
-    </template>
     <template v-else>
-      <StuffListCell
-        v-for="(stuff, index) of (stuffs as List<Stuff>)"
-        :key="stuff.name"
-        v-bind="{ stuff: stuff, selected: index === selected }"
-        @click="updateSelected(index)"
-      ></StuffListCell>
+      <DataLoadFailView></DataLoadFailView>
     </template>
   </section>
 </template>

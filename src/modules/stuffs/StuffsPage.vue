@@ -1,34 +1,15 @@
 <script setup lang="ts">
-import { storeToRefs } from "pinia";
-
-import { loading } from "@common/types/Loading";
-
-import StuffDetail from "@^stuffs/components/StuffDetailSection/StuffDetailSection.vue";
-import StuffList from "@^stuffs/components/StuffList/StuffList.vue";
-import StuffPageOnEmpty from "@^stuffs/components/StuffPageOnEmpty/StuffPageOnEmpty.vue";
-import { useStuffStore } from "@^stuffs/stores/stuffStore";
-
-const stuffStore = useStuffStore();
-const { stuffs } = storeToRefs(stuffStore);
+import StuffEmptyPageRouter from "@^stuffs/components/StuffEmptyPageRouter/StuffEmptyPageRouter.vue";
 </script>
 
 <template>
-  <section class="stuff-list-page">
-    <template v-if="stuffs === loading || stuffs === undefined || stuffs.size !== 0">
-      <StuffList></StuffList>
-      <StuffDetail></StuffDetail>
-    </template>
-    <template v-else>
-      <StuffPageOnEmpty></StuffPageOnEmpty>
-    </template>
+  <section class="stuff-page">
+    <StuffEmptyPageRouter></StuffEmptyPageRouter>
   </section>
 </template>
 
 <style lang="scss" scoped>
-$list-tab-ratio: 16;
-$detail-tab-ratio: 25;
-
-.stuff-list-page {
+.stuff-page {
   height: 100%;
 
   display: flex;
@@ -36,23 +17,5 @@ $detail-tab-ratio: 25;
   gap: map-get($map: $spacers, $key: 4);
 
   padding-bottom: map-get($map: $spacers, $key: 4);
-
-  .stuff-list {
-    max-width: calc(100% * $list-tab-ratio / ($list-tab-ratio + $detail-tab-ratio));
-    height: 100%;
-    flex-basis: 0;
-    flex-grow: $list-tab-ratio;
-
-    background-color: $white;
-  }
-
-  .stuff-detail {
-    max-width: calc(100% * $detail-tab-ratio / ($list-tab-ratio + $detail-tab-ratio));
-    height: 100%;
-    flex-basis: 0;
-    flex-grow: $detail-tab-ratio;
-
-    background-color: $white;
-  }
 }
 </style>

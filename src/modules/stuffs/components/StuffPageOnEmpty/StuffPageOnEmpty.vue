@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 
-import { useUserModeStore } from "@common/stores/userModeStore";
+import { useUserStore } from "@common/stores/userStore";
 
 import StuffDetail from "@^stuffs/components/StuffDetailSection/StuffDetailSection.vue";
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
 
-const userModeStore = useUserModeStore();
-const { userMode } = storeToRefs(userModeStore);
+const userStore = useUserStore();
+const { userMode } = storeToRefs(userStore);
 
 const viewModeStore = useStuffDetailViewModeStore();
 const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
@@ -28,7 +28,7 @@ const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
       </section>
     </template>
     <template v-else>
-      <StuffDetail></StuffDetail>
+      <StuffDetail inherit-status="Success"></StuffDetail>
     </template>
   </section>
 </template>

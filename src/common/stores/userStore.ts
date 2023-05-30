@@ -1,0 +1,35 @@
+import { defineStore } from "pinia";
+import { computed, readonly, ref } from "vue";
+
+import userDummy from "@common/assets/dummies/userDummy";
+import type { UserWithSecureInfo } from "@common/types/Models";
+
+export type UserMode = "USER" | "STAFF" | "MASTER";
+
+export const useUserStore = defineStore("user", () => {
+  const user = ref<UserWithSecureInfo>(userDummy);
+
+  const userMode = ref<UserMode>("USER");
+
+  const userToken = computed(() => {
+    return user.value.token;
+  });
+
+  function updateUserMode(_userMode: UserMode) {
+    userMode.value = _userMode;
+  }
+
+  function updateUser(_user: UserWithSecureInfo) {
+    user.value = _user;
+  }
+
+  const $user = readonly(user);
+  const $userMode = readonly(userMode);
+  return {
+    user: $user,
+    userMode: $userMode,
+    userToken,
+    updateUser,
+    updateUserMode
+  };
+});

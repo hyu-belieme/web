@@ -1,49 +1,30 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { onBeforeMount } from "vue";
+import { computed } from "vue";
 
 import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
 import LoadingView from "@common/components/LoadingView/LoadingView.vue";
-import { loading } from "@common/types/Loading";
 
-import historyDummies from "@^histories/assets/dummies/historyDummies";
 import HistoryCell from "@^histories/components/HistoryListCell/HistoryListCell.vue";
-import {
-  type CategorizedHistoryIndex,
-  type HistoryCategory,
-  useHistoryStore
-} from "@^histories/stores/historyStore";
+import { getHistoryListQuery } from "@^histories/components/utils/utils";
+import { useHistorySelectedStore } from "@^histories/stores/historySelectedStore";
+import { CategorizeHistories, type HistoryCategory } from "@^histories/utils/historyCategorizer";
 
-onBeforeMount(() => {
-  updateHistories();
-  initSelected();
+const historySelectedStore = useHistorySelectedStore();
+const { selectedId } = storeToRefs(historySelectedStore);
+
+const { data, isLoading, isSuccess, isFetching } = getHistoryListQuery();
+
+const categorizedHistoriesList = computed(() => CategorizeHistories(data.value));
+
+const dataLoadStatus = computed(() => {
+  if (isFetching.value || isLoading.value) return "Loading";
+  if (isSuccess.value) return "Success";
+  return "Error";
 });
 
-const historyStore = useHistoryStore();
-const { histories, categorizedHistoriesList, selected } = storeToRefs(historyStore);
-
-const updateHistories = () => {
-  historyStore.updateHistories({
-    load: () => {
-      // return undefined;
-      // return loading;
-      return historyDummies;
-    }
-  });
-};
-
-const initSelected = () => {
-  for (const categorizedHistories of categorizedHistoriesList.value) {
-    if (categorizedHistories.histories.size !== 0) {
-      updateSelected({ category: categorizedHistories.category, index: 0 });
-      return;
-    }
-  }
-};
-
-const updateSelected = (newVal: CategorizedHistoryIndex) => {
-  if (JSON.stringify(newVal) === JSON.stringify(selected.value)) return;
-  historyStore.updateSelected(newVal);
+const updateSelectedId = (newSelectedId: string) => {
+  historySelectedStore.updateSelectedId(newSelectedId);
 };
 
 const headerLabel = (category: HistoryCategory) => {
@@ -64,42 +45,35 @@ const headerLabel = (category: HistoryCategory) => {
 
 <template>
   <section class="history-list">
-    <template v-if="histories === loading">
-      <LoadingView></LoadingView>
-    </template>
-    <template v-else-if="histories === undefined">
-      <DataLoadFailView></DataLoadFailView>
-    </template>
-    <template v-else>
-      <template v-for="categorizedHistories of categorizedHistoriesList">
-        <section v-if="categorizedHistories.histories.size > 0">
-          <section class="cell-header">{{ headerLabel(categorizedHistories.category) }}</section>
-          <HistoryCell
-            v-for="(history, index) of categorizedHistories.histories"
-            key="history"
-            v-bind="{
-              history: history,
-              selected:
-                JSON.stringify(selected) ===
-                JSON.stringify({ category: categorizedHistories.category, index: index })
-            }"
-            @click="updateSelected({ category: categorizedHistories.category, index: index })"
-          ></HistoryCell>
-          <template
-            v-if="
-              (categorizedHistories.category === 'RETURNED' ||
-                categorizedHistories.category === 'EXPIRED') &&
-              categorizedHistories.histories.size >= 5
-            "
-          >
-            <section class="cell-hider">
-              <span>더 보기</span>
-              <i class="bi bi-chevron-down"></i>
-            </section>
-          </template>
+    <template
+      v-if="dataLoadStatus === 'Success' && categorizedHistoriesList !== undefined"
+      v-for="categorizedHistories of categorizedHistoriesList"
+    >
+      <section class="cell-header">{{ headerLabel(categorizedHistories.category) }}</section>
+      <HistoryCell
+        v-for="history of categorizedHistories.histories"
+        key="history"
+        v-bind="{
+          history: history,
+          selected: selectedId === history.id
+        }"
+        @click="updateSelectedId(history.id)"
+      ></HistoryCell>
+      <template
+        v-if="
+          (categorizedHistories.category === 'RETURNED' ||
+            categorizedHistories.category === 'EXPIRED') &&
+          categorizedHistories.histories.size >= 5
+        "
+      >
+        <section class="cell-hider">
+          <span>더 보기</span>
+          <i class="bi bi-chevron-down"></i>
         </section>
       </template>
     </template>
+    <LoadingView v-else-if="dataLoadStatus === 'Loading'"></LoadingView>
+    <DataLoadFailView v-else></DataLoadFailView>
   </section>
 </template>
 

@@ -1,34 +1,56 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
+import { NIL as NIL_UUID } from "uuid";
 import { getCurrentInstance } from "vue";
+import { useMutation, useQueryClient } from "vue-query";
 
+import { rentItem, reportLostItem, returnItem } from "@common/apis/beliemeApis";
+import { historyKeys, stuffKeys } from "@common/apis/queryKeys";
+import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
 import BasicModal from "@common/components/BasicModal/BasicModal.vue";
 import InfoTag from "@common/components/InfoTag/InfoTag.vue";
-import { type Modal, useModalStore } from "@common/stores/modalStore";
-import { useUserModeStore } from "@common/stores/userModeStore";
-import type { ItemInfoOnly } from "@common/types/Models";
+import { useDeptStore } from "@common/stores/deptStore";
+import { useModalStore } from "@common/stores/modalStore";
+import { useUserStore } from "@common/stores/userStore";
+import type { BeliemeError, History, ItemInfoOnly } from "@common/types/Models";
 
 import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
+import { useStuffSelectedStore } from "@^stuffs/stores/stuffSelectedStore";
+
+const emit = defineEmits(["popItem"]);
+
+const props = defineProps<{
+  item: ItemInfoOnly;
+}>();
 
 const TAG_SIZE = 6;
 
 const app = getCurrentInstance();
 const dayjs = app!.appContext.config.globalProperties.$dayjs;
 
+const modalStore = useModalStore();
+
 const viewModeStore = useStuffDetailViewModeStore();
 const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
 
-const userModeStore = useUserModeStore();
-const { userMode } = storeToRefs(userModeStore);
+const userStore = useUserStore();
+const { userMode } = storeToRefs(userStore);
 
-const modalStore = useModalStore();
+const deptStore = useDeptStore();
+const { deptId } = storeToRefs(deptStore);
 
-const props = defineProps<{
-  item: ItemInfoOnly;
-  isNew: boolean;
-}>();
+const stuffStore = useStuffSelectedStore();
+const { selectedId } = storeToRefs(stuffStore);
 
-const emit = defineEmits(["popItem"]);
+// const { isStale: isListDataStale } = getHistoryListQuery();
+
+const rentalRequestMutation = _changeItemRequestMutation(() => rentItem(props.item.id));
+
+const lostRequestMutation = _changeItemRequestMutation(() => reportLostItem(props.item.id));
+
+const foundApproveMutation = _changeItemRequestMutation(() => returnItem(props.item.id));
+
+const queryClient = useQueryClient();
 
 const rentalRequestModal = {
   key: "rentalRequest",
@@ -40,11 +62,7 @@ const rentalRequestModal = {
     resolveLabel: "신청하기"
   },
   resolve: (_: any, key: string) => {
-    console.log("대여 신청");
-    console.log(props.item);
-    modalStore.removeModal(key);
-  },
-  reject: (_: any, key: string) => {
+    rentalRequestMutation.mutate();
     modalStore.removeModal(key);
   }
 };
@@ -59,11 +77,7 @@ const lostRequestModal = {
     resolveLabel: "등록하기"
   },
   resolve: (_: any, key: string) => {
-    console.log("분실 등록");
-    console.log(props.item);
-    modalStore.removeModal(key);
-  },
-  reject: (_: any, key: string) => {
+    lostRequestMutation.mutate();
     modalStore.removeModal(key);
   }
 };
@@ -78,17 +92,9 @@ const foundApproveModal = {
     resolveLabel: "확인하기"
   },
   resolve: (_: any, key: string) => {
-    console.log("반환 확인");
-    console.log(props.item);
-    modalStore.removeModal(key);
-  },
-  reject: (_: any, key: string) => {
+    foundApproveMutation.mutate();
     modalStore.removeModal(key);
   }
-};
-
-const showModal = (modal: Modal) => {
-  modalStore.addModal(modal);
 };
 
 const statusTagInfo = () => {
@@ -100,31 +106,61 @@ const statusTagInfo = () => {
 };
 
 const timestampTagInfo = () => {
+  // TODO: 서버 response의 item status를 바꾸고 그 후에 맞춰서 바꾸기
   const TIMESTAMP_TAG_COLOR = "orange";
+
+  let content = "ERROR";
+  if (props.item.status === "REQUESTED") {
+    content = relativeTimeString(props.item.lastHistory?.requestedAt!);
+  } else if (props.item.status === "USING") {
+    content = relativeTimeString(props.item.lastHistory?.approvedAt!);
+  } else if (props.item.status === "LOST") {
+    content = relativeTimeString(props.item.lastHistory?.lostAt!);
+  }
 
   return {
     size: TAG_SIZE,
     color: TIMESTAMP_TAG_COLOR,
-    content: relativeTimeString(props.item.lastHistory?.approvedAt!)
+    content: content
   };
 };
 
 const statusTagColor = (item: ItemInfoOnly) => {
+  // TODO: 서버 response의 item status를 바꾸고 그 후에 맞춰서 바꾸기
   if (item.status === "USABLE") return "green";
-  if (item.status === "UNUSABLE") return "orange";
+  if (item.status === "REQUESTED" || item.status === "USING") return "orange";
   return "red";
 };
 
 const statusTagContent = (item: ItemInfoOnly) => {
+  // TODO: 서버 response의 item status를 바꾸고 그 후에 맞춰서 바꾸기
   if (item.status === "USABLE") return "대여가능";
-  if (item.status === "UNUSABLE") return "대여 중";
-  if (item.status === "INACTIVE") return "사용불가";
+  if (item.status === "REQUESTED") return "예약됨";
+  if (item.status === "USING") return "대여중";
+  if (item.status === "LOST") return "사용불가";
   return "ERROR";
 };
 
 const relativeTimeString = (time: number) => {
   return dayjs.unix(time).fromNow();
 };
+
+function _changeItemRequestMutation(mutationFn: () => Promise<History>) {
+  return useMutation<History, BeliemeError>(mutationFn, {
+    onSettled: () => {
+      queryClient.invalidateQueries(stuffKeys.list(deptId.value));
+      queryClient.invalidateQueries(stuffKeys.detail(selectedId.value));
+    },
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({ queryKey: historyKeys.list() });
+      queryClient.setQueryData(historyKeys.detail(response.id), response);
+    },
+    onError: (error) => {
+      console.error(error);
+      modalStore.addModal(buildAlertModal("errorAlert", error.message));
+    }
+  });
+}
 </script>
 
 <template>
@@ -133,40 +169,47 @@ const relativeTimeString = (time: number) => {
       <span class="numbering">{{ item.num }}</span>
       <section class="tags">
         <InfoTag v-bind="statusTagInfo()"></InfoTag>
-        <InfoTag v-if="item.status === 'UNUSABLE'" v-bind="timestampTagInfo()"></InfoTag>
+        <InfoTag
+          v-if="item.status === 'USING' || item.status === 'REQUESTED'"
+          v-bind="timestampTagInfo()"
+        ></InfoTag>
       </section>
       <template v-if="viewMode === 'SHOW'">
         <button
           v-if="item.status === 'USABLE'"
           class="btn btn-primary btn-sm"
-          @click="showModal(rentalRequestModal)"
+          @click="modalStore.addModal(rentalRequestModal)"
         >
           대여 신청
         </button>
         <button
           v-else
           class="btn btn-primary btn-sm"
-          @click="showModal(rentalRequestModal)"
+          @click="modalStore.addModal(rentalRequestModal)"
           disabled
         >
           대여 신청
         </button>
         <template v-if="userMode === 'STAFF' || userMode === 'MASTER'">
           <button
-            v-if="item.status !== 'INACTIVE'"
+            v-if="item.status !== 'LOST'"
             class="btn btn-primary btn-sm"
-            @click="showModal(lostRequestModal)"
+            @click="modalStore.addModal(lostRequestModal)"
           >
             분실 등록
           </button>
-          <button v-else class="btn btn-primary btn-sm" @click="showModal(foundApproveModal)">
+          <button
+            v-else
+            class="btn btn-primary btn-sm"
+            @click="modalStore.addModal(foundApproveModal)"
+          >
             반환 확인
           </button>
         </template>
       </template>
       <template v-else>
         <button
-          v-if="viewMode === 'ADD' || isNew"
+          v-if="viewMode === 'ADD' || item.id === NIL_UUID"
           type="button"
           class="btn btn-danger btn-sm"
           @click="emit('popItem')"

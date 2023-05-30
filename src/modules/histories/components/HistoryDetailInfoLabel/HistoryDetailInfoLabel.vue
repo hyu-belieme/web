@@ -1,21 +1,14 @@
 <script setup lang="ts">
-import { storeToRefs } from "pinia";
+import { getHistoryDetailQuery } from "@^histories/components/utils/utils";
 
-import { loading } from "@common/types/Loading";
-
-import { useHistoryStore } from "@^histories/stores/historyStore";
-
-const historyStore = useHistoryStore();
-const { selectedHistory } = storeToRefs(historyStore);
+const { isSuccess, data } = getHistoryDetailQuery();
 </script>
 
 <template>
-  <template v-if="selectedHistory !== loading && selectedHistory !== undefined">
+  <template v-if="isSuccess && data !== undefined">
     <section class="label">
-      <section class="thumbnail">{{ selectedHistory.item.stuff.thumbnail }}</section>
-      <section class="name">
-        {{ selectedHistory.item.stuff.name }} #{{ selectedHistory.item.num }}
-      </section>
+      <section class="thumbnail">{{ data.item.stuff.thumbnail }}</section>
+      <section class="name">{{ data.item.stuff.name }} #{{ data.item.num }}</section>
     </section>
   </template>
 </template>
