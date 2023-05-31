@@ -2,7 +2,7 @@ import { List } from 'immutable';
 import { defineStore } from 'pinia';
 import { markRaw, readonly, ref } from 'vue';
 
-import type Modal from '@common/models/Modal';
+import type Modal from '@core/models/Modal';
 
 const useModalStore = defineStore('modal', () => {
   const modals = ref<List<Modal>>(List([]));
