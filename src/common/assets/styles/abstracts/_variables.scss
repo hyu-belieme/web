@@ -43,14 +43,14 @@ $font-sizes: (
   7: $h7-font-size,
   8: $h8-font-size,
   9: $h9-font-size,
-  10: $h10-font-size
+  10: $h10-font-size,
 ) !default;
 
 /// Relative or absolute URL where all assets are served from
 /// @type String
 /// @example scss - When using a CDN
 ///   $base-url: 'https://cdn.example.com/assets/';
-$base-url: "/assets/" !default;
+$base-url: '/assets/' !default;
 
 $header-height: 5rem;
 $main-height: calc(100% - $header-height);

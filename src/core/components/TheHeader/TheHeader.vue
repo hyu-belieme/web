@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { storeToRefs } from "pinia";
+import { storeToRefs } from 'pinia';
 
-import { useUserStore } from "@common/stores/userStore";
+import useUserStore from '@common/stores/userStore';
 
 const userStore = useUserStore();
 const { userMode } = storeToRefs(userStore);
 
-const changeUserMode = () => {
-  if (userMode.value === "USER") userStore.updateUserMode("STAFF");
-  else userStore.updateUserMode("USER");
-};
+function changeUserMode() {
+  if (userMode.value === 'USER') userStore.updateUserMode('STAFF');
+  else userStore.updateUserMode('USER');
+}
 </script>
 
 <template>

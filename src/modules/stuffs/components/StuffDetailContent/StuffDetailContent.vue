@@ -1,33 +1,28 @@
 <script setup lang="ts">
-import { storeToRefs } from "pinia";
-import { onBeforeMount, watch } from "vue";
-import { useMutation, useQueryClient } from "vue-query";
+import { storeToRefs } from 'pinia';
+import { onBeforeMount, watch } from 'vue';
+import { useMutation, useQueryClient } from 'vue-query';
 
-import { editStuff, postNewStuff } from "@common/apis/beliemeApis";
-import { stuffKeys } from "@common/apis/queryKeys";
-import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
-import { useDeptStore } from "@common/stores/deptStore";
-import { useModalStore } from "@common/stores/modalStore";
-import { useUserStore } from "@common/stores/userStore";
-import type { BeliemeError, StuffWithItems } from "@common/types/Models";
+import { editStuff, postNewStuff } from '@common/apis/beliemeApis';
+import { stuffKeys } from '@common/apis/queryKeys';
+import buildAlertModal from '@common/components/AlertModal/utils/alertModalBuilder';
+import type { BaseError } from '@common/errors/BaseError';
+import type StuffWithItems from '@common/models/StuffWithItems';
+import useDeptStore from '@common/stores/deptStore';
+import useModalStore from '@common/stores/modalStore';
+import useUserStore from '@common/stores/userStore';
 
 import {
   getStuffDetailQuery,
   getStuffListQuery,
-  reloadStuffDataUsingCacheAndResponse
-} from "@^stuffs/components/utils/utils";
-import { useNewStuffInfo } from "@^stuffs/stores/newStuffInfoStore";
-import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
-import { useStuffSelectedStore } from "@^stuffs/stores/stuffSelectedStore";
-
-onBeforeMount(() => {
-  watch(viewMode, () => {
-    _initInputValue();
-  });
-});
+  reloadStuffDataUsingCacheAndResponse,
+} from '@^stuffs/components/utils/utils';
+import useNewStuffInfo from '@^stuffs/stores/newStuffInfoStore';
+import useStuffDetailViewModeStore from '@^stuffs/stores/stuffDetailViewModeStore';
+import useStuffSelectedStore from '@^stuffs/stores/stuffSelectedStore';
 
 const LOREM_IPSUM =
-  "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi sint corrupti illum quos. Dolorum architecto illum, veritatis asperiores odio exercitationem impedit natus. Modi magni, aut corporis impedit ullam nemo saepe!";
+  'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi sint corrupti illum quos. Dolorum architecto illum, veritatis asperiores odio exercitationem impedit natus. Modi magni, aut corporis impedit ullam nemo saepe!';
 
 const modalStore = useModalStore();
 
@@ -52,59 +47,65 @@ const { isStale: isListDataStale } = getStuffListQuery();
 
 const queryClient = useQueryClient();
 
-const commitChangeMutation = useMutation<StuffWithItems, BeliemeError>(
+const commitChangeMutation = useMutation<StuffWithItems, BaseError>(
   () =>
     editStuff(selectedId.value, {
       name: newName.value,
-      thumbnail: newThumbnail.value
+      thumbnail: newThumbnail.value,
     }),
   {
     onSuccess: (response) => {
       reloadStuffDataUsingCacheAndResponse(queryClient, response, isListDataStale.value);
-      viewModeStore.changeStuffDetailViewMode("SHOW");
+      viewModeStore.changeStuffDetailViewMode('SHOW');
     },
     onError: (error) => {
       console.error(error);
       queryClient.invalidateQueries(stuffKeys.list(deptId.value));
       queryClient.invalidateQueries(stuffKeys.detail(selectedId.value));
-      modalStore.addModal(buildAlertModal("errorAlert", error.message));
-    }
+      modalStore.addModal(buildAlertModal('errorAlert', error.message));
+    },
   }
 );
 
-const commitAddNewStuffMutation = useMutation<StuffWithItems, BeliemeError>(
+const commitAddNewStuffMutation = useMutation<StuffWithItems, BaseError>(
   () =>
     postNewStuff({
       departmentId: deptId.value,
       name: newName.value,
       thumbnail: newThumbnail.value,
-      amount: newAmount.value
+      amount: newAmount.value,
     }),
   {
     onSuccess: (response) => {
       reloadStuffDataUsingCacheAndResponse(queryClient, response, isListDataStale.value);
-      viewModeStore.changeStuffDetailViewMode("SHOW");
+      viewModeStore.changeStuffDetailViewMode('SHOW');
     },
     onError: (error) => {
       console.error(error);
       queryClient.invalidateQueries(stuffKeys.list(deptId.value));
       queryClient.invalidateQueries(stuffKeys.detail(selectedId.value));
-      modalStore.addModal(buildAlertModal("errorAlert", error.message));
-    }
+      modalStore.addModal(buildAlertModal('errorAlert', error.message));
+    },
   }
 );
 
-const _initInputValue = () => {
+function initInputValue() {
   if (data.value === undefined) {
-    newName.value = "";
-    newThumbnail.value = "";
-    newDesc.value = "";
+    newName.value = '';
+    newThumbnail.value = '';
+    newDesc.value = '';
     return;
   }
-  newName.value = viewMode.value === "EDIT" ? data.value.name : "";
-  newThumbnail.value = viewMode.value === "EDIT" ? data.value.thumbnail : "";
-  newDesc.value = viewMode.value === "EDIT" ? LOREM_IPSUM : "";
-};
+  newName.value = viewMode.value === 'EDIT' ? data.value.name : '';
+  newThumbnail.value = viewMode.value === 'EDIT' ? data.value.thumbnail : '';
+  newDesc.value = viewMode.value === 'EDIT' ? LOREM_IPSUM : '';
+}
+
+onBeforeMount(() => {
+  watch(viewMode, () => {
+    initInputValue();
+  });
+});
 </script>
 
 <template>

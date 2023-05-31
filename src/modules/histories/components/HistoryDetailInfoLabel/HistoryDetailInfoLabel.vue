@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getHistoryDetailQuery } from "@^histories/components/utils/utils";
+import { getHistoryDetailQuery } from '@^histories/components/utils/utils';
 
 const { isSuccess, data } = getHistoryDetailQuery();
 </script>

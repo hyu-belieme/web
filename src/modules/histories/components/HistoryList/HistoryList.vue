@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { storeToRefs } from "pinia";
-import { computed } from "vue";
+import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
 
-import DataLoadFailView from "@common/components/DataLoadFailView/DataLoadFailView.vue";
-import LoadingView from "@common/components/LoadingView/LoadingView.vue";
+import DataLoadFailView from '@common/components/DataLoadFailView/DataLoadFailView.vue';
+import LoadingView from '@common/components/LoadingView/LoadingView.vue';
 
-import HistoryCell from "@^histories/components/HistoryListCell/HistoryListCell.vue";
-import { getHistoryListQuery } from "@^histories/components/utils/utils";
-import { useHistorySelectedStore } from "@^histories/stores/historySelectedStore";
-import { CategorizeHistories, type HistoryCategory } from "@^histories/utils/historyCategorizer";
+import HistoryCell from '@^histories/components/HistoryListCell/HistoryListCell.vue';
+import { getHistoryListQuery } from '@^histories/components/utils/utils';
+import useHistorySelectedStore from '@^histories/stores/historySelectedStore';
+import { CategorizeHistories, type HistoryCategory } from '@^histories/utils/historyCategorizer';
 
 const historySelectedStore = useHistorySelectedStore();
 const { selectedId } = storeToRefs(historySelectedStore);
@@ -18,29 +18,31 @@ const { data, isLoading, isSuccess, isFetching } = getHistoryListQuery();
 const categorizedHistoriesList = computed(() => CategorizeHistories(data.value));
 
 const dataLoadStatus = computed(() => {
-  if (isFetching.value || isLoading.value) return "Loading";
-  if (isSuccess.value) return "Success";
-  return "Error";
+  if (isFetching.value || isLoading.value) return 'Loading';
+  if (isSuccess.value) return 'Success';
+  return 'Error';
 });
 
-const updateSelectedId = (newSelectedId: string) => {
+function updateSelectedId(newSelectedId: string) {
   historySelectedStore.updateSelectedId(newSelectedId);
-};
+}
 
-const headerLabel = (category: HistoryCategory) => {
+function headerLabel(category: HistoryCategory) {
   switch (category) {
-    case "REQUESTED":
-      return "요청된 기록";
-    case "USING":
-      return "사용 중인 기록";
-    case "LOST":
-      return "분실된 기록";
-    case "RETURNED":
-      return "반납된 기록";
-    case "EXPIRED":
-      return "취소된 기록";
+    case 'REQUESTED':
+      return '요청된 기록';
+    case 'USING':
+      return '사용 중인 기록';
+    case 'LOST':
+      return '분실된 기록';
+    case 'RETURNED':
+      return '반납된 기록';
+    case 'EXPIRED':
+      return '취소된 기록';
+    default:
+      return 'ERROR';
   }
-};
+}
 </script>
 
 <template>
@@ -56,7 +58,7 @@ const headerLabel = (category: HistoryCategory) => {
           :key="history.id"
           v-bind="{
             history: history,
-            selected: selectedId === history.id
+            selected: selectedId === history.id,
           }"
           @click="updateSelectedId(history.id)"
         ></HistoryCell>

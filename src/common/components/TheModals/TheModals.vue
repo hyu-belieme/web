@@ -1,23 +1,24 @@
 <script setup lang="ts">
-import type { List } from "immutable";
-import { storeToRefs } from "pinia";
+import type { List } from 'immutable';
+import { storeToRefs } from 'pinia';
 
-import { type Modal, useModalStore } from "@common/stores/modalStore.js";
+import type Modal from '@common/models/Modal';
+import useModalStore from '@common/stores/modalStore';
 
 const modalStore = useModalStore();
 const { modals } = storeToRefs(modalStore);
 
-const closeModal = (key: string) => {
+function closeModal(key: string) {
   modalStore.removeModal(key);
-};
+}
 
-const onResolve = (value: any, key: string, resolve?: (value: any, key: string) => void) => {
+function onResolve(value: any, key: string, resolve?: (value: any, key: string) => void) {
   if (resolve !== undefined) resolve(value, key);
-};
+}
 
-const onReject = (reason: any, key: string, reject?: (reason: any, key: string) => void) => {
+function onReject(reason: any, key: string, reject?: (reason: any, key: string) => void) {
   if (reject !== undefined) reject(reason, key);
-};
+}
 </script>
 
 <template>

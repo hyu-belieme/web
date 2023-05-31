@@ -1,29 +1,25 @@
-import { List } from "immutable";
-import { defineStore } from "pinia";
-import { type Component, markRaw, readonly, ref } from "vue";
+import { List } from 'immutable';
+import { defineStore } from 'pinia';
+import { markRaw, readonly, ref } from 'vue';
 
-export interface Modal {
-  key: string;
-  component: Component;
-  props?: unknown;
-  resolve?: (value: any, key: string) => void;
-  reject?: (reason: any, key: string) => void;
-}
+import type Modal from '@common/models/Modal';
 
-export const useModalStore = defineStore("modal", () => {
+const useModalStore = defineStore('modal', () => {
   const modals = ref<List<Modal>>(List([]));
-  const _modals = readonly(modals);
 
-  const addModal = (modal: Modal) => {
+  function addModal(modal: Modal) {
     const idx = modals.value.findIndex((e) => e.key === modal.key);
+    const newModal = {
+      ...modal,
+      component: markRaw(modal.component),
+    };
 
-    modal.component = markRaw(modal.component);
     if (idx === undefined) {
-      modals.value = modals.value.push(modal);
+      modals.value = modals.value.push(newModal);
       return;
     }
-    modals.value = modals.value.splice(idx, 1, modal);
-  };
+    modals.value = modals.value.splice(idx, 1, newModal);
+  }
 
   function removeModal(key: string) {
     const idx = modals.value.findIndex((e) => e.key === key);
@@ -32,8 +28,10 @@ export const useModalStore = defineStore("modal", () => {
   }
 
   return {
-    modals: _modals,
+    modals: readonly(modals),
     addModal,
-    removeModal
+    removeModal,
   };
 });
+
+export default useModalStore;

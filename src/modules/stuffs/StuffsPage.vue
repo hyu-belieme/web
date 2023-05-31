@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import StuffEmptyPageRouter from "@^stuffs/components/StuffEmptyPageRouter/StuffEmptyPageRouter.vue";
+import StuffEmptyPageRouter from '@^stuffs/components/StuffEmptyPageRouter/StuffEmptyPageRouter.vue';
 </script>
 
 <template>

@@ -1,23 +1,23 @@
 <script setup lang="ts">
-import { getCurrentInstance } from "vue";
+import { getCurrentInstance } from 'vue';
 
-import type { User } from "@common/types/Models";
+import type User from '@common/models/User';
 
-import InfoListCell from "@^histories/components/HistoryDetailInfoListCell/HistoryDetailInfoListCell.vue";
-import { getHistoryDetailQuery } from "@^histories/components/utils/utils";
+import InfoListCell from '@^histories/components/HistoryDetailInfoListCell/HistoryDetailInfoListCell.vue';
+import { getHistoryDetailQuery } from '@^histories/components/utils/utils';
 
 const app = getCurrentInstance();
 const dayjs = app!.appContext.config.globalProperties.$dayjs;
 
 const { isSuccess, data } = getHistoryDetailQuery();
 
-const timeToString = (time: number) => {
-  return dayjs.unix(time).format("llll");
-};
+function timeToString(time: number) {
+  return dayjs.unix(time).format('llll');
+}
 
-const nameAndStudentIdFormat = (user: User) => {
+function nameAndStudentIdFormat(user: User) {
   return `${user.name} (${user.studentId})`;
-};
+}
 </script>
 
 <template>
@@ -49,35 +49,35 @@ const nameAndStudentIdFormat = (user: User) => {
         v-if="data.requester !== undefined"
         v-bind="{
           keyword: '대여 요청자',
-          value: nameAndStudentIdFormat(data.requester)
+          value: nameAndStudentIdFormat(data.requester),
         }"
       ></InfoListCell>
       <InfoListCell
         v-if="data.approveManager !== undefined"
         v-bind="{
           keyword: '대여 승인 담당자',
-          value: nameAndStudentIdFormat(data.approveManager)
+          value: nameAndStudentIdFormat(data.approveManager),
         }"
       ></InfoListCell>
       <InfoListCell
         v-if="data.lostManager !== undefined"
         v-bind="{
           keyword: '분실 등록 담당자',
-          value: nameAndStudentIdFormat(data.lostManager)
+          value: nameAndStudentIdFormat(data.lostManager),
         }"
       ></InfoListCell>
       <InfoListCell
         v-if="data.returnManager !== undefined"
         v-bind="{
           keyword: '반납 승인 담당자',
-          value: nameAndStudentIdFormat(data.returnManager)
+          value: nameAndStudentIdFormat(data.returnManager),
         }"
       ></InfoListCell>
       <InfoListCell
         v-if="data.cancelManager !== undefined"
         v-bind="{
           keyword: '취소 요청자',
-          value: nameAndStudentIdFormat(data.cancelManager)
+          value: nameAndStudentIdFormat(data.cancelManager),
         }"
       ></InfoListCell>
     </section>

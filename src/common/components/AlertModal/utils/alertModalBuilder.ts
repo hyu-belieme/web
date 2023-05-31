@@ -1,13 +1,15 @@
-import AlertModal from "@common/components/AlertModal/AlertModal.vue";
+import AlertModal from '@common/components/AlertModal/AlertModal.vue';
 
-export const build = (key: string, content: string) => {
+function build(key: string, content: string) {
   return {
-    key: key,
+    key,
     component: AlertModal,
     props: {
-      content: content
+      content,
     },
     resolve: () => {},
-    reject: () => {}
+    reject: () => {},
   };
-};
+}
+
+export default build;

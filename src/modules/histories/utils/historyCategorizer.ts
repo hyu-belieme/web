@@ -1,43 +1,42 @@
-import { List } from "immutable";
+import { List } from 'immutable';
 
-import type { History, HistoryStatus } from "@common/types/Models";
+import type History from '@common/models/History';
+import type { HistoryStatus } from '@common/models/types/HistoryStatus';
 
-export const CategorizeHistories = (histories: List<History> | undefined) => {
-  if (histories === undefined) return undefined;
-  let output = List<CategorizedHistories>();
-  HISTORY_CATEGORY_MAP.forEach((categoryMap) => {
-    const targetHistories = _categorizeBy(histories, categoryMap.targetStatus);
-    if (targetHistories.size === 0) return;
-    output = output.push({
-      category: categoryMap.category,
-      histories: _categorizeBy(targetHistories, categoryMap.targetStatus)
-    });
-  });
-  return output;
-};
-
-const _categorizeBy = (histories: List<History>, targetStatus: List<HistoryStatus>) => {
-  let output = List<History>();
-  for (const history of histories) {
-    if (targetStatus.contains(history.status)) output = output.push(history);
-  }
-  return output;
-};
+import type { CategorizedHistories } from '@^histories/types/CategorizedHistories';
+import type { HistoryCategory } from '@^histories/types/HistoryCategory';
 
 const HISTORY_CATEGORY_MAP = List<{
   category: HistoryCategory;
   targetStatus: List<HistoryStatus>;
 }>([
-  { category: "REQUESTED", targetStatus: List(["REQUESTED"]) },
-  { category: "USING", targetStatus: List(["USING", "DELAYED"]) },
-  { category: "LOST", targetStatus: List(["LOST"]) },
-  { category: "RETURNED", targetStatus: List(["RETURNED", "FOUND"]) },
-  { category: "EXPIRED", targetStatus: List(["EXPIRED"]) }
+  { category: 'REQUESTED', targetStatus: List(['REQUESTED']) },
+  { category: 'USING', targetStatus: List(['USING', 'DELAYED']) },
+  { category: 'LOST', targetStatus: List(['LOST']) },
+  { category: 'RETURNED', targetStatus: List(['RETURNED', 'FOUND']) },
+  { category: 'EXPIRED', targetStatus: List(['EXPIRED']) },
 ]);
 
-export type HistoryCategory = "REQUESTED" | "USING" | "LOST" | "RETURNED" | "EXPIRED";
-
-interface CategorizedHistories {
-  category: HistoryCategory;
-  histories: List<History>;
+function categorizeBy(histories: List<History>, targetStatus: List<HistoryStatus>) {
+  let output = List<History>();
+  histories.forEach((history) => {
+    if (targetStatus.contains(history.status)) output = output.push(history);
+  });
+  return output;
 }
+
+function CategorizeHistories(histories: List<History> | undefined) {
+  if (histories === undefined) return undefined;
+  let output = List<CategorizedHistories>();
+  HISTORY_CATEGORY_MAP.forEach((categoryMap) => {
+    const targetHistories = categorizeBy(histories, categoryMap.targetStatus);
+    if (targetHistories.size === 0) return;
+    output = output.push({
+      category: categoryMap.category,
+      histories: categorizeBy(targetHistories, categoryMap.targetStatus),
+    });
+  });
+  return output;
+}
+
+export default CategorizeHistories;

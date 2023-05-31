@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { storeToRefs } from "pinia";
-import { getCurrentInstance } from "vue";
+import { storeToRefs } from 'pinia';
+import { getCurrentInstance } from 'vue';
 
-import InfoTag from "@common/components/InfoTag/InfoTag.vue";
-import { useUserStore } from "@common/stores/userStore";
-import type { History, User } from "@common/types/Models";
+import InfoTag from '@common/components/InfoTag/InfoTag.vue';
+import type History from '@common/models/History';
+import type User from '@common/models/User';
+import useUserStore from '@common/stores/userStore';
 
 const TAG_SIZE = 6;
 
@@ -19,48 +20,48 @@ const props = defineProps<{
   selected: boolean;
 }>();
 
-const userTagInfo = () => {
-  const TAG_COLOR = "green";
+function entranceYearAndNameToString(user: User) {
+  if (user.entranceYear === undefined) return user.name;
+  return `${user.entranceYear % 100} ${user.name}`;
+}
 
-  var userInfo = _makeUserTagContent(props.history);
-  return {
-    color: TAG_COLOR,
-    size: TAG_SIZE,
-    content: userInfo
-  };
-};
+function makeUserTagContent(history: History) {
+  if (history.requester !== undefined) return entranceYearAndNameToString(history.requester);
+  if (history.lostManager !== undefined) return entranceYearAndNameToString(history.lostManager);
+  return 'ERROR';
+}
 
-const timestampTagInfo = () => {
-  const TAG_COLOR = "orange";
-
-  var timeInfo = _makeTimestampTagContent(props.history);
-  return {
-    color: TAG_COLOR,
-    size: TAG_SIZE,
-    content: timeInfo
-  };
-};
-
-const _makeUserTagContent = (history: History) => {
-  if (history.requester !== undefined) return _entranceYearAndNameToString(history.requester);
-  if (history.lostManager !== undefined) return _entranceYearAndNameToString(history.lostManager);
-  return "ERROR";
-};
-
-const _makeTimestampTagContent = (history: History) => {
+function makeTimestampTagContent(history: History) {
   if (history.requestedAt !== undefined) {
     return dayjs.unix(history.requestedAt).fromNow();
   }
   if (history.lostAt !== undefined) {
     return dayjs.unix(history.lostAt).fromNow();
   }
-  return "ERROR";
-};
+  return 'ERROR';
+}
 
-const _entranceYearAndNameToString = (user: User) => {
-  if (user.entranceYear === undefined) return user.name;
-  return `${user.entranceYear % 100} ${user.name}`;
-};
+function userTagInfo() {
+  const TAG_COLOR = 'green';
+
+  const userInfo = makeUserTagContent(props.history);
+  return {
+    color: TAG_COLOR,
+    size: TAG_SIZE,
+    content: userInfo,
+  };
+}
+
+function timestampTagInfo() {
+  const TAG_COLOR = 'orange';
+
+  const timeInfo = makeTimestampTagContent(props.history);
+  return {
+    color: TAG_COLOR,
+    size: TAG_SIZE,
+    content: timeInfo,
+  };
+}
 </script>
 
 <template>

@@ -1,37 +1,37 @@
-import { defineStore } from "pinia";
-import { ref } from "vue";
+import { defineStore } from 'pinia';
+import { ref } from 'vue';
 
-export const useNewStuffInfo = defineStore("newStuffInfo", () => {
+const useNewStuffInfo = defineStore('newStuffInfo', () => {
   const MAX_ITEM_NUM = 50;
 
-  const newName = ref("");
-  const newThumbnail = ref("");
-  const newDesc = ref("");
+  const newName = ref('');
+  const newThumbnail = ref('');
+  const newDesc = ref('');
   const newAmount = ref(0);
 
-  function updateNewName($newName: string) {
-    newName.value = $newName;
+  function updateNewName(_newName: string) {
+    newName.value = _newName;
   }
-  function updateNewThumbnail($newThumbnail: string) {
-    newThumbnail.value = $newThumbnail;
+  function updateNewThumbnail(_newThumbnail: string) {
+    newThumbnail.value = _newThumbnail;
   }
-  function updateNewDesc($newDesc: string) {
-    newDesc.value = $newDesc;
+  function updateNewDesc(_newDesc: string) {
+    newDesc.value = _newDesc;
   }
 
-  const resetNewAmount = () => {
+  function resetNewAmount() {
     newAmount.value = 0;
-  };
+  }
 
-  const increaseNewAmount = () => {
+  function increaseNewAmount() {
     if (newAmount.value >= MAX_ITEM_NUM) return;
-    newAmount.value++;
-  };
+    newAmount.value += 1;
+  }
 
-  const decreaseNewAmount = () => {
+  function decreaseNewAmount() {
     if (newAmount.value <= 0) return;
-    newAmount.value--;
-  };
+    newAmount.value -= 1;
+  }
 
   return {
     newName,
@@ -43,6 +43,8 @@ export const useNewStuffInfo = defineStore("newStuffInfo", () => {
     updateNewDesc,
     resetNewAmount,
     increaseNewAmount,
-    decreaseNewAmount
+    decreaseNewAmount,
   };
 });
+
+export default useNewStuffInfo;
