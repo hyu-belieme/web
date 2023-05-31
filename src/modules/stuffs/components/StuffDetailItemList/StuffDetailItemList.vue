@@ -9,7 +9,7 @@ import { addNewItem } from '@common/apis/beliemeApis';
 import { stuffKeys } from '@common/apis/queryKeys';
 import buildAlertModal from '@common/components/AlertModal/utils/alertModalBuilder';
 import BasicModal from '@common/components/BasicModal/BasicModal.vue';
-import type { BaseError } from '@common/errors/BaseError';
+import type BaseError from '@common/errors/BaseError';
 import type ItemInfoOnly from '@common/models/ItemInfoOnly';
 import type StuffWithItems from '@common/models/StuffWithItems';
 import useDeptStore from '@common/stores/deptStore';

@@ -3,7 +3,7 @@ import { computed, readonly, ref } from 'vue';
 
 import userDummy from '@common/assets/dummies/userDummy';
 import type UserWithSecureInfo from '@common/models/UserWithSecureInfo';
-import type { UserMode } from '@common/types/UserMode';
+import type UserMode from '@common/types/UserMode';
 
 const useUserStore = defineStore('user', () => {
   const user = ref<UserWithSecureInfo>(userDummy);

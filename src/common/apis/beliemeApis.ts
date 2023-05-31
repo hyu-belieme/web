@@ -2,7 +2,7 @@ import axios from 'axios';
 import { List } from 'immutable';
 import { storeToRefs } from 'pinia';
 
-import { BaseError, NETWORK_ERROR } from '@common/errors/BaseError';
+import BaseError from '@common/errors/BaseError';
 import History from '@common/models/History';
 import Stuff from '@common/models/Stuff';
 import type StuffPostRequestBody from '@common/models/StuffPostRequestBody';
@@ -12,6 +12,12 @@ import useUserStore from '@common/stores/userStore';
 
 const userStore = useUserStore();
 const { userToken } = storeToRefs(userStore);
+
+const NETWORK_ERROR: BaseError = {
+  name: 'NETWORK_ERROR',
+  message:
+    '현재 네트워크가 불안하여 서버와 연결이 원할하지 못하거나 서버에 예상하지 못한 문제가 발생하였습니다. 잠시 후 다시 시도해 주세요.',
+} as const;
 
 function createInstance() {
   return axios.create({

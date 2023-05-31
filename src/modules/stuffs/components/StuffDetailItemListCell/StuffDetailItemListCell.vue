@@ -9,7 +9,7 @@ import { historyKeys, stuffKeys } from '@common/apis/queryKeys';
 import buildAlertModal from '@common/components/AlertModal/utils/alertModalBuilder';
 import BasicModal from '@common/components/BasicModal/BasicModal.vue';
 import InfoTag from '@common/components/InfoTag/InfoTag.vue';
-import type { BaseError } from '@common/errors/BaseError';
+import type BaseError from '@common/errors/BaseError';
 import type History from '@common/models/History';
 import type ItemInfoOnly from '@common/models/ItemInfoOnly';
 import useDeptStore from '@common/stores/deptStore';

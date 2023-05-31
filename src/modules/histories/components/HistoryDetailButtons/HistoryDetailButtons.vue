@@ -6,7 +6,7 @@ import { approveItem, cancelItem, returnItem } from '@common/apis/beliemeApis';
 import { historyKeys } from '@common/apis/queryKeys';
 import buildAlertModal from '@common/components/AlertModal/utils/alertModalBuilder';
 import BasicModal from '@common/components/BasicModal/BasicModal.vue';
-import type { BaseError } from '@common/errors/BaseError';
+import type BaseError from '@common/errors/BaseError';
 import type History from '@common/models/History';
 import useDeptStore from '@common/stores/deptStore';
 import useModalStore from '@common/stores/modalStore';
