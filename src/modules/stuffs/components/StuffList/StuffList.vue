@@ -78,5 +78,7 @@ const _changingStuffAtEditionModeConfirmModal = (newSelectedId: string) => {
 .stuff-list {
   display: flex;
   flex-direction: column;
+
+  overflow: scroll;
 }
 </style>
