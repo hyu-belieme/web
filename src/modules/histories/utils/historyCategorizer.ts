@@ -1,7 +1,7 @@
 import { List } from 'immutable';
 
 import type History from '@common/models/History';
-import type { HistoryStatus } from '@common/models/types/HistoryStatus';
+import type HistoryStatus from '@common/models/types/HistoryStatus';
 
 import type { CategorizedHistories } from '@^histories/types/CategorizedHistories';
 import type { HistoryCategory } from '@^histories/types/HistoryCategory';

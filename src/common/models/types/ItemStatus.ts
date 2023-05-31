@@ -1,1 +1,3 @@
-export type ItemStatus = 'USABLE' | 'REQUESTED' | 'USING' | 'LOST';
+type ItemStatus = 'USABLE' | 'REQUESTED' | 'USING' | 'LOST';
+
+export default ItemStatus;

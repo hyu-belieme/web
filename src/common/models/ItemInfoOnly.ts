@@ -1,5 +1,5 @@
 import HistoryInfoOnly from '@common/models/HistoryInfoOnly';
-import type { ItemStatus } from '@common/models/types/ItemStatus';
+import type ItemStatus from '@common/models/types/ItemStatus';
 
 class ItemInfoOnly {
   public id: string;

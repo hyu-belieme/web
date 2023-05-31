@@ -1,8 +1,3 @@
-export type HistoryStatus =
-  | 'REQUESTED'
-  | 'USING'
-  | 'DELAYED'
-  | 'LOST'
-  | 'RETURNED'
-  | 'FOUND'
-  | 'EXPIRED';
+type HistoryStatus = 'REQUESTED' | 'USING' | 'DELAYED' | 'LOST' | 'RETURNED' | 'FOUND' | 'EXPIRED';
+
+export default HistoryStatus;
