@@ -45,31 +45,33 @@ const headerLabel = (category: HistoryCategory) => {
 
 <template>
   <section class="history-list">
-    <template
-      v-if="dataLoadStatus === 'Success' && categorizedHistoriesList !== undefined"
-      v-for="categorizedHistories of categorizedHistoriesList"
-    >
-      <section class="cell-header">{{ headerLabel(categorizedHistories.category) }}</section>
-      <HistoryCell
-        v-for="history of categorizedHistories.histories"
-        key="history"
-        v-bind="{
-          history: history,
-          selected: selectedId === history.id
-        }"
-        @click="updateSelectedId(history.id)"
-      ></HistoryCell>
+    <template v-if="dataLoadStatus === 'Success' && categorizedHistoriesList !== undefined">
       <template
-        v-if="
-          (categorizedHistories.category === 'RETURNED' ||
-            categorizedHistories.category === 'EXPIRED') &&
-          categorizedHistories.histories.size >= 5
-        "
+        v-for="categorizedHistories of categorizedHistoriesList"
+        :key="categorizedHistories.category"
       >
-        <section class="cell-hider">
-          <span>더 보기</span>
-          <i class="bi bi-chevron-down"></i>
-        </section>
+        <section class="cell-header">{{ headerLabel(categorizedHistories.category) }}</section>
+        <HistoryCell
+          v-for="history of categorizedHistories.histories"
+          :key="history.id"
+          v-bind="{
+            history: history,
+            selected: selectedId === history.id
+          }"
+          @click="updateSelectedId(history.id)"
+        ></HistoryCell>
+        <template
+          v-if="
+            (categorizedHistories.category === 'RETURNED' ||
+              categorizedHistories.category === 'EXPIRED') &&
+            categorizedHistories.histories.size >= 5
+          "
+        >
+          <section class="cell-hider">
+            <span>더 보기</span>
+            <i class="bi bi-chevron-down"></i>
+          </section>
+        </template>
       </template>
     </template>
     <LoadingView v-else-if="dataLoadStatus === 'Loading'"></LoadingView>

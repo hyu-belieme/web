@@ -5,7 +5,7 @@ import type { History, HistoryStatus } from "@common/types/Models";
 export function sortHistoryList(historyList: List<History>) {
   const historyStatusPriority = _makeStatusPriorityMap(_basicHistorySequence);
   return historyList.sort((left, right) => {
-    let statusComp = _compareHistoryStatus(historyStatusPriority, left.status, right.status);
+    const statusComp = _compareHistoryStatus(historyStatusPriority, left.status, right.status);
     if (statusComp !== 0) return statusComp;
 
     return _compareHistoryTimes(left, right);

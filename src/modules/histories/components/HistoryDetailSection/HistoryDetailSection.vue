@@ -2,7 +2,7 @@
 import HistoryDetailContent from "@^histories/components/HistoryDetailContent/HistoryDetailContent.vue";
 import ProcedureDesc from "@^histories/components/ProcedureDesc/ProcedureDesc.vue";
 
-const props = defineProps<{
+defineProps<{
   inheritStatus: "Loading" | "Success" | "Error";
 }>();
 </script>

@@ -7,7 +7,7 @@ export const build = (key: string, content: string) => {
     props: {
       content: content
     },
-    resolve: (_: any, key: string) => {},
-    reject: (_: any, key: string) => {}
+    resolve: () => {},
+    reject: () => {}
   };
 };

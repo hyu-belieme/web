@@ -4,9 +4,9 @@ import type { History, HistoryStatus } from "@common/types/Models";
 
 export const CategorizeHistories = (histories: List<History> | undefined) => {
   if (histories === undefined) return undefined;
-  var output = List<CategorizedHistories>();
+  let output = List<CategorizedHistories>();
   HISTORY_CATEGORY_MAP.forEach((categoryMap) => {
-    let targetHistories = _categorizeBy(histories, categoryMap.targetStatus);
+    const targetHistories = _categorizeBy(histories, categoryMap.targetStatus);
     if (targetHistories.size === 0) return;
     output = output.push({
       category: categoryMap.category,
@@ -17,8 +17,8 @@ export const CategorizeHistories = (histories: List<History> | undefined) => {
 };
 
 const _categorizeBy = (histories: List<History>, targetStatus: List<HistoryStatus>) => {
-  var output = List<History>();
-  for (var history of histories) {
+  let output = List<History>();
+  for (const history of histories) {
     if (targetStatus.contains(history.status)) output = output.push(history);
   }
   return output;

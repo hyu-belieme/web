@@ -17,14 +17,14 @@ const userStore = useUserStore();
 const { userToken } = storeToRefs(userStore);
 
 export const getAllStuffsInDept = async (deptId: string) => {
-  var apiUrl = `stuffs?department-id=${deptId}`;
+  const apiUrl = `stuffs?department-id=${deptId}`;
 
   return new Promise<List<Stuff>>((resolve, reject) => {
     _createInstance()
       .get<List<Stuff>>(apiUrl)
       .then((response) => {
         let output = List<Stuff>([]);
-        for (let stuff of response.data) {
+        for (const stuff of response.data) {
           output = output.push(new Stuff(stuff));
         }
         resolve(output);
@@ -34,7 +34,7 @@ export const getAllStuffsInDept = async (deptId: string) => {
 };
 
 export const getStuff = (stuffId: string) => {
-  var apiUrl = `stuffs/${stuffId}`;
+  const apiUrl = `stuffs/${stuffId}`;
 
   return new Promise<StuffWithItems>((resolve, reject) => {
     _createInstance()
@@ -45,7 +45,7 @@ export const getStuff = (stuffId: string) => {
 };
 
 export const postNewStuff = async (newStuff: StuffPostRequestBody) => {
-  var apiUrl = `stuffs`;
+  const apiUrl = `stuffs`;
 
   return new Promise<StuffWithItems>((resolve, reject) => {
     _createInstance()
@@ -56,7 +56,7 @@ export const postNewStuff = async (newStuff: StuffPostRequestBody) => {
 };
 
 export const editStuff = async (stuffId: string, newStuffInfo: StuffRequestBody) => {
-  var apiUrl = `stuffs/${stuffId}`;
+  const apiUrl = `stuffs/${stuffId}`;
 
   return new Promise<StuffWithItems>((resolve, reject) => {
     _createInstance()
@@ -67,7 +67,7 @@ export const editStuff = async (stuffId: string, newStuffInfo: StuffRequestBody)
 };
 
 export const addNewItem = async (stuffId: string) => {
-  var apiUrl = `items`;
+  const apiUrl = `items`;
 
   return new Promise<StuffWithItems>((resolve, reject) => {
     _createInstance()
@@ -80,7 +80,7 @@ export const addNewItem = async (stuffId: string) => {
 };
 
 export const getAllHistoryInDept = async (deptId: string) => {
-  var apiUrl = `histories?department-id=${deptId}`;
+  const apiUrl = `histories?department-id=${deptId}`;
 
   return new Promise<List<History>>((resolve, reject) => {
     _createInstance()
@@ -89,7 +89,7 @@ export const getAllHistoryInDept = async (deptId: string) => {
       })
       .then((response) => {
         let output = List<History>([]);
-        for (let history of response.data) {
+        for (const history of response.data) {
           output = output.push(new History(history));
         }
         resolve(output);
@@ -99,14 +99,14 @@ export const getAllHistoryInDept = async (deptId: string) => {
 };
 
 export const getAllRequesterHistoryInDept = async (deptId: string, userId: string) => {
-  var apiUrl = `histories?department-id=${deptId}&requester-id=${userId}`;
+  const apiUrl = `histories?department-id=${deptId}&requester-id=${userId}`;
 
   return new Promise<List<History>>((resolve, reject) => {
     _createInstance()
       .get<List<History>>(apiUrl)
       .then((response) => {
         let output = List<History>([]);
-        for (let history of response.data) {
+        for (const history of response.data) {
           output = output.push(new History(history));
         }
         resolve(output);
@@ -116,7 +116,7 @@ export const getAllRequesterHistoryInDept = async (deptId: string, userId: strin
 };
 
 export const getHistory = async (historyId: string) => {
-  var apiUrl = `histories/${historyId}`;
+  const apiUrl = `histories/${historyId}`;
 
   return new Promise<History>((resolve, reject) => {
     _createInstance()
@@ -127,7 +127,7 @@ export const getHistory = async (historyId: string) => {
 };
 
 export const rentStuff = async (stuffId: string) => {
-  var apiUrl = `stuffs/${stuffId}/reserve`;
+  const apiUrl = `stuffs/${stuffId}/reserve`;
 
   return new Promise<History>((resolve, reject) => {
     _createInstance()
@@ -138,7 +138,7 @@ export const rentStuff = async (stuffId: string) => {
 };
 
 export const rentItem = async (itemId: string) => {
-  var apiUrl = `items/${itemId}/reserve`;
+  const apiUrl = `items/${itemId}/reserve`;
 
   return new Promise<History>((resolve, reject) => {
     _createInstance()
@@ -149,7 +149,7 @@ export const rentItem = async (itemId: string) => {
 };
 
 export const reportLostItem = async (itemId: string) => {
-  var apiUrl = `items/${itemId}/lost`;
+  const apiUrl = `items/${itemId}/lost`;
 
   return new Promise<History>((resolve, reject) => {
     _createInstance()
@@ -160,7 +160,7 @@ export const reportLostItem = async (itemId: string) => {
 };
 
 export const approveItem = async (itemId: string) => {
-  var apiUrl = `items/${itemId}/approve`;
+  const apiUrl = `items/${itemId}/approve`;
 
   return new Promise<History>((resolve, reject) => {
     _createInstance()
@@ -171,7 +171,7 @@ export const approveItem = async (itemId: string) => {
 };
 
 export const returnItem = async (itemId: string) => {
-  var apiUrl = `items/${itemId}/return`;
+  const apiUrl = `items/${itemId}/return`;
 
   return new Promise<History>((resolve, reject) => {
     _createInstance()
@@ -182,7 +182,7 @@ export const returnItem = async (itemId: string) => {
 };
 
 export const cancelItem = async (itemId: string) => {
-  var apiUrl = `items/${itemId}/cancel`;
+  const apiUrl = `items/${itemId}/cancel`;
 
   return new Promise<History>((resolve, reject) => {
     _createInstance()
