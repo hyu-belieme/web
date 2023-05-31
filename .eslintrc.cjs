@@ -16,14 +16,13 @@ module.exports = {
     }
   ],
   parserOptions: {
+    parser: "@typescript-eslint/parser",
+    project: "./tsconfig.eslint.json",
+    sourceType: "module",
     ecmaVersion: "latest"
   },
   rules: {
-    "vue/multi-word-component-names": [
-      "error",
-      {
-        ignores: ["Tag"]
-      }
-    ]
+    "vue/multi-word-component-names": ["error", {}],
+    "import/no-unresolved": "off"
   }
 };
