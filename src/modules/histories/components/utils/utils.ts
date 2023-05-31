@@ -14,7 +14,7 @@ import useDeptStore from '@common/stores/deptStore';
 import useUserStore from '@common/stores/userStore';
 
 import useHistorySelectedStore from '@^histories/stores/historySelectedStore';
-import { BASIC_HISTORY_SEQUENCE, sortHistoryList } from '@^histories/utils/historySorter';
+import sortHistoryList from '@^histories/utils/historySorter';
 
 const userStore = useUserStore();
 const { user, userMode } = storeToRefs(userStore);
@@ -39,7 +39,7 @@ export function getHistoryListQuery() {
       historyKeys.listByDeptAndRequester(deptId.value, user.value.id),
       async () => {
         let historyList = await getAllRequesterHistoryInDept(deptId.value, user.value.id);
-        historyList = sortHistoryList(historyList, BASIC_HISTORY_SEQUENCE);
+        historyList = sortHistoryList(historyList);
         historySelectedStore.updateSelectedId(
           convertIdToFirstIdIfNotExist(selectedId.value, historyList)
         );
@@ -49,7 +49,7 @@ export function getHistoryListQuery() {
   }
   return useQuery<List<History>>(historyKeys.listByDept(deptId.value), async () => {
     let historyList = await getAllHistoryInDept(deptId.value);
-    historyList = sortHistoryList(historyList, BASIC_HISTORY_SEQUENCE);
+    historyList = sortHistoryList(historyList);
     historySelectedStore.updateSelectedId(
       convertIdToFirstIdIfNotExist(selectedId.value, historyList)
     );
@@ -85,7 +85,7 @@ export function reloadHistoryDataUsingCacheAndResponse(
       if (oldData === undefined) return List<History>();
       let newHistoryList = oldData.filter((e) => e.id !== response.id);
       newHistoryList = newHistoryList.push(response);
-      newHistoryList = sortHistoryList(newHistoryList, BASIC_HISTORY_SEQUENCE);
+      newHistoryList = sortHistoryList(newHistoryList);
       return newHistoryList;
     });
   }

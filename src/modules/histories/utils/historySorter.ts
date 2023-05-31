@@ -1,9 +1,9 @@
 import { List, Map } from 'immutable';
 
 import type History from '@common/models/History';
-import type { HistoryStatus } from '@common/models/types/HistoryStatus';
+import type HistoryStatus from '@common/models/types/HistoryStatus';
 
-export const BASIC_HISTORY_SEQUENCE = List([
+const BASIC_HISTORY_SEQUENCE = List([
   List<HistoryStatus>(['REQUESTED']),
   List<HistoryStatus>(['USING', 'DELAYED']),
   List<HistoryStatus>(['LOST']),
@@ -48,7 +48,10 @@ function compareHistoryTimes(left: History, right: History) {
   return 0;
 }
 
-export function sortHistoryList(historyList: List<History>, sequence: List<List<HistoryStatus>>) {
+function sortHistoryList(
+  historyList: List<History>,
+  sequence: List<List<HistoryStatus>> = BASIC_HISTORY_SEQUENCE
+) {
   const historyStatusPriority = makeStatusPriorityMap(sequence);
   return historyList.sort((left, right) => {
     const statusComp = compareHistoryStatus(historyStatusPriority, left.status, right.status);
@@ -57,3 +60,5 @@ export function sortHistoryList(historyList: List<History>, sequence: List<List<
     return compareHistoryTimes(left, right);
   });
 }
+
+export default sortHistoryList;
