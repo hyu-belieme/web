@@ -2,8 +2,8 @@
 import type { List } from 'immutable';
 import { storeToRefs } from 'pinia';
 
-import type Modal from '@core/models/Modal';
-import useModalStore from '@core/stores/modalStore';
+import useModalStore from '@common/stores/modalStore';
+import type Modal from '@common/types/Modal';
 
 const modalStore = useModalStore();
 const { modals } = storeToRefs(modalStore);
