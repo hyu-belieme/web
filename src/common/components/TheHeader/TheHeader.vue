@@ -14,7 +14,7 @@ function changeUserMode() {
 
 <template>
   <section class="flex-grow-0">
-    <img class="logo" src="@core/assets/images/belieme_logo_en.png" />
+    <img class="logo" src="@common/assets/images/belieme_logo_en.png" />
   </section>
   <nav class="flex-grow-1 d-flex flex-row align-items-center ms-5">
     <RouterLink to="/stuffs" class="m-4">물품목록</RouterLink>
