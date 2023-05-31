@@ -23,6 +23,7 @@ module.exports = {
     sourceType: "module",
     ecmaVersion: "latest"
   },
+  ignorePatterns: ["/*.ts", "/*.js", "/*.cjs"],
   rules: {
     "vue/multi-word-component-names": ["error", {}],
     "import/no-unresolved": "off"
