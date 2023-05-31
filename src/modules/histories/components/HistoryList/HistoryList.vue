@@ -8,7 +8,8 @@ import LoadingView from '@common/components/LoadingView/LoadingView.vue';
 import HistoryCell from '@^histories/components/HistoryListCell/HistoryListCell.vue';
 import { getHistoryListQuery } from '@^histories/components/utils/utils';
 import useHistorySelectedStore from '@^histories/stores/historySelectedStore';
-import { CategorizeHistories, type HistoryCategory } from '@^histories/utils/historyCategorizer';
+import type { HistoryCategory } from '@^histories/types/HistoryCategory';
+import CategorizeHistories from '@^histories/utils/historyCategorizer';
 
 const historySelectedStore = useHistorySelectedStore();
 const { selectedId } = storeToRefs(historySelectedStore);
