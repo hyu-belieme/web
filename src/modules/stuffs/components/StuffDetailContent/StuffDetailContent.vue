@@ -3,23 +3,23 @@ import { storeToRefs } from 'pinia';
 import { onBeforeMount, watch } from 'vue';
 import { useMutation, useQueryClient } from 'vue-query';
 
-import { editStuff, postNewStuff } from '@common/apis/beliemeApis';
-import { stuffKeys } from '@common/apis/queryKeys';
-import buildAlertModal from '@common/components/AlertModal/utils/alertModalBuilder';
+import { editStuff, postNewStuff } from '@common/apis/belieme-apis';
+import { stuffKeys } from '@common/apis/query-keys';
+import buildAlertModal from '@common/components/AlertModal/utils/alert-modal-builder';
 import type BaseError from '@common/errors/BaseError';
 import type StuffWithItems from '@common/models/StuffWithItems';
-import useDeptStore from '@common/stores/deptStore';
-import useModalStore from '@common/stores/modalStore';
-import useUserStore from '@common/stores/userStore';
+import useDeptStore from '@common/stores/dept-store';
+import useModalStore from '@common/stores/modal-store';
+import useUserStore from '@common/stores/user-store';
 
 import {
   getStuffDetailQuery,
   getStuffListQuery,
   reloadStuffDataUsingCacheAndResponse,
-} from '@^stuffs/components/utils/utils';
-import useNewStuffInfo from '@^stuffs/stores/newStuffInfoStore';
-import useStuffDetailViewModeStore from '@^stuffs/stores/stuffDetailViewModeStore';
-import useStuffSelectedStore from '@^stuffs/stores/stuffSelectedStore';
+} from '@^stuffs/components/utils/stuff-query-utils';
+import useNewStuffInfo from '@^stuffs/stores/new-stuff-info-store';
+import useStuffDetailViewModeStore from '@^stuffs/stores/stuff-detail-view-mode-store';
+import useStuffSelectedStore from '@^stuffs/stores/stuff-selected-store';
 
 const LOREM_IPSUM =
   'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi sint corrupti illum quos. Dolorum architecto illum, veritatis asperiores odio exercitationem impedit natus. Modi magni, aut corporis impedit ullam nemo saepe!';

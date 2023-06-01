@@ -5,7 +5,7 @@ import { getCurrentInstance } from 'vue';
 import InfoTag from '@common/components/InfoTag/InfoTag.vue';
 import type History from '@common/models/History';
 import type User from '@common/models/User';
-import useUserStore from '@common/stores/userStore';
+import useUserStore from '@common/stores/user-store';
 
 const TAG_SIZE = 6;
 

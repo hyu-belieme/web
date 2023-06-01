@@ -5,12 +5,12 @@ import { onBeforeMount } from 'vue';
 import BasicModal from '@common/components/BasicModal/BasicModal.vue';
 import DataLoadFailView from '@common/components/DataLoadFailView/DataLoadFailView.vue';
 import LoadingView from '@common/components/LoadingView/LoadingView.vue';
-import useModalStore from '@common/stores/modalStore';
+import useModalStore from '@common/stores/modal-store';
 
 import StuffListCell from '@^stuffs/components/StuffListCell/StuffListCell.vue';
-import { getStuffListQuery } from '@^stuffs/components/utils/utils';
-import useStuffDetailViewModeStore from '@^stuffs/stores/stuffDetailViewModeStore';
-import useStuffSelectedStore from '@^stuffs/stores/stuffSelectedStore';
+import { getStuffListQuery } from '@^stuffs/components/utils/stuff-query-utils';
+import useStuffDetailViewModeStore from '@^stuffs/stores/stuff-detail-view-mode-store';
+import useStuffSelectedStore from '@^stuffs/stores/stuff-selected-store';
 
 const modalStore = useModalStore();
 

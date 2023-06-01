@@ -4,7 +4,7 @@ import { getCurrentInstance } from 'vue';
 import type User from '@common/models/User';
 
 import InfoListCell from '@^histories/components/HistoryDetailInfoListCell/HistoryDetailInfoListCell.vue';
-import { getHistoryDetailQuery } from '@^histories/components/utils/utils';
+import { getHistoryDetailQuery } from '@^histories/components/utils/history-query-utils';
 
 const app = getCurrentInstance();
 const dayjs = app!.appContext.config.globalProperties.$dayjs;

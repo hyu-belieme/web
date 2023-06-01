@@ -7,14 +7,14 @@ import {
   getAllHistoryInDept,
   getAllRequesterHistoryInDept,
   getHistory,
-} from '@common/apis/beliemeApis';
-import { historyKeys } from '@common/apis/queryKeys';
+} from '@common/apis/belieme-apis';
+import { historyKeys } from '@common/apis/query-keys';
 import type History from '@common/models/History';
-import useDeptStore from '@common/stores/deptStore';
-import useUserStore from '@common/stores/userStore';
+import useDeptStore from '@common/stores/dept-store';
+import useUserStore from '@common/stores/user-store';
 
-import useHistorySelectedStore from '@^histories/stores/historySelectedStore';
-import sortHistoryList from '@^histories/utils/historySorter';
+import useHistorySelectedStore from '@^histories/stores/history-selected-store';
+import sortHistoryList from '@^histories/utils/history-sorter';
 
 const userStore = useUserStore();
 const { user, userMode } = storeToRefs(userStore);

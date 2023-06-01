@@ -8,7 +8,7 @@ import Stuff from '@common/models/Stuff';
 import type StuffPostRequestBody from '@common/models/StuffPostRequestBody';
 import type StuffRequestBody from '@common/models/StuffRequestBody';
 import StuffWithItems from '@common/models/StuffWithItems';
-import useUserStore from '@common/stores/userStore';
+import useUserStore from '@common/stores/user-store';
 
 const userStore = useUserStore();
 const { userToken } = storeToRefs(userStore);

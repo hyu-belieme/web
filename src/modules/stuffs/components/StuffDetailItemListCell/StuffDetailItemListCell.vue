@@ -4,20 +4,20 @@ import { NIL as NIL_UUID } from 'uuid';
 import { getCurrentInstance } from 'vue';
 import { useMutation, useQueryClient } from 'vue-query';
 
-import { rentItem, reportLostItem, returnItem } from '@common/apis/beliemeApis';
-import { historyKeys, stuffKeys } from '@common/apis/queryKeys';
-import buildAlertModal from '@common/components/AlertModal/utils/alertModalBuilder';
+import { rentItem, reportLostItem, returnItem } from '@common/apis/belieme-apis';
+import { historyKeys, stuffKeys } from '@common/apis/query-keys';
+import buildAlertModal from '@common/components/AlertModal/utils/alert-modal-builder';
 import BasicModal from '@common/components/BasicModal/BasicModal.vue';
 import InfoTag from '@common/components/InfoTag/InfoTag.vue';
 import type BaseError from '@common/errors/BaseError';
 import type History from '@common/models/History';
 import type ItemInfoOnly from '@common/models/ItemInfoOnly';
-import useDeptStore from '@common/stores/deptStore';
-import useModalStore from '@common/stores/modalStore';
-import useUserStore from '@common/stores/userStore';
+import useDeptStore from '@common/stores/dept-store';
+import useModalStore from '@common/stores/modal-store';
+import useUserStore from '@common/stores/user-store';
 
-import useStuffDetailViewModeStore from '@^stuffs/stores/stuffDetailViewModeStore';
-import useStuffSelectedStore from '@^stuffs/stores/stuffSelectedStore';
+import useStuffDetailViewModeStore from '@^stuffs/stores/stuff-detail-view-mode-store';
+import useStuffSelectedStore from '@^stuffs/stores/stuff-selected-store';
 
 const emit = defineEmits(['popItem']);
 

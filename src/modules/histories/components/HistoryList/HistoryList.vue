@@ -6,10 +6,10 @@ import DataLoadFailView from '@common/components/DataLoadFailView/DataLoadFailVi
 import LoadingView from '@common/components/LoadingView/LoadingView.vue';
 
 import HistoryCell from '@^histories/components/HistoryListCell/HistoryListCell.vue';
-import { getHistoryListQuery } from '@^histories/components/utils/utils';
-import useHistorySelectedStore from '@^histories/stores/historySelectedStore';
+import { getHistoryListQuery } from '@^histories/components/utils/history-query-utils';
+import useHistorySelectedStore from '@^histories/stores/history-selected-store';
 import type { HistoryCategory } from '@^histories/types/HistoryCategory';
-import CategorizeHistories from '@^histories/utils/historyCategorizer';
+import CategorizeHistories from '@^histories/utils/history-categorizer';
 
 const historySelectedStore = useHistorySelectedStore();
 const { selectedId } = storeToRefs(historySelectedStore);

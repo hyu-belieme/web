@@ -2,21 +2,21 @@
 import { storeToRefs } from 'pinia';
 import { useMutation, useQueryClient } from 'vue-query';
 
-import { approveItem, cancelItem, returnItem } from '@common/apis/beliemeApis';
-import { historyKeys } from '@common/apis/queryKeys';
-import buildAlertModal from '@common/components/AlertModal/utils/alertModalBuilder';
+import { approveItem, cancelItem, returnItem } from '@common/apis/belieme-apis';
+import { historyKeys } from '@common/apis/query-keys';
+import buildAlertModal from '@common/components/AlertModal/utils/alert-modal-builder';
 import BasicModal from '@common/components/BasicModal/BasicModal.vue';
 import type BaseError from '@common/errors/BaseError';
 import type History from '@common/models/History';
-import useDeptStore from '@common/stores/deptStore';
-import useModalStore from '@common/stores/modalStore';
-import useUserStore from '@common/stores/userStore';
+import useDeptStore from '@common/stores/dept-store';
+import useModalStore from '@common/stores/modal-store';
+import useUserStore from '@common/stores/user-store';
 
 import {
   getHistoryDetailQuery,
   getHistoryListQuery,
   reloadHistoryDataUsingCacheAndResponse,
-} from '@^histories/components/utils/utils';
+} from '@^histories/components/utils/history-query-utils';
 
 const modalStore = useModalStore();
 

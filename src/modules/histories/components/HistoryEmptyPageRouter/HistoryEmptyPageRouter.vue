@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import HistoryPageOnCommon from '@^histories/components/HistoryPageOnCommon/HistoryPageOnCommon.vue';
 import HistoryPageOnEmpty from '@^histories/components/HistoryPageOnEmpty/HistoryPageOnEmpty.vue';
-import { getHistoryListQuery } from '@^histories/components/utils/utils';
+import { getHistoryListQuery } from '@^histories/components/utils/history-query-utils';
 
 const { data, isLoading, isError, isSuccess } = getHistoryListQuery();
 </script>

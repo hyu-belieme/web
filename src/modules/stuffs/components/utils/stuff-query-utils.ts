@@ -3,14 +3,14 @@ import { storeToRefs } from 'pinia';
 import { NIL as NIL_UUID } from 'uuid';
 import { QueryClient, useQuery } from 'vue-query';
 
-import { getAllStuffsInDept, getStuff } from '@common/apis/beliemeApis';
-import { stuffKeys } from '@common/apis/queryKeys';
+import { getAllStuffsInDept, getStuff } from '@common/apis/belieme-apis';
+import { stuffKeys } from '@common/apis/query-keys';
 import type Stuff from '@common/models/Stuff';
 import type StuffWithItems from '@common/models/StuffWithItems';
-import useDeptStore from '@common/stores/deptStore';
+import useDeptStore from '@common/stores/dept-store';
 
-import useStuffSelectedStore from '@^stuffs/stores/stuffSelectedStore';
-import sortStuffList from '@^stuffs/utils/stuffSorter';
+import useStuffSelectedStore from '@^stuffs/stores/stuff-selected-store';
+import sortStuffList from '@^stuffs/utils/stuff-sorter';
 
 const deptStore = useDeptStore();
 const { deptId } = storeToRefs(deptStore);

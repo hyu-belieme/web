@@ -4,8 +4,8 @@ import { computed } from 'vue';
 
 import StuffDetail from '@^stuffs/components/StuffDetailSection/StuffDetailSection.vue';
 import StuffList from '@^stuffs/components/StuffList/StuffList.vue';
-import { getStuffListQuery } from '@^stuffs/components/utils/utils';
-import useStuffSelectedStore from '@^stuffs/stores/stuffSelectedStore';
+import { getStuffListQuery } from '@^stuffs/components/utils/stuff-query-utils';
+import useStuffSelectedStore from '@^stuffs/stores/stuff-selected-store';
 
 const stuffStore = useStuffSelectedStore();
 const { selectedId } = storeToRefs(stuffStore);

@@ -5,14 +5,14 @@ import { computed, onBeforeMount, watch } from 'vue';
 import BasicModal from '@common/components/BasicModal/BasicModal.vue';
 import DataLoadFailView from '@common/components/DataLoadFailView/DataLoadFailView.vue';
 import LoadingView from '@common/components/LoadingView/LoadingView.vue';
-import useModalStore from '@common/stores/modalStore';
-import useUserStore from '@common/stores/userStore';
+import useModalStore from '@common/stores/modal-store';
+import useUserStore from '@common/stores/user-store';
 import type UserMode from '@common/types/UserMode';
 
 import StuffDetailContent from '@^stuffs/components/StuffDetailContent/StuffDetailContent.vue';
 import ItemList from '@^stuffs/components/StuffDetailItemList/StuffDetailItemList.vue';
-import { getStuffDetailQuery } from '@^stuffs/components/utils/utils';
-import useStuffDetailViewModeStore from '@^stuffs/stores/stuffDetailViewModeStore';
+import { getStuffDetailQuery } from '@^stuffs/components/utils/stuff-query-utils';
+import useStuffDetailViewModeStore from '@^stuffs/stores/stuff-detail-view-mode-store';
 
 const props = defineProps<{
   inheritStatus: 'Loading' | 'Success' | 'Error';
