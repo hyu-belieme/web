@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import StuffPageOnCommon from "@^stuffs/components/StuffPageOnCommon/StuffPageOnCommon.vue";
-import StuffPageOnEmpty from "@^stuffs/components/StuffPageOnEmpty/StuffPageOnEmpty.vue";
-import { getStuffListQuery } from "@^stuffs/components/utils/utils";
+import StuffPageOnCommon from '@^stuffs/components/StuffPageOnCommon/StuffPageOnCommon.vue';
+import StuffPageOnEmpty from '@^stuffs/components/StuffPageOnEmpty/StuffPageOnEmpty.vue';
+import { getStuffListQuery } from '@^stuffs/components/utils/stuff-query-utils';
 
 const { data, isLoading, isError, isSuccess } = getStuffListQuery();
 </script>

@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.js",
+    "src/**/*.vue",
+    "cypress/e2e/**/*.cy.js",
+    "cypress/e2e/**/*.cy.ts",
+    "cypress/e2e/**/*.cy.vue",
+    "cypress/e2e/**/*.spec.js",
+    "cypress/e2e/**/*.spec.ts",
+    "cypress/e2e/**/*.spec.vue",
+    "cypress/support/**/*.js",
+    "cypress/support/**/*.ts"
+  ]
+}

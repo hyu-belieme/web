@@ -1,9 +1,6 @@
 <script setup lang="ts">
-import { Modal } from "bootstrap";
-import { onBeforeUnmount, onMounted, ref } from "vue";
-
-let modalEle = ref();
-let thisModalObj: Modal | undefined = undefined;
+import { Modal } from 'bootstrap';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 
 defineProps<{
   title?: string;
@@ -11,6 +8,16 @@ defineProps<{
   resolveLabel?: string;
   rejectLabel?: string;
 }>();
+
+const modalEle = ref();
+let thisModalObj: Modal | undefined;
+
+function showModal() {
+  thisModalObj!.show();
+}
+function hideModal() {
+  thisModalObj!.hide();
+}
 
 onMounted(() => {
   thisModalObj = new Modal(modalEle.value);
@@ -20,13 +27,6 @@ onMounted(() => {
 onBeforeUnmount(() => {
   hideModal();
 });
-
-function showModal() {
-  thisModalObj!.show();
-}
-function hideModal() {
-  thisModalObj!.hide();
-}
 </script>
 
 <template>

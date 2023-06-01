@@ -1,33 +1,28 @@
 <script setup lang="ts">
-import { storeToRefs } from "pinia";
-import { onBeforeMount, watch } from "vue";
-import { useMutation, useQueryClient } from "vue-query";
+import { storeToRefs } from 'pinia';
+import { onBeforeMount, ref, watch } from 'vue';
+import { useMutation, useQueryClient } from 'vue-query';
 
-import { editStuff, postNewStuff } from "@common/apis/beliemeApis";
-import { stuffKeys } from "@common/apis/queryKeys";
-import { build as buildAlertModal } from "@common/components/AlertModal/utils/alertModalBuilder";
-import { useDeptStore } from "@common/stores/deptStore";
-import { useModalStore } from "@common/stores/modalStore";
-import { useUserStore } from "@common/stores/userStore";
-import type { BeliemeError, StuffWithItems } from "@common/types/Models";
+import { editStuff, postNewStuff } from '@common/apis/belieme-apis';
+import { stuffKeys } from '@common/apis/query-keys';
+import buildAlertModal from '@common/components/AlertModal/utils/alert-modal-builder';
+import type BaseError from '@common/errors/BaseError';
+import type StuffWithItems from '@common/models/StuffWithItems';
+import useDeptStore from '@common/stores/dept-store';
+import useModalStore from '@common/stores/modal-store';
+import useUserStore from '@common/stores/user-store';
 
 import {
   getStuffDetailQuery,
   getStuffListQuery,
-  reloadStuffDataUsingCacheAndResponse
-} from "@^stuffs/components/utils/utils";
-import { useNewStuffInfo } from "@^stuffs/stores/newStuffInfoStore";
-import { useStuffDetailViewModeStore } from "@^stuffs/stores/stuffDetailViewModeStore";
-import { useStuffSelectedStore } from "@^stuffs/stores/stuffSelectedStore";
-
-onBeforeMount(() => {
-  watch(viewMode, () => {
-    _initInputValue();
-  });
-});
+  reloadStuffDataUsingCacheAndResponse,
+} from '@^stuffs/components/utils/stuff-query-utils';
+import useNewStuffInfo from '@^stuffs/stores/new-stuff-info-store';
+import useStuffDetailViewModeStore from '@^stuffs/stores/stuff-detail-view-mode-store';
+import useStuffSelectedStore from '@^stuffs/stores/stuff-selected-store';
 
 const LOREM_IPSUM =
-  "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi sint corrupti illum quos. Dolorum architecto illum, veritatis asperiores odio exercitationem impedit natus. Modi magni, aut corporis impedit ullam nemo saepe!";
+  'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi sint corrupti illum quos. Dolorum architecto illum, veritatis asperiores odio exercitationem impedit natus. Modi magni, aut corporis impedit ullam nemo saepe!';
 
 const modalStore = useModalStore();
 
@@ -46,65 +41,79 @@ const { selectedId } = storeToRefs(stuffStore);
 const newStuffInfoStore = useNewStuffInfo();
 const { newName, newThumbnail, newDesc, newAmount } = storeToRefs(newStuffInfoStore);
 
+const nameInput = ref<string>(newName.value);
+const thumbnailInput = ref<string>(newThumbnail.value);
+const descInput = ref<string>(newDesc.value);
+
 const { data } = getStuffDetailQuery();
 
 const { isStale: isListDataStale } = getStuffListQuery();
 
 const queryClient = useQueryClient();
 
-const commitChangeMutation = useMutation<StuffWithItems, BeliemeError>(
+const commitChangeMutation = useMutation<StuffWithItems, BaseError>(
   () =>
     editStuff(selectedId.value, {
       name: newName.value,
-      thumbnail: newThumbnail.value
+      thumbnail: newThumbnail.value,
     }),
   {
     onSuccess: (response) => {
       reloadStuffDataUsingCacheAndResponse(queryClient, response, isListDataStale.value);
-      viewModeStore.changeStuffDetailViewMode("SHOW");
+      viewModeStore.changeStuffDetailViewMode('SHOW');
     },
     onError: (error) => {
       console.error(error);
       queryClient.invalidateQueries(stuffKeys.list(deptId.value));
       queryClient.invalidateQueries(stuffKeys.detail(selectedId.value));
-      modalStore.addModal(buildAlertModal("errorAlert", error.message));
-    }
+      modalStore.addModal(buildAlertModal('errorAlert', error.message));
+    },
   }
 );
 
-const commitAddNewStuffMutation = useMutation<StuffWithItems, BeliemeError>(
+const commitAddNewStuffMutation = useMutation<StuffWithItems, BaseError>(
   () =>
     postNewStuff({
       departmentId: deptId.value,
       name: newName.value,
       thumbnail: newThumbnail.value,
-      amount: newAmount.value
+      amount: newAmount.value,
     }),
   {
     onSuccess: (response) => {
       reloadStuffDataUsingCacheAndResponse(queryClient, response, isListDataStale.value);
-      viewModeStore.changeStuffDetailViewMode("SHOW");
+      viewModeStore.changeStuffDetailViewMode('SHOW');
     },
     onError: (error) => {
       console.error(error);
       queryClient.invalidateQueries(stuffKeys.list(deptId.value));
       queryClient.invalidateQueries(stuffKeys.detail(selectedId.value));
-      modalStore.addModal(buildAlertModal("errorAlert", error.message));
-    }
+      modalStore.addModal(buildAlertModal('errorAlert', error.message));
+    },
   }
 );
 
-const _initInputValue = () => {
+function initInputValue() {
   if (data.value === undefined) {
-    newName.value = "";
-    newThumbnail.value = "";
-    newDesc.value = "";
+    nameInput.value = '';
+    thumbnailInput.value = '';
+    descInput.value = '';
     return;
   }
-  newName.value = viewMode.value === "EDIT" ? data.value.name : "";
-  newThumbnail.value = viewMode.value === "EDIT" ? data.value.thumbnail : "";
-  newDesc.value = viewMode.value === "EDIT" ? LOREM_IPSUM : "";
-};
+  nameInput.value = viewMode.value === 'EDIT' ? data.value.name : '';
+  thumbnailInput.value = viewMode.value === 'EDIT' ? data.value.thumbnail : '';
+  descInput.value = viewMode.value === 'EDIT' ? LOREM_IPSUM : '';
+}
+
+onBeforeMount(() => {
+  watch(nameInput, () => newStuffInfoStore.updateNewName(nameInput.value));
+  watch(thumbnailInput, () => newStuffInfoStore.updateNewThumbnail(thumbnailInput.value));
+  watch(descInput, () => newStuffInfoStore.updateNewDesc(descInput.value));
+
+  watch(viewMode, () => {
+    initInputValue();
+  });
+});
 </script>
 
 <template>
@@ -113,7 +122,7 @@ const _initInputValue = () => {
       <span v-if="viewMode === 'SHOW'">{{ data?.thumbnail }}</span>
       <input
         v-else
-        v-model="newThumbnail"
+        v-model="thumbnailInput"
         type="text"
         class="form-control edit-box"
         aria-label="thumbnail"
@@ -125,7 +134,7 @@ const _initInputValue = () => {
           <span v-if="viewMode === 'SHOW'">{{ data?.name }}</span>
           <input
             v-else
-            v-model="newName"
+            v-model="nameInput"
             type="text"
             class="form-control w-100 my-2"
             placeholder="물품 이름을 입력해주세요."
@@ -181,7 +190,7 @@ const _initInputValue = () => {
         </span>
         <textarea
           v-else
-          v-model="newDesc"
+          v-model="descInput"
           class="form-control h-100 fs-7"
           placeholder="물품 설명을 입력해주세요."
           id="floatingTextarea"

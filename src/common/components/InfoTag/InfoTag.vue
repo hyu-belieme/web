@@ -12,15 +12,15 @@ defineProps<{
 
 <style lang="scss" scoped>
 $colors: (
-  "blue": #c2ebff,
-  "indigo": #c2c6ff,
-  "purple": #d8c2ff,
-  "pink": #ffc2fa,
-  "red": #ffc2c2,
-  "orange": #ffd6c2,
-  "yellow": #fffac2,
-  "green": #ccffc2,
-  "cyan": #c2ffed
+  'blue': #c2ebff,
+  'indigo': #c2c6ff,
+  'purple': #d8c2ff,
+  'pink': #ffc2fa,
+  'red': #ffc2c2,
+  'orange': #ffd6c2,
+  'yellow': #fffac2,
+  'green': #ccffc2,
+  'cyan': #c2ffed,
 );
 
 $tag-font-sizes: (
@@ -29,7 +29,7 @@ $tag-font-sizes: (
   3: $h3-font-size,
   4: $h4-font-size,
   5: $h5-font-size,
-  6: $h6-font-size
+  6: $h6-font-size,
 );
 
 @each $color-key in map-keys($colors) {

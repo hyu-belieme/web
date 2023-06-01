@@ -3,7 +3,8 @@
   "semi": true,
   "tabWidth": 2,
   "printWidth": 100,
-  "trailingComma": "none",
+  "trailingComma": "es5",
+  "singleQuote": true,
   "importOrder": ["^@common/(.*)$", "^@core/(.*)$", "^@\\^(.*)/(.*)$", "@modules/(.*)$", "^[./]"],
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true
