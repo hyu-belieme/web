@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { onBeforeMount, watch } from 'vue';
+import { onBeforeMount, ref, watch } from 'vue';
 import { useMutation, useQueryClient } from 'vue-query';
 
 import { editStuff, postNewStuff } from '@common/apis/belieme-apis';
@@ -40,6 +40,10 @@ const { selectedId } = storeToRefs(stuffStore);
 
 const newStuffInfoStore = useNewStuffInfo();
 const { newName, newThumbnail, newDesc, newAmount } = storeToRefs(newStuffInfoStore);
+
+const nameInput = ref<string>(newName.value);
+const thumbnailInput = ref<string>(newThumbnail.value);
+const descInput = ref<string>(newDesc.value);
 
 const { data } = getStuffDetailQuery();
 
@@ -91,17 +95,21 @@ const commitAddNewStuffMutation = useMutation<StuffWithItems, BaseError>(
 
 function initInputValue() {
   if (data.value === undefined) {
-    newName.value = '';
-    newThumbnail.value = '';
-    newDesc.value = '';
+    nameInput.value = '';
+    thumbnailInput.value = '';
+    descInput.value = '';
     return;
   }
-  newName.value = viewMode.value === 'EDIT' ? data.value.name : '';
-  newThumbnail.value = viewMode.value === 'EDIT' ? data.value.thumbnail : '';
-  newDesc.value = viewMode.value === 'EDIT' ? LOREM_IPSUM : '';
+  nameInput.value = viewMode.value === 'EDIT' ? data.value.name : '';
+  thumbnailInput.value = viewMode.value === 'EDIT' ? data.value.thumbnail : '';
+  descInput.value = viewMode.value === 'EDIT' ? LOREM_IPSUM : '';
 }
 
 onBeforeMount(() => {
+  watch(nameInput, () => newStuffInfoStore.updateNewName(nameInput.value));
+  watch(thumbnailInput, () => newStuffInfoStore.updateNewThumbnail(thumbnailInput.value));
+  watch(descInput, () => newStuffInfoStore.updateNewDesc(descInput.value));
+
   watch(viewMode, () => {
     initInputValue();
   });
@@ -114,7 +122,7 @@ onBeforeMount(() => {
       <span v-if="viewMode === 'SHOW'">{{ data?.thumbnail }}</span>
       <input
         v-else
-        v-model="newThumbnail"
+        v-model="thumbnailInput"
         type="text"
         class="form-control edit-box"
         aria-label="thumbnail"
@@ -126,7 +134,7 @@ onBeforeMount(() => {
           <span v-if="viewMode === 'SHOW'">{{ data?.name }}</span>
           <input
             v-else
-            v-model="newName"
+            v-model="nameInput"
             type="text"
             class="form-control w-100 my-2"
             placeholder="물품 이름을 입력해주세요."
@@ -182,7 +190,7 @@ onBeforeMount(() => {
         </span>
         <textarea
           v-else
-          v-model="newDesc"
+          v-model="descInput"
           class="form-control h-100 fs-7"
           placeholder="물품 설명을 입력해주세요."
           id="floatingTextarea"

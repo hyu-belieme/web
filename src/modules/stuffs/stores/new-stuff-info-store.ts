@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { readonly, ref } from 'vue';
 
 const useNewStuffInfo = defineStore('newStuffInfo', () => {
   const MAX_ITEM_NUM = 50;
@@ -34,10 +34,10 @@ const useNewStuffInfo = defineStore('newStuffInfo', () => {
   }
 
   return {
-    newName,
-    newThumbnail,
-    newDesc,
-    newAmount,
+    newName: readonly(newName),
+    newThumbnail: readonly(newThumbnail),
+    newDesc: readonly(newDesc),
+    newAmount: readonly(newAmount),
     updateNewName,
     updateNewThumbnail,
     updateNewDesc,
