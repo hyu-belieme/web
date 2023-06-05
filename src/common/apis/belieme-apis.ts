@@ -21,7 +21,7 @@ const NETWORK_ERROR: BaseError = {
 
 function createInstance() {
   return axios.create({
-    baseURL: 'http://13.209.19.51:8080/',
+    baseURL: import.meta.env.VITE_SERVER_API_URL,
     timeout: 1000,
     headers: { 'user-token': userToken.value },
   });
