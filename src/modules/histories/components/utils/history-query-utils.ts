@@ -10,7 +10,6 @@ import {
 } from '@common/apis/belieme-apis';
 import { historyKeys } from '@common/apis/query-keys';
 import type History from '@common/models/History';
-import useDeptStore from '@common/stores/dept-store';
 import useUserStore from '@common/stores/user-store';
 
 import useHistorySelectedStore from '@^histories/stores/history-selected-store';
@@ -28,8 +27,7 @@ function getUserInfo() {
 
 const user = getUserInfo();
 
-const deptStore = useDeptStore();
-const { deptId } = storeToRefs(deptStore);
+const deptId = localStorage.getItem('dept-id') || '';
 
 const historySelectedStore = useHistorySelectedStore();
 const { selectedId } = storeToRefs(historySelectedStore);
@@ -45,9 +43,9 @@ function convertIdToFirstIdIfNotExist(id: string, historyList: List<History>) {
 export function getHistoryListQuery() {
   if (userMode.value === 'USER') {
     return useQuery<List<History>>(
-      historyKeys.listByDeptAndRequester(deptId.value, user.id),
+      historyKeys.listByDeptAndRequester(deptId, user.id),
       async () => {
-        let historyList = await getAllRequesterHistoryInDept(deptId.value, user.id);
+        let historyList = await getAllRequesterHistoryInDept(deptId, user.id);
         historyList = sortHistoryList(historyList);
         historySelectedStore.updateSelectedId(
           convertIdToFirstIdIfNotExist(selectedId.value, historyList)
@@ -56,8 +54,8 @@ export function getHistoryListQuery() {
       }
     );
   }
-  return useQuery<List<History>>(historyKeys.listByDept(deptId.value), async () => {
-    let historyList = await getAllHistoryInDept(deptId.value);
+  return useQuery<List<History>>(historyKeys.listByDept(deptId), async () => {
+    let historyList = await getAllHistoryInDept(deptId);
     historyList = sortHistoryList(historyList);
     historySelectedStore.updateSelectedId(
       convertIdToFirstIdIfNotExist(selectedId.value, historyList)
@@ -79,13 +77,13 @@ export function reloadHistoryDataUsingCacheAndResponse(
 ) {
   const curListKey =
     userMode.value === 'USER'
-      ? historyKeys.listByDeptAndRequester(deptId.value, user.id)
-      : historyKeys.listByDept(deptId.value);
+      ? historyKeys.listByDeptAndRequester(deptId, user.id)
+      : historyKeys.listByDept(deptId);
 
   const othListKey =
     userMode.value === 'USER'
-      ? historyKeys.listByDept(deptId.value)
-      : historyKeys.listByDeptAndRequester(deptId.value, user.id);
+      ? historyKeys.listByDept(deptId)
+      : historyKeys.listByDeptAndRequester(deptId, user.id);
 
   if (isListDataStale) {
     queryClient.invalidateQueries(curListKey);

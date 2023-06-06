@@ -12,7 +12,6 @@ import BasicModal from '@common/components/BasicModal/BasicModal.vue';
 import type BaseError from '@common/errors/BaseError';
 import type ItemInfoOnly from '@common/models/ItemInfoOnly';
 import type StuffWithItems from '@common/models/StuffWithItems';
-import useDeptStore from '@common/stores/dept-store';
 import useModalStore from '@common/stores/modal-store';
 
 import ItemListCell from '@^stuffs/components/StuffDetailItemListCell/StuffDetailItemListCell.vue';
@@ -30,8 +29,7 @@ const MAX_ITEM_NUM = 50;
 const viewModeStore = useStuffDetailViewModeStore();
 const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
 
-const deptStore = useDeptStore();
-const { deptId } = storeToRefs(deptStore);
+const deptId = localStorage.getItem('dept-id') || '';
 
 const stuffStore = useStuffSelectedStore();
 const { selectedId } = storeToRefs(stuffStore);
@@ -56,7 +54,7 @@ const addNewItemMutation = useMutation<StuffWithItems, BaseError>(
     },
     onError: (error) => {
       console.error(error);
-      queryClient.invalidateQueries(stuffKeys.list(deptId.value));
+      queryClient.invalidateQueries(stuffKeys.list(deptId));
       queryClient.invalidateQueries(stuffKeys.detail(selectedId.value));
       modalStore.addModal(buildAlertModal('errorAlert', error.message));
     },

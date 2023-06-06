@@ -8,7 +8,6 @@ import buildAlertModal from '@common/components/AlertModal/utils/alert-modal-bui
 import BasicModal from '@common/components/BasicModal/BasicModal.vue';
 import type BaseError from '@common/errors/BaseError';
 import type History from '@common/models/History';
-import useDeptStore from '@common/stores/dept-store';
 import useModalStore from '@common/stores/modal-store';
 import useUserStore from '@common/stores/user-store';
 
@@ -20,11 +19,10 @@ import {
 
 const modalStore = useModalStore();
 
-const deptStore = useDeptStore();
-const { deptId } = storeToRefs(deptStore);
-
 const userStore = useUserStore();
 const { userMode } = storeToRefs(userStore);
+
+const deptId = localStorage.getItem('dept-id') || '';
 
 function getUserInfo() {
   const userString = sessionStorage.getItem('user-info') || undefined;
@@ -48,10 +46,8 @@ function changeItemRequestMutation(mutationFn: () => Promise<History>) {
     },
     onError: (error) => {
       console.error(error);
-      queryClient.invalidateQueries(historyKeys.listByDept(deptId.value));
-      queryClient.invalidateQueries(
-        historyKeys.listByDeptAndRequester(deptId.value, user.id || '')
-      );
+      queryClient.invalidateQueries(historyKeys.listByDept(deptId));
+      queryClient.invalidateQueries(historyKeys.listByDeptAndRequester(deptId, user.id || ''));
       queryClient.invalidateQueries({ queryKey: historyKeys.detail() });
       modalStore.addModal(buildAlertModal('errorAlert', error.message));
     },

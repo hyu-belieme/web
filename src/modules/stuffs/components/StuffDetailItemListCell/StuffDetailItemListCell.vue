@@ -12,7 +12,6 @@ import InfoTag from '@common/components/InfoTag/InfoTag.vue';
 import type BaseError from '@common/errors/BaseError';
 import type History from '@common/models/History';
 import type ItemInfoOnly from '@common/models/ItemInfoOnly';
-import useDeptStore from '@common/stores/dept-store';
 import useModalStore from '@common/stores/modal-store';
 import useUserStore from '@common/stores/user-store';
 
@@ -40,8 +39,7 @@ const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
 const userStore = useUserStore();
 const { userMode } = storeToRefs(userStore);
 
-const deptStore = useDeptStore();
-const { deptId } = storeToRefs(deptStore);
+const deptId = localStorage.getItem('dept-id') || '';
 
 const stuffStore = useStuffSelectedStore();
 const { selectedId } = storeToRefs(stuffStore);
@@ -49,7 +47,7 @@ const { selectedId } = storeToRefs(stuffStore);
 function changeItemRequestMutation(mutationFn: () => Promise<History>) {
   return useMutation<History, BaseError>(mutationFn, {
     onSettled: () => {
-      queryClient.invalidateQueries(stuffKeys.list(deptId.value));
+      queryClient.invalidateQueries(stuffKeys.list(deptId));
       queryClient.invalidateQueries(stuffKeys.detail(selectedId.value));
     },
     onSuccess: (response) => {

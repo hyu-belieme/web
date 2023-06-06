@@ -7,13 +7,11 @@ import { getAllStuffsInDept, getStuff } from '@common/apis/belieme-apis';
 import { stuffKeys } from '@common/apis/query-keys';
 import type Stuff from '@common/models/Stuff';
 import type StuffWithItems from '@common/models/StuffWithItems';
-import useDeptStore from '@common/stores/dept-store';
 
 import useStuffSelectedStore from '@^stuffs/stores/stuff-selected-store';
 import sortStuffList from '@^stuffs/utils/stuff-sorter';
 
-const deptStore = useDeptStore();
-const { deptId } = storeToRefs(deptStore);
+const deptId = localStorage.getItem('dept-id') || '';
 
 const stuffStore = useStuffSelectedStore();
 const { selectedId } = storeToRefs(stuffStore);
@@ -27,8 +25,8 @@ function convertIdToFirstIdIfNotExist(id: string, stuffList: List<Stuff>) {
 }
 
 export function getStuffListQuery() {
-  return useQuery<List<Stuff>>(stuffKeys.list(deptId.value), async () => {
-    let stuffList = await getAllStuffsInDept(deptId.value);
+  return useQuery<List<Stuff>>(stuffKeys.list(deptId), async () => {
+    let stuffList = await getAllStuffsInDept(deptId);
     stuffList = sortStuffList(stuffList);
     stuffStore.updateSelectedId(convertIdToFirstIdIfNotExist(selectedId.value, stuffList));
     return stuffList;
@@ -47,9 +45,9 @@ export function reloadStuffDataUsingCacheAndResponse(
   isListDataStale: boolean
 ) {
   if (isListDataStale) {
-    queryClient.invalidateQueries(stuffKeys.list(deptId.value));
+    queryClient.invalidateQueries(stuffKeys.list(deptId));
   } else {
-    queryClient.setQueryData(stuffKeys.list(deptId.value), (oldData?: List<Stuff>) => {
+    queryClient.setQueryData(stuffKeys.list(deptId), (oldData?: List<Stuff>) => {
       if (oldData === undefined) return List<Stuff>();
       let newStuffList = oldData.filter((e) => e.id !== response.id);
       newStuffList = newStuffList.push(response);

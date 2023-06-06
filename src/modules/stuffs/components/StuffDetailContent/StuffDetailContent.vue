@@ -8,7 +8,6 @@ import { stuffKeys } from '@common/apis/query-keys';
 import buildAlertModal from '@common/components/AlertModal/utils/alert-modal-builder';
 import type BaseError from '@common/errors/BaseError';
 import type StuffWithItems from '@common/models/StuffWithItems';
-import useDeptStore from '@common/stores/dept-store';
 import useModalStore from '@common/stores/modal-store';
 import useUserStore from '@common/stores/user-store';
 
@@ -32,8 +31,7 @@ const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
 const userStore = useUserStore();
 const { userMode } = storeToRefs(userStore);
 
-const deptStore = useDeptStore();
-const { deptId } = storeToRefs(deptStore);
+const deptId = localStorage.getItem('dept-id') || '';
 
 const stuffStore = useStuffSelectedStore();
 const { selectedId } = storeToRefs(stuffStore);
@@ -64,7 +62,7 @@ const commitChangeMutation = useMutation<StuffWithItems, BaseError>(
     },
     onError: (error) => {
       console.error(error);
-      queryClient.invalidateQueries(stuffKeys.list(deptId.value));
+      queryClient.invalidateQueries(stuffKeys.list(deptId));
       queryClient.invalidateQueries(stuffKeys.detail(selectedId.value));
       modalStore.addModal(buildAlertModal('errorAlert', error.message));
     },
@@ -74,7 +72,7 @@ const commitChangeMutation = useMutation<StuffWithItems, BaseError>(
 const commitAddNewStuffMutation = useMutation<StuffWithItems, BaseError>(
   () =>
     postNewStuff({
-      departmentId: deptId.value,
+      departmentId: deptId,
       name: newName.value,
       thumbnail: newThumbnail.value,
       amount: newAmount.value,
@@ -86,7 +84,7 @@ const commitAddNewStuffMutation = useMutation<StuffWithItems, BaseError>(
     },
     onError: (error) => {
       console.error(error);
-      queryClient.invalidateQueries(stuffKeys.list(deptId.value));
+      queryClient.invalidateQueries(stuffKeys.list(deptId));
       queryClient.invalidateQueries(stuffKeys.detail(selectedId.value));
       modalStore.addModal(buildAlertModal('errorAlert', error.message));
     },

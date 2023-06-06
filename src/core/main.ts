@@ -25,6 +25,7 @@ app.config.globalProperties.$dayjs = dayjs;
 app.use(createPinia());
 app.use(router);
 
+localStorage.setItem('dept-id', '35334234-3731-4231-4545-304134383143');
 localStorage.setItem('user-token', userDummy.token);
 sessionStorage.setItem('user-info', JSON.stringify(userDummy));
 
