@@ -14,6 +14,7 @@ import type ItemInfoOnly from '@common/models/ItemInfoOnly';
 import type StuffWithItems from '@common/models/StuffWithItems';
 import useModalStore from '@common/stores/modal-store';
 import useDeptStore from '@common/stores/new-dept-store';
+import useNewUserStore from '@common/stores/new-user-store';
 
 import ItemListCell from '@^stuffs/components/StuffDetailItemListCell/StuffDetailItemListCell.vue';
 import {
@@ -29,6 +30,10 @@ const MAX_ITEM_NUM = 50;
 
 const viewModeStore = useStuffDetailViewModeStore();
 const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
+
+const newUserStore = useNewUserStore();
+const { user } = storeToRefs(newUserStore);
+const userToken = computed(() => user.value?.token || '');
 
 const deptStore = useDeptStore();
 const deptId = computed(() => storeToRefs(deptStore).deptId.value || '');
@@ -49,7 +54,7 @@ const { isStale: isListDataStale } = getStuffListQuery();
 const items = ref<List<ItemInfoOnly>>(List([]));
 
 const addNewItemMutation = useMutation<StuffWithItems, BaseError>(
-  () => addNewItem(selectedId.value),
+  () => addNewItem(userToken.value, selectedId.value),
   {
     onSuccess: (response) => {
       reloadStuffDataUsingCacheAndResponse(queryClient, response, isListDataStale.value);

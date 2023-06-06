@@ -14,6 +14,7 @@ import type History from '@common/models/History';
 import type ItemInfoOnly from '@common/models/ItemInfoOnly';
 import useModalStore from '@common/stores/modal-store';
 import useDeptStore from '@common/stores/new-dept-store';
+import useNewUserStore from '@common/stores/new-user-store';
 import useUserStore from '@common/stores/user-store';
 
 import useStuffDetailViewModeStore from '@^stuffs/stores/stuff-detail-view-mode-store';
@@ -40,6 +41,10 @@ const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
 const userStore = useUserStore();
 const { userMode } = storeToRefs(userStore);
 
+const newUserStore = useNewUserStore();
+const { user } = storeToRefs(newUserStore);
+const userToken = computed(() => user.value?.token || '');
+
 const deptStore = useDeptStore();
 const deptId = computed(() => storeToRefs(deptStore).deptId.value || '');
 
@@ -63,11 +68,17 @@ function changeItemRequestMutation(mutationFn: () => Promise<History>) {
   });
 }
 
-const rentalRequestMutation = changeItemRequestMutation(() => rentItem(props.item.id));
+const rentalRequestMutation = changeItemRequestMutation(() =>
+  rentItem(userToken.value, props.item.id)
+);
 
-const lostRequestMutation = changeItemRequestMutation(() => reportLostItem(props.item.id));
+const lostRequestMutation = changeItemRequestMutation(() =>
+  reportLostItem(userToken.value, props.item.id)
+);
 
-const foundApproveMutation = changeItemRequestMutation(() => returnItem(props.item.id));
+const foundApproveMutation = changeItemRequestMutation(() =>
+  returnItem(userToken.value, props.item.id)
+);
 
 const rentalRequestModal = {
   key: 'rentalRequest',

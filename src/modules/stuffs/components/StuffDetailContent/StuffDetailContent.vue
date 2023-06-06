@@ -10,6 +10,7 @@ import type BaseError from '@common/errors/BaseError';
 import type StuffWithItems from '@common/models/StuffWithItems';
 import useModalStore from '@common/stores/modal-store';
 import useDeptStore from '@common/stores/new-dept-store';
+import useNewUserStore from '@common/stores/new-user-store';
 import useUserStore from '@common/stores/user-store';
 
 import {
@@ -32,6 +33,10 @@ const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
 const userStore = useUserStore();
 const { userMode } = storeToRefs(userStore);
 
+const newUserStore = useNewUserStore();
+const { user } = storeToRefs(newUserStore);
+const userToken = computed(() => user.value?.token || '');
+
 const deptStore = useDeptStore();
 const deptId = computed(() => storeToRefs(deptStore).deptId.value || '');
 
@@ -53,7 +58,7 @@ const queryClient = useQueryClient();
 
 const commitChangeMutation = useMutation<StuffWithItems, BaseError>(
   () =>
-    editStuff(selectedId.value, {
+    editStuff(userToken.value, selectedId.value, {
       name: newName.value,
       thumbnail: newThumbnail.value,
     }),
@@ -73,7 +78,7 @@ const commitChangeMutation = useMutation<StuffWithItems, BaseError>(
 
 const commitAddNewStuffMutation = useMutation<StuffWithItems, BaseError>(
   () =>
-    postNewStuff({
+    postNewStuff(userToken.value, {
       departmentId: deptId.value,
       name: newName.value,
       thumbnail: newThumbnail.value,

@@ -22,7 +22,9 @@ const userStore = useUserStore();
 const { userMode } = storeToRefs(userStore);
 
 const newUserStore = useNewUserStore();
-const userId = computed(() => storeToRefs(newUserStore).user.value?.id || '');
+const { user } = storeToRefs(newUserStore);
+const userId = computed(() => user.value?.id || '');
+const userToken = computed(() => user.value?.token || '');
 
 const deptStore = useDeptStore();
 const deptId = computed(() => storeToRefs(deptStore).deptId.value || '');
@@ -43,7 +45,11 @@ export function getHistoryListQuery() {
     return useQuery<List<History>>(
       historyKeys.listByDeptAndRequester(deptId.value, userId.value),
       async () => {
-        let historyList = await getAllRequesterHistoryInDept(deptId.value, userId.value);
+        let historyList = await getAllRequesterHistoryInDept(
+          userToken.value,
+          deptId.value,
+          userId.value
+        );
         historyList = sortHistoryList(historyList);
         historySelectedStore.updateSelectedId(
           convertIdToFirstIdIfNotExist(selectedId.value, historyList)
@@ -53,7 +59,7 @@ export function getHistoryListQuery() {
     );
   }
   return useQuery<List<History>>(historyKeys.listByDept(deptId.value), async () => {
-    let historyList = await getAllHistoryInDept(deptId.value);
+    let historyList = await getAllHistoryInDept(userToken.value, deptId.value);
     historyList = sortHistoryList(historyList);
     historySelectedStore.updateSelectedId(
       convertIdToFirstIdIfNotExist(selectedId.value, historyList)
@@ -64,7 +70,7 @@ export function getHistoryListQuery() {
 
 export function getHistoryDetailQuery() {
   return useQuery<History>(historyKeys.detail(selectedId.value), () =>
-    getHistory(selectedId.value)
+    getHistory(userToken.value, selectedId.value)
   );
 }
 

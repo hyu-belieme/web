@@ -26,7 +26,9 @@ const userStore = useUserStore();
 const { userMode } = storeToRefs(userStore);
 
 const newUserStore = useNewUserStore();
-const userId = computed(() => storeToRefs(newUserStore).user.value?.id || '');
+const { user } = storeToRefs(newUserStore);
+const userId = computed(() => user.value?.id || '');
+const userToken = computed(() => user.value?.token || '');
 
 const deptStore = useDeptStore();
 const deptId = computed(() => storeToRefs(deptStore).deptId.value || '');
@@ -52,11 +54,17 @@ function changeItemRequestMutation(mutationFn: () => Promise<History>) {
   });
 }
 
-const rentalApproveMutation = changeItemRequestMutation(() => approveItem(data.value!.item.id));
+const rentalApproveMutation = changeItemRequestMutation(() =>
+  approveItem(userToken.value, data.value!.item.id)
+);
 
-const cancelRequestMutation = changeItemRequestMutation(() => cancelItem(data.value!.item.id));
+const cancelRequestMutation = changeItemRequestMutation(() =>
+  cancelItem(userToken.value, data.value!.item.id)
+);
 
-const returnApproveMutation = changeItemRequestMutation(() => returnItem(data.value!.item.id));
+const returnApproveMutation = changeItemRequestMutation(() =>
+  returnItem(userToken.value, data.value!.item.id)
+);
 
 const rentalApproveModal = {
   key: 'rentalApprove',

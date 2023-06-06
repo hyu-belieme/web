@@ -9,9 +9,14 @@ import { stuffKeys } from '@common/apis/query-keys';
 import type Stuff from '@common/models/Stuff';
 import type StuffWithItems from '@common/models/StuffWithItems';
 import useDeptStore from '@common/stores/new-dept-store';
+import useNewUserStore from '@common/stores/new-user-store';
 
 import useStuffSelectedStore from '@^stuffs/stores/stuff-selected-store';
 import sortStuffList from '@^stuffs/utils/stuff-sorter';
+
+const newUserStore = useNewUserStore();
+const { user } = storeToRefs(newUserStore);
+const userToken = computed(() => user.value?.token || '');
 
 const deptStore = useDeptStore();
 const deptId = computed(() => storeToRefs(deptStore).deptId.value || '');
@@ -29,7 +34,7 @@ function convertIdToFirstIdIfNotExist(id: string, stuffList: List<Stuff>) {
 
 export function getStuffListQuery() {
   return useQuery<List<Stuff>>(stuffKeys.list(deptId.value), async () => {
-    let stuffList = await getAllStuffsInDept(deptId.value);
+    let stuffList = await getAllStuffsInDept(userToken.value, deptId.value);
     stuffList = sortStuffList(stuffList);
     stuffStore.updateSelectedId(convertIdToFirstIdIfNotExist(selectedId.value, stuffList));
     return stuffList;
@@ -38,7 +43,7 @@ export function getStuffListQuery() {
 
 export function getStuffDetailQuery() {
   return useQuery<StuffWithItems>(stuffKeys.detail(selectedId.value), () =>
-    getStuff(selectedId.value)
+    getStuff(userToken.value, selectedId.value)
   );
 }
 
