@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { onBeforeMount, ref, watch } from 'vue';
+import { computed, onBeforeMount, ref, watch } from 'vue';
 import { useMutation, useQueryClient } from 'vue-query';
 
 import { editStuff, postNewStuff } from '@common/apis/belieme-apis';
@@ -9,6 +9,7 @@ import buildAlertModal from '@common/components/AlertModal/utils/alert-modal-bui
 import type BaseError from '@common/errors/BaseError';
 import type StuffWithItems from '@common/models/StuffWithItems';
 import useModalStore from '@common/stores/modal-store';
+import useDeptStore from '@common/stores/new-dept-store';
 import useUserStore from '@common/stores/user-store';
 
 import {
@@ -31,7 +32,8 @@ const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
 const userStore = useUserStore();
 const { userMode } = storeToRefs(userStore);
 
-const deptId = localStorage.getItem('dept-id') || '';
+const deptStore = useDeptStore();
+const deptId = computed(() => storeToRefs(deptStore).deptId.value || '');
 
 const stuffStore = useStuffSelectedStore();
 const { selectedId } = storeToRefs(stuffStore);
@@ -62,7 +64,7 @@ const commitChangeMutation = useMutation<StuffWithItems, BaseError>(
     },
     onError: (error) => {
       console.error(error);
-      queryClient.invalidateQueries(stuffKeys.list(deptId));
+      queryClient.invalidateQueries(stuffKeys.list(deptId.value));
       queryClient.invalidateQueries(stuffKeys.detail(selectedId.value));
       modalStore.addModal(buildAlertModal('errorAlert', error.message));
     },
@@ -72,7 +74,7 @@ const commitChangeMutation = useMutation<StuffWithItems, BaseError>(
 const commitAddNewStuffMutation = useMutation<StuffWithItems, BaseError>(
   () =>
     postNewStuff({
-      departmentId: deptId,
+      departmentId: deptId.value,
       name: newName.value,
       thumbnail: newThumbnail.value,
       amount: newAmount.value,
@@ -84,7 +86,7 @@ const commitAddNewStuffMutation = useMutation<StuffWithItems, BaseError>(
     },
     onError: (error) => {
       console.error(error);
-      queryClient.invalidateQueries(stuffKeys.list(deptId));
+      queryClient.invalidateQueries(stuffKeys.list(deptId.value));
       queryClient.invalidateQueries(stuffKeys.detail(selectedId.value));
       modalStore.addModal(buildAlertModal('errorAlert', error.message));
     },

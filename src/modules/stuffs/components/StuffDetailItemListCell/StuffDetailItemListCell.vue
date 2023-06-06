@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { NIL as NIL_UUID } from 'uuid';
-import { getCurrentInstance } from 'vue';
+import { computed, getCurrentInstance } from 'vue';
 import { useMutation, useQueryClient } from 'vue-query';
 
 import { rentItem, reportLostItem, returnItem } from '@common/apis/belieme-apis';
@@ -13,6 +13,7 @@ import type BaseError from '@common/errors/BaseError';
 import type History from '@common/models/History';
 import type ItemInfoOnly from '@common/models/ItemInfoOnly';
 import useModalStore from '@common/stores/modal-store';
+import useDeptStore from '@common/stores/new-dept-store';
 import useUserStore from '@common/stores/user-store';
 
 import useStuffDetailViewModeStore from '@^stuffs/stores/stuff-detail-view-mode-store';
@@ -39,7 +40,8 @@ const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
 const userStore = useUserStore();
 const { userMode } = storeToRefs(userStore);
 
-const deptId = localStorage.getItem('dept-id') || '';
+const deptStore = useDeptStore();
+const deptId = computed(() => storeToRefs(deptStore).deptId.value || '');
 
 const stuffStore = useStuffSelectedStore();
 const { selectedId } = storeToRefs(stuffStore);
@@ -47,7 +49,7 @@ const { selectedId } = storeToRefs(stuffStore);
 function changeItemRequestMutation(mutationFn: () => Promise<History>) {
   return useMutation<History, BaseError>(mutationFn, {
     onSettled: () => {
-      queryClient.invalidateQueries(stuffKeys.list(deptId));
+      queryClient.invalidateQueries(stuffKeys.list(deptId.value));
       queryClient.invalidateQueries(stuffKeys.detail(selectedId.value));
     },
     onSuccess: (response) => {

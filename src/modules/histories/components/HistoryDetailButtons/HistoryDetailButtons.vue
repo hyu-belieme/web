@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
 import { useMutation, useQueryClient } from 'vue-query';
 
 import { approveItem, cancelItem, returnItem } from '@common/apis/belieme-apis';
@@ -9,6 +10,8 @@ import BasicModal from '@common/components/BasicModal/BasicModal.vue';
 import type BaseError from '@common/errors/BaseError';
 import type History from '@common/models/History';
 import useModalStore from '@common/stores/modal-store';
+import useDeptStore from '@common/stores/new-dept-store';
+import useNewUserStore from '@common/stores/new-user-store';
 import useUserStore from '@common/stores/user-store';
 
 import {
@@ -22,16 +25,11 @@ const modalStore = useModalStore();
 const userStore = useUserStore();
 const { userMode } = storeToRefs(userStore);
 
-const deptId = localStorage.getItem('dept-id') || '';
+const newUserStore = useNewUserStore();
+const userId = computed(() => storeToRefs(newUserStore).user.value?.id || '');
 
-function getUserInfo() {
-  const userString = sessionStorage.getItem('user-info') || undefined;
-  if (userString === undefined) return undefined;
-
-  return JSON.parse(userString);
-}
-
-const user = getUserInfo();
+const deptStore = useDeptStore();
+const deptId = computed(() => storeToRefs(deptStore).deptId.value || '');
 
 const { isStale: isListDataStale } = getHistoryListQuery();
 
@@ -46,8 +44,8 @@ function changeItemRequestMutation(mutationFn: () => Promise<History>) {
     },
     onError: (error) => {
       console.error(error);
-      queryClient.invalidateQueries(historyKeys.listByDept(deptId));
-      queryClient.invalidateQueries(historyKeys.listByDeptAndRequester(deptId, user.id || ''));
+      queryClient.invalidateQueries(historyKeys.listByDept(deptId.value));
+      queryClient.invalidateQueries(historyKeys.listByDeptAndRequester(deptId.value, userId.value));
       queryClient.invalidateQueries({ queryKey: historyKeys.detail() });
       modalStore.addModal(buildAlertModal('errorAlert', error.message));
     },

@@ -2,7 +2,7 @@
 import { List } from 'immutable';
 import { storeToRefs } from 'pinia';
 import { NIL as NIL_UUID } from 'uuid';
-import { onBeforeMount, ref, watchEffect } from 'vue';
+import { computed, onBeforeMount, ref, watchEffect } from 'vue';
 import { useMutation, useQueryClient } from 'vue-query';
 
 import { addNewItem } from '@common/apis/belieme-apis';
@@ -13,6 +13,7 @@ import type BaseError from '@common/errors/BaseError';
 import type ItemInfoOnly from '@common/models/ItemInfoOnly';
 import type StuffWithItems from '@common/models/StuffWithItems';
 import useModalStore from '@common/stores/modal-store';
+import useDeptStore from '@common/stores/new-dept-store';
 
 import ItemListCell from '@^stuffs/components/StuffDetailItemListCell/StuffDetailItemListCell.vue';
 import {
@@ -29,7 +30,8 @@ const MAX_ITEM_NUM = 50;
 const viewModeStore = useStuffDetailViewModeStore();
 const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
 
-const deptId = localStorage.getItem('dept-id') || '';
+const deptStore = useDeptStore();
+const deptId = computed(() => storeToRefs(deptStore).deptId.value || '');
 
 const stuffStore = useStuffSelectedStore();
 const { selectedId } = storeToRefs(stuffStore);
@@ -54,7 +56,7 @@ const addNewItemMutation = useMutation<StuffWithItems, BaseError>(
     },
     onError: (error) => {
       console.error(error);
-      queryClient.invalidateQueries(stuffKeys.list(deptId));
+      queryClient.invalidateQueries(stuffKeys.list(deptId.value));
       queryClient.invalidateQueries(stuffKeys.detail(selectedId.value));
       modalStore.addModal(buildAlertModal('errorAlert', error.message));
     },
