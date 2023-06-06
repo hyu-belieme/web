@@ -10,6 +10,8 @@ import 'uuid';
 import { createApp } from 'vue';
 import { VueQueryPlugin, type VueQueryPluginOptions } from 'vue-query';
 
+import userDummy from '@common/assets/dummies/userDummy';
+
 import App from '@core/App.vue';
 import router from '@core/router';
 
@@ -22,6 +24,9 @@ app.config.globalProperties.$dayjs = dayjs;
 
 app.use(createPinia());
 app.use(router);
+
+localStorage.setItem('user-token', userDummy.token);
+sessionStorage.setItem('user-info', JSON.stringify(userDummy));
 
 const vueQueryPluginOptions: VueQueryPluginOptions = {
   queryClientConfig: {

@@ -24,7 +24,16 @@ const deptStore = useDeptStore();
 const { deptId } = storeToRefs(deptStore);
 
 const userStore = useUserStore();
-const { user, userMode } = storeToRefs(userStore);
+const { userMode } = storeToRefs(userStore);
+
+function getUserInfo() {
+  const userString = sessionStorage.getItem('user-info') || undefined;
+  if (userString === undefined) return undefined;
+
+  return JSON.parse(userString);
+}
+
+const user = getUserInfo();
 
 const { isStale: isListDataStale } = getHistoryListQuery();
 
@@ -41,7 +50,7 @@ function changeItemRequestMutation(mutationFn: () => Promise<History>) {
       console.error(error);
       queryClient.invalidateQueries(historyKeys.listByDept(deptId.value));
       queryClient.invalidateQueries(
-        historyKeys.listByDeptAndRequester(deptId.value, user.value.id)
+        historyKeys.listByDeptAndRequester(deptId.value, user.id || '')
       );
       queryClient.invalidateQueries({ queryKey: historyKeys.detail() });
       modalStore.addModal(buildAlertModal('errorAlert', error.message));

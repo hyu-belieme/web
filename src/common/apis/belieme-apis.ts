@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { List } from 'immutable';
-import { storeToRefs } from 'pinia';
 
 import BaseError from '@common/errors/BaseError';
 import History from '@common/models/History';
@@ -8,12 +7,10 @@ import Stuff from '@common/models/Stuff';
 import type StuffPostRequestBody from '@common/models/StuffPostRequestBody';
 import type StuffRequestBody from '@common/models/StuffRequestBody';
 import StuffWithItems from '@common/models/StuffWithItems';
-import useUserStore from '@common/stores/user-store';
 
 import UserWithSecureInfo from '../models/UserWithSecureInfo';
 
-const userStore = useUserStore();
-const { userToken } = storeToRefs(userStore);
+const userToken = localStorage.getItem('user-token') || '';
 
 const NETWORK_ERROR: BaseError = {
   name: 'NETWORK_ERROR',
@@ -58,7 +55,7 @@ export function getAllStuffsInDept(deptId: string) {
     axios
       .create({
         ...API_SERVER_INSTANCE_CONFIG,
-        headers: { 'user-token': userToken.value },
+        headers: { 'user-token': userToken },
       })
       .get<List<Stuff>>(apiUrl)
       .then((response) => {
@@ -79,7 +76,7 @@ export function getStuff(stuffId: string) {
     axios
       .create({
         ...API_SERVER_INSTANCE_CONFIG,
-        headers: { 'user-token': userToken.value },
+        headers: { 'user-token': userToken },
       })
       .get<StuffWithItems>(apiUrl)
       .then((response) => resolve(new StuffWithItems(response.data)))
@@ -94,7 +91,7 @@ export function postNewStuff(newStuff: StuffPostRequestBody) {
     axios
       .create({
         ...API_SERVER_INSTANCE_CONFIG,
-        headers: { 'user-token': userToken.value },
+        headers: { 'user-token': userToken },
       })
       .post<StuffWithItems>(apiUrl, newStuff)
       .then((response) => resolve(new StuffWithItems(response.data)))
@@ -109,7 +106,7 @@ export function editStuff(stuffId: string, newStuffInfo: StuffRequestBody) {
     axios
       .create({
         ...API_SERVER_INSTANCE_CONFIG,
-        headers: { 'user-token': userToken.value },
+        headers: { 'user-token': userToken },
       })
       .patch<StuffWithItems>(apiUrl, newStuffInfo)
       .then((response) => resolve(new StuffWithItems(response.data)))
@@ -124,7 +121,7 @@ export function addNewItem(stuffId: string) {
     axios
       .create({
         ...API_SERVER_INSTANCE_CONFIG,
-        headers: { 'user-token': userToken.value },
+        headers: { 'user-token': userToken },
       })
       .post<StuffWithItems>(apiUrl, {
         stuffId,
@@ -141,7 +138,7 @@ export function getAllHistoryInDept(deptId: string) {
     axios
       .create({
         ...API_SERVER_INSTANCE_CONFIG,
-        headers: { 'user-token': userToken.value },
+        headers: { 'user-token': userToken },
       })
       .get<List<History>>(apiUrl, {
         timeout: 5000,
@@ -164,7 +161,7 @@ export function getAllRequesterHistoryInDept(deptId: string, userId: string) {
     axios
       .create({
         ...API_SERVER_INSTANCE_CONFIG,
-        headers: { 'user-token': userToken.value },
+        headers: { 'user-token': userToken },
       })
       .get<List<History>>(apiUrl)
       .then((response) => {
@@ -185,7 +182,7 @@ export function getHistory(historyId: string) {
     axios
       .create({
         ...API_SERVER_INSTANCE_CONFIG,
-        headers: { 'user-token': userToken.value },
+        headers: { 'user-token': userToken },
       })
       .get<History>(apiUrl)
       .then((response) => resolve(new History(response.data)))
@@ -200,7 +197,7 @@ export function rentStuff(stuffId: string) {
     axios
       .create({
         ...API_SERVER_INSTANCE_CONFIG,
-        headers: { 'user-token': userToken.value },
+        headers: { 'user-token': userToken },
       })
       .patch<History>(apiUrl)
       .then((response) => resolve(new History(response.data)))
@@ -215,7 +212,7 @@ export function rentItem(itemId: string) {
     axios
       .create({
         ...API_SERVER_INSTANCE_CONFIG,
-        headers: { 'user-token': userToken.value },
+        headers: { 'user-token': userToken },
       })
       .patch<History>(apiUrl)
       .then((response) => resolve(new History(response.data)))
@@ -230,7 +227,7 @@ export function reportLostItem(itemId: string) {
     axios
       .create({
         ...API_SERVER_INSTANCE_CONFIG,
-        headers: { 'user-token': userToken.value },
+        headers: { 'user-token': userToken },
       })
       .patch<History>(apiUrl)
       .then((response) => resolve(new History(response.data)))
@@ -245,7 +242,7 @@ export function approveItem(itemId: string) {
     axios
       .create({
         ...API_SERVER_INSTANCE_CONFIG,
-        headers: { 'user-token': userToken.value },
+        headers: { 'user-token': userToken },
       })
       .patch<History>(apiUrl)
       .then((response) => resolve(new History(response.data)))
@@ -260,7 +257,7 @@ export function returnItem(itemId: string) {
     axios
       .create({
         ...API_SERVER_INSTANCE_CONFIG,
-        headers: { 'user-token': userToken.value },
+        headers: { 'user-token': userToken },
       })
       .patch<History>(apiUrl)
       .then((response) => resolve(new History(response.data)))
@@ -275,7 +272,7 @@ export function cancelItem(itemId: string) {
     axios
       .create({
         ...API_SERVER_INSTANCE_CONFIG,
-        headers: { 'user-token': userToken.value },
+        headers: { 'user-token': userToken },
       })
       .patch<History>(apiUrl)
       .then((response) => resolve(new History(response.data)))

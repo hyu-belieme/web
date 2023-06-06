@@ -17,7 +17,16 @@ import useHistorySelectedStore from '@^histories/stores/history-selected-store';
 import sortHistoryList from '@^histories/utils/history-sorter';
 
 const userStore = useUserStore();
-const { user, userMode } = storeToRefs(userStore);
+const { userMode } = storeToRefs(userStore);
+
+function getUserInfo() {
+  const userString = sessionStorage.getItem('user-info') || undefined;
+  if (userString === undefined) return undefined;
+
+  return JSON.parse(userString);
+}
+
+const user = getUserInfo();
 
 const deptStore = useDeptStore();
 const { deptId } = storeToRefs(deptStore);
@@ -36,9 +45,9 @@ function convertIdToFirstIdIfNotExist(id: string, historyList: List<History>) {
 export function getHistoryListQuery() {
   if (userMode.value === 'USER') {
     return useQuery<List<History>>(
-      historyKeys.listByDeptAndRequester(deptId.value, user.value.id),
+      historyKeys.listByDeptAndRequester(deptId.value, user.id),
       async () => {
-        let historyList = await getAllRequesterHistoryInDept(deptId.value, user.value.id);
+        let historyList = await getAllRequesterHistoryInDept(deptId.value, user.id);
         historyList = sortHistoryList(historyList);
         historySelectedStore.updateSelectedId(
           convertIdToFirstIdIfNotExist(selectedId.value, historyList)
@@ -70,13 +79,13 @@ export function reloadHistoryDataUsingCacheAndResponse(
 ) {
   const curListKey =
     userMode.value === 'USER'
-      ? historyKeys.listByDeptAndRequester(deptId.value, user.value.id)
+      ? historyKeys.listByDeptAndRequester(deptId.value, user.id)
       : historyKeys.listByDept(deptId.value);
 
   const othListKey =
     userMode.value === 'USER'
       ? historyKeys.listByDept(deptId.value)
-      : historyKeys.listByDeptAndRequester(deptId.value, user.value.id);
+      : historyKeys.listByDeptAndRequester(deptId.value, user.id);
 
   if (isListDataStale) {
     queryClient.invalidateQueries(curListKey);
