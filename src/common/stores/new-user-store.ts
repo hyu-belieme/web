@@ -10,7 +10,7 @@ function getUserInfo() {
 }
 
 const useUserStore = defineStore('new-user', () => {
-  const user = ref<UserWithSecureInfo | undefined>(undefined);
+  const user = ref<UserWithSecureInfo | undefined>(getUserInfo());
 
   function updateUser() {
     user.value = getUserInfo();
