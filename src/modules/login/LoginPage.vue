@@ -9,7 +9,7 @@ import DataLoadFailView from '@common/components/DataLoadFailView/DataLoadFailVi
 import LoadingView from '@common/components/LoadingView/LoadingView.vue';
 import type UserWithSecureInfo from '@common/models/UserWithSecureInfo';
 
-import LoginBox from '@^login/LoginBox/LoginBox.vue';
+import LoginBox from '@^login/components/LoginBox/LoginBox.vue';
 
 const router = useRouter();
 const needLogin = ref(false);
