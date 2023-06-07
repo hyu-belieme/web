@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 
-import useUserStore from '@common/stores/user-store';
+import useUserModeStore from '@common/stores/user-mode-store';
 
 import StuffDetail from '@^stuffs/components/StuffDetailSection/StuffDetailSection.vue';
 import useStuffDetailViewModeStore from '@^stuffs/stores/stuff-detail-view-mode-store';
 
-const userStore = useUserStore();
-const { userMode } = storeToRefs(userStore);
+const userModeStore = useUserModeStore();
+const { userMode } = storeToRefs(userModeStore);
 
 const viewModeStore = useStuffDetailViewModeStore();
 const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;

@@ -12,9 +12,9 @@ import InfoTag from '@common/components/InfoTag/InfoTag.vue';
 import type BaseError from '@common/errors/BaseError';
 import type History from '@common/models/History';
 import type ItemInfoOnly from '@common/models/ItemInfoOnly';
+import useDeptStore from '@common/stores/dept-store';
 import useModalStore from '@common/stores/modal-store';
-import useDeptStore from '@common/stores/new-dept-store';
-import useNewUserStore from '@common/stores/new-user-store';
+import useUserModeStore from '@common/stores/user-mode-store';
 import useUserStore from '@common/stores/user-store';
 
 import useStuffDetailViewModeStore from '@^stuffs/stores/stuff-detail-view-mode-store';
@@ -38,11 +38,11 @@ const modalStore = useModalStore();
 const viewModeStore = useStuffDetailViewModeStore();
 const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
 
-const userStore = useUserStore();
-const { userMode } = storeToRefs(userStore);
+const userModeStore = useUserModeStore();
+const { userMode } = storeToRefs(userModeStore);
 
-const newUserStore = useNewUserStore();
-const { user } = storeToRefs(newUserStore);
+const UserStore = useUserStore();
+const { user } = storeToRefs(UserStore);
 const userToken = computed(() => user.value?.token || '');
 
 const deptStore = useDeptStore();

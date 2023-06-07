@@ -12,9 +12,9 @@ import BasicModal from '@common/components/BasicModal/BasicModal.vue';
 import type BaseError from '@common/errors/BaseError';
 import type ItemInfoOnly from '@common/models/ItemInfoOnly';
 import type StuffWithItems from '@common/models/StuffWithItems';
+import useDeptStore from '@common/stores/dept-store';
 import useModalStore from '@common/stores/modal-store';
-import useDeptStore from '@common/stores/new-dept-store';
-import useNewUserStore from '@common/stores/new-user-store';
+import useUserStore from '@common/stores/user-store';
 
 import ItemListCell from '@^stuffs/components/StuffDetailItemListCell/StuffDetailItemListCell.vue';
 import {
@@ -31,8 +31,8 @@ const MAX_ITEM_NUM = 50;
 const viewModeStore = useStuffDetailViewModeStore();
 const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
 
-const newUserStore = useNewUserStore();
-const { user } = storeToRefs(newUserStore);
+const userStore = useUserStore();
+const { user } = storeToRefs(userStore);
 const userToken = computed(() => user.value?.token || '');
 
 const deptStore = useDeptStore();

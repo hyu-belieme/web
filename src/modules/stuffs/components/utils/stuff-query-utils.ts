@@ -8,14 +8,14 @@ import { getAllStuffsInDept, getStuff } from '@common/apis/belieme-apis';
 import { stuffKeys } from '@common/apis/query-keys';
 import type Stuff from '@common/models/Stuff';
 import type StuffWithItems from '@common/models/StuffWithItems';
-import useDeptStore from '@common/stores/new-dept-store';
-import useNewUserStore from '@common/stores/new-user-store';
+import useDeptStore from '@common/stores/dept-store';
+import useUserStore from '@common/stores/user-store';
 
 import useStuffSelectedStore from '@^stuffs/stores/stuff-selected-store';
 import sortStuffList from '@^stuffs/utils/stuff-sorter';
 
-const newUserStore = useNewUserStore();
-const { user } = storeToRefs(newUserStore);
+const userStore = useUserStore();
+const { user } = storeToRefs(userStore);
 const userToken = computed(() => user.value?.token || '');
 
 const deptStore = useDeptStore();

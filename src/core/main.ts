@@ -10,8 +10,8 @@ import 'uuid';
 import { createApp } from 'vue';
 import { VueQueryPlugin, type VueQueryPluginOptions } from 'vue-query';
 
-import useDeptStore from '@common/stores/new-dept-store';
-import useUserStore from '@common/stores/new-user-store';
+import useDeptStore from '@common/stores/dept-store';
+import useUserStore from '@common/stores/user-store';
 
 import App from '@core/App.vue';
 import router from '@core/router';

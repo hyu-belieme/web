@@ -9,9 +9,9 @@ import buildAlertModal from '@common/components/AlertModal/utils/alert-modal-bui
 import BasicModal from '@common/components/BasicModal/BasicModal.vue';
 import type BaseError from '@common/errors/BaseError';
 import type History from '@common/models/History';
+import useDeptStore from '@common/stores/dept-store';
 import useModalStore from '@common/stores/modal-store';
-import useDeptStore from '@common/stores/new-dept-store';
-import useNewUserStore from '@common/stores/new-user-store';
+import useUserModeStore from '@common/stores/user-mode-store';
 import useUserStore from '@common/stores/user-store';
 
 import {
@@ -22,11 +22,11 @@ import {
 
 const modalStore = useModalStore();
 
-const userStore = useUserStore();
-const { userMode } = storeToRefs(userStore);
+const userModeStore = useUserModeStore();
+const { userMode } = storeToRefs(userModeStore);
 
-const newUserStore = useNewUserStore();
-const { user } = storeToRefs(newUserStore);
+const userStore = useUserStore();
+const { user } = storeToRefs(userStore);
 const userId = computed(() => user.value?.id || '');
 const userToken = computed(() => user.value?.token || '');
 

@@ -8,9 +8,9 @@ import { stuffKeys } from '@common/apis/query-keys';
 import buildAlertModal from '@common/components/AlertModal/utils/alert-modal-builder';
 import type BaseError from '@common/errors/BaseError';
 import type StuffWithItems from '@common/models/StuffWithItems';
+import useDeptStore from '@common/stores/dept-store';
 import useModalStore from '@common/stores/modal-store';
-import useDeptStore from '@common/stores/new-dept-store';
-import useNewUserStore from '@common/stores/new-user-store';
+import useUserModeStore from '@common/stores/user-mode-store';
 import useUserStore from '@common/stores/user-store';
 
 import {
@@ -30,11 +30,11 @@ const modalStore = useModalStore();
 const viewModeStore = useStuffDetailViewModeStore();
 const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
 
-const userStore = useUserStore();
-const { userMode } = storeToRefs(userStore);
+const userModeStore = useUserModeStore();
+const { userMode } = storeToRefs(userModeStore);
 
-const newUserStore = useNewUserStore();
-const { user } = storeToRefs(newUserStore);
+const userStore = useUserStore();
+const { user } = storeToRefs(userStore);
 const userToken = computed(() => user.value?.token || '');
 
 const deptStore = useDeptStore();

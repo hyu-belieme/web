@@ -6,7 +6,7 @@ import BasicModal from '@common/components/BasicModal/BasicModal.vue';
 import DataLoadFailView from '@common/components/DataLoadFailView/DataLoadFailView.vue';
 import LoadingView from '@common/components/LoadingView/LoadingView.vue';
 import useModalStore from '@common/stores/modal-store';
-import useUserStore from '@common/stores/user-store';
+import useUserModeStore from '@common/stores/user-mode-store';
 import type UserMode from '@common/types/UserMode';
 
 import StuffDetailContent from '@^stuffs/components/StuffDetailContent/StuffDetailContent.vue';
@@ -20,8 +20,8 @@ const props = defineProps<{
 
 const modalStore = useModalStore();
 
-const userStore = useUserStore();
-const { userMode } = storeToRefs(userStore);
+const userModeStore = useUserModeStore();
+const { userMode } = storeToRefs(userModeStore);
 
 const viewModeStore = useStuffDetailViewModeStore();
 const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
@@ -48,7 +48,7 @@ function changingUserModeAtEditionModeConfirmModal(newUserMode: UserMode) {
     },
     resolve: (_: any, key: string) => {
       viewModeStore.changeStuffDetailViewMode('SHOW');
-      userStore.updateUserMode(newUserMode);
+      userModeStore.updateUserMode(newUserMode);
       modalStore.removeModal(key);
     },
     reject: (_: any, key: string) => {
@@ -61,7 +61,7 @@ onBeforeMount(() => {
   watch(userMode, (newVal, oldVal) => {
     if (newVal !== 'USER') return;
     if (viewMode.value === 'SHOW') return;
-    userStore.updateUserMode(oldVal);
+    userModeStore.updateUserMode(oldVal);
     modalStore.addModal(changingUserModeAtEditionModeConfirmModal(newVal));
   });
 });

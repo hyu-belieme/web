@@ -11,18 +11,18 @@ import {
 } from '@common/apis/belieme-apis';
 import { historyKeys } from '@common/apis/query-keys';
 import type History from '@common/models/History';
-import useDeptStore from '@common/stores/new-dept-store';
-import useNewUserStore from '@common/stores/new-user-store';
+import useDeptStore from '@common/stores/dept-store';
+import useUserModeStore from '@common/stores/user-mode-store';
 import useUserStore from '@common/stores/user-store';
 
 import useHistorySelectedStore from '@^histories/stores/history-selected-store';
 import sortHistoryList from '@^histories/utils/history-sorter';
 
-const userStore = useUserStore();
-const { userMode } = storeToRefs(userStore);
+const userModeStore = useUserModeStore();
+const { userMode } = storeToRefs(userModeStore);
 
-const newUserStore = useNewUserStore();
-const { user } = storeToRefs(newUserStore);
+const userStore = useUserStore();
+const { user } = storeToRefs(userStore);
 const userId = computed(() => user.value?.id || '');
 const userToken = computed(() => user.value?.token || '');
 

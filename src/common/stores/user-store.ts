@@ -1,33 +1,24 @@
 import { defineStore } from 'pinia';
-import { computed, readonly, ref } from 'vue';
+import { readonly, ref } from 'vue';
 
-import userDummy from '@common/assets/dummies/userDummy';
 import type UserWithSecureInfo from '@common/models/UserWithSecureInfo';
-import type UserMode from '@common/types/UserMode';
+
+function getUserInfo() {
+  const userString = sessionStorage.getItem('user-info') || undefined;
+  if (userString === undefined) return undefined;
+  return JSON.parse(userString);
+}
 
 const useUserStore = defineStore('user', () => {
-  const user = ref<UserWithSecureInfo>(userDummy);
+  const user = ref<UserWithSecureInfo | undefined>(getUserInfo());
 
-  const userMode = ref<UserMode>('USER');
-
-  const userToken = computed(() => {
-    return user.value.token;
-  });
-
-  function updateUserMode(_userMode: UserMode) {
-    userMode.value = _userMode;
-  }
-
-  function updateUser(_user: UserWithSecureInfo) {
-    user.value = _user;
+  function updateUser() {
+    user.value = getUserInfo();
   }
 
   return {
     user: readonly(user),
-    userMode: readonly(userMode),
-    userToken,
     updateUser,
-    updateUserMode,
   };
 });
 
