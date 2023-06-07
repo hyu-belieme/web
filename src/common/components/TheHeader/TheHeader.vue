@@ -37,7 +37,7 @@ function logout() {
     <i class="icon bi bi-person" data-bs-toggle="dropdown" aria-expanded="false"></i>
     <ul class="dropdown-menu">
       <li class="dropdown-item">내 정보</li>
-      <li class="dropdown-item">학과 이동하기</li>
+      <li class="dropdown-item">학과 변경하기</li>
       <li class="dropdown-item" @click="changeUserMode()">{{ changeUserModeLabel }}</li>
       <li><hr class="dropdown-divider" /></li>
       <li><a class="dropdown-item" @click="logout()" href="/login">로그아웃</a></li>
