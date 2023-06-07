@@ -1,3 +1,18 @@
+export const userKeys = {
+  all: () => ['users'] as const,
+  list: (deptId?: string) => {
+    if (deptId === undefined) return [...userKeys.all(), 'list'] as const;
+    return [...userKeys.all(), 'list', deptId] as const;
+  },
+  detail: (id?: string) => {
+    if (id === undefined) return [...userKeys.all(), 'detail'] as const;
+    return [...userKeys.all(), 'detail', id] as const;
+  },
+  current: (token: string) => {
+    return [...userKeys.all(), 'current', token] as const;
+  },
+};
+
 export const stuffKeys = {
   all: () => ['stuffs'] as const,
   list: (deptId?: string) => {

@@ -7,9 +7,7 @@ import { useRouter } from 'vue-router';
 import { loginUsingHanyangApiToken } from '@common/apis/belieme-apis';
 import type BaseError from '@common/errors/BaseError';
 import type UserWithSecureInfo from '@common/models/UserWithSecureInfo';
-import useUserStore from '@common/stores/user-store';
 
-const userStore = useUserStore();
 const router = useRouter();
 
 function extractMapFromQueryString(queryString: string, targetKey: string) {
@@ -30,9 +28,9 @@ const accessToken = extractMapFromQueryString(window.location.hash.substring(1),
 const loginMutation = useMutation<UserWithSecureInfo, BaseError>(
   () => loginUsingHanyangApiToken(accessToken || ''),
   {
-    onSuccess: (response) => {
-      userStore.updateUser(response);
-      router.replace({ name: 'stuffs' });
+    onSuccess: async (response) => {
+      localStorage.setItem('user-token', response.token);
+      router.go(-2);
     },
     onError: (error) => {
       console.error(error);

@@ -45,6 +45,21 @@ export function loginUsingHanyangApiToken(apiToken: string) {
   });
 }
 
+export function getCurrentUserInfo(userToken: string) {
+  const apiUrl = `/my`;
+
+  return new Promise<UserWithSecureInfo>((resolve, reject) => {
+    axios
+      .create({
+        ...API_SERVER_INSTANCE_CONFIG,
+        headers: { 'user-token': userToken },
+      })
+      .get<UserWithSecureInfo>(apiUrl)
+      .then((response) => resolve(new UserWithSecureInfo(response.data)))
+      .catch(handleError(reject));
+  });
+}
+
 export function getAllStuffsInDept(userToken: string, deptId: string) {
   const apiUrl = `stuffs?department-id=${deptId}`;
 
