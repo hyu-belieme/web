@@ -27,6 +27,7 @@ const router = createRouter({
     {
       path: '/stuffs',
       name: 'stuffs',
+      meta: { onlyAccessAfterAuth: true },
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
@@ -36,12 +37,22 @@ const router = createRouter({
     {
       path: '/histories',
       name: 'histories',
+      meta: { onlyAccessAfterAuth: true },
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('@^histories/HistoryPage.vue'),
     },
   ],
+});
+
+router.beforeEach((to, from, next) => {
+  const userInfo = sessionStorage.getItem('user-info') || undefined;
+  if (to.meta.onlyAccessAfterAuth && userInfo === undefined) {
+    router.replace('/login');
+    return;
+  }
+  next();
 });
 
 export default router;
