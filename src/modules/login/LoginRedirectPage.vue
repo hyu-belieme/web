@@ -46,7 +46,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <span>로그인 성공 {{ accessToken }}</span>
+  <span>로그인 중 입니다.</span>
 </template>
 
 <style scoped lang="scss"></style>
