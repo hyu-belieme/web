@@ -3,6 +3,7 @@ import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 
 import useUserModeStore from '@common/stores/user-mode-store';
+import { userInfoStorage, userTokenStorage } from '@common/webstorages/storages';
 
 const userModeStore = useUserModeStore();
 const { userMode } = storeToRefs(userModeStore);
@@ -17,8 +18,8 @@ function changeUserMode() {
 }
 
 function logout() {
-  sessionStorage.removeItem('user-info');
-  localStorage.removeItem('user-token');
+  userInfoStorage.remove();
+  userTokenStorage.remove();
 }
 </script>
 

@@ -7,6 +7,7 @@ import { useRouter } from 'vue-router';
 import { loginUsingHanyangApiToken } from '@common/apis/belieme-apis';
 import type BaseError from '@common/errors/BaseError';
 import type UserWithSecureInfo from '@common/models/UserWithSecureInfo';
+import { userTokenStorage } from '@common/webstorages/storages';
 
 const router = useRouter();
 
@@ -29,7 +30,7 @@ const loginMutation = useMutation<UserWithSecureInfo, BaseError>(
   () => loginUsingHanyangApiToken(accessToken || ''),
   {
     onSuccess: async (response) => {
-      localStorage.setItem('user-token', response.token);
+      userTokenStorage.set(response.token);
       router.go(-2);
     },
     onError: (error) => {

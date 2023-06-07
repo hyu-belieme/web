@@ -2,18 +2,13 @@ import { defineStore } from 'pinia';
 import { readonly, ref } from 'vue';
 
 import type UserWithSecureInfo from '@common/models/UserWithSecureInfo';
-
-function getUserInfo() {
-  const userString = sessionStorage.getItem('user-info') || undefined;
-  if (userString === undefined) return undefined;
-  return JSON.parse(userString);
-}
+import { userInfoStorage } from '@common/webstorages/storages';
 
 const useUserStore = defineStore('user', () => {
-  const user = ref<UserWithSecureInfo | undefined>(getUserInfo());
+  const user = ref<UserWithSecureInfo | undefined>(userInfoStorage.get());
 
   function updateUser() {
-    user.value = getUserInfo();
+    user.value = userInfoStorage.get();
   }
 
   return {

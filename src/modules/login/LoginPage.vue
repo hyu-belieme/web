@@ -8,6 +8,7 @@ import { userKeys } from '@common/apis/query-keys';
 import DataLoadFailView from '@common/components/DataLoadFailView/DataLoadFailView.vue';
 import LoadingView from '@common/components/LoadingView/LoadingView.vue';
 import type UserWithSecureInfo from '@common/models/UserWithSecureInfo';
+import { userInfoStorage, userTokenStorage } from '@common/webstorages/storages';
 
 import LoginBox from '@^login/components/LoginBox/LoginBox.vue';
 
@@ -16,7 +17,7 @@ const needLogin = ref(false);
 const loginFailed = ref(false);
 
 onBeforeMount(() => {
-  const userToken = localStorage.getItem('user-token') || undefined;
+  const userToken = userTokenStorage.get();
 
   if (userToken === undefined) {
     needLogin.value = true;
@@ -33,7 +34,7 @@ onBeforeMount(() => {
       loginFailed.value = true;
     } else if (isSuccess.value && data.value !== undefined) {
       loginFailed.value = false;
-      sessionStorage.setItem('user-info', JSON.stringify(data.value));
+      userInfoStorage.set(data.value);
       router.push({ name: 'stuffs' });
     }
   });
