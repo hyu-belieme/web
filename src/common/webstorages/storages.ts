@@ -1,24 +1,6 @@
 import type Department from '@common/models/Department';
 import type User from '@common/models/User';
 
-export const deptIdStorage = {
-  storageArea: localStorage,
-  key: 'dept-id',
-  get() {
-    return this.storageArea.getItem(this.key) || undefined;
-  },
-  set(newItem: string | undefined) {
-    if (newItem === undefined) {
-      this.storageArea.removeItem(this.key);
-      return;
-    }
-    this.storageArea.setItem(this.key, newItem);
-  },
-  remove() {
-    this.storageArea.removeItem(this.key);
-  },
-};
-
 export const deptStorage = {
   storageArea: localStorage,
   key: 'dept',

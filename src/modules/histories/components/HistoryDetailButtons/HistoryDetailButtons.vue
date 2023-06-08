@@ -30,7 +30,7 @@ const userId = computed(() => userStore.user.value?.id || '');
 const userToken = computed(() => userStore.userToken.value || '');
 
 const deptStore = useDeptStore();
-const deptId = computed(() => storeToRefs(deptStore).deptId.value || '');
+const deptId = computed(() => storeToRefs(deptStore).dept.value?.id || '');
 
 const { isStale: isListDataStale } = getHistoryListQuery();
 
