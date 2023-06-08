@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 
-import useUserStore from '@common/stores/user-store';
+import useUserModeStore from '@common/stores/user-mode-store';
 
 import HistoryEmptyPageRouter from '@^histories/components/HistoryEmptyPageRouter/HistoryEmptyPageRouter.vue';
 
-const userStore = useUserStore();
-const { userMode } = storeToRefs(userStore);
+const userModeStore = useUserModeStore();
+const { userMode } = storeToRefs(userModeStore);
 </script>
 
 <template>

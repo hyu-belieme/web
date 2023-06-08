@@ -1,6 +1,7 @@
 import { List } from 'immutable';
 import { storeToRefs } from 'pinia';
 import { NIL as NIL_UUID } from 'uuid';
+import { computed } from 'vue';
 import { QueryClient, useQuery } from 'vue-query';
 
 import { getAllStuffsInDept, getStuff } from '@common/apis/belieme-apis';
@@ -8,12 +9,17 @@ import { stuffKeys } from '@common/apis/query-keys';
 import type Stuff from '@common/models/Stuff';
 import type StuffWithItems from '@common/models/StuffWithItems';
 import useDeptStore from '@common/stores/dept-store';
+import useUserStore from '@common/stores/user-store';
 
 import useStuffSelectedStore from '@^stuffs/stores/stuff-selected-store';
 import sortStuffList from '@^stuffs/utils/stuff-sorter';
 
+const userStore = useUserStore();
+const { user } = storeToRefs(userStore);
+const userToken = computed(() => user.value?.token || '');
+
 const deptStore = useDeptStore();
-const { deptId } = storeToRefs(deptStore);
+const deptId = computed(() => storeToRefs(deptStore).deptId.value || '');
 
 const stuffStore = useStuffSelectedStore();
 const { selectedId } = storeToRefs(stuffStore);
@@ -28,7 +34,7 @@ function convertIdToFirstIdIfNotExist(id: string, stuffList: List<Stuff>) {
 
 export function getStuffListQuery() {
   return useQuery<List<Stuff>>(stuffKeys.list(deptId.value), async () => {
-    let stuffList = await getAllStuffsInDept(deptId.value);
+    let stuffList = await getAllStuffsInDept(userToken.value, deptId.value);
     stuffList = sortStuffList(stuffList);
     stuffStore.updateSelectedId(convertIdToFirstIdIfNotExist(selectedId.value, stuffList));
     return stuffList;
@@ -37,7 +43,7 @@ export function getStuffListQuery() {
 
 export function getStuffDetailQuery() {
   return useQuery<StuffWithItems>(stuffKeys.detail(selectedId.value), () =>
-    getStuff(selectedId.value)
+    getStuff(userToken.value, selectedId.value)
   );
 }
 

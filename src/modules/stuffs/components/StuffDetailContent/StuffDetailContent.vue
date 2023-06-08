@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { onBeforeMount, ref, watch } from 'vue';
+import { computed, onBeforeMount, ref, watch } from 'vue';
 import { useMutation, useQueryClient } from 'vue-query';
 
 import { editStuff, postNewStuff } from '@common/apis/belieme-apis';
@@ -10,6 +10,7 @@ import type BaseError from '@common/errors/BaseError';
 import type StuffWithItems from '@common/models/StuffWithItems';
 import useDeptStore from '@common/stores/dept-store';
 import useModalStore from '@common/stores/modal-store';
+import useUserModeStore from '@common/stores/user-mode-store';
 import useUserStore from '@common/stores/user-store';
 
 import {
@@ -29,11 +30,15 @@ const modalStore = useModalStore();
 const viewModeStore = useStuffDetailViewModeStore();
 const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
 
+const userModeStore = useUserModeStore();
+const { userMode } = storeToRefs(userModeStore);
+
 const userStore = useUserStore();
-const { userMode } = storeToRefs(userStore);
+const { user } = storeToRefs(userStore);
+const userToken = computed(() => user.value?.token || '');
 
 const deptStore = useDeptStore();
-const { deptId } = storeToRefs(deptStore);
+const deptId = computed(() => storeToRefs(deptStore).deptId.value || '');
 
 const stuffStore = useStuffSelectedStore();
 const { selectedId } = storeToRefs(stuffStore);
@@ -53,7 +58,7 @@ const queryClient = useQueryClient();
 
 const commitChangeMutation = useMutation<StuffWithItems, BaseError>(
   () =>
-    editStuff(selectedId.value, {
+    editStuff(userToken.value, selectedId.value, {
       name: newName.value,
       thumbnail: newThumbnail.value,
     }),
@@ -73,7 +78,7 @@ const commitChangeMutation = useMutation<StuffWithItems, BaseError>(
 
 const commitAddNewStuffMutation = useMutation<StuffWithItems, BaseError>(
   () =>
-    postNewStuff({
+    postNewStuff(userToken.value, {
       departmentId: deptId.value,
       name: newName.value,
       thumbnail: newThumbnail.value,

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
 import { useMutation, useQueryClient } from 'vue-query';
 
 import { approveItem, cancelItem, returnItem } from '@common/apis/belieme-apis';
@@ -10,6 +11,7 @@ import type BaseError from '@common/errors/BaseError';
 import type History from '@common/models/History';
 import useDeptStore from '@common/stores/dept-store';
 import useModalStore from '@common/stores/modal-store';
+import useUserModeStore from '@common/stores/user-mode-store';
 import useUserStore from '@common/stores/user-store';
 
 import {
@@ -20,11 +22,16 @@ import {
 
 const modalStore = useModalStore();
 
-const deptStore = useDeptStore();
-const { deptId } = storeToRefs(deptStore);
+const userModeStore = useUserModeStore();
+const { userMode } = storeToRefs(userModeStore);
 
 const userStore = useUserStore();
-const { user, userMode } = storeToRefs(userStore);
+const { user } = storeToRefs(userStore);
+const userId = computed(() => user.value?.id || '');
+const userToken = computed(() => user.value?.token || '');
+
+const deptStore = useDeptStore();
+const deptId = computed(() => storeToRefs(deptStore).deptId.value || '');
 
 const { isStale: isListDataStale } = getHistoryListQuery();
 
@@ -40,20 +47,24 @@ function changeItemRequestMutation(mutationFn: () => Promise<History>) {
     onError: (error) => {
       console.error(error);
       queryClient.invalidateQueries(historyKeys.listByDept(deptId.value));
-      queryClient.invalidateQueries(
-        historyKeys.listByDeptAndRequester(deptId.value, user.value.id)
-      );
+      queryClient.invalidateQueries(historyKeys.listByDeptAndRequester(deptId.value, userId.value));
       queryClient.invalidateQueries({ queryKey: historyKeys.detail() });
       modalStore.addModal(buildAlertModal('errorAlert', error.message));
     },
   });
 }
 
-const rentalApproveMutation = changeItemRequestMutation(() => approveItem(data.value!.item.id));
+const rentalApproveMutation = changeItemRequestMutation(() =>
+  approveItem(userToken.value, data.value!.item.id)
+);
 
-const cancelRequestMutation = changeItemRequestMutation(() => cancelItem(data.value!.item.id));
+const cancelRequestMutation = changeItemRequestMutation(() =>
+  cancelItem(userToken.value, data.value!.item.id)
+);
 
-const returnApproveMutation = changeItemRequestMutation(() => returnItem(data.value!.item.id));
+const returnApproveMutation = changeItemRequestMutation(() =>
+  returnItem(userToken.value, data.value!.item.id)
+);
 
 const rentalApproveModal = {
   key: 'rentalApprove',

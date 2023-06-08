@@ -5,15 +5,15 @@ import { getCurrentInstance } from 'vue';
 import InfoTag from '@common/components/InfoTag/InfoTag.vue';
 import type History from '@common/models/History';
 import type User from '@common/models/User';
-import useUserStore from '@common/stores/user-store';
+import useUserModeStore from '@common/stores/user-mode-store';
 
 const TAG_SIZE = 6;
 
 const app = getCurrentInstance();
 const dayjs = app!.appContext.config.globalProperties.$dayjs;
 
-const userStore = useUserStore();
-const { userMode } = storeToRefs(userStore);
+const userModeStore = useUserModeStore();
+const { userMode } = storeToRefs(userModeStore);
 
 const props = defineProps<{
   history: History;

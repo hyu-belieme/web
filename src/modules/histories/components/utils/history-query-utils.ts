@@ -1,6 +1,7 @@
 import { List } from 'immutable';
 import { storeToRefs } from 'pinia';
 import { NIL as NIL_UUID } from 'uuid';
+import { computed } from 'vue';
 import { QueryClient, useQuery } from 'vue-query';
 
 import {
@@ -11,16 +12,22 @@ import {
 import { historyKeys } from '@common/apis/query-keys';
 import type History from '@common/models/History';
 import useDeptStore from '@common/stores/dept-store';
+import useUserModeStore from '@common/stores/user-mode-store';
 import useUserStore from '@common/stores/user-store';
 
 import useHistorySelectedStore from '@^histories/stores/history-selected-store';
 import sortHistoryList from '@^histories/utils/history-sorter';
 
+const userModeStore = useUserModeStore();
+const { userMode } = storeToRefs(userModeStore);
+
 const userStore = useUserStore();
-const { user, userMode } = storeToRefs(userStore);
+const { user } = storeToRefs(userStore);
+const userId = computed(() => user.value?.id || '');
+const userToken = computed(() => user.value?.token || '');
 
 const deptStore = useDeptStore();
-const { deptId } = storeToRefs(deptStore);
+const deptId = computed(() => storeToRefs(deptStore).deptId.value || '');
 
 const historySelectedStore = useHistorySelectedStore();
 const { selectedId } = storeToRefs(historySelectedStore);
@@ -36,9 +43,13 @@ function convertIdToFirstIdIfNotExist(id: string, historyList: List<History>) {
 export function getHistoryListQuery() {
   if (userMode.value === 'USER') {
     return useQuery<List<History>>(
-      historyKeys.listByDeptAndRequester(deptId.value, user.value.id),
+      historyKeys.listByDeptAndRequester(deptId.value, userId.value),
       async () => {
-        let historyList = await getAllRequesterHistoryInDept(deptId.value, user.value.id);
+        let historyList = await getAllRequesterHistoryInDept(
+          userToken.value,
+          deptId.value,
+          userId.value
+        );
         historyList = sortHistoryList(historyList);
         historySelectedStore.updateSelectedId(
           convertIdToFirstIdIfNotExist(selectedId.value, historyList)
@@ -48,7 +59,7 @@ export function getHistoryListQuery() {
     );
   }
   return useQuery<List<History>>(historyKeys.listByDept(deptId.value), async () => {
-    let historyList = await getAllHistoryInDept(deptId.value);
+    let historyList = await getAllHistoryInDept(userToken.value, deptId.value);
     historyList = sortHistoryList(historyList);
     historySelectedStore.updateSelectedId(
       convertIdToFirstIdIfNotExist(selectedId.value, historyList)
@@ -59,7 +70,7 @@ export function getHistoryListQuery() {
 
 export function getHistoryDetailQuery() {
   return useQuery<History>(historyKeys.detail(selectedId.value), () =>
-    getHistory(selectedId.value)
+    getHistory(userToken.value, selectedId.value)
   );
 }
 
@@ -70,13 +81,13 @@ export function reloadHistoryDataUsingCacheAndResponse(
 ) {
   const curListKey =
     userMode.value === 'USER'
-      ? historyKeys.listByDeptAndRequester(deptId.value, user.value.id)
+      ? historyKeys.listByDeptAndRequester(deptId.value, userId.value)
       : historyKeys.listByDept(deptId.value);
 
   const othListKey =
     userMode.value === 'USER'
       ? historyKeys.listByDept(deptId.value)
-      : historyKeys.listByDeptAndRequester(deptId.value, user.value.id);
+      : historyKeys.listByDeptAndRequester(deptId.value, userId.value);
 
   if (isListDataStale) {
     queryClient.invalidateQueries(curListKey);
