@@ -1,3 +1,18 @@
+export const deptKeys = {
+  all: () => ['depts'] as const,
+  list: (univId?: string) => {
+    if (univId === undefined) return [...deptKeys.all(), 'list'] as const;
+    return [...deptKeys.all(), 'list', univId] as const;
+  },
+  detail: (id?: string) => {
+    if (id === undefined) return [...deptKeys.all(), 'detail'] as const;
+    return [...deptKeys.all(), 'detail', id] as const;
+  },
+  accessible: (token: string) => {
+    return [...deptKeys.all(), 'accessible', token] as const;
+  },
+};
+
 export const userKeys = {
   all: () => ['users'] as const,
   list: (deptId?: string) => {

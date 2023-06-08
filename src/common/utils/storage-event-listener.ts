@@ -1,6 +1,11 @@
 import useDeptStore from '@common/stores/dept-store';
 import useUserStore from '@common/stores/user-store';
-import { deptIdStorage, userInfoStorage, userTokenStorage } from '@common/webstorages/storages';
+import {
+  deptIdStorage,
+  deptStorage,
+  userInfoStorage,
+  userTokenStorage,
+} from '@common/webstorages/storages';
 
 function setStorageEventListener() {
   window.addEventListener('storage', (event) => {
@@ -12,6 +17,9 @@ function setStorageEventListener() {
     }
     if (event.storageArea === deptIdStorage.storageArea && event.key === deptIdStorage.key) {
       useDeptStore().updateDeptId();
+    }
+    if (event.storageArea === deptStorage.storageArea && event.key === deptStorage.key) {
+      useDeptStore().updateDept();
     }
   });
 }

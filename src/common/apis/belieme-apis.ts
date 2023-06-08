@@ -2,6 +2,7 @@ import axios from 'axios';
 import { List } from 'immutable';
 
 import BaseError from '@common/errors/BaseError';
+import Department from '@common/models/Department';
 import History from '@common/models/History';
 import Stuff from '@common/models/Stuff';
 import type StuffPostRequestBody from '@common/models/StuffPostRequestBody';
@@ -29,6 +30,27 @@ function handleError(reject: (_?: any) => void) {
       reject(NETWORK_ERROR);
     }
   };
+}
+
+export function getAccessibleDeptList(userToken: string) {
+  const apiUrl = `/departments`;
+
+  return new Promise<List<Department>>((resolve, reject) => {
+    axios
+      .create({
+        ...API_SERVER_INSTANCE_CONFIG,
+        headers: { 'user-token': userToken },
+      })
+      .get<List<Department>>(apiUrl)
+      .then((response) => {
+        let output = List<Department>([]);
+        response.data.forEach((dept) => {
+          output = output.push(new Department(dept));
+        });
+        resolve(output);
+      })
+      .catch(handleError(reject));
+  });
 }
 
 export function loginUsingHanyangApiToken(apiToken: string) {
