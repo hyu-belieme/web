@@ -31,9 +31,8 @@ const MAX_ITEM_NUM = 50;
 const viewModeStore = useStuffDetailViewModeStore();
 const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
 
-const userStore = useUserStore();
-const { user } = storeToRefs(userStore);
-const userToken = computed(() => user.value?.token || '');
+const userStore = storeToRefs(useUserStore());
+const userToken = computed(() => userStore.userToken.value || '');
 
 const deptStore = useDeptStore();
 const deptId = computed(() => storeToRefs(deptStore).deptId.value || '');

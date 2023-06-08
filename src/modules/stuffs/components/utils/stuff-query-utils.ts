@@ -14,9 +14,8 @@ import useUserStore from '@common/stores/user-store';
 import useStuffSelectedStore from '@^stuffs/stores/stuff-selected-store';
 import sortStuffList from '@^stuffs/utils/stuff-sorter';
 
-const userStore = useUserStore();
-const { user } = storeToRefs(userStore);
-const userToken = computed(() => user.value?.token || '');
+const userStore = storeToRefs(useUserStore());
+const userToken = computed(() => userStore.userToken.value || '');
 
 const deptStore = useDeptStore();
 const deptId = computed(() => storeToRefs(deptStore).deptId.value || '');

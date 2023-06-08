@@ -7,7 +7,7 @@ import { getCurrentUserInfo } from '@common/apis/belieme-apis';
 import { userKeys } from '@common/apis/query-keys';
 import DataLoadFailView from '@common/components/DataLoadFailView/DataLoadFailView.vue';
 import LoadingView from '@common/components/LoadingView/LoadingView.vue';
-import type UserWithSecureInfo from '@common/models/UserWithSecureInfo';
+import type User from '@common/models/User';
 import { userInfoStorage, userTokenStorage } from '@common/webstorages/storages';
 
 import LoginBox from '@^login/components/LoginBox/LoginBox.vue';
@@ -24,9 +24,8 @@ onBeforeMount(() => {
     return;
   }
 
-  const { isError, isSuccess, data } = useQuery<UserWithSecureInfo>(
-    userKeys.current(userToken),
-    () => getCurrentUserInfo(userToken)
+  const { isError, isSuccess, data } = useQuery<User>(userKeys.current(userToken), () =>
+    getCurrentUserInfo(userToken)
   );
 
   watchEffect(() => {

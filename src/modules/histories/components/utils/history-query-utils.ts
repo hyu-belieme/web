@@ -21,10 +21,9 @@ import sortHistoryList from '@^histories/utils/history-sorter';
 const userModeStore = useUserModeStore();
 const { userMode } = storeToRefs(userModeStore);
 
-const userStore = useUserStore();
-const { user } = storeToRefs(userStore);
-const userId = computed(() => user.value?.id || '');
-const userToken = computed(() => user.value?.token || '');
+const userStore = storeToRefs(useUserStore());
+const userId = computed(() => userStore.user.value?.id || '');
+const userToken = computed(() => userStore.userToken.value || '');
 
 const deptStore = useDeptStore();
 const deptId = computed(() => storeToRefs(deptStore).deptId.value || '');

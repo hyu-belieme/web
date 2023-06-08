@@ -1,4 +1,4 @@
-import type UserWithSecureInfo from '@common/models/UserWithSecureInfo';
+import type User from '@common/models/User';
 
 export const deptIdStorage = {
   storageArea: localStorage,
@@ -31,12 +31,12 @@ export const userTokenStorage = {
 export const userInfoStorage = {
   storageArea: sessionStorage,
   key: 'user-info',
-  get(): UserWithSecureInfo | undefined {
+  get(): User | undefined {
     const jsonString = this.storageArea.getItem(this.key) || undefined;
     if (jsonString === undefined) return undefined;
     return JSON.parse(jsonString);
   },
-  set(newItem: UserWithSecureInfo) {
+  set(newItem: User) {
     this.storageArea.setItem(this.key, JSON.stringify(newItem));
   },
   remove() {

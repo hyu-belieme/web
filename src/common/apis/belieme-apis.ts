@@ -7,6 +7,7 @@ import Stuff from '@common/models/Stuff';
 import type StuffPostRequestBody from '@common/models/StuffPostRequestBody';
 import type StuffRequestBody from '@common/models/StuffRequestBody';
 import StuffWithItems from '@common/models/StuffWithItems';
+import User from '@common/models/User';
 import UserWithSecureInfo from '@common/models/UserWithSecureInfo';
 
 const NETWORK_ERROR: BaseError = {
@@ -48,14 +49,14 @@ export function loginUsingHanyangApiToken(apiToken: string) {
 export function getCurrentUserInfo(userToken: string) {
   const apiUrl = `/my`;
 
-  return new Promise<UserWithSecureInfo>((resolve, reject) => {
+  return new Promise<User>((resolve, reject) => {
     axios
       .create({
         ...API_SERVER_INSTANCE_CONFIG,
         headers: { 'user-token': userToken },
       })
-      .get<UserWithSecureInfo>(apiUrl)
-      .then((response) => resolve(new UserWithSecureInfo(response.data)))
+      .get<User>(apiUrl)
+      .then((response) => resolve(new User(response.data)))
       .catch(handleError(reject));
   });
 }

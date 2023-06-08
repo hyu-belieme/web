@@ -41,9 +41,8 @@ const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
 const userModeStore = useUserModeStore();
 const { userMode } = storeToRefs(userModeStore);
 
-const UserStore = useUserStore();
-const { user } = storeToRefs(UserStore);
-const userToken = computed(() => user.value?.token || '');
+const userStore = storeToRefs(useUserStore());
+const userToken = computed(() => userStore.userToken.value || '');
 
 const deptStore = useDeptStore();
 const deptId = computed(() => storeToRefs(deptStore).deptId.value || '');
