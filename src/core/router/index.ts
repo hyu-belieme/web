@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
-import { userInfoStorage } from '@common/webstorages/storages';
+import { deptStorage, userInfoStorage, userTokenStorage } from '@common/webstorages/storages';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -50,7 +50,12 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const userInfo = userInfoStorage.get();
-  if (to.meta.onlyAccessAfterAuth && userInfo === undefined) {
+  const userToken = userTokenStorage.get();
+  const dept = deptStorage.get();
+  if (
+    to.meta.onlyAccessAfterAuth &&
+    (userInfo === undefined || userToken === undefined || dept === undefined)
+  ) {
     router.replace('/login');
     return;
   }
