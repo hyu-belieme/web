@@ -12,6 +12,7 @@ export default defineConfig({
       '@core': fileURLToPath(new URL('./src/core', import.meta.url)),
       '@modules': fileURLToPath(new URL('./src/modules', import.meta.url)),
       '@^header': fileURLToPath(new URL('./src/modules/header', import.meta.url)),
+      '@^modal-frame': fileURLToPath(new URL('./src/modules/modal-frame', import.meta.url)),
       '@^login': fileURLToPath(new URL('./src/modules/login', import.meta.url)),
       '@^stuffs': fileURLToPath(new URL('./src/modules/stuffs', import.meta.url)),
       '@^histories': fileURLToPath(new URL('./src/modules/histories', import.meta.url)),

@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import TheModals from '@common/components/TheModals/TheModals.vue';
-
 import TheHeader from '@^header/TheHeader.vue';
+import TheModalFrame from '@^modal-frame/TheModalFrame.vue';
 </script>
 
 <template>
@@ -11,5 +10,5 @@ import TheHeader from '@^header/TheHeader.vue';
   <main class="container">
     <RouterView />
   </main>
-  <TheModals></TheModals>
+  <TheModalFrame></TheModalFrame>
 </template>
