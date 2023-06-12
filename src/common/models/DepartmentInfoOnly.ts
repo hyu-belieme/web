@@ -1,6 +1,12 @@
-import type { List } from 'immutable';
+import { List } from 'immutable';
 
 class DepartmentInfoOnly {
+  public static NIL: DepartmentInfoOnly = {
+    id: '',
+    name: '',
+    baseMajors: List([]),
+  };
+
   public id: string;
 
   public name: string;

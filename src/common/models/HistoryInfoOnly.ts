@@ -2,6 +2,12 @@ import User from '@common/models/User';
 import type HistoryStatus from '@common/models/types/HistoryStatus';
 
 class HistoryInfoOnly {
+  public static NIL: HistoryInfoOnly = {
+    id: '',
+    num: 0,
+    status: 'REQUESTED',
+  };
+
   public id: string;
 
   public num: number;

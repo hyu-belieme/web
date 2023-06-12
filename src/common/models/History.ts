@@ -5,6 +5,14 @@ import StuffInfoOnly from '@common/models/StuffInfoOnly';
 import University from '@common/models/University';
 
 class History extends HistoryInfoOnly {
+  public static NIL: History = {
+    ...HistoryInfoOnly.NIL,
+    university: University.NIL,
+    department: DepartmentInfoOnly.NIL,
+    stuff: StuffInfoOnly.NIL,
+    item: ItemInfoOnly.NIL,
+  };
+
   public university: University;
 
   public department: DepartmentInfoOnly;

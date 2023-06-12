@@ -1,6 +1,13 @@
 import User from '@common/models/User';
 
 class UserWithSecureInfo extends User {
+  public static NIL: UserWithSecureInfo = {
+    ...User.NIL,
+    token: '',
+    createdAt: 0,
+    approvedAt: 0,
+  };
+
   public token: string;
 
   public createdAt: number;

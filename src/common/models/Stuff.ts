@@ -3,6 +3,14 @@ import StuffInfoOnly from '@common/models/StuffInfoOnly';
 import University from '@common/models/University';
 
 class Stuff extends StuffInfoOnly {
+  public static NIL: Stuff = {
+    ...StuffInfoOnly.NIL,
+    university: University.NIL,
+    department: DepartmentInfoOnly.NIL,
+    amount: 0,
+    count: 0,
+  };
+
   public university: University;
 
   public department: DepartmentInfoOnly;

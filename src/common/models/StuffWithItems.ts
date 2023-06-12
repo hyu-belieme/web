@@ -4,6 +4,11 @@ import type ItemInfoOnly from '@common/models/ItemInfoOnly';
 import Stuff from '@common/models/Stuff';
 
 class StuffWithItems extends Stuff {
+  public static NIL: StuffWithItems = {
+    ...Stuff.NIL,
+    items: List([]),
+  };
+
   items: List<ItemInfoOnly>;
 
   constructor(oth: StuffWithItems) {

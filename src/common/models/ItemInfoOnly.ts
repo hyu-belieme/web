@@ -2,6 +2,13 @@ import HistoryInfoOnly from '@common/models/HistoryInfoOnly';
 import type ItemStatus from '@common/models/types/ItemStatus';
 
 class ItemInfoOnly {
+  public static NIL: ItemInfoOnly = {
+    id: '',
+    num: 0,
+    status: 'REQUESTED',
+    lastHistory: null,
+  };
+
   public id: string;
 
   public num: number;

@@ -1,4 +1,9 @@
 class University {
+  public static NIL: University = {
+    id: '',
+    name: '',
+  };
+
   public id: string;
 
   public name: string;

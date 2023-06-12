@@ -4,6 +4,14 @@ import type Authority from '@common/models/Authority';
 import University from '@common/models/University';
 
 class User {
+  public static NIL: User = {
+    id: '',
+    university: University.NIL,
+    studentId: '',
+    name: '',
+    authorities: List([]),
+  };
+
   public id: string;
 
   public university: University;

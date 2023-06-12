@@ -1,4 +1,10 @@
 class StuffInfoOnly {
+  public static NIL: StuffInfoOnly = {
+    id: '',
+    name: '',
+    thumbnail: '',
+  };
+
   public id: string;
 
   public name: string;
