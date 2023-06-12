@@ -49,7 +49,7 @@ onBeforeUnmount(() => {
             <p>{{ content }}</p>
           </slot>
         </div>
-        <div class="modal-footer">
+        <div v-if="rejectLabel !== undefined || resolveLabel !== undefined" class="modal-footer">
           <slot name="footer">
             <button
               v-if="rejectLabel !== undefined"
