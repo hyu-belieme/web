@@ -9,6 +9,7 @@
     "paths": {
       "@common/*": ["./src/common/*"],
       "@core/*": ["./src/core/*"],
+      "@^header/*": ["./src/modules/header/*"],
       "@^login/*": ["./src/modules/login/*"],
       "@^stuffs/*": ["./src/modules/stuffs/*"],
       "@^histories/*": ["./src/modules/histories/*"],

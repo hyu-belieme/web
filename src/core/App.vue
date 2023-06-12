@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import TheHeader from '@common/components/TheHeader/TheHeader.vue';
 import TheModals from '@common/components/TheModals/TheModals.vue';
+
+import TheHeader from '@^header/TheHeader.vue';
 </script>
 
 <template>
