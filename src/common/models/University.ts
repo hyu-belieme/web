@@ -1,9 +1,11 @@
+import BaseVo from '@common/models/BaseVo';
+
 export interface IUniversity {
   id: string;
   name: string;
 }
 
-export class University {
+export class University extends BaseVo {
   public static NIL: University = new University({
     id: '',
     name: '',
@@ -14,6 +16,7 @@ export class University {
   public name: string;
 
   constructor(oth: IUniversity) {
+    super();
     this.id = oth.id;
     this.name = oth.name;
   }

@@ -1,3 +1,4 @@
+import BaseVo from '@common/models/BaseVo';
 import User, { type IUser } from '@common/models/User';
 import type HistoryStatus from '@common/models/types/HistoryStatus';
 
@@ -16,15 +17,7 @@ export interface IHistoryInfoOnly {
   lostAt?: number;
   canceledAt?: number;
 }
-
-function equalsForNullable(a: User | undefined, b: User | undefined) {
-  if (a === undefined) {
-    return b === undefined;
-  }
-  return a.equals(b);
-}
-
-export class HistoryInfoOnly {
+export class HistoryInfoOnly extends BaseVo {
   public static NIL: HistoryInfoOnly = new HistoryInfoOnly({
     id: '',
     num: 0,
@@ -58,6 +51,7 @@ export class HistoryInfoOnly {
   public canceledAt?: number;
 
   constructor(oth: IHistoryInfoOnly) {
+    super();
     this.id = oth.id;
     this.num = oth.num;
     this.status = oth.status;
@@ -80,11 +74,11 @@ export class HistoryInfoOnly {
       this.id === oth.id &&
       this.num === oth.num &&
       this.status === oth.status &&
-      equalsForNullable(this.requester, oth.requester) &&
-      equalsForNullable(this.approveManager, oth.approveManager) &&
-      equalsForNullable(this.returnManager, oth.returnManager) &&
-      equalsForNullable(this.lostManager, oth.lostManager) &&
-      equalsForNullable(this.cancelManager, oth.cancelManager) &&
+      BaseVo.equalsForNullable(this.requester, oth.requester) &&
+      BaseVo.equalsForNullable(this.approveManager, oth.approveManager) &&
+      BaseVo.equalsForNullable(this.returnManager, oth.returnManager) &&
+      BaseVo.equalsForNullable(this.lostManager, oth.lostManager) &&
+      BaseVo.equalsForNullable(this.cancelManager, oth.cancelManager) &&
       this.requestedAt === oth.requestedAt &&
       this.approvedAt === oth.approvedAt &&
       this.returnedAt === oth.returnedAt &&

@@ -1,5 +1,7 @@
 import { List } from 'immutable';
 
+import BaseVo from '@common/models/BaseVo';
+
 export interface IDepartmentInfoOnly {
   id: string;
 
@@ -7,7 +9,7 @@ export interface IDepartmentInfoOnly {
 
   baseMajors: List<string>;
 }
-export class DepartmentInfoOnly {
+export class DepartmentInfoOnly extends BaseVo {
   public static NIL: DepartmentInfoOnly = new DepartmentInfoOnly({
     id: '',
     name: '',
@@ -21,6 +23,7 @@ export class DepartmentInfoOnly {
   public baseMajors: List<string>;
 
   constructor(oth: IDepartmentInfoOnly) {
+    super();
     this.id = oth.id;
     this.name = oth.name;
     this.baseMajors = List<string>(oth.baseMajors);

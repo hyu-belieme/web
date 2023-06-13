@@ -5,8 +5,10 @@ import BaseError from '@common/errors/BaseError';
 import Department from '@common/models/Department';
 import History from '@common/models/History';
 import Stuff from '@common/models/Stuff';
-import type StuffPostRequestBody from '@common/models/StuffPostRequestBody';
-import type StuffRequestBody from '@common/models/StuffRequestBody';
+import StuffPostRequestBody from '@common/models/StuffPostRequestBody';
+import type { IStuffPostRequestBody } from '@common/models/StuffPostRequestBody';
+import StuffRequestBody from '@common/models/StuffRequestBody';
+import type { IStuffRequestBody } from '@common/models/StuffRequestBody';
 import StuffWithItems from '@common/models/StuffWithItems';
 import User from '@common/models/User';
 import UserWithSecureInfo from '@common/models/UserWithSecureInfo';
@@ -119,7 +121,7 @@ export function getStuff(userToken: string, stuffId: string) {
   });
 }
 
-export function postNewStuff(userToken: string, newStuff: StuffPostRequestBody) {
+export function postNewStuff(userToken: string, newStuff: IStuffPostRequestBody) {
   const apiUrl = 'stuffs';
 
   return new Promise<StuffWithItems>((resolve, reject) => {
@@ -128,13 +130,13 @@ export function postNewStuff(userToken: string, newStuff: StuffPostRequestBody) 
         ...API_SERVER_INSTANCE_CONFIG,
         headers: { 'user-token': userToken },
       })
-      .post<StuffWithItems>(apiUrl, newStuff)
+      .post<StuffWithItems>(apiUrl, new StuffPostRequestBody(newStuff))
       .then((response) => resolve(new StuffWithItems(response.data)))
       .catch(handleError(reject));
   });
 }
 
-export function editStuff(userToken: string, stuffId: string, newStuffInfo: StuffRequestBody) {
+export function editStuff(userToken: string, stuffId: string, newStuffInfo: IStuffRequestBody) {
   const apiUrl = `stuffs/${stuffId}`;
 
   return new Promise<StuffWithItems>((resolve, reject) => {
@@ -143,7 +145,7 @@ export function editStuff(userToken: string, stuffId: string, newStuffInfo: Stuf
         ...API_SERVER_INSTANCE_CONFIG,
         headers: { 'user-token': userToken },
       })
-      .patch<StuffWithItems>(apiUrl, newStuffInfo)
+      .patch<StuffWithItems>(apiUrl, new StuffRequestBody(newStuffInfo))
       .then((response) => resolve(new StuffWithItems(response.data)))
       .catch(handleError(reject));
   });

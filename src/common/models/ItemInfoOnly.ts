@@ -1,3 +1,4 @@
+import BaseVo from '@common/models/BaseVo';
 import HistoryInfoOnly, { type IHistoryInfoOnly } from '@common/models/HistoryInfoOnly';
 import type ItemStatus from '@common/models/types/ItemStatus';
 
@@ -8,14 +9,7 @@ export interface IItemInfoOnly {
   lastHistory: IHistoryInfoOnly | null;
 }
 
-function equalsForNullable(a: HistoryInfoOnly | null, b: HistoryInfoOnly | null) {
-  if (a === null) {
-    return b === null;
-  }
-  return a.equals(b);
-}
-
-export class ItemInfoOnly {
+export class ItemInfoOnly extends BaseVo {
   public static NIL: ItemInfoOnly = new ItemInfoOnly({
     id: '',
     num: 0,
@@ -32,6 +26,7 @@ export class ItemInfoOnly {
   public lastHistory: HistoryInfoOnly | null;
 
   constructor(oth: IItemInfoOnly) {
+    super();
     this.id = oth.id;
     this.num = oth.num;
     this.status = oth.status;
@@ -45,7 +40,7 @@ export class ItemInfoOnly {
       this.id === oth.id &&
       this.num === oth.num &&
       this.status === oth.status &&
-      equalsForNullable(this.lastHistory, oth.lastHistory)
+      BaseVo.equalsForNullable(this.lastHistory, oth.lastHistory)
     );
   }
 }

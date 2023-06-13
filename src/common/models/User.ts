@@ -2,6 +2,7 @@ import { List } from 'immutable';
 
 import Authority from '@common/models/Authority';
 import type { IAuthority } from '@common/models/Authority';
+import BaseVo from '@common/models/BaseVo';
 import University, { type IUniversity } from '@common/models/University';
 
 export interface IUser {
@@ -13,7 +14,7 @@ export interface IUser {
   authorities: List<IAuthority>;
 }
 
-export class User {
+export class User extends BaseVo {
   public static NIL: User = new User({
     id: '',
     university: University.NIL,
@@ -35,6 +36,7 @@ export class User {
   public authorities: List<Authority>;
 
   constructor(oth: IUser) {
+    super();
     this.id = oth.id;
     this.university = new University(oth.university);
     this.studentId = oth.studentId;

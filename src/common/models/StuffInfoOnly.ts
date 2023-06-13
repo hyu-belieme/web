@@ -1,10 +1,12 @@
+import BaseVo from '@common/models/BaseVo';
+
 export interface IStuffInfoOnly {
   id: string;
   name: string;
   thumbnail: string;
 }
 
-export class StuffInfoOnly {
+export class StuffInfoOnly extends BaseVo {
   public static NIL: StuffInfoOnly = new StuffInfoOnly({
     id: '',
     name: '',
@@ -18,6 +20,7 @@ export class StuffInfoOnly {
   public thumbnail: string;
 
   constructor(oth: IStuffInfoOnly) {
+    super();
     this.id = oth.id;
     this.name = oth.name;
     this.thumbnail = oth.thumbnail;
