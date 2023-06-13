@@ -25,8 +25,7 @@ function categorizeBy(histories: List<History>, targetStatus: List<HistoryStatus
   return output;
 }
 
-function CategorizeHistories(histories: List<History> | undefined) {
-  if (histories === undefined) return undefined;
+function CategorizeHistories(histories: List<History>) {
   let output = List<CategorizedHistories>();
   HISTORY_CATEGORY_MAP.forEach((categoryMap) => {
     const targetHistories = categorizeBy(histories, categoryMap.targetStatus);

@@ -16,7 +16,10 @@ const { selectedId } = storeToRefs(historySelectedStore);
 
 const { data, isLoading, isSuccess, isFetching } = getHistoryListQuery();
 
-const categorizedHistoriesList = computed(() => CategorizeHistories(data.value));
+const categorizedHistoriesList = computed(() => {
+  if (data.value === undefined) return undefined;
+  return CategorizeHistories(data.value);
+});
 
 const dataLoadStatus = computed(() => {
   if (isFetching.value || isLoading.value) return 'Loading';
