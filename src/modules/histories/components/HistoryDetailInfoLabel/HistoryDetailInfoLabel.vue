@@ -7,8 +7,8 @@ const { isSuccess, data } = getHistoryDetailQuery();
 <template>
   <template v-if="isSuccess && data !== undefined">
     <section class="label">
-      <section class="thumbnail">{{ data.item.stuff.thumbnail }}</section>
-      <section class="name">{{ data.item.stuff.name }} #{{ data.item.num }}</section>
+      <section class="thumbnail">{{ data.stuff.thumbnail }}</section>
+      <section class="name">{{ data.stuff.name }} #{{ data.item.num }}</section>
     </section>
   </template>
 </template>

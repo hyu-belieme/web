@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { NIL as NIL_UUID } from 'uuid';
-import { computed, getCurrentInstance } from 'vue';
+import { getCurrentInstance } from 'vue';
 import { useMutation, useQueryClient } from 'vue-query';
 
 import { rentItem, reportLostItem, returnItem } from '@common/apis/belieme-apis';
@@ -12,10 +12,10 @@ import InfoTag from '@common/components/InfoTag/InfoTag.vue';
 import type BaseError from '@common/errors/BaseError';
 import type History from '@common/models/History';
 import type ItemInfoOnly from '@common/models/ItemInfoOnly';
-import useDeptStore from '@common/stores/dept-store';
+import useCurDeptStorage from '@common/storages/cur-dept-storage';
+import useUserTokenStorage from '@common/storages/user-token-storage';
 import useModalStore from '@common/stores/modal-store';
 import useUserModeStore from '@common/stores/user-mode-store';
-import useUserStore from '@common/stores/user-store';
 
 import useStuffDetailViewModeStore from '@^stuffs/stores/stuff-detail-view-mode-store';
 import useStuffSelectedStore from '@^stuffs/stores/stuff-selected-store';
@@ -33,6 +33,12 @@ const dayjs = app!.appContext.config.globalProperties.$dayjs;
 
 const queryClient = useQueryClient();
 
+const userTokenStorage = useUserTokenStorage();
+const { userToken } = storeToRefs(userTokenStorage);
+
+const curDeptStorage = useCurDeptStorage();
+const { curDeptId } = storeToRefs(curDeptStorage);
+
 const modalStore = useModalStore();
 
 const viewModeStore = useStuffDetailViewModeStore();
@@ -41,20 +47,13 @@ const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
 const userModeStore = useUserModeStore();
 const { userMode } = storeToRefs(userModeStore);
 
-const UserStore = useUserStore();
-const { user } = storeToRefs(UserStore);
-const userToken = computed(() => user.value?.token || '');
-
-const deptStore = useDeptStore();
-const deptId = computed(() => storeToRefs(deptStore).deptId.value || '');
-
 const stuffStore = useStuffSelectedStore();
 const { selectedId } = storeToRefs(stuffStore);
 
 function changeItemRequestMutation(mutationFn: () => Promise<History>) {
   return useMutation<History, BaseError>(mutationFn, {
     onSettled: () => {
-      queryClient.invalidateQueries(stuffKeys.list(deptId.value));
+      queryClient.invalidateQueries(stuffKeys.list(curDeptId.value));
       queryClient.invalidateQueries(stuffKeys.detail(selectedId.value));
     },
     onSuccess: (response) => {

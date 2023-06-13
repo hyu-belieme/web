@@ -2,7 +2,7 @@
 import { List } from 'immutable';
 import { storeToRefs } from 'pinia';
 import { NIL as NIL_UUID } from 'uuid';
-import { computed, onBeforeMount, ref, watchEffect } from 'vue';
+import { onBeforeMount, ref, watchEffect } from 'vue';
 import { useMutation, useQueryClient } from 'vue-query';
 
 import { addNewItem } from '@common/apis/belieme-apis';
@@ -10,11 +10,11 @@ import { stuffKeys } from '@common/apis/query-keys';
 import buildAlertModal from '@common/components/AlertModal/utils/alert-modal-builder';
 import BasicModal from '@common/components/BasicModal/BasicModal.vue';
 import type BaseError from '@common/errors/BaseError';
-import type ItemInfoOnly from '@common/models/ItemInfoOnly';
+import ItemInfoOnly from '@common/models/ItemInfoOnly';
 import type StuffWithItems from '@common/models/StuffWithItems';
-import useDeptStore from '@common/stores/dept-store';
+import useCurDeptStorage from '@common/storages/cur-dept-storage';
+import useUserTokenStorage from '@common/storages/user-token-storage';
 import useModalStore from '@common/stores/modal-store';
-import useUserStore from '@common/stores/user-store';
 
 import ItemListCell from '@^stuffs/components/StuffDetailItemListCell/StuffDetailItemListCell.vue';
 import {
@@ -31,12 +31,11 @@ const MAX_ITEM_NUM = 50;
 const viewModeStore = useStuffDetailViewModeStore();
 const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
 
-const userStore = useUserStore();
-const { user } = storeToRefs(userStore);
-const userToken = computed(() => user.value?.token || '');
+const userTokenStorage = useUserTokenStorage();
+const { userToken } = storeToRefs(userTokenStorage);
 
-const deptStore = useDeptStore();
-const deptId = computed(() => storeToRefs(deptStore).deptId.value || '');
+const curDeptStorage = useCurDeptStorage();
+const { curDeptId } = storeToRefs(curDeptStorage);
 
 const stuffStore = useStuffSelectedStore();
 const { selectedId } = storeToRefs(stuffStore);
@@ -51,7 +50,7 @@ const { data } = getStuffDetailQuery();
 
 const { isStale: isListDataStale } = getStuffListQuery();
 
-const items = ref<List<ItemInfoOnly>>(List([]));
+const items = ref<List<ItemInfoOnly>>(List<ItemInfoOnly>([]));
 
 const addNewItemMutation = useMutation<StuffWithItems, BaseError>(
   () => addNewItem(userToken.value, selectedId.value),
@@ -61,7 +60,7 @@ const addNewItemMutation = useMutation<StuffWithItems, BaseError>(
     },
     onError: (error) => {
       console.error(error);
-      queryClient.invalidateQueries(stuffKeys.list(deptId.value));
+      queryClient.invalidateQueries(stuffKeys.list(curDeptId.value));
       queryClient.invalidateQueries(stuffKeys.detail(selectedId.value));
       modalStore.addModal(buildAlertModal('errorAlert', error.message));
     },
@@ -84,12 +83,14 @@ const addItemModal = {
 
 function addNewItemOnList() {
   if (items.value.size >= MAX_ITEM_NUM) return items.value;
-  return items.value.push({
-    id: NIL_UUID,
-    num: items.value.size + 1,
-    status: 'USABLE',
-    lastHistory: null,
-  });
+  return items.value.push(
+    new ItemInfoOnly({
+      id: NIL_UUID,
+      num: items.value.size + 1,
+      status: 'USABLE',
+      lastHistory: null,
+    })
+  );
 }
 
 function pushNewItem() {
@@ -108,8 +109,8 @@ function popItem() {
 
 onBeforeMount(() => {
   watchEffect(() => {
-    if (viewMode.value === 'ADD') items.value = List();
-    else if (data.value === undefined) items.value = List();
+    if (viewMode.value === 'ADD') items.value = List<ItemInfoOnly>([]);
+    else if (data.value === undefined) items.value = List<ItemInfoOnly>([]);
     else items.value = data.value.items;
   });
 });

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { computed } from 'vue';
+import { NIL as NIL_UUID } from 'uuid';
+import { computed, watch } from 'vue';
 
 import DataLoadFailView from '@common/components/DataLoadFailView/DataLoadFailView.vue';
 import LoadingView from '@common/components/LoadingView/LoadingView.vue';
@@ -16,7 +17,10 @@ const { selectedId } = storeToRefs(historySelectedStore);
 
 const { data, isLoading, isSuccess, isFetching } = getHistoryListQuery();
 
-const categorizedHistoriesList = computed(() => CategorizeHistories(data.value));
+const categorizedHistoriesList = computed(() => {
+  if (data.value === undefined) return undefined;
+  return CategorizeHistories(data.value);
+});
 
 const dataLoadStatus = computed(() => {
   if (isFetching.value || isLoading.value) return 'Loading';
@@ -44,6 +48,25 @@ function headerLabel(category: HistoryCategory) {
       return 'ERROR';
   }
 }
+
+function convertIdToFirstIdIfNotExist() {
+  if (data.value === undefined || data.value.isEmpty()) return NIL_UUID;
+
+  const selected = data.value.find((value) => value.id === selectedId.value);
+  if (selected === undefined) return data.value.get(0)?.id || NIL_UUID;
+  return selected.id;
+}
+
+watch(
+  data,
+  () => {
+    const convertedSelectedId = convertIdToFirstIdIfNotExist();
+    if (convertedSelectedId !== selectedId.value) {
+      historySelectedStore.updateSelectedId(convertedSelectedId);
+    }
+  },
+  { immediate: true }
+);
 </script>
 
 <template>

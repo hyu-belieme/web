@@ -13,8 +13,7 @@ const useModalStore = defineStore('modal', () => {
       ...modal,
       component: markRaw(modal.component),
     };
-
-    if (idx === undefined) {
+    if (idx === -1) {
       modals.value = modals.value.push(newModal);
       return;
     }
@@ -23,7 +22,7 @@ const useModalStore = defineStore('modal', () => {
 
   function removeModal(key: string) {
     const idx = modals.value.findIndex((e) => e.key === key);
-    if (idx === undefined) return;
+    if (idx === -1) return;
     modals.value = modals.value.splice(idx, 1);
   }
 

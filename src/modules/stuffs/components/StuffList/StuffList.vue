@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { onBeforeMount } from 'vue';
+import { NIL as NIL_UUID } from 'uuid';
+import { onBeforeMount, watch } from 'vue';
 
 import BasicModal from '@common/components/BasicModal/BasicModal.vue';
 import DataLoadFailView from '@common/components/DataLoadFailView/DataLoadFailView.vue';
@@ -17,8 +18,8 @@ const modalStore = useModalStore();
 const stuffDetailViewModeStore = useStuffDetailViewModeStore();
 const { stuffDetailViewMode } = storeToRefs(stuffDetailViewModeStore);
 
-const stuffStore = useStuffSelectedStore();
-const { selectedId } = storeToRefs(stuffStore);
+const stuffSelectedStore = useStuffSelectedStore();
+const { selectedId } = storeToRefs(stuffSelectedStore);
 
 const { data, isLoading, isSuccess } = getStuffListQuery();
 
@@ -32,7 +33,7 @@ function changingStuffAtEditionModeConfirmModal(newSelectedId: string) {
       resolveLabel: '확인',
     },
     resolve: (_: any, key: string) => {
-      stuffStore.updateSelectedId(newSelectedId);
+      stuffSelectedStore.updateSelectedId(newSelectedId);
       stuffDetailViewModeStore.changeStuffDetailViewMode('SHOW');
       modalStore.removeModal(key);
     },
@@ -44,11 +45,30 @@ function changingStuffAtEditionModeConfirmModal(newSelectedId: string) {
 
 function updateSelectedId(newSelectedId: string) {
   if (stuffDetailViewMode.value === 'SHOW') {
-    stuffStore.updateSelectedId(newSelectedId);
+    stuffSelectedStore.updateSelectedId(newSelectedId);
     return;
   }
   modalStore.addModal(changingStuffAtEditionModeConfirmModal(newSelectedId));
 }
+
+function convertIdToFirstIdIfNotExist() {
+  if (data.value === undefined || data.value.isEmpty()) return NIL_UUID;
+
+  const selected = data.value.find((value) => value.id === selectedId.value);
+  if (selected === undefined) return data.value.get(0)?.id || NIL_UUID;
+  return selected.id;
+}
+
+watch(
+  data,
+  () => {
+    const convertedSelectedId = convertIdToFirstIdIfNotExist();
+    if (convertedSelectedId !== selectedId.value) {
+      stuffSelectedStore.updateSelectedId(convertedSelectedId);
+    }
+  },
+  { immediate: true }
+);
 
 onBeforeMount(() => {
   stuffDetailViewModeStore.changeStuffDetailViewMode('SHOW');

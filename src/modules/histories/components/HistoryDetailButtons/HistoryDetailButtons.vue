@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { computed } from 'vue';
 import { useMutation, useQueryClient } from 'vue-query';
 
 import { approveItem, cancelItem, returnItem } from '@common/apis/belieme-apis';
@@ -9,10 +8,11 @@ import buildAlertModal from '@common/components/AlertModal/utils/alert-modal-bui
 import BasicModal from '@common/components/BasicModal/BasicModal.vue';
 import type BaseError from '@common/errors/BaseError';
 import type History from '@common/models/History';
-import useDeptStore from '@common/stores/dept-store';
+import useCurDeptStorage from '@common/storages/cur-dept-storage';
+import useLoggedInUserStorage from '@common/storages/logged-in-user-storage';
+import useUserTokenStorage from '@common/storages/user-token-storage';
 import useModalStore from '@common/stores/modal-store';
 import useUserModeStore from '@common/stores/user-mode-store';
-import useUserStore from '@common/stores/user-store';
 
 import {
   getHistoryDetailQuery,
@@ -20,18 +20,19 @@ import {
   reloadHistoryDataUsingCacheAndResponse,
 } from '@^histories/components/utils/history-query-utils';
 
+const userTokenStorage = useUserTokenStorage();
+const { userToken } = storeToRefs(userTokenStorage);
+
+const loggedInUserStorage = useLoggedInUserStorage();
+const { loggedInUserId } = storeToRefs(loggedInUserStorage);
+
+const curDeptStorage = useCurDeptStorage();
+const { curDeptId } = storeToRefs(curDeptStorage);
+
 const modalStore = useModalStore();
 
 const userModeStore = useUserModeStore();
 const { userMode } = storeToRefs(userModeStore);
-
-const userStore = useUserStore();
-const { user } = storeToRefs(userStore);
-const userId = computed(() => user.value?.id || '');
-const userToken = computed(() => user.value?.token || '');
-
-const deptStore = useDeptStore();
-const deptId = computed(() => storeToRefs(deptStore).deptId.value || '');
 
 const { isStale: isListDataStale } = getHistoryListQuery();
 
@@ -46,8 +47,10 @@ function changeItemRequestMutation(mutationFn: () => Promise<History>) {
     },
     onError: (error) => {
       console.error(error);
-      queryClient.invalidateQueries(historyKeys.listByDept(deptId.value));
-      queryClient.invalidateQueries(historyKeys.listByDeptAndRequester(deptId.value, userId.value));
+      queryClient.invalidateQueries(historyKeys.listByDept(curDeptId.value));
+      queryClient.invalidateQueries(
+        historyKeys.listByDeptAndRequester(curDeptId.value, loggedInUserId.value)
+      );
       queryClient.invalidateQueries({ queryKey: historyKeys.detail() });
       modalStore.addModal(buildAlertModal('errorAlert', error.message));
     },

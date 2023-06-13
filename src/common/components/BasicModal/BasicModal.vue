@@ -10,22 +10,16 @@ defineProps<{
 }>();
 
 const modalEle = ref();
-let thisModalObj: Modal | undefined;
 
-function showModal() {
-  thisModalObj!.show();
-}
-function hideModal() {
-  thisModalObj!.hide();
-}
+let thisModalObj: Modal;
 
 onMounted(() => {
   thisModalObj = new Modal(modalEle.value);
-  showModal();
+  thisModalObj.show();
 });
 
 onBeforeUnmount(() => {
-  hideModal();
+  thisModalObj.hide();
 });
 </script>
 
@@ -49,7 +43,7 @@ onBeforeUnmount(() => {
             <p>{{ content }}</p>
           </slot>
         </div>
-        <div class="modal-footer">
+        <div v-if="rejectLabel !== undefined || resolveLabel !== undefined" class="modal-footer">
           <slot name="footer">
             <button
               v-if="rejectLabel !== undefined"

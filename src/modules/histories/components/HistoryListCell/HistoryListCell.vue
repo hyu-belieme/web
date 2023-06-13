@@ -67,7 +67,7 @@ function timestampTagInfo() {
 <template>
   <section :class="[selected ? 'cell selected' : 'cell']">
     <section class="content">
-      <span class="name">{{ history.item.stuff.name }} #{{ history.item.num }}</span>
+      <span class="name">{{ history.stuff.name }} #{{ history.item.num }}</span>
       <section class="tags">
         <InfoTag
           v-if="userMode === 'STAFF' || userMode === 'MASTER'"
