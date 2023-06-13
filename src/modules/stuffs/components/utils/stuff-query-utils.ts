@@ -1,6 +1,5 @@
 import { List } from 'immutable';
 import { storeToRefs } from 'pinia';
-import { NIL as NIL_UUID } from 'uuid';
 import { QueryClient, useQuery } from 'vue-query';
 
 import { getAllStuffsInDept, getStuff } from '@common/apis/belieme-apis';
@@ -22,19 +21,10 @@ const { curDeptId } = storeToRefs(curDeptStorage);
 const stuffStore = useStuffSelectedStore();
 const { selectedId } = storeToRefs(stuffStore);
 
-function convertIdToFirstIdIfNotExist(id: string, stuffList: List<Stuff>) {
-  if (stuffList.isEmpty()) return NIL_UUID;
-
-  const selected = stuffList.find((value) => value.id === id);
-  if (selected === undefined) return stuffList.get(0)!.id;
-  return selected.id;
-}
-
 export function getStuffListQuery() {
   return useQuery<List<Stuff>>(stuffKeys.list(curDeptId.value), async () => {
     let stuffList = await getAllStuffsInDept(userToken.value, curDeptId.value);
     stuffList = sortStuffList(stuffList);
-    stuffStore.updateSelectedId(convertIdToFirstIdIfNotExist(selectedId.value, stuffList));
     return stuffList;
   });
 }
@@ -58,9 +48,9 @@ export function reloadStuffDataUsingCacheAndResponse(
       let newStuffList = oldData.filter((e) => e.id !== response.id);
       newStuffList = newStuffList.push(response);
       newStuffList = sortStuffList(newStuffList);
-      stuffStore.updateSelectedId(convertIdToFirstIdIfNotExist(response.id, newStuffList));
       return newStuffList;
     });
   }
+  stuffStore.updateSelectedId(response.id);
   queryClient.setQueryData(stuffKeys.detail(response.id), response);
 }

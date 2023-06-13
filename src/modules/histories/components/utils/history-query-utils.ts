@@ -1,6 +1,5 @@
 import { List } from 'immutable';
 import { storeToRefs } from 'pinia';
-import { NIL as NIL_UUID } from 'uuid';
 import { QueryClient, useQuery } from 'vue-query';
 
 import {
@@ -33,14 +32,6 @@ const { curDeptId } = storeToRefs(curDeptStorage);
 const historySelectedStore = useHistorySelectedStore();
 const { selectedId } = storeToRefs(historySelectedStore);
 
-function convertIdToFirstIdIfNotExist(id: string, historyList: List<History>) {
-  if (historyList.isEmpty()) return NIL_UUID;
-
-  const selected = historyList.find((value) => value.id === id);
-  if (selected === undefined) return historyList.get(0)!.id;
-  return selected.id;
-}
-
 export function getHistoryListQuery() {
   if (userMode.value === 'USER') {
     return useQuery<List<History>>(
@@ -52,9 +43,6 @@ export function getHistoryListQuery() {
           loggedInUserId.value
         );
         historyList = sortHistoryList(historyList);
-        historySelectedStore.updateSelectedId(
-          convertIdToFirstIdIfNotExist(selectedId.value, historyList)
-        );
         return historyList;
       }
     );
@@ -62,9 +50,6 @@ export function getHistoryListQuery() {
   return useQuery<List<History>>(historyKeys.listByDept(curDeptId.value), async () => {
     let historyList = await getAllHistoryInDept(userToken.value, curDeptId.value);
     historyList = sortHistoryList(historyList);
-    historySelectedStore.updateSelectedId(
-      convertIdToFirstIdIfNotExist(selectedId.value, historyList)
-    );
     return historyList;
   });
 }
