@@ -2,7 +2,7 @@
 import { List } from 'immutable';
 import { storeToRefs } from 'pinia';
 import { NIL as NIL_UUID } from 'uuid';
-import { computed, onBeforeMount, ref, watchEffect } from 'vue';
+import { onBeforeMount, ref, watchEffect } from 'vue';
 import { useMutation, useQueryClient } from 'vue-query';
 
 import { addNewItem } from '@common/apis/belieme-apis';
@@ -10,7 +10,7 @@ import { stuffKeys } from '@common/apis/query-keys';
 import buildAlertModal from '@common/components/AlertModal/utils/alert-modal-builder';
 import BasicModal from '@common/components/BasicModal/BasicModal.vue';
 import type BaseError from '@common/errors/BaseError';
-import type ItemInfoOnly from '@common/models/ItemInfoOnly';
+import ItemInfoOnly from '@common/models/ItemInfoOnly';
 import type StuffWithItems from '@common/models/StuffWithItems';
 import useDeptStore from '@common/stores/dept-store';
 import useModalStore from '@common/stores/modal-store';
@@ -50,7 +50,7 @@ const { data } = getStuffDetailQuery();
 
 const { isStale: isListDataStale } = getStuffListQuery();
 
-const items = ref<List<ItemInfoOnly>>(List([]));
+const items = ref<List<ItemInfoOnly>>(List<ItemInfoOnly>([]));
 
 const addNewItemMutation = useMutation<StuffWithItems, BaseError>(
   () => addNewItem(userToken.value, selectedId.value),
@@ -83,12 +83,14 @@ const addItemModal = {
 
 function addNewItemOnList() {
   if (items.value.size >= MAX_ITEM_NUM) return items.value;
-  return items.value.push({
-    id: NIL_UUID,
-    num: items.value.size + 1,
-    status: 'USABLE',
-    lastHistory: null,
-  });
+  return items.value.push(
+    new ItemInfoOnly({
+      id: NIL_UUID,
+      num: items.value.size + 1,
+      status: 'USABLE',
+      lastHistory: null,
+    })
+  );
 }
 
 function pushNewItem() {
@@ -107,8 +109,8 @@ function popItem() {
 
 onBeforeMount(() => {
   watchEffect(() => {
-    if (viewMode.value === 'ADD') items.value = List();
-    else if (data.value === undefined) items.value = List();
+    if (viewMode.value === 'ADD') items.value = List<ItemInfoOnly>([]);
+    else if (data.value === undefined) items.value = List<ItemInfoOnly>([]);
     else items.value = data.value.items;
   });
 });

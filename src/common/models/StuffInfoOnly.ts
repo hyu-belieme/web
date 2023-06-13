@@ -1,9 +1,15 @@
-class StuffInfoOnly {
-  public static NIL: StuffInfoOnly = {
+export interface IStuffInfoOnly {
+  id: string;
+  name: string;
+  thumbnail: string;
+}
+
+export class StuffInfoOnly {
+  public static NIL: StuffInfoOnly = new StuffInfoOnly({
     id: '',
     name: '',
     thumbnail: '',
-  };
+  });
 
   public id: string;
 
@@ -11,10 +17,16 @@ class StuffInfoOnly {
 
   public thumbnail: string;
 
-  constructor(oth: StuffInfoOnly) {
+  constructor(oth: IStuffInfoOnly) {
     this.id = oth.id;
     this.name = oth.name;
     this.thumbnail = oth.thumbnail;
+  }
+
+  public equals(oth: any): boolean {
+    if (oth === undefined || oth === null) return false;
+    if (!(oth instanceof StuffInfoOnly)) return false;
+    return this.id === oth.id && this.name === oth.name && this.thumbnail === oth.thumbnail;
   }
 }
 
