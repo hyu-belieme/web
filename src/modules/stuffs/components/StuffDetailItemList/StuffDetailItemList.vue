@@ -12,9 +12,9 @@ import BasicModal from '@common/components/BasicModal/BasicModal.vue';
 import type BaseError from '@common/errors/BaseError';
 import ItemInfoOnly from '@common/models/ItemInfoOnly';
 import type StuffWithItems from '@common/models/StuffWithItems';
-import useDeptStore from '@common/stores/dept-store';
+import useCurDeptStorage from '@common/storages/cur-dept-storage';
+import useUserTokenStorage from '@common/storages/user-token-storage';
 import useModalStore from '@common/stores/modal-store';
-import useUserStore from '@common/stores/user-store';
 
 import ItemListCell from '@^stuffs/components/StuffDetailItemListCell/StuffDetailItemListCell.vue';
 import {
@@ -31,11 +31,11 @@ const MAX_ITEM_NUM = 50;
 const viewModeStore = useStuffDetailViewModeStore();
 const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
 
-const userStore = storeToRefs(useUserStore());
-const userToken = computed(() => userStore.userToken.value || '');
+const userTokenStorage = useUserTokenStorage();
+const { userToken } = storeToRefs(userTokenStorage);
 
-const deptStore = useDeptStore();
-const deptId = computed(() => storeToRefs(deptStore).dept.value?.id || '');
+const curDeptStorage = useCurDeptStorage();
+const { curDeptId } = storeToRefs(curDeptStorage);
 
 const stuffStore = useStuffSelectedStore();
 const { selectedId } = storeToRefs(stuffStore);
@@ -60,7 +60,7 @@ const addNewItemMutation = useMutation<StuffWithItems, BaseError>(
     },
     onError: (error) => {
       console.error(error);
-      queryClient.invalidateQueries(stuffKeys.list(deptId.value));
+      queryClient.invalidateQueries(stuffKeys.list(curDeptId.value));
       queryClient.invalidateQueries(stuffKeys.detail(selectedId.value));
       modalStore.addModal(buildAlertModal('errorAlert', error.message));
     },

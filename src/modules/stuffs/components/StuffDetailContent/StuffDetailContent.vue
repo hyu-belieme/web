@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { computed, onBeforeMount, ref, watch } from 'vue';
+import { onBeforeMount, ref, watch } from 'vue';
 import { useMutation, useQueryClient } from 'vue-query';
 
 import { editStuff, postNewStuff } from '@common/apis/belieme-apis';
@@ -8,10 +8,10 @@ import { stuffKeys } from '@common/apis/query-keys';
 import buildAlertModal from '@common/components/AlertModal/utils/alert-modal-builder';
 import type BaseError from '@common/errors/BaseError';
 import type StuffWithItems from '@common/models/StuffWithItems';
-import useDeptStore from '@common/stores/dept-store';
+import useCurDeptStorage from '@common/storages/cur-dept-storage';
+import useUserTokenStorage from '@common/storages/user-token-storage';
 import useModalStore from '@common/stores/modal-store';
 import useUserModeStore from '@common/stores/user-mode-store';
-import useUserStore from '@common/stores/user-store';
 
 import {
   getStuffDetailQuery,
@@ -25,6 +25,12 @@ import useStuffSelectedStore from '@^stuffs/stores/stuff-selected-store';
 const LOREM_IPSUM =
   'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi sint corrupti illum quos. Dolorum architecto illum, veritatis asperiores odio exercitationem impedit natus. Modi magni, aut corporis impedit ullam nemo saepe!';
 
+const userTokenStorage = useUserTokenStorage();
+const { userToken } = storeToRefs(userTokenStorage);
+
+const curDeptStorage = useCurDeptStorage();
+const { curDeptId } = storeToRefs(curDeptStorage);
+
 const modalStore = useModalStore();
 
 const viewModeStore = useStuffDetailViewModeStore();
@@ -32,12 +38,6 @@ const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
 
 const userModeStore = useUserModeStore();
 const { userMode } = storeToRefs(userModeStore);
-
-const userStore = storeToRefs(useUserStore());
-const userToken = computed(() => userStore.userToken.value || '');
-
-const deptStore = useDeptStore();
-const deptId = computed(() => storeToRefs(deptStore).dept.value?.id || '');
 
 const stuffStore = useStuffSelectedStore();
 const { selectedId } = storeToRefs(stuffStore);
@@ -68,7 +68,7 @@ const commitChangeMutation = useMutation<StuffWithItems, BaseError>(
     },
     onError: (error) => {
       console.error(error);
-      queryClient.invalidateQueries(stuffKeys.list(deptId.value));
+      queryClient.invalidateQueries(stuffKeys.list(curDeptId.value));
       queryClient.invalidateQueries(stuffKeys.detail(selectedId.value));
       modalStore.addModal(buildAlertModal('errorAlert', error.message));
     },
@@ -78,7 +78,7 @@ const commitChangeMutation = useMutation<StuffWithItems, BaseError>(
 const commitAddNewStuffMutation = useMutation<StuffWithItems, BaseError>(
   () =>
     postNewStuff(userToken.value, {
-      departmentId: deptId.value,
+      departmentId: curDeptId.value,
       name: newName.value,
       thumbnail: newThumbnail.value,
       amount: newAmount.value,
@@ -90,7 +90,7 @@ const commitAddNewStuffMutation = useMutation<StuffWithItems, BaseError>(
     },
     onError: (error) => {
       console.error(error);
-      queryClient.invalidateQueries(stuffKeys.list(deptId.value));
+      queryClient.invalidateQueries(stuffKeys.list(curDeptId.value));
       queryClient.invalidateQueries(stuffKeys.detail(selectedId.value));
       modalStore.addModal(buildAlertModal('errorAlert', error.message));
     },

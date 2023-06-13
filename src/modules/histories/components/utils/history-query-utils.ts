@@ -1,7 +1,6 @@
 import { List } from 'immutable';
 import { storeToRefs } from 'pinia';
 import { NIL as NIL_UUID } from 'uuid';
-import { computed } from 'vue';
 import { QueryClient, useQuery } from 'vue-query';
 
 import {
@@ -11,9 +10,10 @@ import {
 } from '@common/apis/belieme-apis';
 import { historyKeys } from '@common/apis/query-keys';
 import type History from '@common/models/History';
-import useDeptStore from '@common/stores/dept-store';
+import useCurDeptStorage from '@common/storages/cur-dept-storage';
+import useLoggedInUserStorage from '@common/storages/logged-in-user-storage';
+import useUserTokenStorage from '@common/storages/user-token-storage';
 import useUserModeStore from '@common/stores/user-mode-store';
-import useUserStore from '@common/stores/user-store';
 
 import useHistorySelectedStore from '@^histories/stores/history-selected-store';
 import sortHistoryList from '@^histories/utils/history-sorter';
@@ -21,12 +21,14 @@ import sortHistoryList from '@^histories/utils/history-sorter';
 const userModeStore = useUserModeStore();
 const { userMode } = storeToRefs(userModeStore);
 
-const userStore = storeToRefs(useUserStore());
-const userId = computed(() => userStore.user.value?.id || '');
-const userToken = computed(() => userStore.userToken.value || '');
+const userTokenStorage = useUserTokenStorage();
+const { userToken } = storeToRefs(userTokenStorage);
 
-const deptStore = useDeptStore();
-const deptId = computed(() => storeToRefs(deptStore).dept.value?.id || '');
+const loggedInUserStorage = useLoggedInUserStorage();
+const { loggedInUserId } = storeToRefs(loggedInUserStorage);
+
+const curDeptStorage = useCurDeptStorage();
+const { curDeptId } = storeToRefs(curDeptStorage);
 
 const historySelectedStore = useHistorySelectedStore();
 const { selectedId } = storeToRefs(historySelectedStore);
@@ -42,12 +44,12 @@ function convertIdToFirstIdIfNotExist(id: string, historyList: List<History>) {
 export function getHistoryListQuery() {
   if (userMode.value === 'USER') {
     return useQuery<List<History>>(
-      historyKeys.listByDeptAndRequester(deptId.value, userId.value),
+      historyKeys.listByDeptAndRequester(curDeptId.value, loggedInUserId.value),
       async () => {
         let historyList = await getAllRequesterHistoryInDept(
           userToken.value,
-          deptId.value,
-          userId.value
+          curDeptId.value,
+          loggedInUserId.value
         );
         historyList = sortHistoryList(historyList);
         historySelectedStore.updateSelectedId(
@@ -57,8 +59,8 @@ export function getHistoryListQuery() {
       }
     );
   }
-  return useQuery<List<History>>(historyKeys.listByDept(deptId.value), async () => {
-    let historyList = await getAllHistoryInDept(userToken.value, deptId.value);
+  return useQuery<List<History>>(historyKeys.listByDept(curDeptId.value), async () => {
+    let historyList = await getAllHistoryInDept(userToken.value, curDeptId.value);
     historyList = sortHistoryList(historyList);
     historySelectedStore.updateSelectedId(
       convertIdToFirstIdIfNotExist(selectedId.value, historyList)
@@ -80,13 +82,13 @@ export function reloadHistoryDataUsingCacheAndResponse(
 ) {
   const curListKey =
     userMode.value === 'USER'
-      ? historyKeys.listByDeptAndRequester(deptId.value, userId.value)
-      : historyKeys.listByDept(deptId.value);
+      ? historyKeys.listByDeptAndRequester(curDeptId.value, loggedInUserId.value)
+      : historyKeys.listByDept(curDeptId.value);
 
   const othListKey =
     userMode.value === 'USER'
-      ? historyKeys.listByDept(deptId.value)
-      : historyKeys.listByDeptAndRequester(deptId.value, userId.value);
+      ? historyKeys.listByDept(curDeptId.value)
+      : historyKeys.listByDeptAndRequester(curDeptId.value, loggedInUserId.value);
 
   if (isListDataStale) {
     queryClient.invalidateQueries(curListKey);

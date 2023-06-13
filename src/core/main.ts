@@ -1,3 +1,4 @@
+import '@vueuse/core';
 import 'axios';
 import 'bootstrap';
 import dayjs from 'dayjs';
@@ -9,8 +10,6 @@ import { createPinia } from 'pinia';
 import 'uuid';
 import { createApp } from 'vue';
 import { VueQueryPlugin, type VueQueryPluginOptions } from 'vue-query';
-
-import setStorageEventListener from '@common/utils/storage-event-listener';
 
 import App from '@core/App.vue';
 import router from '@core/router';
@@ -24,8 +23,6 @@ app.config.globalProperties.$dayjs = dayjs;
 
 app.use(createPinia());
 app.use(router);
-
-setStorageEventListener();
 
 const vueQueryPluginOptions: VueQueryPluginOptions = {
   queryClientConfig: {

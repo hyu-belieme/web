@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { List } from 'immutable';
+import { storeToRefs } from 'pinia';
 import { useQuery } from 'vue-query';
-import { useRouter } from 'vue-router';
 
 import { getAccessibleDeptList } from '@common/apis/belieme-apis';
 import { deptKeys } from '@common/apis/query-keys';
@@ -9,7 +9,8 @@ import BasicModal from '@common/components/BasicModal/BasicModal.vue';
 import DataLoadFailView from '@common/components/DataLoadFailView/DataLoadFailView.vue';
 import LoadingView from '@common/components/LoadingView/LoadingView.vue';
 import type Department from '@common/models/Department';
-import { deptStorage, userTokenStorage } from '@common/webstorages/storages';
+import useCurDeptStorage from '@common/storages/cur-dept-storage';
+import useUserTokenStorage from '@common/storages/user-token-storage';
 
 import DepartmentCell from '@^header/components/DepartementCell/DepartmentCell.vue';
 
@@ -19,20 +20,20 @@ const props = defineProps<{
 
 const emit = defineEmits(['close', 'reject', 'resolve']);
 
-const router = useRouter();
+const userTokenStorage = useUserTokenStorage();
+const { userToken } = storeToRefs(userTokenStorage);
 
-const userToken = userTokenStorage.get();
-const curDeptId = deptStorage.get()?.id;
+const curDeptStorage = useCurDeptStorage();
+const { curDept } = storeToRefs(curDeptStorage);
 
 const { isSuccess, isLoading, data } = useQuery<List<Department>>(
-  deptKeys.accessible(userToken || ''),
-  () => getAccessibleDeptList(userToken || '')
+  deptKeys.accessible(userToken.value),
+  () => getAccessibleDeptList(userToken.value)
 );
 
-function changeDept(dept: Department) {
-  deptStorage.set(dept);
+function changeDept(newDept: Department) {
+  curDeptStorage.setItem(newDept);
   emit('close');
-  router.go(0);
 }
 </script>
 
@@ -48,7 +49,7 @@ function changeDept(dept: Department) {
         <DepartmentCell
           v-for="dept in data"
           :key="dept.id"
-          v-bind="{ dept: dept, selected: dept.id === curDeptId }"
+          v-bind="{ dept: dept, selected: dept.id === curDept.id }"
           @click="changeDept(dept)"
         ></DepartmentCell>
       </section>

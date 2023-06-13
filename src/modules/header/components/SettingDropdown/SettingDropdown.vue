@@ -2,11 +2,16 @@
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 
+import useLoggedInUserStorage from '@common/storages/logged-in-user-storage';
+import useUserTokenStorage from '@common/storages/user-token-storage';
 import useModalStore from '@common/stores/modal-store';
 import useUserModeStore from '@common/stores/user-mode-store';
-import { userInfoStorage, userTokenStorage } from '@common/webstorages/storages';
 
 import ChangeDepartmentModal from '@^header/components/ChangeDepartmentModal/ChangeDepartmentModal.vue';
+
+const userTokenStorage = useUserTokenStorage();
+
+const loggedInUserStorage = useLoggedInUserStorage();
 
 const modalStore = useModalStore();
 
@@ -31,8 +36,8 @@ function changeUserMode() {
 }
 
 function logout() {
-  userInfoStorage.remove();
-  userTokenStorage.remove();
+  userTokenStorage.removeItem();
+  loggedInUserStorage.removeItem();
 }
 </script>
 

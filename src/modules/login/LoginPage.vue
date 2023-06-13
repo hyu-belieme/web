@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import type { List } from 'immutable';
+import { storeToRefs } from 'pinia';
+import { NIL as NIL_UUID } from 'uuid';
 import { onBeforeMount, ref, watchEffect } from 'vue';
 import { useQuery } from 'vue-query';
 import { useRouter } from 'vue-router';
@@ -9,10 +11,12 @@ import { deptKeys, userKeys } from '@common/apis/query-keys';
 import buildAlertModal from '@common/components/AlertModal/utils/alert-modal-builder';
 import DataLoadFailView from '@common/components/DataLoadFailView/DataLoadFailView.vue';
 import LoadingView from '@common/components/LoadingView/LoadingView.vue';
-import type Department from '@common/models/Department';
+import Department from '@common/models/Department';
 import type User from '@common/models/User';
+import useCurDeptStorage from '@common/storages/cur-dept-storage';
+import useLoggedInUserStorage from '@common/storages/logged-in-user-storage';
+import useUserTokenStorage from '@common/storages/user-token-storage';
 import useModalStore from '@common/stores/modal-store';
-import { deptStorage, userInfoStorage, userTokenStorage } from '@common/webstorages/storages';
 
 import LoginBox from '@^login/components/LoginBox/LoginBox.vue';
 
@@ -22,31 +26,38 @@ const modalStore = useModalStore();
 const needLogin = ref(false);
 const loginFailed = ref(false);
 
+const userTokenStorage = useUserTokenStorage();
+const { userToken } = storeToRefs(userTokenStorage);
+
+const loggedInUserStorage = useLoggedInUserStorage();
+
+const curDeptStorage = useCurDeptStorage();
+const { curDeptId } = storeToRefs(curDeptStorage);
+
 function resetLoginInfo() {
   needLogin.value = true;
   loginFailed.value = false;
-  userTokenStorage.remove();
-  userInfoStorage.remove();
-  deptStorage.remove();
+
+  userTokenStorage.removeItem();
+  loggedInUserStorage.removeItem();
+  curDeptStorage.removeItem();
 }
 
-function setDeptStorage(authorities: List<Department>) {
-  const inheritedDeptId = deptStorage.get()?.id;
+function updateCurDeptStorage(depts: List<Department>) {
+  const inheritedDeptId = curDeptId.value;
   let isNotUpdated = true;
-  authorities.some((dept) => {
+  depts.some((dept) => {
     isNotUpdated = false;
-    deptStorage.set(dept);
+    curDeptStorage.setItem(dept);
     if (dept.id === inheritedDeptId) return true;
     return false;
   });
 
-  if (isNotUpdated) deptStorage.set(undefined);
+  if (isNotUpdated) curDeptStorage.removeItem();
 }
 
 onBeforeMount(() => {
-  const userToken = userTokenStorage.get();
-
-  if (userToken === undefined) {
+  if (userToken.value === NIL_UUID) {
     needLogin.value = true;
     return;
   }
@@ -55,14 +66,14 @@ onBeforeMount(() => {
     isError: errorOnGetUser,
     isSuccess: successOnGetUser,
     data: dataOnGetUser,
-  } = useQuery<User>(userKeys.current(userToken), () => getCurrentUserInfo(userToken));
+  } = useQuery<User>(userKeys.current(userToken.value), () => getCurrentUserInfo(userToken.value));
 
   const {
     isError: errorOnGetDepts,
     isSuccess: successOnGetDepts,
     data: dataOnGetDepts,
-  } = useQuery<List<Department>>(deptKeys.accessible(userToken), () =>
-    getAccessibleDeptList(userToken)
+  } = useQuery<List<Department>>(deptKeys.accessible(userToken.value), () =>
+    getAccessibleDeptList(userToken.value)
   );
 
   watchEffect(() => {
@@ -75,10 +86,10 @@ onBeforeMount(() => {
       dataOnGetDepts.value !== undefined
     ) {
       loginFailed.value = false;
-      userInfoStorage.set(dataOnGetUser.value);
-      setDeptStorage(dataOnGetDepts.value);
+      loggedInUserStorage.setItem(dataOnGetUser.value);
+      updateCurDeptStorage(dataOnGetDepts.value);
 
-      if (deptStorage.get() === undefined) {
+      if (curDeptStorage.itemEquals(Department.NIL)) {
         modalStore.addModal(
           buildAlertModal('errorAlert', '소속된 학부 및 학과 내 이용 가능한 곳이 없습니다.')
         );
