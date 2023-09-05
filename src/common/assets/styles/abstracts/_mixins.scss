@@ -1,3 +1,21 @@
+@import 'mixins/backdrop';
+@import 'mixins/border-radius';
+@import 'mixins/box-shadow';
+@import 'mixins/breakpoints';
+@import 'mixins/caret';
+@import 'mixins/clearfix';
+@import 'mixins/color-scheme';
+@import 'mixins/deprecate';
+@import 'mixins/gradients';
+@import 'mixins/lists';
+@import 'mixins/reset-text';
+@import 'mixins/resize';
+@import 'mixins/table-variants';
+@import 'mixins/text-truncate';
+@import 'mixins/transition';
+@import 'mixins/utilities';
+@import 'mixins/visually-hidden';
+
 // -----------------------------------------------------------------------------
 // This file contains all application-wide Sass mixins.
 // -----------------------------------------------------------------------------
