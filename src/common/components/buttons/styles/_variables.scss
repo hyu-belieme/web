@@ -1,0 +1,54 @@
+@import '/src/common/assets/styles/main';
+
+// scss-docs-start btn-variables
+$btn-padding-y: 0.25rem !default;
+$btn-padding-x: $btn-padding-y * 2 !default;
+$btn-padding-x-long: $btn-padding-y * 4 !default;
+$btn-font-family: null !default;
+$btn-font-size: $font-size-base !default;
+$btn-line-height: $line-height-base !default;
+$btn-white-space: null !default; // Set to `nowrap` to prevent text wrapping
+
+$btn-padding-y-sm: 0.175rem !default;
+$btn-padding-x-sm: $btn-padding-y-sm * 2 !default;
+$btn-padding-x-sm-long: $btn-padding-y-sm * 4 !default;
+$btn-font-size-sm: $font-size-sm !default;
+
+$btn-padding-y-lg: 0.5rem !default;
+$btn-padding-x-lg: $btn-padding-y-lg * 2 !default;
+$btn-padding-x-lg-long: $btn-padding-y-lg * 4 !default;
+$btn-font-size-lg: $font-size-lg !default;
+
+$btn-border-width: $border-width !default;
+
+$btn-font-weight: $font-weight-normal !default;
+$btn-box-shadow: inset 0 1px 0 rgba($white, 0.15), 0 1px 1px rgba($black, 0.075) !default;
+$btn-focus-width: 0.25rem !default;
+$btn-focus-color-opacity: 0.25 !default;
+$btn-focus-color: rgba($component-active-bg, $btn-focus-color-opacity) !default;
+$btn-focus-blur: 0 !default;
+$btn-focus-box-shadow: 0 0 $btn-focus-blur $btn-focus-width $btn-focus-color !default;
+$btn-disabled-opacity: 0.65 !default;
+$btn-active-box-shadow: inset 0 3px 5px rgba($black, 0.125) !default;
+
+$btn-link-color: var(--#{$prefix}link-color) !default;
+$btn-link-hover-color: var(--#{$prefix}link-hover-color) !default;
+$btn-link-disabled-color: $gray-600 !default;
+
+// Allows for customizing button radius independently from global border radius
+$btn-border-radius: $border-radius !default;
+$btn-border-radius-sm: $border-radius-sm !default;
+$btn-border-radius-lg: $border-radius-lg !default;
+
+$btn-transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+  border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !default;
+
+$btn-hover-bg-shade-amount: 15% !default;
+$btn-hover-bg-tint-amount: 15% !default;
+$btn-hover-border-shade-amount: 20% !default;
+$btn-hover-border-tint-amount: 10% !default;
+$btn-active-bg-shade-amount: 20% !default;
+$btn-active-bg-tint-amount: 20% !default;
+$btn-active-border-shade-amount: 25% !default;
+$btn-active-border-tint-amount: 10% !default;
+// scss-docs-end btn-variables
