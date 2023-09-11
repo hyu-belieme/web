@@ -256,6 +256,18 @@ $utilities: map-merge(
       class: flex,
       values: row column row-reverse column-reverse,
     ),
+    'flex-gap': (
+      responsive: true,
+      property: gap,
+      class: flex-gap,
+      values:
+        map-merge(
+          $spacers,
+          (
+            auto: auto,
+          )
+        ),
+    ),
     'flex-grow': (
       responsive: true,
       property: flex-grow,

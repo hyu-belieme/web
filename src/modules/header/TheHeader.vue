@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import SettingDropdown from '@^header/components/SettingDropdown/SettingDropdown.vue';
+import BasicDropdown from '@common/components/dropdowns/BasicDropdown/BasicDropdown.vue';
+import useLoggedInUserStorage from '@common/storages/logged-in-user-storage';
+
+import UserDropdownBody from '@^header/components/UserDropdownBody/UserDropdownBody.vue';
+
+const { loggedInUser } = useLoggedInUserStorage();
 </script>
 
 <template>
@@ -13,12 +18,23 @@ import SettingDropdown from '@^header/components/SettingDropdown/SettingDropdown
     <RouterLink to="/users" class="m-4">유저관리</RouterLink>
   </nav>
   <section class="flex-grow-0">
-    <i class="icon bi bi-person" data-bs-toggle="dropdown" aria-expanded="false"></i>
-    <SettingDropdown></SettingDropdown>
+    <BasicDropdown v-bind:align="'right'" v-bind:type="'hover'">
+      <template v-slot:trigger>
+        <i class="icon bi bi-person"></i>
+      </template>
+      <template v-slot:menu="{ closeDropdown }">
+        <UserDropdownBody
+          v-bind:user="loggedInUser"
+          @closeDropdown="closeDropdown"
+        ></UserDropdownBody>
+      </template>
+    </BasicDropdown>
   </section>
 </template>
 
 <style lang="scss">
+@import '@common/components/dropdowns/styles/main';
+
 .logo {
   height: $header-font-size * $header-line-height;
 }
