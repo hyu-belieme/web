@@ -4,10 +4,12 @@ import { ref } from 'vue';
 
 const props = withDefaults(
   defineProps<{
+    type?: 'hover' | 'toggle';
     align?: 'left' | 'right';
     opened?: boolean;
   }>(),
   {
+    type: 'hover',
     align: 'left',
     opened: false,
   }
@@ -18,19 +20,27 @@ const openedRef = ref<boolean>(false);
 const dropdownKey = uuidV4();
 
 let closeLogic;
+let closeEventRegistered = false;
+
+let listenerType = 'mouseover';
+if (props.type === 'hover') listenerType = 'mouseover';
+else if (props.type === 'toggle') listenerType = 'click';
 
 function closeDropdown() {
-  window.removeEventListener('click', closeLogic);
+  window.removeEventListener(listenerType, closeLogic);
   openedRef.value = false;
+  closeEventRegistered = false;
 }
 
 function openDropdown() {
+  if (closeEventRegistered) return;
+  closeEventRegistered = true;
   closeLogic = (e) => {
     if (!e.target.closest(`*[dropdown-key='${dropdownKey}']`)) {
       closeDropdown();
     }
   };
-  window.addEventListener('click', closeLogic);
+  window.addEventListener(listenerType, closeLogic);
   openedRef.value = true;
 }
 
@@ -48,9 +58,15 @@ if (props.opened) {
 </script>
 
 <template>
-  <div class="dropdown-frame" :dropdown-key="dropdownKey">
-    <section ref="trigger">
-      <slot name="trigger" :toggleDropdown="toggleDropdown"></slot>
+  <div class="dropdown" :dropdown-key="dropdownKey">
+    <section v-if="type === 'hover'" ref="trigger" @mouseover="openDropdown()">
+      <slot name="trigger"></slot>
+    </section>
+    <section v-else-if="type === 'toggle'" ref="trigger" @click="toggleDropdown()">
+      <slot name="trigger"></slot>
+    </section>
+    <section v-else ref="trigger" @mouseover="openDropdown()">
+      <slot name="trigger"></slot>
     </section>
     <ul ref="dropdownBody" :class="['dropdown-menu', align + '-aligned', openedRef ? 'show' : '']">
       <slot name="menu" :closeDropdown="closeDropdown"></slot>
@@ -60,14 +76,6 @@ if (props.opened) {
 
 <style scoped lang="scss">
 @import '@common/components/dropdowns/styles/main';
-
-.dropdown-frame {
-  position: relative;
-}
-
-.dropdown-menu {
-  position: absolute;
-}
 
 .right-aligned {
   right: 0;
