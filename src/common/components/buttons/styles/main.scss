@@ -23,10 +23,10 @@
   --#{$prefix}btn-border-color-top: transparent;
   --#{$prefix}btn-border-color-left: transparent;
   --#{$prefix}btn-border-color-right: transparent;
-  --#{$prefix}btn-border-radius-bottom: #{$btn-border-radius};
-  --#{$prefix}btn-border-radius-top: #{$btn-border-radius};
-  --#{$prefix}btn-border-radius-left: #{$btn-border-radius};
-  --#{$prefix}btn-border-radius-right: #{$btn-border-radius};
+  --#{$prefix}btn-border-radius-bottom-end: #{$btn-border-radius};
+  --#{$prefix}btn-border-radius-bottom-start: #{$btn-border-radius};
+  --#{$prefix}btn-border-radius-top-end: #{$btn-border-radius};
+  --#{$prefix}btn-border-radius-top-start: #{$btn-border-radius};
   --#{$prefix}btn-hover-border-color-bottom: transparent;
   --#{$prefix}btn-hover-border-color-top: transparent;
   --#{$prefix}btn-hover-border-color-left: transparent;
