@@ -10,6 +10,7 @@ withDefaults(
     resolveLabel?: string;
     rejectLabel?: string;
     hasCloseButton?: boolean;
+    index: number;
   }>(),
   {
     title: '',
@@ -22,7 +23,7 @@ withDefaults(
 </script>
 
 <template>
-  <BasicModal>
+  <BasicModal v-bind:index="index">
     <template v-slot:header>
       <h5 class="modal-title">{{ title }}</h5>
       <CloseButton v-if="hasCloseButton" @click="$emit('close')" aria-label="Close"></CloseButton>

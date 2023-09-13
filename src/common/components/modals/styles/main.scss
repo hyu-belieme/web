@@ -2,7 +2,6 @@
 
 // stylelint-disable function-disallowed-list
 
-// .modal-open      - body class for killing the scroll
 // .modal           - container to scroll within
 // .modal-dialog    - positioning shell for the actual modal
 // .modal-content   - actual modal w/ bg and corners and stuff
@@ -10,6 +9,7 @@
 // Container that the modal scrolls within
 .modal {
   // scss-docs-start modal-css-vars
+  --#{$prefix}base-modal-zindex: #{$zindex-modal};
   --#{$prefix}modal-zindex: #{$zindex-modal};
   --#{$prefix}modal-width: #{$modal-md};
   --#{$prefix}modal-padding: #{$modal-inner-padding};
@@ -118,6 +118,7 @@
 // Modal background
 .modal-backdrop {
   // scss-docs-start modal-backdrop-css-vars
+  --#{$prefix}base-backdrop-zindex: #{$zindex-modal-backdrop};
   --#{$prefix}backdrop-zindex: #{$zindex-modal-backdrop};
   --#{$prefix}backdrop-bg: #{$modal-backdrop-bg};
   --#{$prefix}backdrop-opacity: #{$modal-backdrop-opacity};

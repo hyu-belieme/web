@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import { Modal } from 'bootstrap';
-import { onBeforeUnmount, onMounted, ref } from 'vue';
-
 withDefaults(
   defineProps<{
     noHeader?: boolean;
     noBody?: boolean;
     noFooter?: boolean;
+    index: number;
   }>(),
   {
     noHeader: false,
@@ -14,23 +12,18 @@ withDefaults(
     noFooter: false,
   }
 );
-
-const modalEle = ref();
-
-let thisModalObj: Modal;
-
-onMounted(() => {
-  thisModalObj = new Modal(modalEle.value);
-  thisModalObj.show();
-});
-
-onBeforeUnmount(() => {
-  thisModalObj.hide();
-});
 </script>
 
 <template>
-  <div ref="modalEle" class="modal" tabindex="-1">
+  <div
+    ref="modalEle"
+    class="modal show"
+    tabindex="-1"
+    :style="{
+      '--bs-modal-zindex': `calc(${index * 2} + var(--bs-base-modal-zindex))`,
+      display: 'block',
+    }"
+  >
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content">
         <div v-if="!noHeader" class="modal-header">
