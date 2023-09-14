@@ -1,10 +1,11 @@
 <script setup lang="ts">
 withDefaults(
   defineProps<{
+    modalKey: string;
+    index: number;
     noHeader?: boolean;
     noBody?: boolean;
     noFooter?: boolean;
-    index: number;
   }>(),
   {
     noHeader: false,
@@ -25,7 +26,7 @@ withDefaults(
     }"
   >
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-      <div class="modal-content">
+      <div class="modal-content" :modal-key="modalKey">
         <div v-if="!noHeader" class="modal-header">
           <slot name="header"> </slot>
         </div>
