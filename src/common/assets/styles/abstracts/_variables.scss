@@ -67,8 +67,7 @@ $font-sizes: (
 ///   $base-url: 'https://cdn.example.com/assets/';
 $base-url: '/assets/' !default;
 
-$header-height: 3rem;
-$main-height: calc(100% - $header-height);
+$header-min-height: 3rem;
 $header-font-size: 1.25rem;
 $header-line-height: 1.2;
 
