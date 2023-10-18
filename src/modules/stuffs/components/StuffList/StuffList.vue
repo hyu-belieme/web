@@ -96,8 +96,16 @@ onBeforeMount(() => {
 
 <style lang="scss" scoped>
 .stuff-list {
+  height: 100%;
+  width: 24rem;
+
   display: flex;
   flex-direction: column;
+
+  background-color: $white;
+
+  border: $border-width solid $border-color;
+  @include border-radius();
 
   overflow: scroll;
 }

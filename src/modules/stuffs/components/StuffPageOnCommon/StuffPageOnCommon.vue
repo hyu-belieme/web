@@ -24,25 +24,4 @@ const dataLoadStatus = computed(() => {
   <StuffDetail :inherit-status="dataLoadStatus" :key="selectedId"></StuffDetail>
 </template>
 
-<style lang="scss" scoped>
-$list-tab-ratio: 16;
-$detail-tab-ratio: 25;
-
-.stuff-list {
-  max-width: calc(100% * $list-tab-ratio / ($list-tab-ratio + $detail-tab-ratio));
-  height: 100%;
-  flex-basis: 0;
-  flex-grow: $list-tab-ratio;
-
-  background-color: $white;
-}
-
-.stuff-detail {
-  max-width: calc(100% * $detail-tab-ratio / ($list-tab-ratio + $detail-tab-ratio));
-  height: 100%;
-  flex-basis: 0;
-  flex-grow: $detail-tab-ratio;
-
-  background-color: $white;
-}
-</style>
+<style lang="scss" scoped></style>

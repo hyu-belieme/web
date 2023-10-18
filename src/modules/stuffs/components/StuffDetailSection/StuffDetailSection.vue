@@ -84,6 +84,10 @@ onBeforeMount(() => {
 
 <style lang="scss" scoped>
 .stuff-detail {
+  width: 0;
+  height: 100%;
+  flex-grow: 1;
+
   display: flex;
   flex-direction: column;
   overflow: scroll;
