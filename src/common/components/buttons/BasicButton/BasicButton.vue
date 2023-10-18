@@ -7,7 +7,7 @@ const props = withDefaults(
   }>(),
   {
     content: '',
-    color: '',
+    color: 'primary',
     size: '',
   }
 );
@@ -21,7 +21,11 @@ if (isContentTooShort) {
 
 <template>
   <button
-    :class="['btn', 'btn-' + color, (size === '' ? 'btn' : 'btn-' + size) + btnSizeClassPostfix]"
+    :class="[
+      'btn',
+      'btn-' + (color === '' ? 'primary' : color),
+      (size === '' ? 'btn' : 'btn-' + size) + btnSizeClassPostfix,
+    ]"
   >
     {{ content }}
   </button>
