@@ -1,6 +1,6 @@
 import { useStorage } from '@vueuse/core';
 import { defineStore } from 'pinia';
-import { computed, readonly } from 'vue';
+import { computed } from 'vue';
 
 import User from '@common/models/User';
 
@@ -25,7 +25,7 @@ const useLoggedInUserStorage = defineStore(key, () => {
   }
 
   return {
-    loggedInUser: readonly(loggedInUser),
+    loggedInUser,
     loggedInUserId,
     itemEquals,
     setItem,

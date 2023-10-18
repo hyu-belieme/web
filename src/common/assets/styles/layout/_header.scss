@@ -4,7 +4,7 @@
 
 header {
   width: 100%;
-  height: $header-height;
+  min-height: $header-height;
   font-size: $header-font-size;
   line-height: $header-line-height;
 }

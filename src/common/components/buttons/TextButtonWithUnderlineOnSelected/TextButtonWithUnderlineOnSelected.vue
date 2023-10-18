@@ -43,7 +43,7 @@ if (isContentTooShort) {
     $color: $gray-900,
     $hover-background: transparent,
     $hover-border: transparent,
-    $hover-color: $gray-600,
+    $hover-color: $gray-700,
     $active-background: transparent,
     $active-border: transparent,
     $active-color: $gray-400,
