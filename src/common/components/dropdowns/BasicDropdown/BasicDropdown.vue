@@ -19,7 +19,7 @@ const openedRef = ref<boolean>(false);
 
 const dropdownKey = uuidV4();
 
-let closeLogic;
+let closeLogic: (_: Event) => void;
 let closeEventRegistered = false;
 
 let listenerType = 'mouseover';
@@ -36,7 +36,8 @@ function openDropdown() {
   if (closeEventRegistered) return;
   closeEventRegistered = true;
   closeLogic = (e) => {
-    if (!e.target.closest(`*[dropdown-key='${dropdownKey}']`)) {
+    const target = e.target as HTMLDivElement;
+    if (!target.closest(`*[dropdown-key='${dropdownKey}']`)) {
       closeDropdown();
     }
   };
