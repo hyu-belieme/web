@@ -4,9 +4,10 @@ import BasicModal from '@common/components/modals/BasicModal/BasicModal.vue';
 
 withDefaults(
   defineProps<{
+    modalKey: string;
+    index: number;
     content?: string;
     hasCloseButton?: boolean;
-    index: number;
   }>(),
   {
     content: '',
@@ -16,7 +17,7 @@ withDefaults(
 </script>
 
 <template>
-  <BasicModal v-bind:index="index" v-bind:no-footer="true">
+  <BasicModal v-bind:index="index" v-bind:modal-key="modalKey" v-bind:no-footer="true">
     <template v-slot:header>
       <h5 class="modal-title">오류</h5>
       <CloseButton v-if="hasCloseButton" @click="$emit('close')" aria-label="Close"></CloseButton>

@@ -5,13 +5,13 @@ import BasicModal from '@common/components/modals/BasicModal/BasicModal.vue';
 
 withDefaults(
   defineProps<{
+    modalKey: string;
+    index: number;
     title?: string;
     content?: string;
     resolveLabel?: string;
     rejectLabel?: string;
     hasCloseButton?: boolean;
-    modalKey: string;
-    index: number;
   }>(),
   {
     title: '',
@@ -33,21 +33,23 @@ withDefaults(
       <p class="no-margin-p">{{ content }}</p>
     </template>
     <template v-if="rejectLabel !== '' || resolveLabel !== ''" v-slot:footer>
-      <BasicButton
-        v-if="rejectLabel !== ''"
-        color="gray"
-        :content="rejectLabel"
-        @click="$emit('reject')"
-      >
-        {{ rejectLabel }}
-      </BasicButton>
-      <BasicButton
-        v-if="resolveLabel !== ''"
-        color="primary"
-        :content="resolveLabel"
-        @click="$emit('resolve')"
-      >
-      </BasicButton>
+      <div class="d-flex flex-gap-2">
+        <BasicButton
+          v-if="rejectLabel !== ''"
+          color="gray"
+          :content="rejectLabel"
+          @click="$emit('reject')"
+        >
+          {{ rejectLabel }}
+        </BasicButton>
+        <BasicButton
+          v-if="resolveLabel !== ''"
+          color="primary"
+          :content="resolveLabel"
+          @click="$emit('resolve')"
+        >
+        </BasicButton>
+      </div>
     </template>
   </BasicModal>
 </template>
