@@ -7,6 +7,7 @@ withDefaults(
   defineProps<{
     modalKey: string;
     index: number;
+    size?: string;
     title?: string;
     content?: string;
     resolveLabel?: string;
@@ -14,6 +15,7 @@ withDefaults(
     hasCloseButton?: boolean;
   }>(),
   {
+    size: '',
     title: '',
     content: '',
     resolveLabel: '',
@@ -24,7 +26,7 @@ withDefaults(
 </script>
 
 <template>
-  <BasicModal v-bind:index="index" v-bind:modalKey="modalKey">
+  <BasicModal v-bind:index="index" v-bind:modalKey="modalKey" v-bind:size="size">
     <template v-slot:header>
       <span class="modal-title fs-lg fw-semibold">{{ title }}</span>
       <CloseButton v-if="hasCloseButton" @click="$emit('close')" aria-label="Close"></CloseButton>

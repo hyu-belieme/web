@@ -6,10 +6,12 @@ withDefaults(
   defineProps<{
     modalKey: string;
     index: number;
+    size?: string;
     content?: string;
     hasCloseButton?: boolean;
   }>(),
   {
+    size: '',
     content: '',
     hasCloseButton: true,
   }
@@ -17,7 +19,12 @@ withDefaults(
 </script>
 
 <template>
-  <BasicModal v-bind:index="index" v-bind:modal-key="modalKey" v-bind:no-footer="true">
+  <BasicModal
+    v-bind:index="index"
+    v-bind:modal-key="modalKey"
+    v-bind:size="size"
+    v-bind:no-footer="true"
+  >
     <template v-slot:header>
       <span class="modal-title fs-xlg">오류</span>
       <CloseButton v-if="hasCloseButton" @click="$emit('close')" aria-label="Close"></CloseButton>
