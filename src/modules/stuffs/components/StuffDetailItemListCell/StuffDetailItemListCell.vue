@@ -7,6 +7,8 @@ import { useMutation, useQueryClient } from 'vue-query';
 import { rentItem, reportLostItem, returnItem } from '@common/apis/belieme-apis';
 import { historyKeys, stuffKeys } from '@common/apis/query-keys';
 import BasicButton from '@common/components/buttons/BasicButton/BasicButton.vue';
+import ThreeDotsButton from '@common/components/buttons/ThreeDotsButton/ThreeDotsButton.vue';
+import FitContentDropdown from '@common/components/dropdowns/FitContentDropdown/FitContentDropdown.vue';
 import buildAlertModal from '@common/components/modals/AlertModal/utils/alert-modal-builder';
 import ConfirmModal from '@common/components/modals/ConfirmModal/ConfirmModal.vue';
 import useModalStore from '@common/components/modals/stores/modal-store';
@@ -85,7 +87,7 @@ const rentalRequestModal = {
       '신청을 한 후에 대여장소에서 관리자를 통해 대여 승인을 받고 대여 할 수 있습니다. 단, 해당 신청은 15분 후에 자동으로 만료됩니다.',
     resolveLabel: '신청하기',
   },
-  resolve: (_: any) => {
+  resolve: () => {
     rentalRequestMutation.mutate();
     modalStore.removeModal();
   },
@@ -99,7 +101,7 @@ const lostRequestModal = {
       '해당 물품을 분실하셨나요? 분실 등록 시 해당 물품은 사용 불가능 한 상태가 됩니다. 물품을 되찾게 된다면 반환 처리를 할 수 있지만 분실 기록은 남게 됩니다.',
     resolveLabel: '등록하기',
   },
-  resolve: (_: any) => {
+  resolve: () => {
     lostRequestMutation.mutate();
     modalStore.removeModal();
   },
@@ -114,11 +116,11 @@ const foundApproveModal = {
     resolveLabel: '확인하기',
     rejectLabel: '취소하기',
   },
-  resolve: (_: any) => {
+  resolve: () => {
     foundApproveMutation.mutate();
     modalStore.removeModal();
   },
-  reject: (_: any) => {
+  reject: () => {
     modalStore.removeModal();
   },
 };
@@ -163,11 +165,11 @@ function timestampByStatus(item: ItemInfoOnly) {
           >({{ timestampByStatus(item) }})</span
         >
       </section>
-      <template v-if="viewMode === 'SHOW'">
+      <template v-if="viewMode === 'SHOW' && userMode === 'USER'">
         <BasicButton
           v-if="item.status === 'USABLE'"
           @click="() => modalStore.addModal(rentalRequestModal)"
-          v-bind:content="'대여 신청'"
+          v-bind:content="'대여신청'"
           v-bind:color="'primary'"
           v-bind:size="'sm'"
         >
@@ -175,14 +177,62 @@ function timestampByStatus(item: ItemInfoOnly) {
         <BasicButton
           v-else
           @click="modalStore.addModal(rentalRequestModal)"
-          v-bind:content="'대여 신청'"
+          v-bind:content="'대여신청'"
           v-bind:color="'primary'"
           v-bind:size="'sm'"
           disabled
         >
         </BasicButton>
-        <template v-if="userMode === 'STAFF' || userMode === 'MASTER'">
-          <BasicButton
+      </template>
+      <template v-else-if="(viewMode === 'SHOW' && userMode === 'STAFF') || userMode === 'MASTER'">
+        <FitContentDropdown v-bind:align="'right'" v-bind:type="'hover'">
+          <template v-slot:trigger>
+            <ThreeDotsButton></ThreeDotsButton>
+          </template>
+          <template v-slot:menu="{ closeDropdown }">
+            <li v-if="item.status === 'USABLE'">
+              <a
+                class="dropdown-item py-1 px-2 lh-sm"
+                @click="
+                  () => {
+                    modalStore.addModal(rentalRequestModal);
+                    closeDropdown();
+                  }
+                "
+              >
+                대여신청
+              </a>
+            </li>
+            <li v-if="item.status !== 'LOST'">
+              <a
+                class="dropdown-item py-1 px-2 lh-sm"
+                @click="
+                  () => {
+                    modalStore.addModal(lostRequestModal);
+                    closeDropdown();
+                  }
+                "
+              >
+                분실등록
+              </a>
+            </li>
+            <li v-else>
+              <a
+                class="dropdown-item py-1 px-2 lh-sm"
+                @click="
+                  () => {
+                    modalStore.addModal(foundApproveModal);
+                    closeDropdown();
+                  }
+                "
+              >
+                반환확인
+              </a>
+            </li>
+          </template>
+        </FitContentDropdown>
+
+        <!-- <BasicButton
             v-if="item.status !== 'LOST'"
             @click="modalStore.addModal(lostRequestModal)"
             v-bind:content="'분실 등록'"
@@ -197,8 +247,7 @@ function timestampByStatus(item: ItemInfoOnly) {
             v-bind:color="'primary'"
             v-bind:size="'sm'"
           >
-          </BasicButton>
-        </template>
+          </BasicButton> -->
       </template>
       <template v-else>
         <button
@@ -218,6 +267,7 @@ function timestampByStatus(item: ItemInfoOnly) {
 </template>
 
 <style lang="scss" scoped>
+@import '@common/components/dropdowns/styles/main';
 .cell {
   position: relative;
 
