@@ -86,9 +86,13 @@ const rentalRequestModal = {
     content:
       '신청을 한 후에 대여장소에서 관리자를 통해 대여 승인을 받고 대여 할 수 있습니다. 단, 해당 신청은 15분 후에 자동으로 만료됩니다.',
     resolveLabel: '신청하기',
+    rejectLabel: '취소하기',
   },
   resolve: () => {
     rentalRequestMutation.mutate();
+    modalStore.removeModal();
+  },
+  reject: () => {
     modalStore.removeModal();
   },
 };
@@ -100,9 +104,13 @@ const lostRequestModal = {
     content:
       '해당 물품을 분실하셨나요? 분실 등록 시 해당 물품은 사용 불가능 한 상태가 됩니다. 물품을 되찾게 된다면 반환 처리를 할 수 있지만 분실 기록은 남게 됩니다.',
     resolveLabel: '등록하기',
+    rejectLabel: '취소하기',
   },
   resolve: () => {
     lostRequestMutation.mutate();
+    modalStore.removeModal();
+  },
+  reject: () => {
     modalStore.removeModal();
   },
 };

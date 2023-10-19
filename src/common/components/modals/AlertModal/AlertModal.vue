@@ -19,7 +19,7 @@ withDefaults(
 <template>
   <BasicModal v-bind:index="index" v-bind:modal-key="modalKey" v-bind:no-footer="true">
     <template v-slot:header>
-      <h5 class="modal-title">오류</h5>
+      <span class="modal-title fs-xlg">오류</span>
       <CloseButton v-if="hasCloseButton" @click="$emit('close')" aria-label="Close"></CloseButton>
     </template>
     <template v-slot:body>
