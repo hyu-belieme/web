@@ -140,14 +140,6 @@ onBeforeMount(() => {
   display: flex;
   flex-direction: column;
 
-  .cell {
-    $list-cell-height: 4rem;
-    $padding-size: map-get($spacers, 3);
-    position: relative;
-
-    height: $list-cell-height;
-    padding-left: $padding-size;
-    padding-right: $padding-size;
-  }
+  gap: map-get($map: $spacers, $key: 2);
 }
 </style>
