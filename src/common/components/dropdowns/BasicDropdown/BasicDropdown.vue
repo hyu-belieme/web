@@ -60,13 +60,13 @@ if (props.opened) {
 
 <template>
   <div class="dropdown" :dropdown-key="dropdownKey">
-    <section v-if="type === 'hover'" ref="trigger" @mouseover="openDropdown()">
+    <section v-if="type === 'hover'" ref="trigger" class="p-1" @mouseover="openDropdown()">
       <slot name="trigger"></slot>
     </section>
-    <section v-else-if="type === 'toggle'" ref="trigger" @click="toggleDropdown()">
+    <section v-else-if="type === 'toggle'" ref="trigger" class="p-1" @click="toggleDropdown()">
       <slot name="trigger"></slot>
     </section>
-    <section v-else ref="trigger" @mouseover="openDropdown()">
+    <section v-else ref="trigger" class="p-1" @mouseover="openDropdown()">
       <slot name="trigger"></slot>
     </section>
     <ul ref="dropdownBody" :class="['dropdown-menu', align + '-aligned', openedRef ? 'show' : '']">
