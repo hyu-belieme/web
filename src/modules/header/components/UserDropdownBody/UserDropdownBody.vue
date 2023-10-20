@@ -2,10 +2,10 @@
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 
+import useModalStore from '@common/components/modals/stores/modal-store';
 import type User from '@common/models/User';
 import useLoggedInUserStorage from '@common/storages/logged-in-user-storage';
 import useUserTokenStorage from '@common/storages/user-token-storage';
-import useModalStore from '@common/stores/modal-store';
 import useUserModeStore from '@common/stores/user-mode-store';
 
 import ChangeDepartmentModal from '@^header/components/ChangeDepartmentModal/ChangeDepartmentModal.vue';
@@ -25,7 +25,6 @@ const userModeStore = useUserModeStore();
 const { userMode } = storeToRefs(userModeStore);
 
 const changeDeptModal = {
-  key: 'changeDept',
   component: ChangeDepartmentModal,
   props: {
     title: '학과 변경하기',

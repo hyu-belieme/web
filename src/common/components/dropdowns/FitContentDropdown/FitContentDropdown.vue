@@ -78,6 +78,10 @@ if (props.opened) {
 <style scoped lang="scss">
 @import '@common/components/dropdowns/styles/main';
 
+.dropdown-menu {
+  --#{$prefix}dropdown-min-width: 0;
+}
+
 .right-aligned {
   right: 0;
 }

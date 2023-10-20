@@ -5,20 +5,22 @@ import { useQuery } from 'vue-query';
 
 import { getAccessibleDeptList } from '@common/apis/belieme-apis';
 import { deptKeys } from '@common/apis/query-keys';
-import BasicModal from '@common/components/BasicModal/BasicModal.vue';
 import DataLoadFailView from '@common/components/DataLoadFailView/DataLoadFailView.vue';
 import LoadingView from '@common/components/LoadingView/LoadingView.vue';
+import BasicModal from '@common/components/modals/BasicModal/BasicModal.vue';
+import useModalStore from '@common/components/modals/stores/modal-store';
 import type Department from '@common/models/Department';
 import useCurDeptStorage from '@common/storages/cur-dept-storage';
 import useUserTokenStorage from '@common/storages/user-token-storage';
 
 import DepartmentCell from '@^header/components/DepartementCell/DepartmentCell.vue';
 
-const props = defineProps<{
-  title?: string;
+defineProps<{
+  modalKey: string;
+  index: number;
 }>();
 
-const emit = defineEmits(['close', 'reject', 'resolve']);
+const modalStore = useModalStore();
 
 const userTokenStorage = useUserTokenStorage();
 const { userToken } = storeToRefs(userTokenStorage);
@@ -33,17 +35,15 @@ const { isSuccess, isLoading, data } = useQuery<List<Department>>(
 
 function changeDept(newDept: Department) {
   curDeptStorage.setItem(newDept);
-  emit('close');
+  modalStore.removeModal();
 }
 </script>
 
 <template>
-  <BasicModal
-    v-bind="props"
-    @resolve="$emit('resolve')"
-    @reject="$emit('reject')"
-    @close="$emit('close')"
-  >
+  <BasicModal v-bind:index="index" v-bind:modalKey="modalKey">
+    <template v-slot:header>
+      <span class="modal-title fs-lg fw-semibold">학과 변경하기</span>
+    </template>
     <template v-slot:body>
       <section v-if="isSuccess && data" class="dept-list">
         <DepartmentCell

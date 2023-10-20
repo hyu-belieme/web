@@ -1,7 +1,6 @@
 <script setup lang="ts">
-const props = withDefaults(
+withDefaults(
   defineProps<{
-    content?: string;
     color?: string;
     size?: '' | 'sm' | 'lg';
   }>(),
@@ -11,12 +10,6 @@ const props = withDefaults(
     size: '',
   }
 );
-
-const isContentTooShort = props.content.length <= 3;
-let btnSizeClassPostfix = '';
-if (isContentTooShort) {
-  btnSizeClassPostfix += '-more-x-padding';
-}
 </script>
 
 <template>
@@ -24,10 +17,10 @@ if (isContentTooShort) {
     :class="[
       'btn',
       'btn-' + (color === '' ? 'primary' : color),
-      (size === '' ? 'btn' : 'btn-' + size) + btnSizeClassPostfix,
+      size === '' ? 'btn' : 'btn-' + size,
     ]"
   >
-    {{ content }}
+    <slot></slot>
   </button>
 </template>
 

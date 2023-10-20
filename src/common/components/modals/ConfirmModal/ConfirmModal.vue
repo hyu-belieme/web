@@ -7,6 +7,7 @@ withDefaults(
   defineProps<{
     modalKey: string;
     index: number;
+    size?: string;
     title?: string;
     content?: string;
     resolveLabel?: string;
@@ -14,6 +15,7 @@ withDefaults(
     hasCloseButton?: boolean;
   }>(),
   {
+    size: '',
     title: '',
     content: '',
     resolveLabel: '',
@@ -24,16 +26,23 @@ withDefaults(
 </script>
 
 <template>
-  <BasicModal v-bind:index="index" v-bind:modalKey="modalKey">
+  <BasicModal v-bind:index="index" v-bind:modalKey="modalKey" v-bind:size="size">
     <template v-slot:header>
-      <h5 class="modal-title">{{ title }}</h5>
+      <span class="modal-title fs-lg fw-semibold">{{ title }}</span>
       <CloseButton v-if="hasCloseButton" @click="$emit('close')" aria-label="Close"></CloseButton>
     </template>
     <template v-slot:body>
-      <p class="no-margin-p">{{ content }}</p>
+      <p class="no-margin-p fw-light">{{ content }}</p>
     </template>
     <template v-if="rejectLabel !== '' || resolveLabel !== ''" v-slot:footer>
       <div class="d-flex flex-gap-2">
+        <BasicButton
+          v-if="resolveLabel !== ''"
+          color="primary"
+          :content="resolveLabel"
+          @click="$emit('resolve')"
+        >
+        </BasicButton>
         <BasicButton
           v-if="rejectLabel !== ''"
           color="gray"
@@ -41,13 +50,6 @@ withDefaults(
           @click="$emit('reject')"
         >
           {{ rejectLabel }}
-        </BasicButton>
-        <BasicButton
-          v-if="resolveLabel !== ''"
-          color="primary"
-          :content="resolveLabel"
-          @click="$emit('resolve')"
-        >
         </BasicButton>
       </div>
     </template>

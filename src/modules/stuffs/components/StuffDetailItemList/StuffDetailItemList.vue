@@ -7,14 +7,16 @@ import { useMutation, useQueryClient } from 'vue-query';
 
 import { addNewItem } from '@common/apis/belieme-apis';
 import { stuffKeys } from '@common/apis/query-keys';
-import buildAlertModal from '@common/components/AlertModal/utils/alert-modal-builder';
-import BasicModal from '@common/components/BasicModal/BasicModal.vue';
+import ButtonBase from '@common/components/buttons/ButtonBase/ButtonBase.vue';
+import PlusIcon from '@common/components/icons/PlusIcon/PlusIcon.vue';
+import buildAlertModal from '@common/components/modals/AlertModal/utils/alert-modal-builder';
+import ConfirmModal from '@common/components/modals/ConfirmModal/ConfirmModal.vue';
+import useModalStore from '@common/components/modals/stores/modal-store';
 import type BaseError from '@common/errors/BaseError';
 import ItemInfoOnly from '@common/models/ItemInfoOnly';
 import type StuffWithItems from '@common/models/StuffWithItems';
 import useCurDeptStorage from '@common/storages/cur-dept-storage';
 import useUserTokenStorage from '@common/storages/user-token-storage';
-import useModalStore from '@common/stores/modal-store';
 
 import ItemListCell from '@^stuffs/components/StuffDetailItemListCell/StuffDetailItemListCell.vue';
 import {
@@ -68,16 +70,19 @@ const addNewItemMutation = useMutation<StuffWithItems, BaseError>(
 );
 
 const addItemModal = {
-  key: 'addItem',
-  component: BasicModal,
+  component: ConfirmModal,
   props: {
     title: '물품 추가하기',
     content: '물품 정보와 다르게 추가는 즉시 적용됩니다. 물품을 해당 물품을 추가하시겠습니까?',
     resolveLabel: '추가하기',
+    rejectLabel: '뒤로가기',
   },
-  resolve: (_: any, key: string) => {
-    modalStore.removeModal(key);
+  resolve: () => {
     addNewItemMutation.mutate();
+    modalStore.removeModal();
+  },
+  reject: () => {
+    modalStore.removeModal();
   },
 };
 
@@ -124,14 +129,15 @@ onBeforeMount(() => {
       v-bind="{ item: item }"
       @pop-item="popItem"
     ></ItemListCell>
-    <button
+    <ButtonBase
       v-if="viewMode === 'EDIT' || viewMode === 'ADD'"
       type="button"
-      class="btn btn-outline-primary btn mx-3"
+      class="w-100"
+      v-bind:color="'gray'"
       @click="pushNewItem()"
     >
-      <i class="bi bi-plus-lg"></i>
-    </button>
+      <PlusIcon :color="'dark'"></PlusIcon>
+    </ButtonBase>
   </section>
 </template>
 
@@ -140,14 +146,6 @@ onBeforeMount(() => {
   display: flex;
   flex-direction: column;
 
-  .cell {
-    $list-cell-height: 4rem;
-    $padding-size: map-get($spacers, 3);
-    position: relative;
-
-    height: $list-cell-height;
-    padding-left: $padding-size;
-    padding-right: $padding-size;
-  }
+  gap: map-get($map: $spacers, $key: 2);
 }
 </style>

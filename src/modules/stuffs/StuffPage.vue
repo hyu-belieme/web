@@ -14,8 +14,6 @@ import StuffEmptyPageRouter from '@^stuffs/components/StuffEmptyPageRouter/Stuff
 
   display: flex;
   flex-direction: row;
-  gap: map-get($map: $spacers, $key: 4);
-
-  padding-bottom: map-get($map: $spacers, $key: 4);
+  gap: map-get($map: $spacers, $key: 3);
 }
 </style>

@@ -3,11 +3,13 @@ withDefaults(
   defineProps<{
     modalKey: string;
     index: number;
+    size?: string;
     noHeader?: boolean;
     noBody?: boolean;
     noFooter?: boolean;
   }>(),
   {
+    size: '',
     noHeader: false,
     noBody: false,
     noFooter: false,
@@ -18,7 +20,7 @@ withDefaults(
 <template>
   <div
     ref="modalEle"
-    class="modal show"
+    :class="['modal', 'show', size !== '' ? `modal-${size}` : '']"
     tabindex="-1"
     :style="{
       '--bs-modal-zindex': `calc(${index * 2} + var(--bs-base-modal-zindex))`,

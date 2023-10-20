@@ -9,7 +9,7 @@ const { loggedInUser } = useLoggedInUserStorage();
 </script>
 
 <template>
-  <section class="d-flex flex-row align-items-center container pt-3 pb-3">
+  <section class="d-flex flex-row align-items-center w-100 ps-5 pe-5 pt-2 pb-2 border-bottom">
     <section class="flex-grow-0">
       <img class="logo" src="@common/assets/images/belieme_logo_en.png" />
     </section>

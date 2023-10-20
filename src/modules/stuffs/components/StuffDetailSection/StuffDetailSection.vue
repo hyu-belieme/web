@@ -2,10 +2,10 @@
 import { storeToRefs } from 'pinia';
 import { computed, onBeforeMount, watch } from 'vue';
 
-import BasicModal from '@common/components/BasicModal/BasicModal.vue';
 import DataLoadFailView from '@common/components/DataLoadFailView/DataLoadFailView.vue';
 import LoadingView from '@common/components/LoadingView/LoadingView.vue';
-import useModalStore from '@common/stores/modal-store';
+import ConfirmModal from '@common/components/modals/ConfirmModal/ConfirmModal.vue';
+import useModalStore from '@common/components/modals/stores/modal-store';
 import useUserModeStore from '@common/stores/user-mode-store';
 import type UserMode from '@common/types/UserMode';
 
@@ -39,20 +39,20 @@ const dataLoadStatus = computed(() => {
 
 function changingUserModeAtEditionModeConfirmModal(newUserMode: UserMode) {
   return {
-    key: 'changeUserMode',
-    component: BasicModal,
+    component: ConfirmModal,
     props: {
       title: '이동하기',
       content: '지금 모드를 변경하면 변경사항은 저장되지 않습니다. 변경하시겠습니끼?',
-      resolveLabel: '확인',
+      resolveLabel: '변경하기',
+      rejectLabel: '뒤로가기',
     },
-    resolve: (_: any, key: string) => {
+    resolve: () => {
       viewModeStore.changeStuffDetailViewMode('SHOW');
       userModeStore.updateUserMode(newUserMode);
-      modalStore.removeModal(key);
+      modalStore.removeModal();
     },
-    reject: (_: any, key: string) => {
-      modalStore.removeModal(key);
+    reject: () => {
+      modalStore.removeModal();
     },
   };
 }
@@ -84,12 +84,15 @@ onBeforeMount(() => {
 
 <style lang="scss" scoped>
 .stuff-detail {
+  width: 0;
+  height: 100%;
+  flex-grow: 1;
+
   display: flex;
   flex-direction: column;
   overflow: scroll;
 
-  padding: map-get($map: $spacers, $key: 4);
-  gap: map-get($map: $spacers, $key: 4);
+  gap: map-get($map: $spacers, $key: 2);
 
   .stuff-info {
     flex-grow: 0;

@@ -139,7 +139,7 @@
   align-items: center;
   justify-content: space-between; // Put modal header elements (title and dismiss) on opposite ends
   padding: var(--#{$prefix}modal-header-padding);
-  margin-bottom: var(--#{$prefix}modal-body-footer-gap);
+  margin-bottom: var(--#{$prefix}modal-header-body-gap);
   border-bottom: var(--#{$prefix}modal-header-border-width) solid
     var(--#{$prefix}modal-header-border-color);
   @include border-top-radius(var(--#{$prefix}modal-inner-border-radius));
