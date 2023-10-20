@@ -7,6 +7,8 @@ import { useMutation, useQueryClient } from 'vue-query';
 
 import { addNewItem } from '@common/apis/belieme-apis';
 import { stuffKeys } from '@common/apis/query-keys';
+import ButtonBase from '@common/components/buttons/ButtonBase/ButtonBase.vue';
+import PlusIcon from '@common/components/icons/PlusIcon/PlusIcon.vue';
 import buildAlertModal from '@common/components/modals/AlertModal/utils/alert-modal-builder';
 import ConfirmModal from '@common/components/modals/ConfirmModal/ConfirmModal.vue';
 import useModalStore from '@common/components/modals/stores/modal-store';
@@ -127,14 +129,15 @@ onBeforeMount(() => {
       v-bind="{ item: item }"
       @pop-item="popItem"
     ></ItemListCell>
-    <button
+    <ButtonBase
       v-if="viewMode === 'EDIT' || viewMode === 'ADD'"
       type="button"
-      class="btn btn-outline-primary btn mx-3"
+      class="w-100"
+      v-bind:color="'gray'"
       @click="pushNewItem()"
     >
-      <i class="bi bi-plus-lg"></i>
-    </button>
+      <PlusIcon :color="'dark'"></PlusIcon>
+    </ButtonBase>
   </section>
 </template>
 
