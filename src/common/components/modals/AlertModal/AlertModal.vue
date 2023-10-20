@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import BasicButton from '@common/components/buttons/BasicButton/BasicButton.vue';
 import CloseButton from '@common/components/buttons/CloseButton/CloseButton.vue';
 import BasicModal from '@common/components/modals/BasicModal/BasicModal.vue';
 
@@ -26,11 +27,18 @@ withDefaults(
     v-bind:no-footer="true"
   >
     <template v-slot:header>
-      <span class="modal-title fs-xlg">오류</span>
-      <CloseButton v-if="hasCloseButton" @click="$emit('close')" aria-label="Close"></CloseButton>
+      <section class="d-flex flex-direction-row align-items-stretch justify-content-between w-100">
+        <span class="modal-title fs-xlg">오류</span>
+        <CloseButton v-if="hasCloseButton" @click="$emit('close')" aria-label="Close"></CloseButton>
+      </section>
     </template>
     <template v-slot:body>
       <p class="no-margin-p">{{ content }}</p>
+    </template>
+    <template v-slot:footer>
+      <div class="d-flex flex-gap-2">
+        <BasicButton color="gray" content="뒤로가기" @click="$emit('close')"> </BasicButton>
+      </div>
     </template>
   </BasicModal>
 </template>

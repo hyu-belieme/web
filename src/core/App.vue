@@ -5,7 +5,6 @@ import TheModalFrame from '@common/components/modals/TheModalFrame/TheModalFrame
 import useCurDeptStorage from '@common/storages/cur-dept-storage';
 
 import TheHeader from '@^header/TheHeader.vue';
-import TheModalFrame2 from '@^modal-frame/TheModalFrame.vue';
 
 const curDeptStorage = useCurDeptStorage();
 const { curDeptId } = storeToRefs(curDeptStorage);
@@ -21,5 +20,4 @@ const { curDeptId } = storeToRefs(curDeptStorage);
     </main>
   </section>
   <TheModalFrame></TheModalFrame>
-  <TheModalFrame2></TheModalFrame2>
 </template>

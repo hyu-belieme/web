@@ -3,10 +3,10 @@ import { storeToRefs } from 'pinia';
 import { NIL as NIL_UUID } from 'uuid';
 import { onBeforeMount, watch } from 'vue';
 
-import BasicModal from '@common/components/BasicModal/BasicModal.vue';
 import DataLoadFailView from '@common/components/DataLoadFailView/DataLoadFailView.vue';
 import LoadingView from '@common/components/LoadingView/LoadingView.vue';
-import useModalStore from '@common/stores/modal-store';
+import ConfirmModal from '@common/components/modals/ConfirmModal/ConfirmModal.vue';
+import useModalStore from '@common/components/modals/stores/modal-store';
 
 import StuffListCell from '@^stuffs/components/StuffListCell/StuffListCell.vue';
 import { getStuffListQuery } from '@^stuffs/components/utils/stuff-query-utils';
@@ -25,20 +25,20 @@ const { data, isLoading, isSuccess } = getStuffListQuery();
 
 function changingStuffAtEditionModeConfirmModal(newSelectedId: string) {
   return {
-    key: 'changeStuff',
-    component: BasicModal,
+    component: ConfirmModal,
     props: {
       title: '이동하기',
       content: '다른 물품을 선택하면 변경사항은 저장되지 않습니다. 이동하시겠습니끼?',
-      resolveLabel: '확인',
+      resolveLabel: '이동하기',
+      rejectLabel: '뒤로가기',
     },
-    resolve: (_: any, key: string) => {
+    resolve: () => {
       stuffSelectedStore.updateSelectedId(newSelectedId);
       stuffDetailViewModeStore.changeStuffDetailViewMode('SHOW');
-      modalStore.removeModal(key);
+      modalStore.removeModal();
     },
-    reject: (_: any, key: string) => {
-      modalStore.removeModal(key);
+    reject: () => {
+      modalStore.removeModal();
     },
   };
 }

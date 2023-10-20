@@ -5,13 +5,13 @@ import { useMutation, useQueryClient } from 'vue-query';
 
 import { editStuff, postNewStuff } from '@common/apis/belieme-apis';
 import { stuffKeys } from '@common/apis/query-keys';
-import buildAlertModal from '@common/components/AlertModal/utils/alert-modal-builder';
 import BasicButton from '@common/components/buttons/BasicButton/BasicButton.vue';
+import buildAlertModal from '@common/components/modals/AlertModal/utils/alert-modal-builder';
+import useModalStore from '@common/components/modals/stores/modal-store';
 import type BaseError from '@common/errors/BaseError';
 import type StuffWithItems from '@common/models/StuffWithItems';
 import useCurDeptStorage from '@common/storages/cur-dept-storage';
 import useUserTokenStorage from '@common/storages/user-token-storage';
-import useModalStore from '@common/stores/modal-store';
 import useUserModeStore from '@common/stores/user-mode-store';
 
 import {
