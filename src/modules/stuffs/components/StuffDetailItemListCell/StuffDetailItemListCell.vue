@@ -7,6 +7,7 @@ import { useMutation, useQueryClient } from 'vue-query';
 import { rentItem, reportLostItem, returnItem } from '@common/apis/belieme-apis';
 import { historyKeys, stuffKeys } from '@common/apis/query-keys';
 import BasicButton from '@common/components/buttons/BasicButton/BasicButton.vue';
+import MinusButton from '@common/components/buttons/MinusButton/MinusButton.vue';
 import ThreeDotsButton from '@common/components/buttons/ThreeDotsButton/ThreeDotsButton.vue';
 import FitContentDropdown from '@common/components/dropdowns/FitContentDropdown/FitContentDropdown.vue';
 import buildAlertModal from '@common/components/modals/AlertModal/utils/alert-modal-builder';
@@ -239,36 +240,14 @@ function timestampByStatus(item: ItemInfoOnly) {
             </li>
           </template>
         </FitContentDropdown>
-
-        <!-- <BasicButton
-            v-if="item.status !== 'LOST'"
-            @click="modalStore.addModal(lostRequestModal)"
-            v-bind:content="'분실 등록'"
-            v-bind:color="'primary'"
-            v-bind:size="'sm'"
-          >
-          </BasicButton>
-          <BasicButton
-            v-else
-            @click="modalStore.addModal(foundApproveModal)"
-            v-bind:content="'반환 확인'"
-            v-bind:color="'primary'"
-            v-bind:size="'sm'"
-          >
-          </BasicButton> -->
       </template>
       <template v-else>
-        <button
+        <MinusButton
           v-if="viewMode === 'ADD' || item.id === NIL_UUID"
-          type="button"
-          class="btn btn-danger btn-sm"
-          @click="emit('popItem')"
+          v-bind:onClick="() => emit('popItem')"
         >
-          <i class="bi bi-dash-lg"></i>
-        </button>
-        <button v-else type="button" class="btn btn-danger btn-sm" disabled>
-          <i class="bi bi-dash-lg"></i>
-        </button>
+        </MinusButton>
+        <MinusButton v-else v-bind:disabled="true"></MinusButton>
       </template>
     </section>
   </section>
