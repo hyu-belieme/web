@@ -88,5 +88,6 @@ function nameAndStudentIdFormat(user: User) {
 .info-list {
   display: flex;
   flex-direction: column;
+  padding-bottom: map-get($spacers, 2);
 }
 </style>

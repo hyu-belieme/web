@@ -5,6 +5,7 @@ import { computed, watch } from 'vue';
 
 import DataLoadFailView from '@common/components/DataLoadFailView/DataLoadFailView.vue';
 import LoadingView from '@common/components/LoadingView/LoadingView.vue';
+import HiderCheckbox from '@common/components/checkboxes/HiderCheckbox/HiderCheckbox.vue';
 
 import HistoryCell from '@^histories/components/HistoryListCell/HistoryListCell.vue';
 import { getHistoryListQuery } from '@^histories/components/utils/history-query-utils';
@@ -72,33 +73,35 @@ watch(
 <template>
   <section class="history-list">
     <template v-if="dataLoadStatus === 'Success' && categorizedHistoriesList !== undefined">
-      <template
+      <section
+        class="history-sublist"
         v-for="categorizedHistories of categorizedHistoriesList"
         :key="categorizedHistories.category"
       >
         <section class="cell-header">{{ headerLabel(categorizedHistories.category) }}</section>
-        <HistoryCell
-          v-for="history of categorizedHistories.histories"
-          :key="history.id"
-          v-bind="{
-            history: history,
-            selected: selectedId === history.id,
-          }"
-          @click="updateSelectedId(history.id)"
-        ></HistoryCell>
-        <template
-          v-if="
-            (categorizedHistories.category === 'RETURNED' ||
-              categorizedHistories.category === 'EXPIRED') &&
-            categorizedHistories.histories.size >= 5
-          "
-        >
-          <section class="cell-hider">
-            <span>더 보기</span>
-            <i class="bi bi-chevron-down"></i>
+        <section class="cell-frame">
+          <HistoryCell
+            v-for="history of categorizedHistories.histories"
+            :key="history.id"
+            v-bind="{
+              history: history,
+              selected: selectedId === history.id,
+            }"
+            @click="updateSelectedId(history.id)"
+          ></HistoryCell>
+          <section
+            v-if="
+              (categorizedHistories.category === 'RETURNED' ||
+                categorizedHistories.category === 'EXPIRED') &&
+              categorizedHistories.histories.size >= 5
+            "
+            class="cell-hider"
+          >
+            <span>10개 더보기</span>
+            <HiderCheckbox :color="'gray'" :state="'hidden'" :multiplier="0.4"></HiderCheckbox>
           </section>
-        </template>
-      </template>
+        </section>
+      </section>
     </template>
     <LoadingView v-else-if="dataLoadStatus === 'Loading'"></LoadingView>
     <DataLoadFailView v-else></DataLoadFailView>
@@ -107,39 +110,54 @@ watch(
 
 <style lang="scss" scoped>
 .history-list {
-  $list-cell-height: 4rem;
-  $header-cell-height: 1.75rem;
+  height: 100%;
+  width: 24rem;
 
   display: flex;
   flex-direction: column;
-
-  background-color: $white;
+  gap: map-get($spacers, 2);
 
   overflow: scroll;
 
-  .cell-header {
-    $padding-size: map-get($spacers, 1);
-
-    height: $header-cell-height;
-    background-color: $body-bg;
-    padding-left: $padding-size;
-    font-size: 0.8rem;
-    font-weight: 200;
-    line-height: 1.75rem;
-  }
-
-  .cell-hider {
-    height: $header-cell-height;
-    background-color: $white;
+  .history-sublist {
+    width: 100%;
 
     display: flex;
-    flex-direction: row;
-    justify-content: center;
-    gap: map-get($spacers, 1);
+    flex-direction: column;
+    .cell-header {
+      color: $gray-700;
+      line-height: 1;
 
-    font-size: 0.8rem;
-    font-weight: 200;
-    line-height: 1.75rem;
+      padding-left: map-get($spacers, 2);
+      padding-top: map-get($spacers, 1);
+      padding-bottom: map-get($spacers, 1);
+      font-size: $font-size-xsm;
+      font-weight: $font-weight-light;
+    }
+
+    .cell-frame {
+      background-color: $white;
+      border: $border-width solid $border-color;
+      @include border-radius();
+
+      display: flex;
+      flex-direction: column;
+
+      .cell-hider {
+        font-size: $font-size-xsm;
+        line-height: 1;
+        color: $gray-700;
+
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: map-get($spacers, 1);
+
+        padding-top: map-get($spacers, 2);
+        padding-bottom: map-get($spacers, 2);
+      }
+    }
   }
 }
 </style>

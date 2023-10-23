@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from 'vue-query';
 
 import { approveItem, cancelItem, returnItem } from '@common/apis/belieme-apis';
 import { historyKeys } from '@common/apis/query-keys';
+import BasicButton from '@common/components/buttons/BasicButton/BasicButton.vue';
 import buildAlertModal from '@common/components/modals/AlertModal/utils/alert-modal-builder';
 import ConfirmModal from '@common/components/modals/ConfirmModal/ConfirmModal.vue';
 import useModalStore from '@common/components/modals/stores/modal-store';
@@ -126,25 +127,28 @@ const returnApproveModal = {
 <template>
   <section v-if="isSuccess && data !== undefined" class="buttons">
     <template v-if="data.status === 'REQUESTED'">
-      <button
+      <BasicButton
         v-if="userMode === 'STAFF' || userMode === 'MASTER'"
-        class="btn btn-primary btn-sm"
-        @click="modalStore.addModal(rentalApproveModal)"
-      >
-        대여 승인
-      </button>
-      <button class="btn btn-danger btn-sm" @click="modalStore.addModal(requestCancelModal)">
-        신청 취소
-      </button>
+        class="flex-grow-1"
+        :color="'primary'"
+        :content="'대여승인'"
+        :onClick="() => modalStore.addModal(rentalApproveModal)"
+      ></BasicButton>
+      <BasicButton
+        class="flex-grow-1"
+        :color="'gray'"
+        :content="'요청취소'"
+        :onClick="() => modalStore.addModal(requestCancelModal)"
+      ></BasicButton>
     </template>
     <template v-else-if="data.status === 'USING' || data.status === 'DELAYED'">
-      <button
+      <BasicButton
         v-if="userMode === 'STAFF' || userMode === 'MASTER'"
-        class="btn btn-primary btn-sm"
-        @click="modalStore.addModal(returnApproveModal)"
-      >
-        반납 확인
-      </button>
+        class="flex-grow-1"
+        :color="'primary'"
+        :content="'반납확인'"
+        :onClick="() => modalStore.addModal(returnApproveModal)"
+      ></BasicButton>
     </template>
   </section>
 </template>
