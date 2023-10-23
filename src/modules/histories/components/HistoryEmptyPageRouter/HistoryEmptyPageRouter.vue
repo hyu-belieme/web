@@ -13,20 +13,4 @@ const { data, isLoading, isError, isSuccess } = getHistoryListQuery();
   <HistoryPageOnEmpty v-else></HistoryPageOnEmpty>
 </template>
 
-<style lang="scss" scoped>
-$list-tab-ratio: 16;
-$detail-tab-ratio: 25;
-.history-list {
-  max-width: calc(100% * $list-tab-ratio / ($list-tab-ratio + $detail-tab-ratio));
-  height: 100%;
-  flex-basis: 0;
-  flex-grow: $list-tab-ratio;
-}
-
-.history-detail {
-  max-width: calc(100% * $detail-tab-ratio / ($list-tab-ratio + $detail-tab-ratio));
-  height: 100%;
-  flex-basis: 0;
-  flex-grow: $detail-tab-ratio;
-}
-</style>
+<style lang="scss" scoped></style>

@@ -23,7 +23,7 @@ defineProps<{
 
 <style lang="scss" scoped>
 .cell {
-  $padding-size: map-get($spacers, 3);
+  $padding-size: map-get($spacers, 2);
   position: relative;
 
   padding-left: $padding-size;

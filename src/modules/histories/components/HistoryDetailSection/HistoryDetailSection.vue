@@ -16,19 +16,18 @@ defineProps<{
 
 <style lang="scss" scoped>
 .history-detail {
+  width: 0;
+  height: 100%;
+  flex-grow: 1;
+
   display: flex;
   flex-direction: column;
 
-  gap: map-get($map: $spacers, $key: 4);
-
   .history-info {
-    background-color: $white;
-    padding: map-get($map: $spacers, $key: 4);
     flex-grow: 0;
   }
 
   .procedure-desc {
-    padding: map-get($map: $spacers, $key: 4);
     flex-grow: 1;
   }
 }

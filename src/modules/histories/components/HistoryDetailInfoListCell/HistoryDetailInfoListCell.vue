@@ -11,48 +11,34 @@ defineProps<{
       <span class="keyword">{{ keyword }}</span>
       <span class="value">{{ value }}</span>
     </section>
-    <div class="division-line"></div>
   </section>
 </template>
 
 <style lang="scss" scoped>
 .cell {
-  $list-cell-height: 2rem;
-  $padding-size: map-get($spacers, 3);
+  padding: map-get($spacers, 1);
+  line-height: $line-height-sm;
   position: relative;
-  height: $list-cell-height;
-  padding-left: $padding-size;
-  padding-right: $padding-size;
 
   .content {
     width: 100%;
-    height: 100%;
+    height: auto;
 
     display: flex;
     flex-direction: row;
-    gap: map-get($spacers, 2);
+    justify-content: space-between;
     align-items: center;
 
     .keyword {
-      line-height: $list-cell-height;
-      font-size: $h6-font-size;
-      flex-grow: 1;
+      font-size: $font-size-base;
+      font-weight: $font-weight-normal;
     }
 
     .value {
-      line-height: $list-cell-height;
-      font-size: $h6-font-size;
+      font-size: $font-size-sm;
+      font-weight: $font-weight-light;
+      color: $gray-700;
     }
-  }
-
-  .division-line {
-    $position-bottom: map-get($spacers, 1);
-
-    width: calc(100% - 2 * $padding-size);
-
-    border-top: 1px solid $gray-200;
-    position: absolute;
-    bottom: $position-bottom;
   }
 }
 </style>

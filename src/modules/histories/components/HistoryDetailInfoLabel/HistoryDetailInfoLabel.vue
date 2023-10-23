@@ -7,18 +7,24 @@ const { isSuccess, data } = getHistoryDetailQuery();
 <template>
   <template v-if="isSuccess && data !== undefined">
     <section class="label">
-      <section class="thumbnail">{{ data.stuff.thumbnail }}</section>
-      <section class="name">{{ data.stuff.name }} #{{ data.item.num }}</section>
+      <section class="thumbnail">
+        <span class="position-absolute start-50 top-50 translate-middle">
+          {{ data.stuff.thumbnail }}
+        </span>
+      </section>
+      <section class="name">
+        <span class="position-absolute top-50 translate-middle-y">
+          {{ data.stuff.name }} #{{ data.item.num }}
+        </span>
+      </section>
     </section>
   </template>
 </template>
 
 <style lang="scss" scoped>
 .label {
-  $label-height: 4rem;
-
   width: 100%;
-  height: $label-height;
+  height: auto;
 
   display: flex;
   flex-direction: row;
@@ -26,14 +32,20 @@ const { isSuccess, data } = getHistoryDetailQuery();
   align-items: stretch;
 
   .thumbnail {
-    line-height: $label-height;
+    width: 4rem;
+    height: 4rem;
     font-size: $h1-font-size;
+    text-align: center;
+
+    position: relative;
   }
 
   .name {
-    line-height: $label-height;
-    font-size: $h3-font-size;
+    font-size: $font-size-xlg;
+    font-weight: $font-weight-semibold;
     flex-grow: 1;
+
+    position: relative;
   }
 }
 </style>

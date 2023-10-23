@@ -2,12 +2,9 @@
 import { storeToRefs } from 'pinia';
 import { getCurrentInstance } from 'vue';
 
-import InfoTag from '@common/components/InfoTag/InfoTag.vue';
 import type History from '@common/models/History';
 import type User from '@common/models/User';
 import useUserModeStore from '@common/stores/user-mode-store';
-
-const TAG_SIZE = 6;
 
 const app = getCurrentInstance();
 const dayjs = app!.appContext.config.globalProperties.$dayjs;
@@ -15,7 +12,7 @@ const dayjs = app!.appContext.config.globalProperties.$dayjs;
 const userModeStore = useUserModeStore();
 const { userMode } = storeToRefs(userModeStore);
 
-const props = defineProps<{
+defineProps<{
   history: History;
   selected: boolean;
 }>();
@@ -40,73 +37,109 @@ function makeTimestampTagContent(history: History) {
   }
   return 'ERROR';
 }
-
-function userTagInfo() {
-  const TAG_COLOR = 'green';
-
-  const userInfo = makeUserTagContent(props.history);
-  return {
-    color: TAG_COLOR,
-    size: TAG_SIZE,
-    content: userInfo,
-  };
-}
-
-function timestampTagInfo() {
-  const TAG_COLOR = 'orange';
-
-  const timeInfo = makeTimestampTagContent(props.history);
-  return {
-    color: TAG_COLOR,
-    size: TAG_SIZE,
-    content: timeInfo,
-  };
-}
 </script>
 
 <template>
   <section :class="[selected ? 'cell selected' : 'cell']">
     <section class="content">
       <span class="name">{{ history.stuff.name }} #{{ history.item.num }}</span>
-      <section class="tags">
-        <InfoTag
-          v-if="userMode === 'STAFF' || userMode === 'MASTER'"
-          v-bind="userTagInfo()"
-        ></InfoTag>
-        <InfoTag v-bind="timestampTagInfo()"></InfoTag>
+      <section class="sub-info">
+        <section class="tags">
+          <span v-if="history.status === 'DELAYED'" class="delayed">연체됨</span>
+          <!-- <span class="delayed">연체됨</span> -->
+        </section>
+        <section class="user-and-timestamp">
+          <span v-if="userMode === 'STAFF' || userMode === 'MASTER'">
+            <!-- <span> -->
+            {{ makeUserTagContent(history) }}
+          </span>
+          <span>{{ makeTimestampTagContent(history) }}</span>
+        </section>
       </section>
     </section>
-    <div class="division-line"></div>
   </section>
 </template>
 
 <style lang="scss" scoped>
 .cell {
-  $list-cell-height: 4rem;
-  $padding-size: map-get($spacers, 3);
+  $padding-size: map-get($spacers, 2);
   position: relative;
 
-  height: $list-cell-height;
   padding-left: $padding-size;
   padding-right: $padding-size;
 
-  &.selected {
-    background-color: $gray-200;
+  &.selected,
+  &:hover {
+    background-color: $gray-100;
+
+    .content {
+      border-bottom: calc($border-width * 0.5) solid transparent;
+    }
+  }
+
+  &:last-child {
+    .content {
+      border-bottom: calc($border-width * 0.5) solid transparent;
+    }
   }
 
   .content {
     width: 100%;
-    height: 100%;
+    height: auto;
+
+    padding-top: map-get($spacers, 3);
+    padding-bottom: map-get($spacers, 3);
+    padding-left: map-get($spacers, 1);
+    padding-right: map-get($spacers, 1);
 
     display: flex;
     flex-direction: row;
     gap: map-get($spacers, 1);
     align-items: stretch;
 
+    border-bottom: calc($border-width * 0.5) solid $border-color;
+
     .name {
-      line-height: $list-cell-height;
-      font-size: $h6-font-size;
+      font-size: $font-size-base;
+      flex-grow: 0;
+    }
+
+    .sub-info {
+      width: 0;
       flex-grow: 1;
+
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+
+      font-size: $font-size-sm;
+
+      .tags {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: map-get($spacers, 1);
+
+        .delayed {
+          color: $danger;
+        }
+      }
+
+      .user-and-timestamp {
+        width: fit-content;
+        color: $gray-700;
+
+        span::after {
+          content: ' · ';
+        }
+
+        span:last-child {
+          &::after {
+            content: '';
+          }
+        }
+      }
     }
 
     .tags {
@@ -115,16 +148,6 @@ function timestampTagInfo() {
       align-items: center;
       gap: map-get($spacers, 1);
     }
-  }
-
-  .division-line {
-    $position-bottom: -1;
-
-    width: calc(100% - 2 * $padding-size);
-
-    border-bottom: 1px solid $body-bg;
-    position: absolute;
-    bottom: $position-bottom;
   }
 }
 </style>
