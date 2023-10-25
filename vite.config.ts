@@ -23,7 +23,6 @@ export default defineConfig({
       scss: {
         additionalData: `
         @import "./src/common/assets/styles/main.scss"; 
-        @import "./node_modules/bootstrap-icons/font/bootstrap-icons.css";
         `,
       },
     },

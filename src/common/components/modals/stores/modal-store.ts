@@ -5,7 +5,7 @@ import { markRaw, readonly, ref } from 'vue';
 
 import type { Modal, ModalWithKey } from '@common/components/modals/types/Modal';
 
-const useModalStore = defineStore('modal2', () => {
+const useModalStore = defineStore('modal', () => {
   const modals = ref<List<ModalWithKey>>(List([]));
   let closeLogic: (e: MouseEvent) => any;
 
