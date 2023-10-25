@@ -5,6 +5,7 @@ import { useMutation } from 'vue-query';
 import { useRouter } from 'vue-router';
 
 import { loginUsingHanyangApiToken } from '@common/apis/belieme-apis';
+import LoadingView from '@common/components/LoadingView/LoadingView.vue';
 import type BaseError from '@common/errors/BaseError';
 import type UserWithSecureInfo from '@common/models/UserWithSecureInfo';
 import useUserTokenStorage from '@common/storages/user-token-storage';
@@ -48,7 +49,9 @@ onBeforeMount(() => {
 </script>
 
 <template>
-  <span>로그인 중 입니다.</span>
+  <section class="d-flex align-items-center w-100 h-100">
+    <LoadingView></LoadingView>
+  </section>
 </template>
 
 <style scoped lang="scss"></style>
