@@ -20,8 +20,24 @@ const dataLoadStatus = computed(() => {
 </script>
 
 <template>
-  <StuffList></StuffList>
-  <StuffDetail :inherit-status="dataLoadStatus" :key="selectedId"></StuffDetail>
+  <section class="list-section">
+    <StuffList></StuffList>
+  </section>
+  <section class="detail-section">
+    <StuffDetail :inherit-status="dataLoadStatus" :key="selectedId"></StuffDetail>
+  </section>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.list-section {
+  width: 24rem;
+  height: 100%;
+}
+
+.detail-section {
+  width: 0;
+  height: 100%;
+
+  flex-grow: 1;
+}
+</style>

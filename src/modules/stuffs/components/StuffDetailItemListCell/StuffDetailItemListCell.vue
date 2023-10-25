@@ -243,7 +243,7 @@ function timestampByStatus(item: ItemInfoOnly) {
       </template>
       <template v-else>
         <MinusButton
-          v-if="viewMode === 'ADD' || item.id === NIL_UUID"
+          v-if="viewMode === 'ADD' || viewMode === 'INITIAL_ADD' || item.id === NIL_UUID"
           v-bind:onClick="() => emit('popItem')"
         >
         </MinusButton>
