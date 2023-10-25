@@ -182,7 +182,8 @@ onBeforeMount(() => {
               @click="
                 () => {
                   if (viewMode === 'EDIT') commitChangeMutation.mutate();
-                  else if (viewMode === 'ADD') commitAddNewStuffMutation.mutate();
+                  else if (viewMode === 'ADD' || viewMode === 'INITIAL_ADD')
+                    commitAddNewStuffMutation.mutate();
                 }
               "
             ></BasicButton>

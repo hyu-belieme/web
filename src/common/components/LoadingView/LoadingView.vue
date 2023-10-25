@@ -1,10 +1,10 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import LoadingSpinner from '@common/components/LoadingView/LoadingSpinner.vue';
+</script>
 
 <template>
-  <section class="position-relative w-100 h-100">
-    <span class="position-absolute top-50 start-50 translate-middle w-100 text-center">
-      로딩 중
-    </span>
+  <section class="m-auto p-3">
+    <LoadingSpinner> </LoadingSpinner>
   </section>
 </template>
 

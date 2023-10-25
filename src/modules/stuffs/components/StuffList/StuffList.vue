@@ -96,8 +96,8 @@ onBeforeMount(() => {
 
 <style lang="scss" scoped>
 .stuff-list {
+  width: 100%;
   height: 100%;
-  width: 24rem;
 
   display: flex;
   flex-direction: column;

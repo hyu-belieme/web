@@ -99,7 +99,7 @@ function addNewItemOnList() {
 }
 
 function pushNewItem() {
-  if (viewMode.value === 'ADD') {
+  if (viewMode.value === 'ADD' || viewMode.value === 'INITIAL_ADD') {
     newStuffInfoStore.increaseNewAmount();
     items.value = addNewItemOnList();
   } else if (viewMode.value === 'EDIT') {
@@ -108,13 +108,15 @@ function pushNewItem() {
 }
 
 function popItem() {
-  if (viewMode.value === 'ADD') newStuffInfoStore.decreaseNewAmount();
+  if (viewMode.value === 'ADD' || viewMode.value === 'INITIAL_ADD')
+    newStuffInfoStore.decreaseNewAmount();
   items.value = items.value.pop();
 }
 
 onBeforeMount(() => {
   watchEffect(() => {
-    if (viewMode.value === 'ADD') items.value = List<ItemInfoOnly>([]);
+    if (viewMode.value === 'ADD' || viewMode.value === 'INITIAL_ADD')
+      items.value = List<ItemInfoOnly>([]);
     else if (data.value === undefined) items.value = List<ItemInfoOnly>([]);
     else items.value = data.value.items;
   });
@@ -130,7 +132,7 @@ onBeforeMount(() => {
       @pop-item="popItem"
     ></ItemListCell>
     <ButtonBase
-      v-if="viewMode === 'EDIT' || viewMode === 'ADD'"
+      v-if="viewMode === 'EDIT' || viewMode === 'ADD' || viewMode === 'INITIAL_ADD'"
       type="button"
       class="w-100"
       v-bind:color="'gray'"

@@ -1,1 +1,1 @@
-export type StuffDetailViewMode = 'SHOW' | 'ADD' | 'EDIT';
+export type StuffDetailViewMode = 'SHOW' | 'ADD' | 'INITIAL_ADD' | 'EDIT';

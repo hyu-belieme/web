@@ -13,8 +13,8 @@ withDefaults(
 
 <template>
   <svg
-    :width="`${24 * multiplier}px`"
-    :height="`${24 * multiplier}px`"
+    :width="`${1.5 * multiplier}rem`"
+    :height="`${1.5 * multiplier}rem`"
     viewBox="0 0 24 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"

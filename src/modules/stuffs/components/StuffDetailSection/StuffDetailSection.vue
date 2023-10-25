@@ -31,9 +31,14 @@ const { isSuccess, isLoading, isFetching } = getStuffDetailQuery();
 const dataLoadStatus = computed(() => {
   if (props.inheritStatus === 'Loading') return 'Loading';
   if (props.inheritStatus === 'Error') return 'Error';
+  if (
+    props.inheritStatus === 'Success' &&
+    (viewMode.value === 'ADD' || viewMode.value === 'INITIAL_ADD')
+  )
+    return 'Success';
 
   if (isFetching.value || isLoading.value) return 'Loading';
-  if (viewMode.value === 'ADD' || isSuccess.value) return 'Success';
+  if (isSuccess.value) return 'Success';
   return 'Error';
 });
 
@@ -84,9 +89,8 @@ onBeforeMount(() => {
 
 <style lang="scss" scoped>
 .stuff-detail {
-  width: 0;
+  width: 100%;
   height: 100%;
-  flex-grow: 1;
 
   display: flex;
   flex-direction: column;

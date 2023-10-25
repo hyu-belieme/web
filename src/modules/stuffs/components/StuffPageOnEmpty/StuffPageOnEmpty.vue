@@ -1,35 +1,31 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 
+import BasicButton from '@common/components/buttons/BasicButton/BasicButton.vue';
 import useUserModeStore from '@common/stores/user-mode-store';
 
-import StuffDetail from '@^stuffs/components/StuffDetailSection/StuffDetailSection.vue';
 import useStuffDetailViewModeStore from '@^stuffs/stores/stuff-detail-view-mode-store';
 
 const userModeStore = useUserModeStore();
 const { userMode } = storeToRefs(userModeStore);
 
 const viewModeStore = useStuffDetailViewModeStore();
-const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
 </script>
 
 <template>
   <section class="empty-page">
-    <template v-if="viewMode !== 'ADD'">
-      <section class="empty-page-content">
-        <span class="text-center">아직 물품이 등록되지 않았습니다. 조금만 기다려주세요!</span>
-        <button
-          v-if="userMode === 'STAFF' || userMode === 'MASTER'"
-          class="btn btn-primary btn-sm"
-          @click="viewModeStore.changeStuffDetailViewMode('ADD')"
-        >
-          물품 등록하기
-        </button>
-      </section>
-    </template>
-    <template v-else>
-      <StuffDetail inherit-status="Success"></StuffDetail>
-    </template>
+    <section class="empty-page-content">
+      <span class="text-center">아직 물품이 등록되지 않았습니다.</span>
+      <BasicButton
+        v-if="userMode === 'STAFF' || userMode === 'MASTER'"
+        class="m-2"
+        @click="viewModeStore.changeStuffDetailViewMode('INITIAL_ADD')"
+        :size="'sm'"
+        :content="'물품 등록하기'"
+      >
+      </BasicButton>
+      <span v-else class="text-center">조금만 기다려주세요!</span>
+    </section>
   </section>
 </template>
 
@@ -39,9 +35,11 @@ const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
   width: 100%;
   height: 100%;
 
-  background-color: $white;
-
   .empty-page-content {
+    color: $gray-700;
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+
     position: absolute;
     top: 50%;
     left: 50%;
@@ -50,7 +48,6 @@ const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: map-get($map: $spacers, $key: 2);
   }
 }
 </style>
