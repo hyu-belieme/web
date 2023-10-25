@@ -6,15 +6,18 @@ import { useMutation, useQueryClient } from 'vue-query';
 
 import { rentItem, reportLostItem, returnItem } from '@common/apis/belieme-apis';
 import { historyKeys, stuffKeys } from '@common/apis/query-keys';
-import buildAlertModal from '@common/components/AlertModal/utils/alert-modal-builder';
-import BasicModal from '@common/components/BasicModal/BasicModal.vue';
-import InfoTag from '@common/components/InfoTag/InfoTag.vue';
+import BasicButton from '@common/components/buttons/BasicButton/BasicButton.vue';
+import MinusButton from '@common/components/buttons/MinusButton/MinusButton.vue';
+import ThreeDotsButton from '@common/components/buttons/ThreeDotsButton/ThreeDotsButton.vue';
+import FitContentDropdown from '@common/components/dropdowns/FitContentDropdown/FitContentDropdown.vue';
+import buildAlertModal from '@common/components/modals/AlertModal/utils/alert-modal-builder';
+import ConfirmModal from '@common/components/modals/ConfirmModal/ConfirmModal.vue';
+import useModalStore from '@common/components/modals/stores/modal-store';
 import type BaseError from '@common/errors/BaseError';
 import type History from '@common/models/History';
 import type ItemInfoOnly from '@common/models/ItemInfoOnly';
 import useCurDeptStorage from '@common/storages/cur-dept-storage';
 import useUserTokenStorage from '@common/storages/user-token-storage';
-import useModalStore from '@common/stores/modal-store';
 import useUserModeStore from '@common/stores/user-mode-store';
 
 import useStuffDetailViewModeStore from '@^stuffs/stores/stuff-detail-view-mode-store';
@@ -25,8 +28,6 @@ const emit = defineEmits(['popItem']);
 const props = defineProps<{
   item: ItemInfoOnly;
 }>();
-
-const TAG_SIZE = 6;
 
 const app = getCurrentInstance();
 const dayjs = app!.appContext.config.globalProperties.$dayjs;
@@ -80,211 +81,231 @@ const foundApproveMutation = changeItemRequestMutation(() =>
 );
 
 const rentalRequestModal = {
-  key: 'rentalRequest',
-  component: BasicModal,
+  component: ConfirmModal,
   props: {
     title: '대여 신청하기',
     content:
       '신청을 한 후에 대여장소에서 관리자를 통해 대여 승인을 받고 대여 할 수 있습니다. 단, 해당 신청은 15분 후에 자동으로 만료됩니다.',
     resolveLabel: '신청하기',
+    rejectLabel: '뒤로가기',
   },
-  resolve: (_: any, key: string) => {
+  resolve: () => {
     rentalRequestMutation.mutate();
-    modalStore.removeModal(key);
+    modalStore.removeModal();
+  },
+  reject: () => {
+    modalStore.removeModal();
   },
 };
 
 const lostRequestModal = {
-  key: 'lostRequest',
-  component: BasicModal,
+  component: ConfirmModal,
   props: {
     title: '분실 등록하기',
     content:
       '해당 물품을 분실하셨나요? 분실 등록 시 해당 물품은 사용 불가능 한 상태가 됩니다. 물품을 되찾게 된다면 반환 처리를 할 수 있지만 분실 기록은 남게 됩니다.',
     resolveLabel: '등록하기',
+    rejectLabel: '뒤로가기',
   },
-  resolve: (_: any, key: string) => {
+  resolve: () => {
     lostRequestMutation.mutate();
-    modalStore.removeModal(key);
+    modalStore.removeModal();
+  },
+  reject: () => {
+    modalStore.removeModal();
   },
 };
 
 const foundApproveModal = {
-  key: 'foundApprove',
-  component: BasicModal,
+  component: ConfirmModal,
   props: {
     title: '반환 확인하기',
     content:
       '분실한 물품을 찾으셨나요? 반환 확인 시 해당 묾품이 다시 사용가능해 집니다. 다시 물품을 분실된 상태로 만들 수 있지만 그렇게 할 시 새로운 기록은 남게 됩니다.',
     resolveLabel: '확인하기',
+    rejectLabel: '뒤로가기',
   },
-  resolve: (_: any, key: string) => {
+  resolve: () => {
     foundApproveMutation.mutate();
-    modalStore.removeModal(key);
+    modalStore.removeModal();
+  },
+  reject: () => {
+    modalStore.removeModal();
   },
 };
 
-function statusTagContent(item: ItemInfoOnly) {
-  // TODO: 서버 response의 item status를 바꾸고 그 후에 맞춰서 바꾸기
-  if (item.status === 'USABLE') return '대여가능';
-  if (item.status === 'REQUESTED') return '예약됨';
-  if (item.status === 'USING') return '대여중';
-  if (item.status === 'LOST') return '사용불가';
+function textByStatus(item: ItemInfoOnly) {
+  if (item.status === 'USABLE') return '대여 가능';
+  if (item.status === 'REQUESTED') return '예약 됨';
+  if (item.status === 'USING') return '대여 중';
+  if (item.status === 'LOST') return '사용 불가';
   return 'ERROR';
-}
-
-function statusTagColor(item: ItemInfoOnly) {
-  // TODO: 서버 response의 item status를 바꾸고 그 후에 맞춰서 바꾸기
-  if (item.status === 'USABLE') return 'green';
-  if (item.status === 'REQUESTED' || item.status === 'USING') return 'orange';
-  return 'red';
-}
-
-function statusTagInfo() {
-  return {
-    size: TAG_SIZE,
-    color: statusTagColor(props.item),
-    content: statusTagContent(props.item),
-  };
 }
 
 function relativeTimeString(time: number) {
   return dayjs.unix(time).fromNow();
 }
 
-function timestampTagInfo() {
-  // TODO: 서버 response의 item status를 바꾸고 그 후에 맞춰서 바꾸기
-  const TIMESTAMP_TAG_COLOR = 'orange';
-
-  let content = 'ERROR';
-  if (props.item.status === 'REQUESTED') {
-    content = relativeTimeString(props.item.lastHistory?.requestedAt!);
-  } else if (props.item.status === 'USING') {
-    content = relativeTimeString(props.item.lastHistory?.approvedAt!);
-  } else if (props.item.status === 'LOST') {
-    content = relativeTimeString(props.item.lastHistory?.lostAt!);
+function timestampByStatus(item: ItemInfoOnly) {
+  if (item.status === 'REQUESTED') {
+    return relativeTimeString(item.lastHistory?.requestedAt!);
   }
-
-  return {
-    size: TAG_SIZE,
-    color: TIMESTAMP_TAG_COLOR,
-    content,
-  };
+  if (item.status === 'USING') {
+    return relativeTimeString(item.lastHistory?.approvedAt!);
+  }
+  if (item.status === 'LOST') {
+    return relativeTimeString(item.lastHistory?.lostAt!);
+  }
+  return 'ERROR';
 }
 </script>
 
 <template>
   <section class="cell">
-    <section class="content">
-      <span class="numbering">{{ item.num }}</span>
-      <section class="tags">
-        <InfoTag v-bind="statusTagInfo()"></InfoTag>
-        <InfoTag
-          v-if="item.status === 'USING' || item.status === 'REQUESTED'"
-          v-bind="timestampTagInfo()"
-        ></InfoTag>
-      </section>
-      <template v-if="viewMode === 'SHOW'">
-        <button
-          v-if="item.status === 'USABLE'"
-          class="btn btn-primary btn-sm"
-          @click="modalStore.addModal(rentalRequestModal)"
+    <section class="numbering">
+      <span class="position-absolute start-50 top-50 translate-middle fs-xlg fw-bold">
+        {{ item.num }}
+      </span>
+    </section>
+    <section :class="['content', item.status !== 'USABLE' ? 'red' : '']">
+      <section class="info">
+        <span>{{ textByStatus(item) }}</span>
+        <span v-if="item.status !== 'USABLE'" class="fw-normal fs-sm"
+          >({{ timestampByStatus(item) }})</span
         >
-          대여 신청
-        </button>
-        <button
+      </section>
+      <template v-if="viewMode === 'SHOW' && userMode === 'USER'">
+        <BasicButton
+          v-if="item.status === 'USABLE'"
+          @click="() => modalStore.addModal(rentalRequestModal)"
+          v-bind:content="'대여신청'"
+          v-bind:color="'primary'"
+          v-bind:size="'sm'"
+        >
+        </BasicButton>
+        <BasicButton
           v-else
-          class="btn btn-primary btn-sm"
           @click="modalStore.addModal(rentalRequestModal)"
+          v-bind:content="'대여신청'"
+          v-bind:color="'primary'"
+          v-bind:size="'sm'"
           disabled
         >
-          대여 신청
-        </button>
-        <template v-if="userMode === 'STAFF' || userMode === 'MASTER'">
-          <button
-            v-if="item.status !== 'LOST'"
-            class="btn btn-primary btn-sm"
-            @click="modalStore.addModal(lostRequestModal)"
-          >
-            분실 등록
-          </button>
-          <button
-            v-else
-            class="btn btn-primary btn-sm"
-            @click="modalStore.addModal(foundApproveModal)"
-          >
-            반환 확인
-          </button>
-        </template>
+        </BasicButton>
+      </template>
+      <template v-else-if="(viewMode === 'SHOW' && userMode === 'STAFF') || userMode === 'MASTER'">
+        <FitContentDropdown v-bind:align="'right'" v-bind:type="'hover'">
+          <template v-slot:trigger>
+            <ThreeDotsButton></ThreeDotsButton>
+          </template>
+          <template v-slot:menu="{ closeDropdown }">
+            <li v-if="item.status === 'USABLE'">
+              <a
+                class="dropdown-item py-1 px-2 lh-sm"
+                @click="
+                  () => {
+                    modalStore.addModal(rentalRequestModal);
+                    closeDropdown();
+                  }
+                "
+              >
+                대여신청
+              </a>
+            </li>
+            <li v-if="item.status !== 'LOST'">
+              <a
+                class="dropdown-item py-1 px-2 lh-sm"
+                @click="
+                  () => {
+                    modalStore.addModal(lostRequestModal);
+                    closeDropdown();
+                  }
+                "
+              >
+                분실등록
+              </a>
+            </li>
+            <li v-else>
+              <a
+                class="dropdown-item py-1 px-2 lh-sm"
+                @click="
+                  () => {
+                    modalStore.addModal(foundApproveModal);
+                    closeDropdown();
+                  }
+                "
+              >
+                반환확인
+              </a>
+            </li>
+          </template>
+        </FitContentDropdown>
       </template>
       <template v-else>
-        <button
-          v-if="viewMode === 'ADD' || item.id === NIL_UUID"
-          type="button"
-          class="btn btn-danger btn-sm"
-          @click="emit('popItem')"
+        <MinusButton
+          v-if="viewMode === 'ADD' || viewMode === 'INITIAL_ADD' || item.id === NIL_UUID"
+          v-bind:onClick="() => emit('popItem')"
         >
-          <i class="bi bi-dash-lg"></i>
-        </button>
-        <button v-else type="button" class="btn btn-danger btn-sm" disabled>
-          <i class="bi bi-dash-lg"></i>
-        </button>
+        </MinusButton>
+        <MinusButton v-else v-bind:disabled="true"></MinusButton>
       </template>
     </section>
-    <div class="division-line"></div>
   </section>
 </template>
 
 <style lang="scss" scoped>
+@import '@common/components/dropdowns/styles/main';
 .cell {
-  $list-cell-height: 4rem;
-  $padding-size: map-get($spacers, 3);
   position: relative;
 
-  height: $list-cell-height;
-  padding-left: $padding-size;
-  padding-right: $padding-size;
+  padding-left: map-get($spacers, 2);
+  padding-right: map-get($spacers, 2);
+
+  padding-top: map-get($spacers, 1);
+  padding-bottom: map-get($spacers, 1);
+
+  background-color: $white;
+  border: $border-width solid $border-color;
+  @include border-radius();
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .numbering {
+    position: relative;
+    width: 2rem;
+    height: 2rem;
+  }
 
   .content {
     width: 100%;
     height: 100%;
 
+    padding-left: map-get($spacers, 1);
+    padding-right: map-get($spacers, 1);
+
     display: flex;
     flex-direction: row;
-    gap: map-get($spacers, 2);
     align-items: center;
+    gap: map-get($spacers, 2);
 
-    .numbering {
-      width: $list-cell-height * 0.7;
-      height: $list-cell-height * 0.7;
-
-      line-height: $list-cell-height * 0.7;
-      font-size: $h2-font-size;
-      font-weight: 700;
-      text-align: center;
-
-      background-color: black;
-      color: white;
+    &.red {
+      color: $danger;
+      font-weight: $font-weight-semibold;
     }
 
-    .tags {
-      display: flex;
-      flex-direction: row;
+    .info {
       flex-grow: 1;
 
+      padding-top: map-get($spacers, 2);
+      padding-bottom: map-get($spacers, 2);
+
+      display: flex;
+      flex-direction: row;
       align-items: center;
       gap: map-get($spacers, 1);
     }
-  }
-
-  .division-line {
-    $position-bottom: map-get($spacers, 1);
-
-    width: calc(100% - 2 * $padding-size);
-
-    border-top: 1px solid $gray-200;
-    position: absolute;
-    bottom: $position-bottom;
   }
 }
 </style>

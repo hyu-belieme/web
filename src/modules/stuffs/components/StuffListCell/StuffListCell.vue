@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import InfoTag from '@common/components/InfoTag/InfoTag.vue';
 import type Stuff from '@common/models/Stuff';
 
 defineProps<{
@@ -12,39 +11,38 @@ defineProps<{
   <section :class="[selected ? 'cell selected' : 'cell']">
     <section class="content">
       <span class="thumbnail">{{ stuff.thumbnail }}</span>
-      <span class="name">{{ stuff.name }}</span>
-      <section class="tags">
-        <InfoTag
-          v-if="stuff.count <= 0"
-          v-bind="{ color: 'red', size: 6, content: '남지 않음' }"
-        ></InfoTag>
-        <InfoTag
-          v-else
-          v-bind="{ color: 'blue', size: 6, content: stuff.count + '개 남음' }"
-        ></InfoTag>
+      <section class="name-and-remaining">
+        <span class="name">{{ stuff.name }}</span>
+        <span class="remaining">{{
+          stuff.count === 0 ? '남지 않음' : stuff.count + '개 남음'
+        }}</span>
       </section>
     </section>
-    <div class="division-line"></div>
   </section>
 </template>
 
 <style lang="scss" scoped>
 .cell {
-  $list-cell-height: 4rem;
-  $padding-size: map-get($spacers, 3);
+  $padding-size: map-get($spacers, 2);
   position: relative;
 
-  height: $list-cell-height;
   padding-left: $padding-size;
   padding-right: $padding-size;
 
-  &.selected {
-    background-color: $gray-200;
+  &.selected,
+  &:hover {
+    background-color: $gray-100;
+
+    .content {
+      .name-and-remaining {
+        border-bottom: calc($border-width * 0.5) solid transparent;
+      }
+    }
   }
 
   .content {
     width: 100%;
-    height: 100%;
+    height: auto;
 
     display: flex;
     flex-direction: row;
@@ -52,32 +50,34 @@ defineProps<{
     align-items: stretch;
 
     .thumbnail {
-      line-height: $list-cell-height;
+      width: 3rem;
+      height: 3rem;
       font-size: $h2-font-size;
+      text-align: center;
     }
 
-    .name {
-      line-height: $list-cell-height;
-      font-size: $h5-font-size;
-      flex-grow: 1;
-    }
-
-    .tags {
+    .name-and-remaining {
       display: flex;
       flex-direction: row;
+      flex-grow: 1;
+      justify-content: space-between;
       align-items: center;
-      gap: map-get($spacers, 1);
+      margin-left: map-get($spacers, 1);
+      margin-right: map-get($spacers, 1);
+
+      border-bottom: calc($border-width * 0.5) solid $border-color;
+
+      .name {
+        font-size: $font-size-base;
+        font-weight: $font-weight-semibold;
+      }
+
+      .remaining {
+        font-size: $font-size-sm;
+        font-weight: $font-weight-normal;
+        color: $gray-700;
+      }
     }
-  }
-
-  .division-line {
-    $position-bottom: -1;
-
-    width: calc(100% - 2 * $padding-size);
-
-    border-bottom: 1px solid $body-bg;
-    position: absolute;
-    bottom: $position-bottom;
   }
 }
 </style>

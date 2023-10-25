@@ -43,9 +43,13 @@ const dataLoadStatus = computed(() => {
 
 <style lang="scss" scoped>
 .history-info {
+  background-color: $white;
+  border: $border-width solid $border-color;
+  @include border-radius($border-radius);
+
+  padding: map-get($map: $spacers, $key: 2);
+
   display: flex;
   flex-direction: column;
-
-  gap: map-get($map: $spacers, $key: 4);
 }
 </style>

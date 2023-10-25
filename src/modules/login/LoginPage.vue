@@ -8,15 +8,15 @@ import { useRouter } from 'vue-router';
 
 import { getAccessibleDeptList, getCurrentUserInfo } from '@common/apis/belieme-apis';
 import { deptKeys, userKeys } from '@common/apis/query-keys';
-import buildAlertModal from '@common/components/AlertModal/utils/alert-modal-builder';
 import DataLoadFailView from '@common/components/DataLoadFailView/DataLoadFailView.vue';
 import LoadingView from '@common/components/LoadingView/LoadingView.vue';
+import buildAlertModal from '@common/components/modals/AlertModal/utils/alert-modal-builder';
+import useModalStore from '@common/components/modals/stores/modal-store';
 import Department from '@common/models/Department';
 import type User from '@common/models/User';
 import useCurDeptStorage from '@common/storages/cur-dept-storage';
 import useLoggedInUserStorage from '@common/storages/logged-in-user-storage';
 import useUserTokenStorage from '@common/storages/user-token-storage';
-import useModalStore from '@common/stores/modal-store';
 
 import LoginBox from '@^login/components/LoginBox/LoginBox.vue';
 

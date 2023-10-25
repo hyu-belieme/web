@@ -5,12 +5,13 @@ import { useMutation, useQueryClient } from 'vue-query';
 
 import { editStuff, postNewStuff } from '@common/apis/belieme-apis';
 import { stuffKeys } from '@common/apis/query-keys';
-import buildAlertModal from '@common/components/AlertModal/utils/alert-modal-builder';
+import BasicButton from '@common/components/buttons/BasicButton/BasicButton.vue';
+import buildAlertModal from '@common/components/modals/AlertModal/utils/alert-modal-builder';
+import useModalStore from '@common/components/modals/stores/modal-store';
 import type BaseError from '@common/errors/BaseError';
 import type StuffWithItems from '@common/models/StuffWithItems';
 import useCurDeptStorage from '@common/storages/cur-dept-storage';
 import useUserTokenStorage from '@common/storages/user-token-storage';
-import useModalStore from '@common/stores/modal-store';
 import useUserModeStore from '@common/stores/user-mode-store';
 
 import {
@@ -123,24 +124,49 @@ onBeforeMount(() => {
 <template>
   <section class="stuff-info">
     <section class="thumbnail">
-      <span v-if="viewMode === 'SHOW'">{{ data?.thumbnail }}</span>
+      <span
+        v-if="viewMode === 'SHOW'"
+        class="position-absolute top-50 start-50 translate-middle lh-1"
+        >{{ data?.thumbnail }}</span
+      >
       <input
         v-else
         v-model="thumbnailInput"
         type="text"
-        class="form-control edit-box"
+        class="form-control edit-box position-absolute top-50 start-50 translate-middle lh-1"
         aria-label="thumbnail"
       />
     </section>
     <section class="label-and-desc">
-      <section class="label">
-        <section class="name">
-          <span v-if="viewMode === 'SHOW'">{{ data?.name }}</span>
+      <section v-if="viewMode === 'SHOW'" class="label">
+        <section class="name fs-xlg fw-semibold">
+          <span>{{ data?.name }}</span>
+        </section>
+        <template v-if="userMode === 'STAFF' || userMode === 'MASTER'">
+          <section class="buttons">
+            <BasicButton
+              v-bind="{
+                size: 'sm',
+                content: '수정',
+              }"
+              @click="viewModeStore.changeStuffDetailViewMode('EDIT')"
+            ></BasicButton>
+            <BasicButton
+              v-bind="{
+                size: 'sm',
+                content: '추가',
+              }"
+              @click="viewModeStore.changeStuffDetailViewMode('ADD')"
+            ></BasicButton>
+          </section>
+        </template>
+      </section>
+      <section v-else class="label">
+        <section class="name h-100 d-flex fs-base fw-semibold">
           <input
-            v-else
             v-model="nameInput"
             type="text"
-            class="form-control w-100 my-2"
+            class="form-control edit-box"
             placeholder="물품 이름을 입력해주세요."
             aria-label="name"
             aria-describedby="basic-addon1"
@@ -148,54 +174,42 @@ onBeforeMount(() => {
         </section>
         <template v-if="userMode === 'STAFF' || userMode === 'MASTER'">
           <section class="buttons">
-            <template v-if="viewMode === 'SHOW'">
-              <button
-                class="btn btn-primary btn-sm"
-                @click="viewModeStore.changeStuffDetailViewMode('EDIT')"
-              >
-                수정
-              </button>
-              <button
-                class="btn btn-primary btn-sm"
-                @click="viewModeStore.changeStuffDetailViewMode('ADD')"
-              >
-                추가
-              </button>
-            </template>
-            <template v-else>
-              <button
-                class="btn btn-primary btn-sm"
-                @click="
-                  () => {
-                    if (viewMode === 'EDIT') commitChangeMutation.mutate();
-                    else if (viewMode === 'ADD') commitAddNewStuffMutation.mutate();
-                  }
-                "
-              >
-                저장
-              </button>
-              <button
-                class="btn btn-second btn-sm"
-                @click="
-                  () => {
-                    viewModeStore.changeStuffDetailViewMode('SHOW');
-                  }
-                "
-              >
-                뒤로
-              </button>
-            </template>
+            <BasicButton
+              v-bind="{
+                size: 'sm',
+                content: '저장',
+              }"
+              @click="
+                () => {
+                  if (viewMode === 'EDIT') commitChangeMutation.mutate();
+                  else if (viewMode === 'ADD' || viewMode === 'INITIAL_ADD')
+                    commitAddNewStuffMutation.mutate();
+                }
+              "
+            ></BasicButton>
+            <BasicButton
+              v-bind="{
+                size: 'sm',
+                color: 'gray',
+                content: '뒤로',
+              }"
+              @click="
+                () => {
+                  viewModeStore.changeStuffDetailViewMode('SHOW');
+                }
+              "
+            ></BasicButton>
           </section>
         </template>
       </section>
-      <div class="desc">
+      <div class="desc fs-xsm fw-light">
         <span v-if="viewMode === 'SHOW'" class="p-1">
           {{ LOREM_IPSUM }}
         </span>
         <textarea
           v-else
           v-model="descInput"
-          class="form-control h-100 fs-7"
+          class="form-control edit-box h-100"
           placeholder="물품 설명을 입력해주세요."
           id="floatingTextarea"
         ></textarea>
@@ -212,19 +226,26 @@ onBeforeMount(() => {
   gap: map-get($map: $spacers, $key: 2);
 
   .thumbnail {
-    width: 12rem;
-    height: 12rem;
-    line-height: 12rem;
-    font-size: 10rem;
-    text-align: center;
+    width: 10rem;
+    height: 10rem;
+    position: relative;
+    font-size: 8rem;
 
     .edit-box {
       width: 100%;
-      height: calc(100% - map-get($map: $spacers, $key: 2));
+      height: 100%;
 
-      margin-top: map-get($map: $spacers, $key: 2);
+      border: $border-width solid $border-color;
+      @include border-radius();
 
-      font-size: 9rem;
+      &:focus {
+        border: $border-width solid $primary;
+        outline: none;
+      }
+      background-color: $white;
+      font-size: inherit;
+      font-weight: inherit;
+
       text-align: center;
     }
   }
@@ -233,27 +254,51 @@ onBeforeMount(() => {
     flex-basis: 0;
     flex-grow: 1;
 
+    height: 100%;
+
     display: flex;
     flex-direction: column;
+    gap: map-get($map: $spacers, $key: 2);
 
     .label {
-      height: 54px;
       display: flex;
       flex-direction: row;
       align-items: center;
 
-      font-size: $h3-font-size;
       gap: map-get($map: $spacers, $key: 2);
 
       .name {
         width: 0;
         flex-grow: 1;
         flex-basis: 0;
+
+        .edit-box {
+          width: 100%;
+
+          border: $border-width solid $border-color;
+          @include border-radius();
+
+          padding-top: map-get($spacers, 1);
+          padding-bottom: map-get($spacers, 1);
+
+          padding-left: map-get($spacers, 2);
+          padding-right: map-get($spacers, 2);
+          font-size: inherit;
+          font-weight: inherit;
+
+          &:focus {
+            border: $border-width solid $primary;
+            outline: none;
+          }
+
+          background-color: $white;
+        }
       }
 
       .buttons {
         display: flex;
         flex-direction: row;
+        align-items: center;
         gap: map-get($map: $spacers, $key: 2);
 
         button {
@@ -266,10 +311,26 @@ onBeforeMount(() => {
       flex-basis: 0;
       flex-grow: 1;
 
-      font-size: 0.75rem;
-      font-weight: 300;
-
       overflow: scroll;
+
+      .edit-box {
+        width: 100%;
+        height: 100%;
+
+        border: $border-width solid $border-color;
+        @include border-radius();
+
+        padding: map-get($spacers, 2);
+        font-size: inherit;
+        font-weight: inherit;
+
+        &:focus {
+          border: $border-width solid $primary;
+          outline: none;
+        }
+
+        background-color: $white;
+      }
     }
   }
 }

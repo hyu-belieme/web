@@ -20,29 +20,24 @@ const dataLoadStatus = computed(() => {
 </script>
 
 <template>
-  <StuffList></StuffList>
-  <StuffDetail :inherit-status="dataLoadStatus" :key="selectedId"></StuffDetail>
+  <section class="list-section">
+    <StuffList></StuffList>
+  </section>
+  <section class="detail-section">
+    <StuffDetail :inherit-status="dataLoadStatus" :key="selectedId"></StuffDetail>
+  </section>
 </template>
 
 <style lang="scss" scoped>
-$list-tab-ratio: 16;
-$detail-tab-ratio: 25;
-
-.stuff-list {
-  max-width: calc(100% * $list-tab-ratio / ($list-tab-ratio + $detail-tab-ratio));
+.list-section {
+  width: 24rem;
   height: 100%;
-  flex-basis: 0;
-  flex-grow: $list-tab-ratio;
-
-  background-color: $white;
 }
 
-.stuff-detail {
-  max-width: calc(100% * $detail-tab-ratio / ($list-tab-ratio + $detail-tab-ratio));
+.detail-section {
+  width: 0;
   height: 100%;
-  flex-basis: 0;
-  flex-grow: $detail-tab-ratio;
 
-  background-color: $white;
+  flex-grow: 1;
 }
 </style>

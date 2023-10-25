@@ -1,0 +1,297 @@
+@import 'variables';
+@import 'mixins';
+
+//
+// Base styles
+//
+
+.btn {
+  // scss-docs-start btn-css-vars
+  --#{$prefix}btn-padding-x: #{$btn-padding-x};
+  --#{$prefix}btn-padding-y: #{$btn-padding-y};
+  --#{$prefix}btn-font-family: #{$btn-font-family};
+  @include rfs($btn-font-size, --#{$prefix}btn-font-size);
+  --#{$prefix}btn-font-weight: #{$btn-font-weight};
+  --#{$prefix}btn-line-height: #{$btn-line-height};
+  --#{$prefix}btn-color: #{$body-color};
+  --#{$prefix}btn-bg: transparent;
+  --#{$prefix}btn-border-width-bottom: #{$btn-border-width};
+  --#{$prefix}btn-border-width-top: #{$btn-border-width};
+  --#{$prefix}btn-border-width-left: #{$btn-border-width};
+  --#{$prefix}btn-border-width-right: #{$btn-border-width};
+  --#{$prefix}btn-border-color-bottom: transparent;
+  --#{$prefix}btn-border-color-top: transparent;
+  --#{$prefix}btn-border-color-left: transparent;
+  --#{$prefix}btn-border-color-right: transparent;
+  --#{$prefix}btn-border-radius-bottom-end: #{$btn-border-radius};
+  --#{$prefix}btn-border-radius-bottom-start: #{$btn-border-radius};
+  --#{$prefix}btn-border-radius-top-end: #{$btn-border-radius};
+  --#{$prefix}btn-border-radius-top-start: #{$btn-border-radius};
+  --#{$prefix}btn-hover-border-color-bottom: transparent;
+  --#{$prefix}btn-hover-border-color-top: transparent;
+  --#{$prefix}btn-hover-border-color-left: transparent;
+  --#{$prefix}btn-hover-border-color-right: transparent;
+  --#{$prefix}btn-box-shadow: #{$btn-box-shadow};
+  --#{$prefix}btn-disabled-opacity: #{$btn-disabled-opacity};
+  --#{$prefix}btn-focus-box-shadow: 0 0 0 #{$btn-focus-width} rgba(var(--#{$prefix}btn-focus-shadow-rgb), 0.5);
+  // scss-docs-end btn-css-vars
+
+  display: inline-block;
+  padding: var(--#{$prefix}btn-padding-y) var(--#{$prefix}btn-padding-x);
+  font-family: var(--#{$prefix}btn-font-family);
+  @include font-size(var(--#{$prefix}btn-font-size));
+  font-weight: var(--#{$prefix}btn-font-weight);
+  line-height: var(--#{$prefix}btn-line-height);
+  color: var(--#{$prefix}btn-color);
+  text-align: center;
+  text-decoration: if($link-decoration == none, null, none);
+  white-space: $btn-white-space;
+  vertical-align: middle;
+  cursor: if($enable-button-pointers, pointer, null);
+  user-select: none;
+  border-bottom: var(--#{$prefix}btn-border-width-bottom) solid
+    var(--#{$prefix}btn-border-color-bottom);
+  border-top: var(--#{$prefix}btn-border-width-top) solid var(--#{$prefix}btn-border-color-top);
+  border-left: var(--#{$prefix}btn-border-width-left) solid var(--#{$prefix}btn-border-color-left);
+  border-right: var(--#{$prefix}btn-border-width-right) solid
+    var(--#{$prefix}btn-border-color-right);
+
+  @include border-top-start-radius(var(--#{$prefix}btn-border-radius-top-start));
+  @include border-top-end-radius(var(--#{$prefix}btn-border-radius-top-end));
+  @include border-bottom-end-radius(var(--#{$prefix}btn-border-radius-bottom-end));
+  @include border-bottom-start-radius(var(--#{$prefix}btn-border-radius-bottom-start));
+
+  @include gradient-bg(var(--#{$prefix}btn-bg));
+  @include box-shadow(var(--#{$prefix}btn-box-shadow));
+  @include transition($btn-transition);
+
+  &:hover {
+    color: var(--#{$prefix}btn-hover-color);
+    text-decoration: if($link-hover-decoration == underline, none, null);
+    background-color: var(--#{$prefix}btn-hover-bg);
+    border-color: var(--#{$prefix}btn-hover-border-color-top)
+      var(--#{$prefix}btn-hover-border-color-right) var(--#{$prefix}btn-hover-border-color-bottom)
+      var(--#{$prefix}btn-hover-border-color-left);
+  }
+
+  .btn-check + &:hover {
+    // override for the checkbox/radio buttons
+    color: var(--#{$prefix}btn-color);
+    background-color: var(--#{$prefix}btn-bg);
+    border-color: var(--#{$prefix}btn-border-color-top) var(--#{$prefix}btn-border-color-right)
+      var(--#{$prefix}btn-border-color-bottom) var(--#{$prefix}btn-border-color-left);
+  }
+
+  &:focus-visible {
+    color: var(--#{$prefix}btn-hover-color);
+    @include gradient-bg(var(--#{$prefix}btn-hover-bg));
+    border-color: var(--#{$prefix}btn-hover-border-color-top)
+      var(--#{$prefix}btn-hover-border-color-right) var(--#{$prefix}btn-hover-border-color-bottom)
+      var(--#{$prefix}btn-hover-border-color-left);
+    outline: 0;
+    // Avoid using mixin so we can pass custom focus shadow properly
+    @if $enable-shadows {
+      box-shadow: var(--#{$prefix}btn-box-shadow), var(--#{$prefix}btn-focus-box-shadow);
+    } @else {
+      box-shadow: var(--#{$prefix}btn-focus-box-shadow);
+    }
+  }
+
+  .btn-check:focus-visible + & {
+    border-color: var(--#{$prefix}btn-hover-border-color-top)
+      var(--#{$prefix}btn-hover-border-color-right) var(--#{$prefix}btn-hover-border-color-bottom)
+      var(--#{$prefix}btn-hover-border-color-left);
+    outline: 0;
+    // Avoid using mixin so we can pass custom focus shadow properly
+    @if $enable-shadows {
+      box-shadow: var(--#{$prefix}btn-box-shadow), var(--#{$prefix}btn-focus-box-shadow);
+    } @else {
+      box-shadow: var(--#{$prefix}btn-focus-box-shadow);
+    }
+  }
+
+  .btn-check:checked + &,
+  :not(.btn-check) + &:active,
+  &:first-child:active,
+  &.active,
+  &.show {
+    color: var(--#{$prefix}btn-active-color);
+    background-color: var(--#{$prefix}btn-active-bg);
+    // Remove CSS gradients if they're enabled
+    background-image: if($enable-gradients, none, null);
+    border-color: var(--#{$prefix}btn-active-border-color-top)
+      var(--#{$prefix}btn-active-border-color-right) var(--#{$prefix}btn-active-border-color-bottom)
+      var(--#{$prefix}btn-active-border-color-left);
+    @include box-shadow(var(--#{$prefix}btn-active-shadow));
+
+    &:focus-visible {
+      // Avoid using mixin so we can pass custom focus shadow properly
+      @if $enable-shadows {
+        box-shadow: var(--#{$prefix}btn-active-shadow), var(--#{$prefix}btn-focus-box-shadow);
+      } @else {
+        box-shadow: var(--#{$prefix}btn-focus-box-shadow);
+      }
+    }
+  }
+
+  &:disabled,
+  &.disabled,
+  fieldset:disabled & {
+    color: var(--#{$prefix}btn-disabled-color);
+    pointer-events: none;
+    background-color: var(--#{$prefix}btn-disabled-bg);
+    background-image: if($enable-gradients, none, null);
+    border-color: var(--#{$prefix}btn-disabled-border-color-top)
+      var(--#{$prefix}btn-disabled-border-color-right)
+      var(--#{$prefix}btn-disabled-border-color-bottom)
+      var(--#{$prefix}btn-disabled-border-color-left);
+    opacity: var(--#{$prefix}btn-disabled-opacity);
+    @include box-shadow(none);
+  }
+}
+
+//
+// Alternate buttons
+//
+
+// scss-docs-start btn-variant-loops
+@each $color, $value in $theme-colors {
+  .btn-#{$color} {
+    @if $color == 'light' {
+      @include button-variant(
+        $value,
+        $value,
+        $hover-background: shade-color($value, $btn-hover-bg-shade-amount),
+        $hover-border: shade-color($value, $btn-hover-border-shade-amount),
+        $active-background: shade-color($value, $btn-active-bg-shade-amount),
+        $active-border: shade-color($value, $btn-active-border-shade-amount)
+      );
+    } @else if $color == 'dark' {
+      @include button-variant(
+        $value,
+        $value,
+        $hover-background: tint-color($value, $btn-hover-bg-tint-amount),
+        $hover-border: tint-color($value, $btn-hover-border-tint-amount),
+        $active-background: tint-color($value, $btn-active-bg-tint-amount),
+        $active-border: tint-color($value, $btn-active-border-tint-amount)
+      );
+    } @else {
+      @include button-variant($value, $value);
+    }
+  }
+}
+
+@each $color, $value in $theme-colors {
+  .btn-outline-#{$color} {
+    @include button-outline-variant($value);
+  }
+}
+// scss-docs-end btn-variant-loops
+
+//
+// Button Sizes
+//
+
+.btn-lg {
+  @include button-size(
+    $btn-padding-y-lg,
+    $btn-padding-x-lg,
+    $btn-font-size-lg,
+    $btn-border-radius-lg
+  );
+}
+
+.btn-sm {
+  @include button-size(
+    $btn-padding-y-sm,
+    $btn-padding-x-sm,
+    $btn-font-size-sm,
+    $btn-border-radius-sm
+  );
+}
+
+.btn-more-x-padding {
+  @include button-size($btn-padding-y, $btn-padding-x-long, $btn-font-size, $btn-border-radius);
+}
+
+.btn-lg-more-x-padding {
+  @include button-size(
+    $btn-padding-y-lg,
+    $btn-padding-x-lg-long,
+    $btn-font-size-lg,
+    $btn-border-radius-lg
+  );
+}
+
+.btn-sm-more-x-padding {
+  @include button-size(
+    $btn-padding-y-sm,
+    $btn-padding-x-sm-long,
+    $btn-font-size-sm,
+    $btn-border-radius-sm
+  );
+}
+
+// Transparent background and border properties included for button version.
+// iOS requires the button element instead of an anchor tag.
+// If you want the anchor version, it requires `href="#"`.
+// See https://developer.mozilla.org/en-US/docs/Web/Events/click#Safari_Mobile
+
+.btn-close {
+  // scss-docs-start close-css-vars
+  --#{$prefix}btn-close-color: #{$btn-close-color};
+  --#{$prefix}btn-close-bg: #{escape-svg($btn-close-bg)};
+  --#{$prefix}btn-close-opacity: #{$btn-close-opacity};
+  --#{$prefix}btn-close-hover-opacity: #{$btn-close-hover-opacity};
+  --#{$prefix}btn-close-focus-shadow: #{$btn-close-focus-shadow};
+  --#{$prefix}btn-close-focus-opacity: #{$btn-close-focus-opacity};
+  --#{$prefix}btn-close-disabled-opacity: #{$btn-close-disabled-opacity};
+  --#{$prefix}btn-close-white-filter: #{$btn-close-white-filter};
+  // scss-docs-end close-css-vars
+
+  box-sizing: content-box;
+  width: $btn-close-width;
+  height: $btn-close-height;
+  padding: $btn-close-padding-y $btn-close-padding-x;
+  color: var(--#{$prefix}btn-close-color);
+  background: transparent var(--#{$prefix}btn-close-bg) center / $btn-close-width auto no-repeat; // include transparent for button elements
+  border: 0; // for button elements
+  @include border-radius();
+  opacity: var(--#{$prefix}btn-close-opacity);
+
+  // Override <a>'s hover style
+  &:hover {
+    color: var(--#{$prefix}btn-close-color);
+    text-decoration: none;
+    opacity: var(--#{$prefix}btn-close-hover-opacity);
+  }
+
+  &:focus {
+    outline: 0;
+    box-shadow: var(--#{$prefix}btn-close-focus-shadow);
+    opacity: var(--#{$prefix}btn-close-focus-opacity);
+  }
+
+  &:disabled,
+  &.disabled {
+    pointer-events: none;
+    user-select: none;
+    opacity: var(--#{$prefix}btn-close-disabled-opacity);
+  }
+}
+
+@mixin btn-close-white() {
+  filter: var(--#{$prefix}btn-close-white-filter);
+}
+
+.btn-close-white {
+  @include btn-close-white();
+}
+
+@if $enable-dark-mode {
+  @include color-mode(dark) {
+    .btn-close {
+      @include btn-close-white();
+    }
+  }
+}

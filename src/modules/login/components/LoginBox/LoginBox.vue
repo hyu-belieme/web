@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import BasicButton from '@common/components/buttons/BasicButton/BasicButton.vue';
+
 const ORIGIN_AND_BASE_URL = window.location.origin + import.meta.env.BASE_URL;
 const LOGIN_REDIRECT_PAGE_URL = `${ORIGIN_AND_BASE_URL}login/redirect/`;
 const HANYANG_PORTAL_LOGIN_API_URL = `http://api.hanyang.ac.kr/oauth/authorize?client_id=${
@@ -14,9 +16,8 @@ function redirectToHanyangLogin() {
   <section class="login-box">
     <section class="login-box-content">
       <span>로그인 후에 이용 가능합니다.</span>
-      <button class="btn btn-primary btn-sm" @click="redirectToHanyangLogin()">
-        한양 포탈으로 로그인
-      </button>
+      <BasicButton :size="'sm'" :content="'한양 포탈으로 로그인'" @click="redirectToHanyangLogin()">
+      </BasicButton>
     </section>
   </section>
 </template>
