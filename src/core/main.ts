@@ -1,6 +1,5 @@
 import '@vueuse/core';
 import 'axios';
-import 'bootstrap';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
