@@ -14,8 +14,8 @@ withDefaults(
 <template>
   <svg
     :class="spin ? 'spin-animation' : ''"
-    :width="64 * multiplier"
-    :height="64 * multiplier"
+    :width="`${4 * multiplier}rem`"
+    :height="`${4 * multiplier}rem`"
     viewBox="0 0 64 64"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"

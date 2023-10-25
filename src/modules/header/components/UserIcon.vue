@@ -3,8 +3,8 @@
 <template>
   <svg
     class="total-part"
-    width="30"
-    height="24"
+    width="1.875rem"
+    height="1.5rem"
     viewBox="0 0 30 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
