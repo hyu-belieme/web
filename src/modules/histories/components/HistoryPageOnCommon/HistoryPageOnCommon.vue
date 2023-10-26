@@ -19,8 +19,16 @@ const dataLoadStatus = computed(() => {
 </script>
 
 <template>
-  <HistoryList></HistoryList>
-  <HistoryDetail :inheritStatus="dataLoadStatus" :key="selectedId"></HistoryDetail>
+  <section class="history-content-frame h-100 w-100">
+    <HistoryList></HistoryList>
+    <HistoryDetail :inheritStatus="dataLoadStatus" :key="selectedId"></HistoryDetail>
+  </section>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.history-content-frame {
+  display: flex;
+  flex-direction: row;
+  gap: map-get($map: $spacers, $key: 3);
+}
+</style>
