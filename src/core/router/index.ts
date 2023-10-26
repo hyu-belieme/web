@@ -50,6 +50,15 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('@^histories/HistoryPage.vue'),
     },
+    {
+      path: '/users',
+      name: 'users',
+      meta: { onlyAccessAfterAuth: true },
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('@^users/UserPage.vue'),
+    },
   ],
 });
 

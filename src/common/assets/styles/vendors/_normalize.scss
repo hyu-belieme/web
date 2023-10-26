@@ -168,6 +168,13 @@ textarea {
   margin: 0; /* 2 */
 }
 
+input::placeholder {
+  color: $gray-500;
+}
+
+textarea::placeholder {
+  color: $gray-500;
+}
 /**
  * Show the overflow in IE.
  * 1. Show the overflow in Edge.

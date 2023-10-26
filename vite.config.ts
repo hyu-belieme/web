@@ -16,6 +16,7 @@ export default defineConfig({
       '@^login': fileURLToPath(new URL('./src/modules/login', import.meta.url)),
       '@^stuffs': fileURLToPath(new URL('./src/modules/stuffs', import.meta.url)),
       '@^histories': fileURLToPath(new URL('./src/modules/histories', import.meta.url)),
+      '@^users': fileURLToPath(new URL('./src/modules/users', import.meta.url)),
     },
   },
   css: {
