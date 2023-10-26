@@ -17,7 +17,7 @@
     <ButtonBase :size="'xsm'">
       <section class="d-flex flex-row gap-1 align-items-center">
         <span class="lh-sm">등록하기</span>
-        <PlusIcon :multiplier="0.5" :color="'white'"></PlusIcon>
+        <PlusIcon :multiplier="0.5" :color="'white'" hover="off"></PlusIcon>
       </section>
     </ButtonBase>
   </section>

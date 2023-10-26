@@ -138,7 +138,7 @@ onBeforeMount(() => {
       v-bind:color="'light'"
       @click="pushNewItem()"
     >
-      <PlusIcon :color="'dark'"></PlusIcon>
+      <PlusIcon :color="'dark'" hover="off"></PlusIcon>
     </ButtonBase>
   </section>
 </template>

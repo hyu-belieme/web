@@ -1,5 +1,6 @@
 <template>
   <svg
+    :class="`color-${color}-hover-${hover}`"
     :width="`${1.5 * multiplier}rem`"
     :height="`${1.5 * multiplier}rem`"
     viewBox="0 0 24 24"
@@ -7,9 +8,8 @@
     xmlns="http://www.w3.org/2000/svg"
   >
     <path
-      :class="`color-${color}`"
+      class="stroke-color"
       d="M15 15L21 21M10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10C17 13.866 13.866 17 10 17Z"
-      stroke="#2E2C2D"
       stroke-width="2"
       stroke-linecap="round"
       stroke-linejoin="round"
@@ -20,10 +20,12 @@
 <script setup lang="ts">
 withDefaults(
   defineProps<{
+    hover?: 'on' | 'off';
     color?: string;
     multiplier?: number;
   }>(),
   {
+    hover: 'on',
     color: 'dark',
     multiplier: 1,
   }
@@ -31,15 +33,35 @@ withDefaults(
 </script>
 
 <style scoped lang="scss">
+$component-prefix: 'magnifier-icon';
+
 @each $color, $value in $theme-colors {
-  .color-#{$color} {
-    stroke: $value;
+  .color-#{$color}-hover-on {
+    --#{$prefix}--#{$component-prefix}-color: #{$value};
+    &:hover {
+      --#{$prefix}--#{$component-prefix}-color: #{hover-color($value)};
+    }
+  }
+
+  .color-#{$color}-hover-off {
+    --#{$prefix}--#{$component-prefix}-color: #{$value};
   }
 }
 
 @each $color, $value in $colors {
-  .color-#{$color} {
-    stroke: $value;
+  .color-#{$color}-hover-on {
+    --#{$prefix}--#{$component-prefix}-color: #{$value};
+    &:hover {
+      --#{$prefix}--#{$component-prefix}-color: #{hover-color($value)};
+    }
   }
+
+  .color-#{$color}-hover-off {
+    --#{$prefix}--#{$component-prefix}-color: #{$value};
+  }
+}
+
+.stroke-color {
+  stroke: var(--#{$prefix}--#{$component-prefix}-color);
 }
 </style>

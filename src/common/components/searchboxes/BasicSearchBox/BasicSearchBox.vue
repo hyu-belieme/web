@@ -1,11 +1,13 @@
 <template>
   <section class="search-box">
-    <MagnifierIcon :color="'hint'" class="mx-1"></MagnifierIcon>
+    <MagnifierIcon :color="'hint'" :hover="'off'" class="mx-1"></MagnifierIcon>
     <input type="text" class="form-control" placeholder="물품 이름을 입력해주세요." />
+    <CircleXIcon :color="'hint'" :multiplier="0.7" class="mx-1"></CircleXIcon>
   </section>
 </template>
 
 <script setup lang="ts">
+import CircleXIcon from '@common/components/icons/CircleXIcon/CircleXIcon.vue';
 import MagnifierIcon from '@common/components/icons/MagnifierIcon/MagnifierIcon.vue';
 </script>
 

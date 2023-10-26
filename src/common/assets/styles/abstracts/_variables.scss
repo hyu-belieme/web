@@ -117,6 +117,9 @@ $min-contrast-ratio: 4.5 !default;
 $color-contrast-dark: $gray-900 !default;
 $color-contrast-light: $white !default;
 
+$hover-bg-shade-amount: 15% !default;
+$hover-bg-tint-amount: 15% !default;
+
 // fusv-disable
 $blue-100: tint-color($blue, 80%) !default;
 $blue-200: tint-color($blue, 60%) !default;

@@ -2,11 +2,13 @@
 withDefaults(
   defineProps<{
     state: 'showed' | 'hidden';
+    hover?: 'on' | 'off';
     color?: string;
     multiplier?: number;
   }>(),
   {
     state: 'hidden',
+    hover: 'on',
     color: 'dark',
     multiplier: 1,
   }
@@ -16,7 +18,7 @@ withDefaults(
 <template>
   <svg
     v-if="state === 'hidden'"
-    :class="['hider-checkbox', `hider-checkbox-${color}`]"
+    :class="`color-${color}-hover-${hover}`"
     :width="`${1.5 * multiplier}rem`"
     :height="`${1 * multiplier}rem`"
     viewBox="0 0 24 16"
@@ -32,7 +34,7 @@ withDefaults(
   </svg>
   <svg
     v-else
-    :class="['hider-checkbox', `hider-checkbox-${color}`]"
+    :class="`color-${color}-hover-${hover}`"
     :width="`${1.5 * multiplier}rem`"
     :height="`${1 * multiplier}rem`"
     viewBox="0 0 24 16"
@@ -49,22 +51,35 @@ withDefaults(
 </template>
 
 <style scoped lang="scss">
-.hider-checkbox {
-}
+$component-prefix: 'hider-checkbox';
 
 @each $color, $value in $theme-colors {
-  .hider-checkbox-#{$color} {
-    --#{$prefix}hider-checkbox-color: #{$value};
+  .color-#{$color}-hover-on {
+    --#{$prefix}--#{$component-prefix}-color: #{$value};
+    &:hover {
+      --#{$prefix}--#{$component-prefix}-color: #{hover-color($value)};
+    }
+  }
+
+  .color-#{$color}-hover-off {
+    --#{$prefix}--#{$component-prefix}-color: #{$value};
   }
 }
 
 @each $color, $value in $colors {
-  .hider-checkbox-#{$color} {
-    --#{$prefix}hider-checkbox-color: #{$value};
+  .color-#{$color}-hover-on {
+    --#{$prefix}--#{$component-prefix}-color: #{$value};
+    &:hover {
+      --#{$prefix}--#{$component-prefix}-color: #{hover-color($value)};
+    }
+  }
+
+  .color-#{$color}-hover-off {
+    --#{$prefix}--#{$component-prefix}-color: #{$value};
   }
 }
 
 .fill-color {
-  fill: var(--#{$prefix}hider-checkbox-color);
+  fill: var(--#{$prefix}--#{$component-prefix}-color);
 }
 </style>
