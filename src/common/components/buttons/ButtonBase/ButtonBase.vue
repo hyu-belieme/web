@@ -2,7 +2,7 @@
 withDefaults(
   defineProps<{
     color?: string;
-    size?: '' | 'sm' | 'lg';
+    size?: '' | 'xsm' | 'sm' | 'lg';
   }>(),
   {
     content: '',

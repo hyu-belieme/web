@@ -160,7 +160,7 @@
     @if $color == 'light' {
       @include button-variant(
         $value,
-        $value,
+        $gray-200,
         $hover-background: shade-color($value, $btn-hover-bg-shade-amount),
         $hover-border: shade-color($value, $btn-hover-border-shade-amount),
         $active-background: shade-color($value, $btn-active-bg-shade-amount),
@@ -206,6 +206,15 @@
     $btn-padding-y-sm,
     $btn-padding-x-sm,
     $btn-font-size-sm,
+    $btn-border-radius-sm
+  );
+}
+
+.btn-xsm {
+  @include button-size(
+    $btn-padding-y-sm,
+    $btn-padding-x-sm,
+    $btn-font-size-xsm,
     $btn-border-radius-sm
   );
 }
