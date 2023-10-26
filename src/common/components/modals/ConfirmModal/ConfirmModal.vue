@@ -45,7 +45,7 @@ withDefaults(
         </BasicButton>
         <BasicButton
           v-if="rejectLabel !== ''"
-          color="gray"
+          color="light"
           :content="rejectLabel"
           @click="$emit('reject')"
         >

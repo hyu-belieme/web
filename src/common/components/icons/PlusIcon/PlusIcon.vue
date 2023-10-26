@@ -1,11 +1,11 @@
 <script setup lang="ts">
 withDefaults(
   defineProps<{
-    color?: 'dark' | 'light';
+    color?: string;
     multiplier?: number;
   }>(),
   {
-    color: 'light',
+    color: 'dark',
     multiplier: 1,
   }
 );
@@ -37,11 +37,15 @@ withDefaults(
 </template>
 
 <style lang="scss" scoped>
-.color-dark {
-  stroke: $dark;
+@each $color, $value in $theme-colors {
+  .color-#{$color} {
+    stroke: $value;
+  }
 }
 
-.color-light {
-  stroke: $white;
+@each $color, $value in $colors {
+  .color-#{$color} {
+    stroke: $value;
+  }
 }
 </style>

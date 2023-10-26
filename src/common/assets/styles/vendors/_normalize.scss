@@ -169,11 +169,11 @@ textarea {
 }
 
 input::placeholder {
-  color: $gray-500;
+  color: $hint;
 }
 
 textarea::placeholder {
-  color: $gray-500;
+  color: $hint;
 }
 /**
  * Show the overflow in IE.

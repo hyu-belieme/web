@@ -190,7 +190,7 @@ onBeforeMount(() => {
             <BasicButton
               v-bind="{
                 size: 'sm',
-                color: 'gray',
+                color: 'light',
                 content: '뒤로',
               }"
               @click="

@@ -31,21 +31,15 @@ withDefaults(
 </script>
 
 <style scoped lang="scss">
-.color-dark {
-  stroke: $dark;
-}
-
-@for $i from 1 to 9 {
-  .color-gray-#{$i * 100} {
-    stroke: map-get($grays, '#{$i * 100}');
+@each $color, $value in $theme-colors {
+  .color-#{$color} {
+    stroke: $value;
   }
 }
 
-.color-gray {
-  stroke: $gray-700;
-}
-
-.color-light {
-  stroke: $white;
+@each $color, $value in $colors {
+  .color-#{$color} {
+    stroke: $value;
+  }
 }
 </style>

@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import ButtonBase from '@common/components/buttons/ButtonBase/ButtonBase.vue';
+
 const props = withDefaults(
   defineProps<{
     content?: string;
     color?: string;
-    size?: '' | 'sm' | 'lg';
+    size?: string;
   }>(),
   {
     content: '',
@@ -20,32 +22,11 @@ if (isContentTooShort) {
 </script>
 
 <template>
-  <button
-    :class="[
-      'btn',
-      'btn-' + (color === '' ? 'primary' : color),
-      (size === '' ? 'btn' : 'btn-' + size) + btnSizeClassPostfix,
-    ]"
-  >
+  <ButtonBase :color="color" :size="size + btnSizeClassPostfix">
     {{ content }}
-  </button>
+  </ButtonBase>
 </template>
 
 <style scoped lang="scss">
 @import '../styles/main';
-
-.btn-gray {
-  $btn-gray-base-background: $gray-100;
-  $btn-gray-base-border-border: $gray-200;
-  @include button-variant(
-    $background: $gray-100,
-    $border: $btn-gray-base-border-border,
-    $hover-background: $gray-300,
-    $hover-border: $btn-gray-base-border-border,
-    $active-background: shade-color($btn-gray-base-background, $btn-active-bg-tint-amount),
-    $active-border: $btn-gray-base-border-border,
-    $disabled-background: $gray-50,
-    $disabled-border: $btn-gray-base-border-border
-  );
-}
 </style>

@@ -181,7 +181,39 @@
   }
 }
 
+@each $color, $value in $colors {
+  .btn-#{$color} {
+    @if $color == 'white' {
+      @include button-variant(
+        $value,
+        $gray-200,
+        $hover-background: shade-color($value, $btn-hover-bg-shade-amount),
+        $hover-border: shade-color($value, $btn-hover-border-shade-amount),
+        $active-background: shade-color($value, $btn-active-bg-shade-amount),
+        $active-border: shade-color($value, $btn-active-border-shade-amount)
+      );
+    } @else if $color == 'black' {
+      @include button-variant(
+        $value,
+        $value,
+        $hover-background: tint-color($value, $btn-hover-bg-tint-amount),
+        $hover-border: tint-color($value, $btn-hover-border-tint-amount),
+        $active-background: tint-color($value, $btn-active-bg-tint-amount),
+        $active-border: tint-color($value, $btn-active-border-tint-amount)
+      );
+    } @else {
+      @include button-variant($value, $value);
+    }
+  }
+}
+
 @each $color, $value in $theme-colors {
+  .btn-outline-#{$color} {
+    @include button-outline-variant($value);
+  }
+}
+
+@each $color, $value in $colors {
   .btn-outline-#{$color} {
     @include button-outline-variant($value);
   }
@@ -237,6 +269,15 @@
     $btn-padding-y-sm,
     $btn-padding-x-sm-long,
     $btn-font-size-sm,
+    $btn-border-radius-sm
+  );
+}
+
+.btn-xsm-more-x-padding {
+  @include button-size(
+    $btn-padding-y-sm,
+    $btn-padding-x-sm-long,
+    $btn-font-size-xsm,
     $btn-border-radius-sm
   );
 }

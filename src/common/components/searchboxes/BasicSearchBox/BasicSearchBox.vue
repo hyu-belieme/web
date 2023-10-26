@@ -1,6 +1,6 @@
 <template>
   <section class="search-box">
-    <MagnifierIcon :color="'gray-400'" class="mx-1"></MagnifierIcon>
+    <MagnifierIcon :color="'hint'" class="mx-1"></MagnifierIcon>
     <input type="text" class="form-control" placeholder="물품 이름을 입력해주세요." />
   </section>
 </template>

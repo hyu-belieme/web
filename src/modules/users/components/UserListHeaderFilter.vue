@@ -4,20 +4,20 @@
       <ButtonBase :size="'xsm'" :color="'dark'">
         <span class="lh-sm">전체</span>
       </ButtonBase>
-      <ButtonBase :size="'xsm'" :color="'light'">
+      <ButtonBase :size="'xsm'" :color="'white'">
         <span class="lh-sm">일반 유저만</span>
       </ButtonBase>
-      <ButtonBase :size="'xsm'" :color="'light'">
+      <ButtonBase :size="'xsm'" :color="'white'">
         <span class="lh-sm">관리자 유저만</span>
       </ButtonBase>
-      <ButtonBase :size="'xsm'" :color="'light'">
+      <ButtonBase :size="'xsm'" :color="'white'">
         <span class="lh-sm">차단된 유저만</span>
       </ButtonBase>
     </section>
     <ButtonBase :size="'xsm'">
       <section class="d-flex flex-row gap-1 align-items-center">
         <span class="lh-sm">등록하기</span>
-        <PlusIcon :multiplier="0.5" :color="'light'"></PlusIcon>
+        <PlusIcon :multiplier="0.5" :color="'white'"></PlusIcon>
       </section>
     </ButtonBase>
   </section>

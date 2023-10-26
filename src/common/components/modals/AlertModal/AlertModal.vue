@@ -37,7 +37,7 @@ withDefaults(
     </template>
     <template v-slot:footer>
       <div class="d-flex flex-gap-2">
-        <BasicButton color="gray" content="뒤로가기" @click="$emit('close')"> </BasicButton>
+        <BasicButton color="light" content="뒤로가기" @click="$emit('close')"> </BasicButton>
       </div>
     </template>
   </BasicModal>

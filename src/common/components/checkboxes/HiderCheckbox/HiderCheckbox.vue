@@ -2,7 +2,7 @@
 withDefaults(
   defineProps<{
     state: 'showed' | 'hidden';
-    color?: 'dark' | 'light' | 'gray';
+    color?: string;
     multiplier?: number;
   }>(),
   {
@@ -52,16 +52,16 @@ withDefaults(
 .hider-checkbox {
 }
 
-.hider-checkbox-dark {
-  --#{$prefix}hider-checkbox-color: #{$dark};
+@each $color, $value in $theme-colors {
+  .hider-checkbox-#{$color} {
+    --#{$prefix}hider-checkbox-color: #{$value};
+  }
 }
 
-.hider-checkbox-light {
-  --#{$prefix}hider-checkbox-color: #{$light};
-}
-
-.hider-checkbox-gray {
-  --#{$prefix}hider-checkbox-color: #{$gray-700};
+@each $color, $value in $colors {
+  .hider-checkbox-#{$color} {
+    --#{$prefix}hider-checkbox-color: #{$value};
+  }
 }
 
 .fill-color {

@@ -2,10 +2,9 @@
 withDefaults(
   defineProps<{
     color?: string;
-    size?: '' | 'xsm' | 'sm' | 'lg';
+    size?: string;
   }>(),
   {
-    content: '',
     color: 'primary',
     size: '',
   }
@@ -26,19 +25,4 @@ withDefaults(
 
 <style scoped lang="scss">
 @import '../styles/main';
-
-.btn-gray {
-  $btn-gray-base-background: $gray-100;
-  $btn-gray-base-border-border: $gray-200;
-  @include button-variant(
-    $background: $gray-100,
-    $border: $btn-gray-base-border-border,
-    $hover-background: $gray-300,
-    $hover-border: $btn-gray-base-border-border,
-    $active-background: shade-color($btn-gray-base-background, $btn-active-bg-tint-amount),
-    $active-border: $btn-gray-base-border-border,
-    $disabled-background: $gray-50,
-    $disabled-border: $btn-gray-base-border-border
-  );
-}
 </style>
