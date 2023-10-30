@@ -196,7 +196,9 @@ function timestampByStatus(item: ItemInfoOnly) {
       <template v-else-if="(viewMode === 'SHOW' && userMode === 'STAFF') || userMode === 'MASTER'">
         <FitContentDropdown v-bind:align="'right'" v-bind:type="'hover'">
           <template v-slot:trigger>
-            <ThreeDotsButton></ThreeDotsButton>
+            <section class="p-1">
+              <ThreeDotsButton></ThreeDotsButton>
+            </section>
           </template>
           <template v-slot:menu="{ closeDropdown }">
             <li v-if="item.status === 'USABLE'">

@@ -6,13 +6,11 @@ import DropdownBase from '@common/components/dropdowns/DropdownBase/DropdownBase
 withDefaults(
   defineProps<{
     type?: 'hover' | 'toggle';
-    align?: 'left' | 'right';
     opened?: boolean;
     disabled?: boolean;
   }>(),
   {
     type: 'hover',
-    align: 'left',
     opened: false,
     disabled: false,
   }
@@ -30,10 +28,7 @@ defineExpose({
       <slot name="trigger"></slot>
     </template>
     <template v-slot:menu="{ closeDropdown }">
-      <ul
-        ref="dropdownBody"
-        :class="['dropdown-menu', align + '-aligned', dropdownBaseRef?.openedRef() ? 'show' : '']"
-      >
+      <ul ref="dropdownBody" :class="['dropdown-menu', dropdownBaseRef?.openedRef() ? 'show' : '']">
         <slot name="menu" :closeDropdown="closeDropdown"></slot>
       </ul>
     </template>
@@ -45,13 +40,6 @@ defineExpose({
 
 .dropdown-menu {
   --#{$prefix}dropdown-min-width: 0;
-}
-
-.right-aligned {
-  right: 0;
-}
-
-.left-aligned {
-  left: 0;
+  width: 100%;
 }
 </style>

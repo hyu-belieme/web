@@ -6,11 +6,13 @@ const props = withDefaults(
     content?: string;
     color?: string;
     size?: string;
+    disabled?: boolean;
   }>(),
   {
     content: '',
     color: 'primary',
     size: '',
+    disabled: false,
   }
 );
 
@@ -22,7 +24,7 @@ if (isContentTooShort) {
 </script>
 
 <template>
-  <ButtonBase :color="color" :size="size + btnSizeClassPostfix">
+  <ButtonBase :color="color" :size="size + btnSizeClassPostfix" :disabled="disabled">
     {{ content }}
   </ButtonBase>
 </template>

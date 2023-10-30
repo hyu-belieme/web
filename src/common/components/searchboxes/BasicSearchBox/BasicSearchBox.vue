@@ -2,7 +2,9 @@
   <section class="search-box">
     <MagnifierIcon :color="'hint'" :hover="'off'" class="mx-1"></MagnifierIcon>
     <input type="text" class="form-control" placeholder="물품 이름을 입력해주세요." />
-    <CircleXIcon :color="'hint'" :multiplier="0.7" class="mx-1"></CircleXIcon>
+    <section>
+      <CircleXIcon :color="'hint'" :multiplier="0.7" class="mx-1"></CircleXIcon>
+    </section>
   </section>
 </template>
 

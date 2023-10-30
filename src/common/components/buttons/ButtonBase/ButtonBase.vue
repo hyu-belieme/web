@@ -3,10 +3,12 @@ withDefaults(
   defineProps<{
     color?: string;
     size?: string;
+    disabled?: boolean;
   }>(),
   {
     color: 'primary',
     size: '',
+    disabled: false,
   }
 );
 </script>
@@ -18,6 +20,7 @@ withDefaults(
       'btn-' + (color === '' ? 'primary' : color),
       size === '' ? 'btn' : 'btn-' + size,
     ]"
+    :disabled="disabled"
   >
     <slot></slot>
   </button>

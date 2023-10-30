@@ -22,7 +22,9 @@ const { loggedInUser } = useLoggedInUserStorage();
     <section class="flex-grow-0">
       <BasicDropdown v-bind:align="'right'" v-bind:type="'hover'">
         <template v-slot:trigger>
-          <UserIcon></UserIcon>
+          <section class="p-1">
+            <UserIcon></UserIcon>
+          </section>
         </template>
         <template v-slot:menu="{ closeDropdown }">
           <UserDropdownBody

@@ -1,5 +1,5 @@
 <template>
-  <section class="d-flex flex-column w-100">
+  <section class="d-flex flex-column w-100 border-bottom">
     <UserListHeaderFilter></UserListHeaderFilter>
     <UserListHeaderLabel></UserListHeaderLabel>
   </section>
