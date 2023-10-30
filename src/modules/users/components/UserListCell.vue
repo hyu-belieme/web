@@ -12,6 +12,7 @@
       </section>
       <BasicSelector
         class="authority-selector"
+        size="xsm"
         :disabled="false"
         :options="
           Map({

@@ -6,7 +6,7 @@
       'pe-2',
       state === 'focused' ? 'selector-button-focused' : '',
     ]"
-    :size="'xsm'"
+    :size="size"
     :color="'white'"
     :disabled="state === 'disabled'"
   >
@@ -14,7 +14,9 @@
       <span class="lh-sm w-0 flex-grow-1">{{ content }}</span>
       <TriangleIcon
         :class="state === 'focused' ? 'rotate-180' : ''"
-        :multiplier="0.33"
+        :multiplier="
+          0.5 * (size === 'xsm' ? 0.75 : size === 'sm' ? 0.875 : size === 'lg' ? 1.25 : 1)
+        "
       ></TriangleIcon>
     </section>
   </ButtonBase>
@@ -26,6 +28,7 @@ import TriangleIcon from '@common/components/icons/TriangleIcon/TriangleIcon.vue
 
 withDefaults(
   defineProps<{
+    size?: '' | 'xsm' | 'sm' | 'lg';
     state?: 'unfocused' | 'focused' | 'disabled';
     content?: string;
   }>(),

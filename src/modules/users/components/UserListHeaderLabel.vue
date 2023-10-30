@@ -1,6 +1,6 @@
 <template>
   <section class="d-flex flex-row align-items-center px-2">
-    <BasicCheckbox class="mx-1"></BasicCheckbox>
+    <BasicCheckbox class="mx-1" name="user-checkbox"></BasicCheckbox>
     <section
       class="px-1 py-1 w-0 flex-grow-1 d-flex flex-row align-items-center justify-content-between"
     >
@@ -10,6 +10,7 @@
       </section>
       <BasicSelector
         class="authority-selector"
+        size="xsm"
         :disabled="false"
         :options="
           Map({

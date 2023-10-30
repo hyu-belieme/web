@@ -9,6 +9,7 @@
     <template v-slot:trigger>
       <section class="pb-1">
         <BasicSelectorTrigger
+          :size="size"
           :state="
             disabled ? 'disabled' : dropdownRef?.openedRef() === true ? 'focused' : 'unfocused'
           "
@@ -19,7 +20,7 @@
     <template v-slot:menu="{ closeDropdown }">
       <li v-for="option of options" :key="option[0]" class="w-100">
         <span
-          class="dropdown-item py-1 px-1 lh-sm fs-xsm"
+          :class="['dropdown-item', 'py-1', 'px-1', 'lh-sm', size !== '' ? 'fs-' + size : '']"
           @click="
             () => {
               selectedKey = option[0];
@@ -43,11 +44,13 @@ import BasicSelectorTrigger from '@common/components/selectors/BasicSelector/Bas
 
 const props = withDefaults(
   defineProps<{
+    size?: '' | 'xsm' | 'sm' | 'lg';
     disabled?: boolean;
     initialKey?: string;
     options: Map<string, { label: string; value: string }>;
   }>(),
   {
+    size: '',
     disabled: false,
     initialKey: '',
   }
