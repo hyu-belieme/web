@@ -67,29 +67,16 @@ $checkbox-size-base: 1rem;
     display: none;
   }
 
+  @each $key, $value in $size-ratios {
+    &-#{$key} {
+      width: $checkbox-size-base * $value;
+      height: $checkbox-size-base * $value;
+    }
+  }
+
   &-disabled {
     // filter: brightness(0.8);
     opacity: 0.7;
-  }
-
-  &-xsm {
-    width: $checkbox-size-base * 0.75;
-    height: $checkbox-size-base * 0.75;
-  }
-
-  &-sm {
-    width: $checkbox-size-base * 0.875;
-    height: $checkbox-size-base * 0.875;
-  }
-
-  &-lg {
-    width: $checkbox-size-base * 1.25;
-    height: $checkbox-size-base * 1.25;
-  }
-
-  &-xlg {
-    width: $checkbox-size-base * 1.5;
-    height: $checkbox-size-base * 1.5;
   }
 }
 

@@ -90,7 +90,7 @@ function logout() {
 }
 
 .user-sub-info {
-  font-size: $font-size-xsm;
+  font-size: $font-size-xs;
   font-weight: $font-weight-light;
 }
 </style>

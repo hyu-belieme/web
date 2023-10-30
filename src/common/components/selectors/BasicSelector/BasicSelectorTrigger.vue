@@ -12,12 +12,9 @@
   >
     <section class="w-100 h-100 d-flex align-items-center">
       <span class="lh-sm w-0 flex-grow-1">{{ content }}</span>
-      <TriangleIcon
-        :class="state === 'focused' ? 'rotate-180' : ''"
-        :multiplier="
-          0.5 * (size === 'xsm' ? 0.75 : size === 'sm' ? 0.875 : size === 'lg' ? 1.25 : 1)
-        "
-      ></TriangleIcon>
+      <section :class="['triangle-icon-' + size, 'd-flex', 'align-items-center']">
+        <TriangleIcon :class="state === 'focused' ? 'rotate-180' : ''" size="100"></TriangleIcon>
+      </section>
     </section>
   </ButtonBase>
 </template>
@@ -28,7 +25,7 @@ import TriangleIcon from '@common/components/icons/TriangleIcon/TriangleIcon.vue
 
 withDefaults(
   defineProps<{
-    size?: '' | 'xsm' | 'sm' | 'lg';
+    size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
     state?: 'unfocused' | 'focused' | 'disabled';
     content?: string;
   }>(),
@@ -41,6 +38,13 @@ withDefaults(
 
 <style scoped lang="scss">
 $component-prefix: 'basic-selector-trigger';
+
+@each $key, $value in $size-ratios {
+  .triangle-icon-#{$key} {
+    width: #{0.75 * $value}rem;
+    height: #{0.75 * $value}rem;
+  }
+}
 
 .rotate-180 {
   transform: rotate(180deg);

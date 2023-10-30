@@ -139,7 +139,7 @@ onBeforeMount(() => {
     </section>
     <section class="label-and-desc">
       <section v-if="viewMode === 'SHOW'" class="label">
-        <section class="name fs-xlg fw-semibold">
+        <section class="name fs-xl fw-semibold">
           <span>{{ data?.name }}</span>
         </section>
         <template v-if="userMode === 'STAFF' || userMode === 'MASTER'">
@@ -202,7 +202,7 @@ onBeforeMount(() => {
           </section>
         </template>
       </section>
-      <div class="desc fs-xsm fw-light">
+      <div class="desc fs-xs fw-light">
         <span v-if="viewMode === 'SHOW'" class="p-1">
           {{ LOREM_IPSUM }}
         </span>

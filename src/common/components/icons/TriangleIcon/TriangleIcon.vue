@@ -3,21 +3,19 @@ withDefaults(
   defineProps<{
     hover?: 'on' | 'off';
     color?: string;
-    multiplier?: number;
+    size?: '100' | 'auto' | 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   }>(),
   {
     hover: 'on',
     color: 'dark',
-    multiplier: 1,
+    size: 'md',
   }
 );
 </script>
 
 <template>
   <svg
-    :class="`color-${color}-hover-${hover}`"
-    :width="`${1.5 * multiplier}rem`"
-    :height="`${1.5 * multiplier}rem`"
+    :class="[`color-${color}-hover-${hover}`, `size-${size}`]"
     viewBox="0 0 24 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -33,6 +31,24 @@ withDefaults(
 
 <style lang="scss" scoped>
 $component-prefix: 'triangle-icon';
+$size-base: 1.5;
+
+.size-100 {
+  width: 100%;
+  height: 100%;
+}
+
+.size-auto {
+  width: auto;
+  height: auto;
+}
+
+@each $key, $value in $size-ratios {
+  .size-#{$key} {
+    width: #{$size-base * $value}rem;
+    height: #{$size-base * $value}rem;
+  }
+}
 
 @each $color, $value in $theme-colors {
   .color-#{$color}-hover-on {

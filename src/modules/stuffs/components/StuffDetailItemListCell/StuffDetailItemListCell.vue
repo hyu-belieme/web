@@ -163,7 +163,7 @@ function timestampByStatus(item: ItemInfoOnly) {
 <template>
   <section class="cell">
     <section class="numbering">
-      <span class="position-absolute start-50 top-50 translate-middle fs-xlg fw-bold">
+      <span class="position-absolute start-50 top-50 translate-middle fs-xl fw-bold">
         {{ item.num }}
       </span>
     </section>
@@ -246,10 +246,12 @@ function timestampByStatus(item: ItemInfoOnly) {
       <template v-else>
         <MinusButton
           v-if="viewMode === 'ADD' || viewMode === 'INITIAL_ADD' || item.id === NIL_UUID"
-          v-bind:onClick="() => emit('popItem')"
+          size="xs"
+          color="danger"
+          :onClick="() => emit('popItem')"
         >
         </MinusButton>
-        <MinusButton v-else v-bind:disabled="true"></MinusButton>
+        <MinusButton v-else size="xs" color="danger" :disabled="true"></MinusButton>
       </template>
     </section>
   </section>

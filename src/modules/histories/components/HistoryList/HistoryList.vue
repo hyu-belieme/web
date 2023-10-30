@@ -98,7 +98,14 @@ watch(
             class="cell-hider"
           >
             <span>10개 더보기</span>
-            <HiderCheckbox :color="'gray'" :state="'hidden'" :multiplier="0.4"></HiderCheckbox>
+            <section class="hider-icon-size d-flex align-items-center">
+              <HiderCheckbox
+                class="flex-grow-1"
+                :color="'gray'"
+                :state="'hidden'"
+                size="auto"
+              ></HiderCheckbox>
+            </section>
           </section>
         </section>
       </section>
@@ -131,7 +138,7 @@ watch(
       padding-left: map-get($spacers, 2);
       padding-top: map-get($spacers, 1);
       padding-bottom: map-get($spacers, 1);
-      font-size: $font-size-xsm;
+      font-size: $font-size-xs;
       font-weight: $font-weight-light;
     }
 
@@ -144,7 +151,7 @@ watch(
       flex-direction: column;
 
       .cell-hider {
-        font-size: $font-size-xsm;
+        font-size: $font-size-xs;
         line-height: 1;
         color: $gray-700;
 
@@ -158,6 +165,10 @@ watch(
         padding-bottom: map-get($spacers, 2);
       }
     }
+  }
+
+  .hider-icon-size {
+    width: 0.5rem;
   }
 }
 </style>

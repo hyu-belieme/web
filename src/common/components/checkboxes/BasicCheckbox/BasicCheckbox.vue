@@ -13,7 +13,7 @@
       <section class="frame bg-primary border-0">
         <CheckIcon
           class="position-absolute start-50 top-50 translate-middle"
-          :multiplier="0.5"
+          size="auto"
           hover="off"
           color="white"
         ></CheckIcon>
@@ -23,7 +23,7 @@
       <section class="frame bg-primary border-0">
         <MinusIcon
           class="on-indeterminate position-absolute start-50 top-50 translate-middle"
-          :multiplier="0.5"
+          size="auto"
           hover="off"
           color="white"
         ></MinusIcon>
@@ -37,7 +37,7 @@
       <section class="frame bg-primary border-0 bg-opacity-75">
         <CheckIcon
           class="position-absolute start-50 top-50 translate-middle"
-          :multiplier="0.5"
+          size="auto"
           hover="off"
           color="white"
         ></CheckIcon>
@@ -47,7 +47,7 @@
       <section class="frame bg-primary border-0 bg-opacity-75">
         <MinusIcon
           class="on-indeterminate position-absolute start-50 top-50 translate-middle"
-          :multiplier="0.5"
+          size="auto"
           hover="off"
           color="white"
         ></MinusIcon>
@@ -80,6 +80,7 @@ withDefaults(
 .frame {
   width: 100%;
   height: 100%;
+  padding: 2px;
 
   position: relative;
 
@@ -103,47 +104,5 @@ withDefaults(
   @include border-radius(0.2rem);
 
   filter: opacity(50%);
-}
-
-.checkbox-frame {
-  width: 1rem;
-  height: 1rem;
-
-  fill: $white;
-  border: 0.125rem solid $gray;
-  @include border-radius(0.2rem);
-
-  &:hover {
-    border: 0.125rem solid hover-color($gray);
-  }
-
-  .on-checked,
-  .on-indeterminate {
-    display: none;
-  }
-}
-
-input:checked + .checkbox-frame {
-  background-color: $primary;
-  border: none;
-  &:hover {
-    background-color: hover-color($primary);
-  }
-
-  .on-checked {
-    display: inline-block;
-  }
-}
-
-input:indeterminate + .checkbox-frame {
-  background-color: $primary;
-  border: none;
-  &:hover {
-    background-color: hover-color($primary);
-  }
-
-  .on-indeterminate {
-    display: inline-block;
-  }
 }
 </style>

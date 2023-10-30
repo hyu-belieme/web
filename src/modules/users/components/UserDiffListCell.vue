@@ -6,11 +6,11 @@
     >
       <section class="d-flex flex-row align-items-baseline gap-1">
         <span class="lh-sm">{{ user.name }}</span>
-        <span class="lh-sm text-gray fs-xsm">
+        <span class="lh-sm text-gray fs-xs">
           {{ user.university.name }} / {{ user.studentId }}
         </span>
       </section>
-      <span class="lh-sm text-gray fs-xsm"> staff → user </span>
+      <span class="lh-sm text-gray fs-xs"> staff → user </span>
     </section>
   </section>
 </template>

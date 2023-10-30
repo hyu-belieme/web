@@ -242,11 +242,11 @@
   );
 }
 
-.btn-xsm {
+.btn-xs {
   @include button-size(
     $btn-padding-y-sm,
     $btn-padding-x-sm,
-    $btn-font-size-xsm,
+    $btn-font-size-xs,
     $btn-border-radius-sm
   );
 }
@@ -273,11 +273,11 @@
   );
 }
 
-.btn-xsm-more-x-padding {
+.btn-xs-more-x-padding {
   @include button-size(
     $btn-padding-y-sm,
     $btn-padding-x-sm-long,
-    $btn-font-size-xsm,
+    $btn-font-size-xs,
     $btn-border-radius-sm
   );
 }

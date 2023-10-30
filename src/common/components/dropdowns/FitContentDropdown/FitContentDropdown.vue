@@ -32,7 +32,12 @@ defineExpose({
     <template v-slot:menu="{ closeDropdown }">
       <ul
         ref="dropdownBody"
-        :class="['dropdown-menu', align + '-aligned', dropdownBaseRef?.openedRef() ? 'show' : '']"
+        :class="[
+          'dropdown-menu',
+          type !== 'hover' ? 'mt-1' : '',
+          align + '-aligned',
+          dropdownBaseRef?.openedRef() ? 'show' : '',
+        ]"
       >
         <slot name="menu" :closeDropdown="closeDropdown"></slot>
       </ul>

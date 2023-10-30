@@ -28,7 +28,14 @@ defineExpose({
       <slot name="trigger"></slot>
     </template>
     <template v-slot:menu="{ closeDropdown }">
-      <ul ref="dropdownBody" :class="['dropdown-menu', dropdownBaseRef?.openedRef() ? 'show' : '']">
+      <ul
+        ref="dropdownBody"
+        :class="[
+          'dropdown-menu',
+          type !== 'hover' ? 'mt-1' : '',
+          dropdownBaseRef?.openedRef() ? 'show' : '',
+        ]"
+      >
         <slot name="menu" :closeDropdown="closeDropdown"></slot>
       </ul>
     </template>

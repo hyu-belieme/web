@@ -6,11 +6,11 @@
     >
       <section class="d-flex flex-row align-items-baseline gap-1">
         <span class="lh-sm">이름</span>
-        <span class="lh-sm text-gray fs-xsm">학교/학과</span>
+        <span class="lh-sm text-gray fs-xs">학교/학과</span>
       </section>
       <BasicSelector
         class="authority-selector"
-        size="xsm"
+        size="xs"
         :disabled="false"
         :options="
           Map({

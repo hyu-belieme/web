@@ -12,20 +12,20 @@
     <section class="w-100 d-flex flex-column py-2 gap-2">
       <section class="w-100 px-2">
         <section class="w-100 d-flex flex-row px-1 gap-2 align-items-center">
-          <span class="">학번</span>
+          <span>학번</span>
           <input
             type="text"
-            class="form-control edit-box flex-grow-1"
+            class="form-control edit-box flex-grow-1 fs-xs"
             placeholder="학번을 입력해주세요."
           />
         </section>
       </section>
       <section class="w-100 px-2">
         <section class="w-100 d-flex flex-row px-1 gap-2 align-items-center">
-          <span class="">권한</span>
+          <span>권한</span>
           <BasicSelector
             class="authority-selector flex-grow-1"
-            size=""
+            size="xs"
             :disabled="false"
             :options="
               Map({
