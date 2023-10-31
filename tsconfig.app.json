@@ -17,6 +17,7 @@
       "@^users/*": ["./src/modules/users/*"],
       "@modules/*": ["./src/modules/*"],
       "~/*": ["./*"]
-    }
+    },
+    "ignoreDeprecations": "5.0" // TODO: Should solve deprecation problems
   }
 }
