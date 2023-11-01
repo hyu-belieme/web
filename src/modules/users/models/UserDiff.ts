@@ -2,14 +2,15 @@ import BaseVo from '@common/models/BaseVo';
 import type { IDepartment } from '@common/models/Department';
 import Department from '@common/models/Department';
 import User, { type IUser } from '@common/models/User';
+import type AuthorityPermission from '@common/models/types/AuthorityPermission';
 
 import type { UserDiffType } from '@^users/models/types/UserDiffType';
 
 export interface IUserDiff {
   user: IUser;
   dept: IDepartment;
-  prevState: 'NIL' | 'BANNED' | 'USER' | 'STAFF' | 'MASTER' | 'DEVELOPER';
-  curState: 'NIL' | 'BANNED' | 'USER' | 'STAFF' | 'MASTER' | 'DEVELOPER';
+  prevState: AuthorityPermission;
+  curState: AuthorityPermission;
 }
 
 export class UserDiff extends BaseVo {
@@ -24,9 +25,9 @@ export class UserDiff extends BaseVo {
 
   public dept: Department;
 
-  public prevState: 'NIL' | 'BANNED' | 'USER' | 'STAFF' | 'MASTER' | 'DEVELOPER';
+  public prevState: AuthorityPermission;
 
-  public curState: 'NIL' | 'BANNED' | 'USER' | 'STAFF' | 'MASTER' | 'DEVELOPER';
+  public curState: AuthorityPermission;
 
   constructor(oth: IUserDiff) {
     super();

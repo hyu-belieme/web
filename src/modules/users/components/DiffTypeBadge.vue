@@ -2,16 +2,18 @@
   <div
     :class="[
       'diff-type-badge',
-      state === 'modified' ? 'bg-primary' : state === 'added' ? 'bg-success' : 'bg-danger',
+      state === 'MODIFIED' ? 'bg-primary' : state === 'ADDED' ? 'bg-success' : 'bg-danger',
     ]"
   >
-    <span>{{ state === 'modified' ? 'M' : state === 'added' ? 'A' : 'D' }}</span>
+    <span>{{ state === 'MODIFIED' ? 'M' : state === 'ADDED' ? 'A' : 'D' }}</span>
   </div>
 </template>
 
 <script setup lang="ts">
+import type { UserDiffType } from '@^users/models/types/UserDiffType';
+
 defineProps<{
-  state: 'modified' | 'added' | 'deleted';
+  state: UserDiffType;
 }>();
 </script>
 

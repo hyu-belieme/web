@@ -1,6 +1,6 @@
 import { useStorage } from '@vueuse/core';
 import { defineStore } from 'pinia';
-import { computed, readonly } from 'vue';
+import { computed } from 'vue';
 
 import Department from '@common/models/Department';
 
@@ -25,7 +25,7 @@ const useCurDeptStorage = defineStore(key, () => {
   }
 
   return {
-    curDept: readonly(curDept),
+    curDept,
     curDeptId,
     itemEquals,
     setItem,

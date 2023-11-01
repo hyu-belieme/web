@@ -36,8 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Map } from 'immutable';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 import TriggerWidthDropdown from '@common/components/dropdowns/TriggerWidthDropdown/TriggerWidthDropdown.vue';
 import BasicSelectorTrigger from '@common/components/selectors/BasicSelector/BasicSelectorTrigger.vue';
@@ -47,7 +46,7 @@ const props = withDefaults(
     size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
     disabled?: boolean;
     initialKey?: string;
-    options: Map<string, { label: string; value: string }>;
+    options: Map<string, { label: string; value: any }>;
   }>(),
   {
     size: 'md',
@@ -56,12 +55,26 @@ const props = withDefaults(
   }
 );
 
+const emit = defineEmits<{
+  (e: 'onInit', newKey: string): void;
+  (e: 'onChange', keys: { newKey: string; oldKey: string }): void;
+}>();
+
 const dropdownRef = ref<InstanceType<typeof TriggerWidthDropdown> | null>(null);
 const selectedKey = ref<string>(props.initialKey);
+
+emit('onInit', selectedKey.value);
+watch(selectedKey, (newVal, oldVal) => {
+  if (newVal !== oldVal) {
+    emit('onChange', { newKey: newVal, oldKey: oldVal });
+  }
+});
 
 defineExpose({
   selectedValue: () => props.options?.get(selectedKey.value)?.value,
   selectedLabel: () => props.options?.get(selectedKey.value)?.label,
+  getValue: (key: string) => props.options?.get(key)?.value,
+  getLabel: (key: string) => props.options?.get(key)?.label,
 });
 </script>
 

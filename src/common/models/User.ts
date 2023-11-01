@@ -4,6 +4,7 @@ import Authority from '@common/models/Authority';
 import type { IAuthority } from '@common/models/Authority';
 import BaseVo from '@common/models/BaseVo';
 import University, { type IUniversity } from '@common/models/University';
+import type AuthorityPermission from '@common/models/types/AuthorityPermission';
 
 export interface IUser {
   id: string;
@@ -53,9 +54,8 @@ export class User extends BaseVo {
     return cmpName;
   }
 
-  public getPermission(deptId: string): string {
+  public getPermission(deptId: string): AuthorityPermission {
     const auth = this.authorities.find((e) => e.department.id === deptId);
-    console.log('auth', auth?.permission);
     return auth ? auth.permission : 'NIL';
   }
 

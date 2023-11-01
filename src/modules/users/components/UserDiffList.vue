@@ -12,19 +12,9 @@
     <section class="w-100 h-0 flex-grow-1">
       <section v-if="true" class="w-100 h-100 d-flex flex-column">
         <UserDiffListCell
-          :user="
-            new User({
-              id: '2018008886',
-              name: '이석환',
-              university: new University({
-                id: 'HYU',
-                name: '한양대학교',
-              }),
-              studentId: '2018008886',
-              entranceYear: 2018,
-              authorities: List([]),
-            })
-          "
+          v-for="userDiff of userDiffList"
+          :user-diff="userDiff"
+          :key="userDiff.user.id"
         ></UserDiffListCell>
       </section>
       <section v-else class="w-100 h-100 position-relative">
@@ -41,13 +31,15 @@
 </template>
 
 <script setup lang="ts">
-import { List } from 'immutable';
+import { storeToRefs } from 'pinia';
 
 import BasicButton from '@common/components/buttons/BasicButton/BasicButton.vue';
-import University from '@common/models/University';
-import User from '@common/models/User';
 
 import UserDiffListCell from '@^users/components/UserDiffListCell.vue';
+import useUserDiff from '@^users/stores/user-diff-store';
+
+const userDiffStore = useUserDiff();
+const { userDiffList } = storeToRefs(userDiffStore);
 </script>
 
 <style scoped lang="scss">

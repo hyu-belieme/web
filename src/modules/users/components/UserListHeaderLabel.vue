@@ -12,36 +12,29 @@
         class="authority-selector"
         size="xs"
         :disabled="false"
-        :options="
-          Map({
-            banned: {
-              label: 'banned',
-              value: 'banned',
-            },
-            user: {
-              label: 'user',
-              value: 'user',
-            },
-            staff: {
-              label: 'staff',
-              value: 'staff',
-            },
-            master: {
-              label: 'master',
-              value: 'master',
-            },
-          })
-        "
+        :options="authorityMap"
       ></BasicSelector>
     </section>
   </section>
 </template>
 
 <script setup lang="ts">
-import { Map } from 'immutable';
-
 import BasicCheckbox from '@common/components/checkboxes/BasicCheckbox/BasicCheckbox.vue';
 import BasicSelector from '@common/components/selectors/BasicSelector/BasicSelector.vue';
+import type AuthorityPermission from '@common/models/types/AuthorityPermission';
+import {
+  AUTHORITY_PERMISSIONS,
+  toString as permissionToString,
+} from '@common/models/types/AuthorityPermission';
+
+const authorityMap = new Map<string, { value: AuthorityPermission; label: string }>();
+AUTHORITY_PERMISSIONS.forEach((e) => {
+  if (e === 'DEFAULT' || e === 'DEVELOPER' || e === 'NIL') return;
+  authorityMap.set(e, {
+    value: e,
+    label: permissionToString(e),
+  });
+});
 </script>
 
 <style scoped lang="scss">

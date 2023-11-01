@@ -13,27 +13,10 @@
       <BasicSelector
         class="authority-selector"
         size="xs"
+        ref="selectorRef"
+        @on-change="updateUserDiff"
         :disabled="false"
-        :options="
-          Map({
-            BANNED: {
-              label: 'banned',
-              value: 'BANNED',
-            },
-            USER: {
-              label: 'user',
-              value: 'USER',
-            },
-            STAFF: {
-              label: 'staff',
-              value: 'STAFF',
-            },
-            MASTER: {
-              label: 'master',
-              value: 'MASTER',
-            },
-          })
-        "
+        :options="authorityMap"
         :initial-key="user.getPermission(curDeptId)"
       ></BasicSelector>
     </section>
@@ -41,22 +24,59 @@
 </template>
 
 <script setup lang="ts">
-import { Map } from 'immutable';
 import { storeToRefs } from 'pinia';
+import { ref } from 'vue';
 
 import BasicCheckbox from '@common/components/checkboxes/BasicCheckbox/BasicCheckbox.vue';
 import BasicSelector from '@common/components/selectors/BasicSelector/BasicSelector.vue';
 import type User from '@common/models/User';
+import type AuthorityPermission from '@common/models/types/AuthorityPermission';
+import {
+  AUTHORITY_PERMISSIONS,
+  parseAuthorityPermission,
+  toString as permissionToString,
+} from '@common/models/types/AuthorityPermission';
 import useCurDeptStorage from '@common/storages/cur-dept-storage';
+
+import UserDiff from '@^users/models/UserDiff';
+import useUserDiff from '@^users/stores/user-diff-store';
 
 const props = defineProps<{
   user: User;
 }>();
 
-const curDeptStorage = useCurDeptStorage();
-const { curDeptId } = storeToRefs(curDeptStorage);
+const authorityMap = new Map<string, { value: AuthorityPermission; label: string }>();
+AUTHORITY_PERMISSIONS.forEach((e) => {
+  if (e === 'DEFAULT' || e === 'DEVELOPER' || e === 'NIL') return;
+  authorityMap.set(e, {
+    value: e,
+    label: permissionToString(e),
+  });
+});
 
-console.log(`Permission : ${props.user.getPermission(curDeptId.value)}`);
+const curDeptStorage = useCurDeptStorage();
+const { curDept, curDeptId } = storeToRefs(curDeptStorage);
+
+const userDiffStore = useUserDiff();
+
+const selectorRef = ref<InstanceType<typeof BasicSelector> | null>(null);
+
+function updateUserDiff(keys: { newKey: string; oldKey: string }) {
+  const prevDiff = userDiffStore.getUserDiff(props.user.id);
+  const prevState = prevDiff?.prevState || props.user.getPermission(curDeptId.value);
+  if (prevState === selectorRef.value?.getValue(keys.newKey)) {
+    userDiffStore.removeUserDiff(props.user.id);
+    return;
+  }
+  userDiffStore.putUserDiff(
+    new UserDiff({
+      user: props.user,
+      dept: curDept.value,
+      prevState,
+      curState: parseAuthorityPermission(selectorRef.value?.getValue(keys.newKey)),
+    })
+  );
+}
 </script>
 
 <style scoped lang="scss">
