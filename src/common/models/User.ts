@@ -45,6 +45,20 @@ export class User extends BaseVo {
     this.authorities = List<Authority>(oth.authorities.map((auth) => new Authority(auth)));
   }
 
+  public compare(oth: User): number {
+    const cmpName = this.name.localeCompare(oth.name);
+    if (cmpName === 0) {
+      return this.id.localeCompare(oth.id);
+    }
+    return cmpName;
+  }
+
+  public getPermission(deptId: string): string {
+    const auth = this.authorities.find((e) => e.department.id === deptId);
+    console.log('auth', auth?.permission);
+    return auth ? auth.permission : 'NIL';
+  }
+
   public equals(oth: any): boolean {
     if (oth === undefined || oth === null) return false;
     if (!(oth instanceof User)) return false;

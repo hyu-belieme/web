@@ -16,25 +16,25 @@
         :disabled="false"
         :options="
           Map({
-            banned: {
+            BANNED: {
               label: 'banned',
-              value: 'banned',
+              value: 'BANNED',
             },
-            user: {
+            USER: {
               label: 'user',
-              value: 'user',
+              value: 'USER',
             },
-            staff: {
+            STAFF: {
               label: 'staff',
-              value: 'staff',
+              value: 'STAFF',
             },
-            master: {
+            MASTER: {
               label: 'master',
-              value: 'master',
+              value: 'MASTER',
             },
           })
         "
-        initial-key="user"
+        :initial-key="user.getPermission(curDeptId)"
       ></BasicSelector>
     </section>
   </section>
@@ -42,14 +42,21 @@
 
 <script setup lang="ts">
 import { Map } from 'immutable';
+import { storeToRefs } from 'pinia';
 
 import BasicCheckbox from '@common/components/checkboxes/BasicCheckbox/BasicCheckbox.vue';
 import BasicSelector from '@common/components/selectors/BasicSelector/BasicSelector.vue';
 import type User from '@common/models/User';
+import useCurDeptStorage from '@common/storages/cur-dept-storage';
 
-defineProps<{
+const props = defineProps<{
   user: User;
 }>();
+
+const curDeptStorage = useCurDeptStorage();
+const { curDeptId } = storeToRefs(curDeptStorage);
+
+console.log(`Permission : ${props.user.getPermission(curDeptId.value)}`);
 </script>
 
 <style scoped lang="scss">

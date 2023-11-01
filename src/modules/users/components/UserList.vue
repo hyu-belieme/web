@@ -4,51 +4,7 @@
       <UserListHeader></UserListHeader>
     </section>
     <section class="w-100 h-0 flex-grow-1 d-flex flex-column">
-      <UserListCell
-        :user="
-          new User({
-            id: '2018008886',
-            name: '이석환',
-            university: new University({
-              id: 'HYU',
-              name: '한양대학교',
-            }),
-            studentId: '2018008886',
-            entranceYear: 2018,
-            authorities: List([]),
-          })
-        "
-      ></UserListCell>
-      <UserListCell
-        :user="
-          new User({
-            id: '2018008886',
-            name: '이석환',
-            university: new University({
-              id: 'HYU',
-              name: '한양대학교',
-            }),
-            studentId: '2018008886',
-            entranceYear: 2018,
-            authorities: List([]),
-          })
-        "
-      ></UserListCell>
-      <UserListCell
-        :user="
-          new User({
-            id: '2018008886',
-            name: '이석환',
-            university: new University({
-              id: 'HYU',
-              name: '한양대학교',
-            }),
-            studentId: '2018008886',
-            entranceYear: 2018,
-            authorities: List([]),
-          })
-        "
-      ></UserListCell>
+      <UserListCell v-for="user of data" :key="user.id" :user="user"></UserListCell>
     </section>
     <section class="w-100 flex-grow-0 p-2 d-flex flex-row gap-2 justify-content-center">
       <BasicButton content="저장하기" size="sm"></BasicButton>
@@ -58,14 +14,24 @@
 </template>
 
 <script setup lang="ts">
-import { List } from 'immutable';
+import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
 
 import BasicButton from '@common/components/buttons/BasicButton/BasicButton.vue';
-import University from '@common/models/University';
-import User from '@common/models/User';
+import userDummies from '@common/dummies/UserDummies';
+import type User from '@common/models/User';
 
 import UserListCell from '@^users/components/UserListCell.vue';
 import UserListHeader from '@^users/components/UserListHeader.vue';
+import useUserDiff from '@^users/stores/user-diff-store';
+import userDiffApplier from '@^users/utils/user-diff-applier';
+
+const userDiffStore = useUserDiff();
+const { userDiffList } = storeToRefs(userDiffStore);
+
+const data = computed<User[]>(() => {
+  return userDiffApplier(userDummies, userDiffList.value);
+});
 </script>
 
 <style scoped lang="scss">
@@ -80,5 +46,7 @@ import UserListHeader from '@^users/components/UserListHeader.vue';
 
   border: $border-width solid $border-color;
   @include border-radius();
+
+  overflow: scroll;
 }
 </style>
