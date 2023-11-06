@@ -71,6 +71,9 @@ watch(selectedKey, (newVal, oldVal) => {
 });
 
 defineExpose({
+  select: (key: string) => {
+    selectedKey.value = key;
+  },
   selectedValue: () => props.options?.get(selectedKey.value)?.value,
   selectedLabel: () => props.options?.get(selectedKey.value)?.label,
   getValue: (key: string) => props.options?.get(key)?.value,

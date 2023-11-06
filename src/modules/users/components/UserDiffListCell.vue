@@ -1,5 +1,5 @@
 <template>
-  <section class="d-flex flex-row align-items-center px-2">
+  <section class="a d-flex flex-row align-items-center px-2">
     <DiffTypeBadge class="mx-1" :state="userDiff.diffType()"></DiffTypeBadge>
     <section
       class="light-border-bottom px-1 py-2 w-0 flex-grow-1 d-flex flex-row align-items-center justify-content-between"
@@ -10,27 +10,40 @@
           {{ userDiff.user.university.name }} / {{ userDiff.user.studentId }}
         </span>
       </section>
-      <section class="permission-change lh-sm text-gray fs-xs">
-        <span v-if="userDiff.prevState !== 'NIL'">
-          {{ permissionToString(userDiff.prevState) }}
-        </span>
-        <span v-if="userDiff.curState !== 'NIL'">
-          {{ permissionToString(userDiff.curState) }}
-        </span>
+      <section class="d-flex flex-row gap-1 align-items-center">
+        <section class="permission-change lh-sm text-gray fs-xs">
+          <span v-if="userDiff.prevState !== 'NIL'">
+            {{ permissionToString(userDiff.prevState) }}
+          </span>
+          <span v-if="userDiff.curState !== 'NIL'">
+            {{ permissionToString(userDiff.curState) }}
+          </span>
+        </section>
+        <UndoIcon
+          size="xs"
+          color="danger"
+          class="hover-on"
+          @click="() => userDiffStore.removeUserDiff(userDiff.user.id)"
+        >
+        </UndoIcon>
       </section>
     </section>
   </section>
 </template>
 
 <script setup lang="ts">
+import UndoIcon from '@common/components/icons/UndoIcon/UndoIcon.vue';
 import { toString as permissionToString } from '@common/models/types/AuthorityPermission';
 
 import DiffTypeBadge from '@^users/components/DiffTypeBadge.vue';
 import type UserDiff from '@^users/models/UserDiff';
+import useUserDiff from '@^users/stores/user-diff-store';
 
 defineProps<{
   userDiff: UserDiff;
 }>();
+
+const userDiffStore = useUserDiff();
 </script>
 
 <style scoped lang="scss">
@@ -46,6 +59,19 @@ defineProps<{
 
   span:last-child::after {
     content: '';
+    margin: 0;
+  }
+}
+
+.a {
+  .hover-on {
+    display: none;
+  }
+
+  &:hover {
+    .hover-on {
+      display: block;
+    }
   }
 }
 </style>

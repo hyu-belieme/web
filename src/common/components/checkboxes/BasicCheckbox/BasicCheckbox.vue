@@ -1,10 +1,13 @@
 <template>
   <CheckboxBase
+    ref="checkboxRef"
     :name="name"
     :value="value"
     :disabled="disabled"
     :customDisabled="true"
     :initState="initState"
+    @on-init="emit('onInit', checkboxRef?.isChecked() ?? false)"
+    @on-change="emit('onChange', checkboxRef?.isChecked() ?? false)"
   >
     <template v-slot:on-unchecked>
       <section class="frame"></section>
@@ -57,6 +60,8 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
+
 import CheckboxBase from '@common/components/checkboxes/CheckboxBase/CheckboxBase.vue';
 import CheckIcon from '@common/components/icons/CheckIcon/CheckIcon.vue';
 import MinusIcon from '@common/components/icons/MinusIcon/MinusIcon.vue';
@@ -66,14 +71,42 @@ withDefaults(
     name: string;
     value?: string;
     disabled?: boolean;
-    initState?: 'checked' | 'unchecked' | 'indeterminate';
+    initState?: 'checked' | 'unchecked' | 'indeterminate' | undefined;
   }>(),
   {
     value: 'on',
     disabled: false,
-    initState: 'unchecked',
+    initState: undefined,
   }
 );
+
+const emit = defineEmits<{
+  (e: 'onInit', checked: boolean): void;
+  (e: 'onChange', checked: boolean): void;
+}>();
+
+const checkboxRef = ref<InstanceType<typeof CheckboxBase> | null>(null);
+
+defineExpose({
+  check() {
+    if (checkboxRef.value !== null) checkboxRef.value.check();
+  },
+  uncheck() {
+    if (checkboxRef.value !== null) checkboxRef.value.uncheck();
+  },
+  indeterminate() {
+    if (checkboxRef.value !== null) checkboxRef.value.indeterminate();
+  },
+  determinate() {
+    if (checkboxRef.value !== null) checkboxRef.value.determinate();
+  },
+  isChecked() {
+    if (checkboxRef.value !== null) checkboxRef.value.isChecked();
+  },
+  isIndeterminate() {
+    if (checkboxRef.value !== null) checkboxRef.value.isIndeterminate();
+  },
+});
 </script>
 
 <style scoped lang="scss">

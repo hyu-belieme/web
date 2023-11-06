@@ -4,6 +4,7 @@ withDefaults(
     hover?: 'on' | 'off';
     color?: string;
     size?: '100' | 'auto' | 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+    half?: boolean;
     disabled?: boolean;
     onClick?: () => void;
   }>(),
@@ -12,6 +13,7 @@ withDefaults(
     color: 'dark',
     size: 'md',
     disabled: false,
+    half: false,
     onClick: () => {},
   }
 );
@@ -19,7 +21,11 @@ withDefaults(
 
 <template>
   <svg
-    :class="[`color-${color}-hover-${hover}`, `size-${size}`, disabled ? 'disabled' : '']"
+    :class="[
+      `color-${color}-hover-${hover}`,
+      half ? `size-${size}-half` : `size-${size}`,
+      disabled ? 'disabled' : '',
+    ]"
     :viewBox="`0 0 16 16`"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -48,6 +54,11 @@ $size-base: 1.5;
   .size-#{$key} {
     width: #{$size-base * $value}rem;
     height: #{$size-base * $value}rem;
+  }
+
+  .size-#{$key}-half {
+    width: #{$size-base * $value * 0.5}rem;
+    height: #{$size-base * $value * 0.5}rem;
   }
 }
 

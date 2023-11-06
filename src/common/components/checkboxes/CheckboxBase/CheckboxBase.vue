@@ -1,12 +1,11 @@
 <template>
   <label class="position-relative">
     <input
+      ref="inputRef"
       class="d-none"
       type="checkbox"
       :name="name"
       :value="value"
-      :checked="initState === 'checked'"
-      :indeterminate="initState === 'indeterminate'"
       :disabled="disabled"
     />
     <section
@@ -33,23 +32,81 @@
 </template>
 
 <script setup lang="ts">
-withDefaults(
+import { onMounted, ref, watch } from 'vue';
+
+const props = withDefaults(
   defineProps<{
     name: string;
     value?: string;
     size?: string;
     disabled?: boolean;
     customDisabled?: boolean;
-    initState?: 'checked' | 'unchecked' | 'indeterminate';
+    initState?: 'checked' | 'unchecked' | 'indeterminate' | undefined;
   }>(),
   {
     value: 'on',
     size: '',
     disabled: false,
     customDisabled: false,
-    initState: 'unchecked',
+    initState: undefined,
   }
 );
+
+const emit = defineEmits<{
+  (e: 'onInit', checked: boolean): void;
+  (e: 'onChange', checked: boolean): void;
+}>();
+
+const inputRef = ref<HTMLInputElement | null>(null);
+onMounted(() => {
+  if (inputRef.value === null) return;
+  if (props.initState !== undefined) {
+    inputRef.value.checked = props.initState === 'checked';
+    inputRef.value.indeterminate = props.initState === 'indeterminate';
+  }
+
+  emit('onInit', inputRef.value.checked);
+  if (inputRef.value !== null) {
+    inputRef.value.onchange = () => {
+      emit('onChange', inputRef.value?.checked || false);
+    };
+  }
+  watch(
+    () => inputRef.value?.checked || false,
+    (newVal, oldVal) => {
+      if (newVal !== oldVal) {
+        emit('onChange', newVal);
+      }
+    }
+  );
+});
+
+defineExpose({
+  check() {
+    if (inputRef.value !== null) {
+      inputRef.value.indeterminate = false;
+      inputRef.value.checked = true;
+    }
+  },
+  uncheck() {
+    if (inputRef.value !== null) {
+      inputRef.value.indeterminate = false;
+      inputRef.value.checked = false;
+    }
+  },
+  indeterminate() {
+    if (inputRef.value !== null) inputRef.value.indeterminate = true;
+  },
+  determinate() {
+    if (inputRef.value !== null) inputRef.value.indeterminate = false;
+  },
+  isChecked() {
+    return inputRef.value?.checked;
+  },
+  isIndeterminate() {
+    return inputRef.value?.indeterminate;
+  },
+});
 </script>
 
 <style scoped lang="scss">
