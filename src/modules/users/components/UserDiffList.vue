@@ -23,17 +23,11 @@
         </span>
       </section>
     </section>
-    <!-- <section class="w-100 flex-grow-0 p-2 d-flex flex-row gap-2 justify-content-center">
-      <BasicButton content="저장하기" size="sm"></BasicButton>
-      <BasicButton content="되돌리기" color="light" size="sm"></BasicButton>
-    </section> -->
   </section>
 </template>
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-
-import BasicButton from '@common/components/buttons/BasicButton/BasicButton.vue';
 
 import UserDiffListCell from '@^users/components/UserDiffListCell.vue';
 import useUserDiff from '@^users/stores/user-diff-store';
@@ -54,5 +48,7 @@ const { userDiffList } = storeToRefs(userDiffStore);
 
   border: $border-width solid $border-color;
   @include border-radius();
+
+  overflow: scroll;
 }
 </style>
