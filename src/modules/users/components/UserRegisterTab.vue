@@ -58,11 +58,6 @@ import { univKeys } from '@common/apis/query-keys';
 import BasicButton from '@common/components/buttons/BasicButton/BasicButton.vue';
 import BasicSelector from '@common/components/selectors/BasicSelector/BasicSelector.vue';
 import type University from '@common/models/University';
-import {
-  AUTHORITY_PERMISSIONS,
-  toString as permissionToString,
-} from '@common/models/types/AuthorityPermission';
-import type AuthorityPermission from '@common/models/types/AuthorityPermission';
 import useUserTokenStorage from '@common/storages/user-token-storage';
 
 import useUserRegisterTab from '@^users/stores/user-register-tab-store';
@@ -71,15 +66,6 @@ const userTokenStorage = useUserTokenStorage();
 const { userToken } = storeToRefs(userTokenStorage);
 
 const userRegisterTabStore = useUserRegisterTab();
-
-const authorityMap = new Map<string, { value: AuthorityPermission; label: string }>();
-AUTHORITY_PERMISSIONS.forEach((e) => {
-  if (e === 'DEFAULT' || e === 'DEVELOPER' || e === 'NIL') return;
-  authorityMap.set(e, {
-    value: e,
-    label: permissionToString(e),
-  });
-});
 
 const { isSuccess, isLoading, isError, data } = useQuery<List<University>>(univKeys.all(), () =>
   getAllUnivList(userToken.value)

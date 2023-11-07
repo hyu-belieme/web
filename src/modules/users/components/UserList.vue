@@ -31,6 +31,7 @@ import BasicButton from '@common/components/buttons/BasicButton/BasicButton.vue'
 import ConfirmModal from '@common/components/modals/ConfirmModal/ConfirmModal.vue';
 import useModalStore from '@common/components/modals/stores/modal-store';
 import userDummies from '@common/dummies/UserDummies';
+import { hasHigherAuthorityPermission } from '@common/models/types/AuthorityPermission';
 import useCurDeptStorage from '@common/storages/cur-dept-storage';
 
 import UserListCell from '@^users/components/UserListCell.vue';
@@ -81,7 +82,15 @@ function applyUserListFilter() {
 
 watch(
   userDiffList,
-  (newVal) => userCheckedStore.updateUserList(userDiffApplier(userDummies, newVal)),
+  (newVal) =>
+    userCheckedStore.updateUserList(
+      userDiffApplier(
+        userDummies.filter(
+          (e) => !hasHigherAuthorityPermission(e.getPermission(curDeptId.value), 'MASTER')
+        ),
+        newVal
+      )
+    ),
   { immediate: true }
 );
 </script>

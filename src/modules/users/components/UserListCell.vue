@@ -39,6 +39,7 @@ import type User from '@common/models/User';
 import type AuthorityPermission from '@common/models/types/AuthorityPermission';
 import {
   AUTHORITY_PERMISSIONS,
+  hasHigherAuthorityPermission,
   parseAuthorityPermission,
   toString as permissionToString,
 } from '@common/models/types/AuthorityPermission';
@@ -60,7 +61,7 @@ defineEmits<{
 
 const authorityMap = new Map<string, { value: AuthorityPermission; label: string }>();
 AUTHORITY_PERMISSIONS.forEach((e) => {
-  if (e === 'DEFAULT' || e === 'DEVELOPER' || e === 'NIL') return;
+  if (e === 'DEFAULT' || e === 'NIL' || hasHigherAuthorityPermission(e, 'MASTER')) return;
   authorityMap.set(e, {
     value: e,
     label: permissionToString(e),
