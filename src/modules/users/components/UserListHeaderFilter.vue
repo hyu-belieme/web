@@ -31,7 +31,11 @@
           <span class="lh-sm">차단된 유저만</span>
         </ButtonBase>
       </section>
-      <ButtonBase class="button-size" :size="'xs'">
+      <ButtonBase
+        class="button-size"
+        :size="'xs'"
+        @click="userRegisterTabStore.openUserRegisterTab"
+      >
         <section class="w-100 d-flex flex-row gap-1 align-items-center justify-content-center">
           <span class="lh-sm">등록하기</span>
           <section :class="['plus-icon-size', 'd-flex', 'align-items-center']">
@@ -52,9 +56,12 @@ import PlusIcon from '@common/components/icons/PlusIcon/PlusIcon.vue';
 import useCurDeptStorage from '@common/storages/cur-dept-storage';
 
 import useUserListFilter from '@^users/stores/user-list-filter-store';
+import useUserRegisterTab from '@^users/stores/user-register-tab-store';
 
 const curDeptStorage = useCurDeptStorage();
 const { curDeptId } = storeToRefs(curDeptStorage);
+
+const userRegisterTabStore = useUserRegisterTab();
 
 const selectedFilter = ref<'ALL' | 'USER' | 'STAFF' | 'BANNED'>('ALL');
 

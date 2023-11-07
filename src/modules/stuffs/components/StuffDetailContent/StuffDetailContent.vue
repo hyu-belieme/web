@@ -278,11 +278,11 @@ onBeforeMount(() => {
           border: $border-width solid $border-color;
           @include border-radius();
 
-          padding-top: map-get($spacers, 1);
-          padding-bottom: map-get($spacers, 1);
+          padding-top: map-get($spacers, 'sm');
+          padding-bottom: map-get($spacers, 'sm');
 
-          padding-left: map-get($spacers, 2);
-          padding-right: map-get($spacers, 2);
+          padding-left: 2 * map-get($spacers, 'sm');
+          padding-right: 2 * map-get($spacers, 'sm');
           font-size: inherit;
           font-weight: inherit;
 
@@ -320,7 +320,7 @@ onBeforeMount(() => {
         border: $border-width solid $border-color;
         @include border-radius();
 
-        padding: map-get($spacers, 2);
+        padding: 2 * map-get($spacers, 'sm');
         font-size: inherit;
         font-weight: inherit;
 

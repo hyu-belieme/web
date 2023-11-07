@@ -13,7 +13,7 @@
           :state="
             disabled ? 'disabled' : dropdownRef?.openedRef() === true ? 'focused' : 'unfocused'
           "
-          :content="options.get(selectedKey)?.label ?? '-'"
+          :content="options.get(selectedKey)?.label ?? hint"
         ></BasicSelectorTrigger>
       </section>
     </template>
@@ -46,11 +46,13 @@ const props = withDefaults(
     size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
     disabled?: boolean;
     initialKey?: string;
+    hint?: string;
     options: Map<string, { label: string; value: any }>;
   }>(),
   {
     size: 'md',
     disabled: false,
+    hint: '-',
     initialKey: '',
   }
 );

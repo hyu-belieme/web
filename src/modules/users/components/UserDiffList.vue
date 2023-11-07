@@ -9,7 +9,7 @@
         </section>
       </section>
     </section>
-    <section class="w-100 h-0 flex-grow-1">
+    <section class="w-100 flex-grow-1">
       <section v-if="true" class="w-100 h-100 d-flex flex-column">
         <UserDiffListCell
           v-for="userDiff of userDiffList"

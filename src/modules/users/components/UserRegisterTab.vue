@@ -9,45 +9,68 @@
         </section>
       </section>
     </section>
-    <section class="w-100 d-flex flex-column py-2 gap-2">
-      <section class="w-100 px-2">
-        <section class="w-100 d-flex flex-row px-1 gap-2 align-items-center">
+    <section class="w-100 px-2">
+      <section class="w-100 px-1 py-2 d-flex flex-row gap-2">
+        <section class="w-0 flex-grow-1 d-flex flex-row gap-1 align-items-center">
+          <span>학교</span>
+          <BasicSelector
+            class="w-0 flex-grow-1"
+            size="xs"
+            :disabled="isLoading || isError"
+            :options="univMap"
+            hint="학교를 선택해주세요."
+          ></BasicSelector>
+        </section>
+        <section class="w-0 flex-grow-1 d-flex flex-row gap-1 align-items-center">
           <span>학번</span>
           <input
             type="text"
-            class="form-control edit-box flex-grow-1 fs-xs"
+            class="w-0 form-control edit-box flex-grow-1 fs-xs"
             placeholder="학번을 입력해주세요."
           />
         </section>
       </section>
-      <section class="w-100 px-2">
-        <section class="w-100 d-flex flex-row px-1 gap-2 align-items-center">
-          <span>권한</span>
-          <BasicSelector
-            class="authority-selector flex-grow-1"
-            size="xs"
-            :disabled="false"
-            :options="authorityMap"
-            initial-key="user"
-          ></BasicSelector>
-        </section>
-      </section>
     </section>
     <section class="w-100 px-2 pb-2 d-flex flex-row gap-2 justify-content-center">
-      <BasicButton content="등록하기" size="sm"></BasicButton>
-      <BasicButton content="취소하기" color="light" size="sm"></BasicButton>
+      <BasicButton
+        content="등록하기"
+        size="sm"
+        @click="userRegisterTabStore.closeUserRegisterTab"
+      ></BasicButton>
+      <BasicButton
+        content="취소하기"
+        color="light"
+        size="sm"
+        @click="userRegisterTabStore.closeUserRegisterTab"
+      ></BasicButton>
     </section>
   </section>
 </template>
 
 <script setup lang="ts">
+import type { List } from 'immutable';
+import { storeToRefs } from 'pinia';
+import { ref, watch } from 'vue';
+import { useQuery } from 'vue-query';
+
+import { getAllUnivList } from '@common/apis/belieme-apis';
+import { univKeys } from '@common/apis/query-keys';
 import BasicButton from '@common/components/buttons/BasicButton/BasicButton.vue';
 import BasicSelector from '@common/components/selectors/BasicSelector/BasicSelector.vue';
+import type University from '@common/models/University';
 import {
   AUTHORITY_PERMISSIONS,
   toString as permissionToString,
 } from '@common/models/types/AuthorityPermission';
 import type AuthorityPermission from '@common/models/types/AuthorityPermission';
+import useUserTokenStorage from '@common/storages/user-token-storage';
+
+import useUserRegisterTab from '@^users/stores/user-register-tab-store';
+
+const userTokenStorage = useUserTokenStorage();
+const { userToken } = storeToRefs(userTokenStorage);
+
+const userRegisterTabStore = useUserRegisterTab();
 
 const authorityMap = new Map<string, { value: AuthorityPermission; label: string }>();
 AUTHORITY_PERMISSIONS.forEach((e) => {
@@ -56,6 +79,24 @@ AUTHORITY_PERMISSIONS.forEach((e) => {
     value: e,
     label: permissionToString(e),
   });
+});
+
+const { isSuccess, isLoading, isError, data } = useQuery<List<University>>(univKeys.all(), () =>
+  getAllUnivList(userToken.value)
+);
+
+const univMap = ref<Map<string, { value: University; label: string }>>(new Map());
+watch(data, () => {
+  if (isSuccess.value) {
+    const tmpMap = new Map<string, { value: University; label: string }>();
+    data.value?.forEach((e) => {
+      tmpMap.set(e.id, {
+        value: e,
+        label: e.name,
+      });
+    });
+    univMap.value = tmpMap;
+  }
 });
 </script>
 
@@ -72,15 +113,19 @@ AUTHORITY_PERMISSIONS.forEach((e) => {
   @include border-radius();
 }
 
+.authority-selector {
+  width: 5rem;
+}
+
 .edit-box {
   border: $border-width solid $border-color;
   @include border-radius();
 
-  padding-top: map-get($spacers, 1);
-  padding-bottom: map-get($spacers, 1);
+  padding-top: map-get($spacers, 'sm');
+  padding-bottom: map-get($spacers, 'sm');
 
-  padding-left: map-get($spacers, 2);
-  padding-right: map-get($spacers, 2);
+  padding-left: 2 * map-get($spacers, 'sm');
+  padding-right: 2 * map-get($spacers, 'sm');
   font-size: inherit;
   font-weight: inherit;
 

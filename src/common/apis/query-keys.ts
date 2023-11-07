@@ -1,3 +1,7 @@
+export const univKeys = {
+  all: () => ['univs'] as const,
+};
+
 export const deptKeys = {
   all: () => ['depts'] as const,
   list: (univId?: string) => {

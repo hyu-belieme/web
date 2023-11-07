@@ -10,6 +10,7 @@ import type { IStuffPostRequestBody } from '@common/models/StuffPostRequestBody'
 import StuffRequestBody from '@common/models/StuffRequestBody';
 import type { IStuffRequestBody } from '@common/models/StuffRequestBody';
 import StuffWithItems from '@common/models/StuffWithItems';
+import University from '@common/models/University';
 import User from '@common/models/User';
 import UserWithSecureInfo from '@common/models/UserWithSecureInfo';
 
@@ -32,6 +33,27 @@ function handleError(reject: (_?: any) => void) {
       reject(NETWORK_ERROR);
     }
   };
+}
+
+export function getAllUnivList(userToken: string) {
+  const apiUrl = `/universities`;
+
+  return new Promise<List<University>>((resolve, reject) => {
+    axios
+      .create({
+        ...API_SERVER_INSTANCE_CONFIG,
+        headers: { 'user-token': userToken },
+      })
+      .get<List<University>>(apiUrl)
+      .then((response) => {
+        let output = List<University>([]);
+        response.data.forEach((univ) => {
+          output = output.push(new University(univ));
+        });
+        resolve(output);
+      })
+      .catch(handleError(reject));
+  });
 }
 
 export function getAccessibleDeptList(userToken: string) {

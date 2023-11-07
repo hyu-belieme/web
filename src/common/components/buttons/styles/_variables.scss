@@ -1,7 +1,7 @@
 @import '/src/common/assets/styles/main';
 
 // scss-docs-start btn-variables
-$btn-padding-y: 0.25rem !default;
+$btn-padding-y: map-get($spacers, 'md') !default;
 $btn-padding-x: $btn-padding-y * 2 !default;
 $btn-padding-x-long: $btn-padding-y * 4 !default;
 $btn-font-family: null !default;
@@ -9,13 +9,13 @@ $btn-font-size: $font-size-base !default;
 $btn-line-height: $line-height-base !default;
 $btn-white-space: null !default; // Set to `nowrap` to prevent text wrapping
 
-$btn-padding-y-sm: 0.175rem !default;
+$btn-padding-y-sm: map-get($spacers, 'sm') !default;
 $btn-padding-x-sm: $btn-padding-y-sm * 2 !default;
 $btn-padding-x-sm-long: $btn-padding-y-sm * 4 !default;
 $btn-font-size-sm: $font-size-sm !default;
 $btn-font-size-xs: $font-size-xs !default;
 
-$btn-padding-y-lg: 0.5rem !default;
+$btn-padding-y-lg: map-get($spacers, 'lg') !default;
 $btn-padding-x-lg: $btn-padding-y-lg * 2 !default;
 $btn-padding-x-lg-long: $btn-padding-y-lg * 4 !default;
 $btn-font-size-lg: $font-size-lg !default;

@@ -3,7 +3,7 @@
     <section class="w-100 flex-grow-0">
       <UserListHeader></UserListHeader>
     </section>
-    <section class="w-100 h-0 flex-grow-1 d-flex flex-column">
+    <section class="w-100 flex-grow-1 d-flex flex-column">
       <UserListCell
         v-for="cellInfo of applyUserListFilter()"
         :key="cellInfo.user.id + cellInfo.user.getPermission(curDeptId)"
@@ -11,7 +11,7 @@
         :checked="cellInfo.checked"
       ></UserListCell>
     </section>
-    <section class="w-100 flex-grow-0 p-2 d-flex flex-row gap-2 justify-content-center">
+    <section class="w-100 p-2 d-flex flex-row gap-2 justify-content-center">
       <BasicButton content="저장하기" size="sm"></BasicButton>
       <BasicButton
         content="새로고침"

@@ -340,6 +340,9 @@ $spacers: (
   3: $spacer,
   4: $spacer * 1.5,
   5: $spacer * 3,
+  sm: $spacer * 0.175,
+  md: $spacer * 0.25,
+  lg: $spacer * 0.5,
 ) !default;
 // scss-docs-end spacer-variables-maps
 
