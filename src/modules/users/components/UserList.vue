@@ -5,7 +5,7 @@
     </section>
     <section class="w-100 h-0 flex-grow-1 d-flex flex-column">
       <UserListCell
-        v-for="cellInfo of userWithCheckedList"
+        v-for="cellInfo of applyUserListFilter()"
         :key="cellInfo.user.id + cellInfo.user.getPermission(curDeptId)"
         :user="cellInfo.user"
         :checked="cellInfo.checked"
@@ -37,6 +37,7 @@ import UserListCell from '@^users/components/UserListCell.vue';
 import UserListHeader from '@^users/components/UserListHeader.vue';
 import useUserChecked from '@^users/stores/user-checked-store';
 import useUserDiff from '@^users/stores/user-diff-store';
+import useUserListFilter from '@^users/stores/user-list-filter-store';
 import userDiffApplier from '@^users/utils/user-diff-applier';
 
 const modalStore = useModalStore();
@@ -49,6 +50,8 @@ const { userDiffList } = storeToRefs(userDiffStore);
 
 const userCheckedStore = useUserChecked();
 const { userWithCheckedList } = storeToRefs(userCheckedStore);
+
+const userListFilterStore = useUserListFilter();
 
 const reloadModal = {
   component: ConfirmModal,
@@ -66,6 +69,15 @@ const reloadModal = {
     modalStore.removeModal();
   },
 };
+
+function applyUserListFilter() {
+  const onlyUserList = userWithCheckedList.value.map((e) => e.user);
+  const filteredUserList = userListFilterStore.applyFilters(onlyUserList);
+  return filteredUserList.map((e) => ({
+    user: e,
+    checked: userCheckedStore.isChecked(e.id),
+  }));
+}
 
 watch(
   userDiffList,

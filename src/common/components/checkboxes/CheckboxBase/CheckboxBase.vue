@@ -32,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref } from 'vue';
 
 const props = withDefaults(
   defineProps<{
@@ -71,27 +71,25 @@ onMounted(() => {
       emit('onChange', inputRef.value?.checked || false);
     };
   }
-  watch(
-    () => inputRef.value?.checked || false,
-    (newVal, oldVal) => {
-      if (newVal !== oldVal) {
-        emit('onChange', newVal);
-      }
-    }
-  );
 });
 
 defineExpose({
   check() {
     if (inputRef.value !== null) {
       inputRef.value.indeterminate = false;
-      inputRef.value.checked = true;
+      if (inputRef.value.checked === false) {
+        inputRef.value.checked = true;
+        emit('onChange', inputRef.value?.checked || false);
+      }
     }
   },
   uncheck() {
     if (inputRef.value !== null) {
       inputRef.value.indeterminate = false;
-      inputRef.value.checked = false;
+      if (inputRef.value.checked === true) {
+        inputRef.value.checked = false;
+        emit('onChange', inputRef.value?.checked || false);
+      }
     }
   },
   indeterminate() {

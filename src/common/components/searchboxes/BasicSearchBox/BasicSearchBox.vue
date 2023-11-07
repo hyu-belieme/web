@@ -1,14 +1,60 @@
 <template>
   <section class="search-box">
     <MagnifierIcon :color="'hint'" :hover="'off'" class="mx-1"></MagnifierIcon>
-    <input type="text" class="form-control" placeholder="물품 이름을 입력해주세요." />
-    <CircleXIcon :color="'hint'" size="xs"></CircleXIcon>
+    <input ref="inputRef" type="text" class="form-control" :placeholder="placeholder" />
+    <CircleXIcon :color="'hint'" size="xs" @click="clearInput()"></CircleXIcon>
   </section>
 </template>
 
 <script setup lang="ts">
+import { onMounted, ref } from 'vue';
+
 import CircleXIcon from '@common/components/icons/CircleXIcon/CircleXIcon.vue';
 import MagnifierIcon from '@common/components/icons/MagnifierIcon/MagnifierIcon.vue';
+
+withDefaults(
+  defineProps<{
+    placeholder?: string;
+  }>(),
+  {
+    placeholder: '검색어를 입력하세요',
+  }
+);
+
+const emit = defineEmits<{
+  (e: 'onInit', value: string): void;
+  (e: 'onChange', value: string): void;
+}>();
+
+const inputRef = ref<HTMLInputElement | null>(null);
+
+function clearInput() {
+  if (inputRef.value !== null) {
+    inputRef.value.value = '';
+    emit('onChange', inputRef.value?.value || '');
+  }
+}
+
+onMounted(() => {
+  if (inputRef.value === null) return;
+
+  emit('onInit', inputRef.value.value);
+  if (inputRef.value !== null) {
+    inputRef.value.oninput = () => {
+      emit('onChange', inputRef.value?.value || '');
+    };
+
+    inputRef.value.onchange = () => {
+      emit('onChange', inputRef.value?.value || '');
+    };
+  }
+});
+
+defineExpose({
+  clear() {
+    clearInput();
+  },
+});
 </script>
 
 <style scoped lang="scss">
