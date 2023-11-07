@@ -1,13 +1,20 @@
-type AuthorityPermission = 'NIL' | 'DEFAULT' | 'BANNED' | 'USER' | 'STAFF' | 'MASTER' | 'DEVELOPER';
+type AuthorityPermission = 'NIL' | 'BANNED' | 'DEFAULT' | 'USER' | 'STAFF' | 'MASTER' | 'DEVELOPER';
 export const AUTHORITY_PERMISSIONS: AuthorityPermission[] = [
   'NIL',
-  'DEFAULT',
   'BANNED',
+  'DEFAULT',
   'USER',
   'STAFF',
   'MASTER',
   'DEVELOPER',
 ];
+
+export function hasHigherAuthorityPermission(
+  a: AuthorityPermission,
+  b: AuthorityPermission
+): boolean {
+  return AUTHORITY_PERMISSIONS.indexOf(a) >= AUTHORITY_PERMISSIONS.indexOf(b);
+}
 
 export function parseAuthorityPermission(str: any): AuthorityPermission {
   switch (str) {

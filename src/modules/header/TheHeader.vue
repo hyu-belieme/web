@@ -1,11 +1,30 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
+
 import BasicDropdown from '@common/components/dropdowns/BasicDropdown/BasicDropdown.vue';
+import { hasHigherAuthorityPermission } from '@common/models/types/AuthorityPermission';
+import useCurDeptStorage from '@common/storages/cur-dept-storage';
 import useLoggedInUserStorage from '@common/storages/logged-in-user-storage';
 
 import UserDropdownBody from '@^header/components/UserDropdownBody/UserDropdownBody.vue';
 import UserIcon from '@^header/components/UserIcon.vue';
 
-const { loggedInUser } = useLoggedInUserStorage();
+const route = useRoute();
+
+const { curDeptId } = storeToRefs(useCurDeptStorage());
+
+const loggedInUserStorage = useLoggedInUserStorage();
+const { loggedInUser } = storeToRefs(loggedInUserStorage);
+
+const isLoggedIn = computed(() => {
+  return !(route.path === '/' || route.path.startsWith('/login'));
+});
+
+function getPermissionOfLoggedInUser() {
+  return loggedInUserStorage.getPermissionOfLoggedInUser(curDeptId.value || '');
+}
 </script>
 
 <template>
@@ -14,16 +33,21 @@ const { loggedInUser } = useLoggedInUserStorage();
       <img class="logo" src="@common/assets/images/belieme_logo_en.png" />
     </section>
     <nav class="flex-grow-1 d-flex flex-row align-items-center ms-4">
-      <RouterLink to="/stuffs" class="ms-4 me-4">물품목록</RouterLink>
-      <RouterLink to="/histories" class="ms-4 me-4">대여기록</RouterLink>
-      <RouterLink to="/bulletin" class="ms-4 me-4">문의게시판</RouterLink>
-      <RouterLink to="/users" class="ms-4 me-4">유저관리</RouterLink>
+      <RouterLink v-if="isLoggedIn" to="/stuffs" class="ms-4 me-4">물품목록</RouterLink>
+      <RouterLink v-if="isLoggedIn" to="/histories" class="ms-4 me-4">대여기록</RouterLink>
+      <RouterLink
+        v-if="isLoggedIn && hasHigherAuthorityPermission(getPermissionOfLoggedInUser(), 'MASTER')"
+        to="/users"
+        class="ms-4 me-4"
+      >
+        유저관리
+      </RouterLink>
     </nav>
-    <section class="flex-grow-0">
+    <section v-if="isLoggedIn" class="flex-grow-0">
       <BasicDropdown v-bind:align="'right'" v-bind:type="'hover'">
         <template v-slot:trigger>
           <section class="p-1">
-            <UserIcon></UserIcon>
+            <UserIcon hover="off"></UserIcon>
           </section>
         </template>
         <template v-slot:menu="{ closeDropdown }">

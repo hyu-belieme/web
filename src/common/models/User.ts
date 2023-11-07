@@ -55,6 +55,7 @@ export class User extends BaseVo {
   }
 
   public getPermission(deptId: string): AuthorityPermission {
+    if (this.authorities.findIndex((e) => e.permission === 'DEVELOPER') !== -1) return 'DEVELOPER';
     const auth = this.authorities.find((e) => e.department.id === deptId);
     return auth ? auth.permission : 'NIL';
   }
