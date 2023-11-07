@@ -18,7 +18,7 @@
         class="authority-selector"
         size="xs"
         @on-change="updateUserDiffsAtOnce"
-        :disabled="false"
+        :disabled="checkedUsers.length === 0"
         :options="authorityMap"
       ></BasicSelector>
     </section>

@@ -23,7 +23,7 @@
           size="xs"
           color="danger"
           class="hover-on"
-          @click="() => userDiffStore.removeUserDiff(userDiff.user.id)"
+          @click="() => modalStore.addModal(undoModal)"
         >
         </UndoIcon>
       </section>
@@ -33,17 +33,38 @@
 
 <script setup lang="ts">
 import UndoIcon from '@common/components/icons/UndoIcon/UndoIcon.vue';
+import ConfirmModal from '@common/components/modals/ConfirmModal/ConfirmModal.vue';
+import useModalStore from '@common/components/modals/stores/modal-store';
 import { toString as permissionToString } from '@common/models/types/AuthorityPermission';
 
 import DiffTypeBadge from '@^users/components/DiffTypeBadge.vue';
 import type UserDiff from '@^users/models/UserDiff';
 import useUserDiff from '@^users/stores/user-diff-store';
 
-defineProps<{
+const props = defineProps<{
   userDiff: UserDiff;
 }>();
 
+const modalStore = useModalStore();
+
 const userDiffStore = useUserDiff();
+
+const undoModal = {
+  component: ConfirmModal,
+  props: {
+    title: '변경 되돌리기',
+    content: '해당 변경사항을 기존으로 되돌립니다. 이 작업은 되돌릴 수 없습니다.',
+    resolveLabel: '되돌리기',
+    rejectLabel: '뒤로가기',
+  },
+  resolve: () => {
+    userDiffStore.removeUserDiff(props.userDiff.user.id);
+    modalStore.removeModal();
+  },
+  reject: () => {
+    modalStore.removeModal();
+  },
+};
 </script>
 
 <style scoped lang="scss">
