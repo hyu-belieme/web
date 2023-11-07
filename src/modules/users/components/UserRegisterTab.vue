@@ -72,18 +72,22 @@ const { isSuccess, isLoading, isError, data } = useQuery<List<University>>(univK
 );
 
 const univMap = ref<Map<string, { value: University; label: string }>>(new Map());
-watch(data, () => {
-  if (isSuccess.value) {
-    const tmpMap = new Map<string, { value: University; label: string }>();
-    data.value?.forEach((e) => {
-      tmpMap.set(e.id, {
-        value: e,
-        label: e.name,
+watch(
+  data,
+  () => {
+    if (isSuccess.value) {
+      const tmpMap = new Map<string, { value: University; label: string }>();
+      data.value?.forEach((e) => {
+        tmpMap.set(e.id, {
+          value: e,
+          label: e.name,
+        });
       });
-    });
-    univMap.value = tmpMap;
-  }
-});
+      univMap.value = tmpMap;
+    }
+  },
+  { immediate: true }
+);
 </script>
 
 <style scoped lang="scss">
