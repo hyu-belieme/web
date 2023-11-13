@@ -37,6 +37,7 @@ const useUserChecked = defineStore('user-checked', () => {
     });
     userList.value = tmpUserList;
     checkedUserIds.value = tmpCheckedUserIds;
+    userList.value.sort((a, b) => a.compare(b));
   }
 
   function check(userId: string) {

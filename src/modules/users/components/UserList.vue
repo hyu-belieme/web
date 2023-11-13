@@ -4,15 +4,31 @@
       <UserListHeader></UserListHeader>
     </section>
     <section class="w-100 flex-grow-1 d-flex flex-column">
-      <UserListCell
-        v-for="cellInfo of applyUserListFilter()"
-        :key="cellInfo.user.id + cellInfo.user.getPermission(curDeptId)"
-        :user="cellInfo.user"
-        :checked="cellInfo.checked"
-      ></UserListCell>
+      <section v-if="isSuccess" class="w-100 h-100 d-flex flex-column">
+        <UserListCell
+          v-for="cellInfo of applyUserListFilter()"
+          :key="cellInfo.user.id + cellInfo.user.getPermission(curDeptId)"
+          :user="cellInfo.user"
+          :checked="cellInfo.checked"
+        ></UserListCell>
+      </section>
+      <LoadingView v-else-if="isLoading"></LoadingView>
+      <DataLoadFailView v-else></DataLoadFailView>
     </section>
     <section class="w-100 p-2 d-flex flex-row gap-2 justify-content-center">
-      <BasicButton content="저장하기" size="sm"></BasicButton>
+      <BasicButton
+        content="저장하기"
+        size="sm"
+        @click="
+          () => {
+            if (userDiffList.length === 0) {
+              modalStore.addModal(noDiffModal);
+              return;
+            }
+            modalStore.addModal(commitDiffModal);
+          }
+        "
+      ></BasicButton>
       <BasicButton
         content="새로고침"
         color="light"
@@ -25,14 +41,21 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { watch } from 'vue';
+import { computed, watchEffect } from 'vue';
+import { useQuery, useQueryClient } from 'vue-query';
 
+import { getAllUsersInDept } from '@common/apis/belieme-apis';
+import { userKeys } from '@common/apis/query-keys';
+import DataLoadFailView from '@common/components/DataLoadFailView/DataLoadFailView.vue';
+import LoadingView from '@common/components/LoadingView/LoadingView.vue';
 import BasicButton from '@common/components/buttons/BasicButton/BasicButton.vue';
+import AlertModal from '@common/components/modals/AlertModal/AlertModal.vue';
 import ConfirmModal from '@common/components/modals/ConfirmModal/ConfirmModal.vue';
 import useModalStore from '@common/components/modals/stores/modal-store';
-import userDummies from '@common/dummies/UserDummies';
+import type User from '@common/models/User';
 import { hasHigherAuthorityPermission } from '@common/models/types/AuthorityPermission';
 import useCurDeptStorage from '@common/storages/cur-dept-storage';
+import useUserTokenStorage from '@common/storages/user-token-storage';
 
 import UserListCell from '@^users/components/UserListCell.vue';
 import UserListHeader from '@^users/components/UserListHeader.vue';
@@ -40,6 +63,8 @@ import useUserChecked from '@^users/stores/user-checked-store';
 import useUserDiff from '@^users/stores/user-diff-store';
 import useUserListFilter from '@^users/stores/user-list-filter-store';
 import userDiffApplier from '@^users/utils/user-diff-applier';
+
+const queryClient = useQueryClient();
 
 const modalStore = useModalStore();
 
@@ -54,6 +79,55 @@ const { userWithCheckedList } = storeToRefs(userCheckedStore);
 
 const userListFilterStore = useUserListFilter();
 
+const userTokenStorage = useUserTokenStorage();
+const { userToken } = storeToRefs(userTokenStorage);
+
+const {
+  isLoading,
+  isSuccess,
+  data: baseUserList,
+} = useQuery<User[]>(
+  userKeys.list(curDeptId.value),
+  () => getAllUsersInDept(userToken.value, curDeptId.value),
+  {
+    staleTime: Infinity,
+  }
+);
+
+const diffAppliedUserList = computed(() =>
+  userDiffApplier(
+    (baseUserList.value || []).filter(
+      (e) => !hasHigherAuthorityPermission(e.getPermission(curDeptId.value), 'MASTER')
+    ),
+    userDiffList.value
+  )
+);
+
+const noDiffModal = {
+  component: AlertModal,
+  props: {
+    content: '반영할 변경사항이 없습니다. 변경사항을 먼저 추가해주세요.',
+  },
+};
+
+const commitDiffModal = {
+  component: ConfirmModal,
+  props: {
+    title: '변경사항 반영하기',
+    content: '변경사항을 반영하시겠습니까?',
+    resolveLabel: '반영하기',
+    rejectLabel: '뒤로가기',
+  },
+  resolve: () => {
+    userDiffStore.clearUserDiffs();
+    queryClient.invalidateQueries(userKeys.list(curDeptId.value));
+    modalStore.removeModal();
+  },
+  reject: () => {
+    modalStore.removeModal();
+  },
+};
+
 const reloadModal = {
   component: ConfirmModal,
   props: {
@@ -64,6 +138,7 @@ const reloadModal = {
   },
   resolve: () => {
     userDiffStore.clearUserDiffs();
+    queryClient.invalidateQueries(userKeys.list(curDeptId.value));
     modalStore.removeModal();
   },
   reject: () => {
@@ -80,19 +155,9 @@ function applyUserListFilter() {
   }));
 }
 
-watch(
-  userDiffList,
-  (newVal) =>
-    userCheckedStore.updateUserList(
-      userDiffApplier(
-        userDummies.filter(
-          (e) => !hasHigherAuthorityPermission(e.getPermission(curDeptId.value), 'MASTER')
-        ),
-        newVal
-      )
-    ),
-  { immediate: true }
-);
+watchEffect(() => {
+  userCheckedStore.updateUserList(diffAppliedUserList.value);
+});
 </script>
 
 <style scoped lang="scss">

@@ -8,7 +8,6 @@ import { useRouter } from 'vue-router';
 
 import { getAccessibleDeptList, getCurrentUserInfo } from '@common/apis/belieme-apis';
 import { deptKeys, userKeys } from '@common/apis/query-keys';
-import DataLoadFailView from '@common/components/DataLoadFailView/DataLoadFailView.vue';
 import LoadingView from '@common/components/LoadingView/LoadingView.vue';
 import buildAlertModal from '@common/components/modals/AlertModal/utils/alert-modal-builder';
 import useModalStore from '@common/components/modals/stores/modal-store';
@@ -104,8 +103,7 @@ onBeforeMount(() => {
 
 <template>
   <section class="login-page">
-    <LoginBox v-if="needLogin"></LoginBox>
-    <DataLoadFailView v-else-if="loginFailed"></DataLoadFailView>
+    <LoginBox v-if="needLogin || loginFailed"></LoginBox>
     <LoadingView v-else></LoadingView>
   </section>
 </template>

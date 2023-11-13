@@ -107,6 +107,27 @@ export function getCurrentUserInfo(userToken: string) {
   });
 }
 
+export function getAllUsersInDept(userToken: string, deptId: string) {
+  const apiUrl = `/users?department-id=${deptId}`;
+
+  return new Promise<User[]>((resolve, reject) => {
+    axios
+      .create({
+        ...API_SERVER_INSTANCE_CONFIG,
+        headers: { 'user-token': userToken },
+      })
+      .get<User[]>(apiUrl)
+      .then((response) => {
+        const output: User[] = [];
+        response.data.forEach((user) => {
+          output.push(new User(user));
+        });
+        resolve(output);
+      })
+      .catch(handleError(reject));
+  });
+}
+
 export function getAllStuffsInDept(userToken: string, deptId: string) {
   const apiUrl = `stuffs?department-id=${deptId}`;
 

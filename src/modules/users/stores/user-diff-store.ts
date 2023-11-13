@@ -12,7 +12,7 @@ const useUserDiff = defineStore('user-diff', () => {
     tmpUserDiffDummies.set(userDiff.user.id, userDiff);
   });
 
-  const userDiffsMap = ref<Map<string, UserDiff>>(tmpUserDiffDummies);
+  const userDiffsMap = ref<Map<string, UserDiff>>(new Map([]));
 
   const userDiffList = computed(() =>
     Array.from(userDiffsMap.value.values()).sort((a, b) => {
