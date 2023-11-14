@@ -79,11 +79,12 @@ const diffAppliedUserList = computed(() =>
 
 function registerUser() {
   if (data.value !== undefined) {
+    const prevState = userDiffStore.getUserDiff(data.value.id)?.prevState || 'BANNED';
     userDiffStore.putUserDiff(
       new UserDiff({
         user: data.value,
         dept: curDept.value,
-        prevState: 'NIL',
+        prevState,
         curState: 'USER',
       })
     );

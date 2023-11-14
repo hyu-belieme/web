@@ -12,10 +12,10 @@
       </section>
       <section class="d-flex flex-row gap-1 align-items-center">
         <section class="permission-change lh-sm text-gray fs-xs">
-          <span v-if="userDiff.prevState !== 'NIL'">
+          <span v-if="userDiff.prevState !== 'BANNED'">
             {{ permissionToString(userDiff.prevState) }}
           </span>
-          <span v-if="userDiff.curState !== 'NIL'">
+          <span v-if="userDiff.curState !== 'BANNED'">
             {{ permissionToString(userDiff.curState) }}
           </span>
         </section>

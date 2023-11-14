@@ -1,3 +1,5 @@
+import { List } from 'immutable';
+
 import { Authority } from '@common/models/Authority';
 import User from '@common/models/User';
 
@@ -9,7 +11,9 @@ function applyUserDiff(user: User | undefined, userDiff: UserDiff) {
     (auth) => auth.department.id !== userDiff.dept.id
   );
 
-  if (userDiff.curState !== 'NIL') {
+  if (userDiff.curState === 'BANNED') {
+    newAuthorities = List<Authority>([]);
+  } else {
     newAuthorities = newAuthorities.push(
       new Authority({
         department: userDiff.dept,
@@ -30,7 +34,8 @@ function applyUserDiffs(users: User[], userDiffs: UserDiff[]) {
 
   userDiffs.forEach((userDiff) => {
     const newUser = applyUserDiff(userMap.get(userDiff.user.id), userDiff);
-    userMap.set(newUser.id, newUser);
+    if (newUser.authorities.size === 0) userMap.delete(newUser.id);
+    else userMap.set(newUser.id, newUser);
   });
   return Array.from(userMap.values());
 }

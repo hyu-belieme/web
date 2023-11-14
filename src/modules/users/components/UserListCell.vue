@@ -86,12 +86,13 @@ function updateUserDiff(keys: { newKey: string; oldKey: string }) {
     userDiffStore.removeUserDiff(props.user.id);
     return;
   }
+  const newState = parseAuthorityPermission(selectorRef.value?.getValue(keys.newKey));
   userDiffStore.putUserDiff(
     new UserDiff({
       user: props.user,
       dept: curDept.value,
       prevState,
-      curState: parseAuthorityPermission(selectorRef.value?.getValue(keys.newKey)),
+      curState: newState,
     })
   );
 }

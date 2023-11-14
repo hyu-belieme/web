@@ -38,9 +38,9 @@ export class UserDiff extends BaseVo {
   }
 
   public diffType(): UserDiffType {
-    if (this.curState === 'NIL' && this.prevState === 'NIL') return 'NIL';
-    if (this.curState === 'NIL') return 'DELETED';
-    if (this.prevState === 'NIL') return 'ADDED';
+    if (this.curState === 'NIL' || this.prevState === 'NIL') return 'NIL';
+    if (this.curState === 'BANNED') return 'DELETED';
+    if (this.prevState === 'BANNED') return 'ADDED';
     return 'MODIFIED';
   }
 
