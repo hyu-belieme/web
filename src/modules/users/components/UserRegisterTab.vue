@@ -19,11 +19,13 @@
             :disabled="isLoading || isError"
             :options="univMap"
             hint="학교를 선택해주세요."
+            @on-change="(keys) => (selectedUniv = univMap.get(keys.newKey)?.value ?? null)"
           ></BasicSelector>
         </section>
         <section class="w-0 flex-grow-1 d-flex flex-row gap-1 align-items-center">
           <span>학번</span>
           <input
+            ref="studentIdRef"
             type="text"
             class="w-0 form-control edit-box flex-grow-1 fs-xs"
             placeholder="학번을 입력해주세요."
@@ -35,7 +37,7 @@
       <BasicButton
         content="등록하기"
         size="sm"
-        @click="userRegisterTabStore.closeUserRegisterTab"
+        @click="() => openUserRegisterModal()"
       ></BasicButton>
       <BasicButton
         content="취소하기"
@@ -56,10 +58,12 @@ import { useQuery } from 'vue-query';
 import { getAllUnivList } from '@common/apis/belieme-apis';
 import { univKeys } from '@common/apis/query-keys';
 import BasicButton from '@common/components/buttons/BasicButton/BasicButton.vue';
+import useModalStore from '@common/components/modals/stores/modal-store';
 import BasicSelector from '@common/components/selectors/BasicSelector/BasicSelector.vue';
 import type University from '@common/models/University';
 import useUserTokenStorage from '@common/storages/user-token-storage';
 
+import UserRegisterModal from '@^users/components/UserRegisterModal.vue';
 import useUserRegisterTab from '@^users/stores/user-register-tab-store';
 
 const userTokenStorage = useUserTokenStorage();
@@ -67,9 +71,14 @@ const { userToken } = storeToRefs(userTokenStorage);
 
 const userRegisterTabStore = useUserRegisterTab();
 
+const modalStore = useModalStore();
+
 const { isSuccess, isLoading, isError, data } = useQuery<List<University>>(univKeys.all(), () =>
   getAllUnivList(userToken.value)
 );
+
+const selectedUniv = ref<University | null>(null);
+const studentIdRef = ref<HTMLInputElement | null>(null);
 
 const univMap = ref<Map<string, { value: University; label: string }>>(new Map());
 watch(
@@ -88,6 +97,24 @@ watch(
   },
   { immediate: true }
 );
+
+function openUserRegisterModal() {
+  const userRegisterModal = {
+    component: UserRegisterModal,
+    props: {
+      univId: selectedUniv.value?.id ?? '',
+      studentId: studentIdRef.value?.value ?? '',
+    },
+    resolve: () => {
+      modalStore.removeModal();
+      userRegisterTabStore.closeUserRegisterTab();
+    },
+    reject: () => {
+      modalStore.removeModal();
+    },
+  };
+  modalStore.addModal(userRegisterModal);
+}
 </script>
 
 <style scoped lang="scss">

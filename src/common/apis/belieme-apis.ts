@@ -108,6 +108,21 @@ export function getCurrentUserInfo(userToken: string) {
   });
 }
 
+export function getUserByIndex(userToken: string, univId: string, studentId: string) {
+  const apiUrl = `/users/by-index?university-id=${univId}&student-id=${studentId}`;
+
+  return new Promise<User>((resolve, reject) => {
+    axios
+      .create({
+        ...API_SERVER_INSTANCE_CONFIG,
+        headers: { 'user-token': userToken },
+      })
+      .get<User>(apiUrl)
+      .then((response) => resolve(new User(response.data)))
+      .catch(handleError(reject));
+  });
+}
+
 export function getAllUsersInDept(userToken: string, deptId: string) {
   const apiUrl = `/users?department-id=${deptId}`;
 
