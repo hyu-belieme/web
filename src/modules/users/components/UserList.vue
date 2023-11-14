@@ -44,7 +44,7 @@ import { storeToRefs } from 'pinia';
 import { computed, watchEffect } from 'vue';
 import { useQuery, useQueryClient } from 'vue-query';
 
-import { getAllUsersInDept } from '@common/apis/belieme-apis';
+import { getAllUsersInDept, updateUserPermissions } from '@common/apis/belieme-apis';
 import { userKeys } from '@common/apis/query-keys';
 import DataLoadFailView from '@common/components/DataLoadFailView/DataLoadFailView.vue';
 import LoadingView from '@common/components/LoadingView/LoadingView.vue';
@@ -94,6 +94,19 @@ const {
   }
 );
 
+function commitUserDiff(resolve: () => void, reject: () => void) {
+  updateUserPermissions(
+    userToken.value,
+    userDiffList.value.map((e) => ({
+      userId: e.user.id,
+      departmentId: curDeptId.value,
+      permission: e.curState,
+    }))
+  )
+    .then(resolve)
+    .catch(reject);
+}
+
 const diffAppliedUserList = computed(() =>
   userDiffApplier(
     (baseUserList.value || []).filter(
@@ -119,9 +132,14 @@ const commitDiffModal = {
     rejectLabel: '뒤로가기',
   },
   resolve: () => {
-    userDiffStore.clearUserDiffs();
-    queryClient.invalidateQueries(userKeys.list(curDeptId.value));
-    modalStore.removeModal();
+    commitUserDiff(
+      () => {
+        userDiffStore.clearUserDiffs();
+        queryClient.refetchQueries(userKeys.list(curDeptId.value));
+        modalStore.removeModal();
+      },
+      () => modalStore.removeModal()
+    );
   },
   reject: () => {
     modalStore.removeModal();
@@ -138,7 +156,7 @@ const reloadModal = {
   },
   resolve: () => {
     userDiffStore.clearUserDiffs();
-    queryClient.invalidateQueries(userKeys.list(curDeptId.value));
+    queryClient.refetchQueries(userKeys.list(curDeptId.value));
     modalStore.removeModal();
   },
   reject: () => {

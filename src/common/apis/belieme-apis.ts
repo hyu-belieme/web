@@ -13,6 +13,7 @@ import StuffWithItems from '@common/models/StuffWithItems';
 import University from '@common/models/University';
 import User from '@common/models/User';
 import UserWithSecureInfo from '@common/models/UserWithSecureInfo';
+import type AuthorityPermission from '@common/models/types/AuthorityPermission';
 
 const NETWORK_ERROR: BaseError = {
   name: 'NETWORK_ERROR',
@@ -117,6 +118,34 @@ export function getAllUsersInDept(userToken: string, deptId: string) {
         headers: { 'user-token': userToken },
       })
       .get<User[]>(apiUrl)
+      .then((response) => {
+        const output: User[] = [];
+        response.data.forEach((user) => {
+          output.push(new User(user));
+        });
+        resolve(output);
+      })
+      .catch(handleError(reject));
+  });
+}
+
+export function updateUserPermissions(
+  userToken: string,
+  permissionInfos: {
+    userId: string;
+    departmentId: string;
+    permission: AuthorityPermission;
+  }[]
+) {
+  const apiUrl = 'users/update-permission';
+
+  return new Promise<User[]>((resolve, reject) => {
+    axios
+      .create({
+        ...API_SERVER_INSTANCE_CONFIG,
+        headers: { 'user-token': userToken },
+      })
+      .patch<User[]>(apiUrl, permissionInfos)
       .then((response) => {
         const output: User[] = [];
         response.data.forEach((user) => {
