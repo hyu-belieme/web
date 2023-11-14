@@ -18,8 +18,8 @@
         class="authority-selector"
         size="xs"
         @on-change="updateUserDiffsAtOnce"
-        :disabled="checkedUsers.length === 0"
-        :options="authorityMap"
+        :disabled="checkedUsers.length === 0 || masterSelected"
+        :options="masterSelected ? authorityMapWithMaster : authorityMap"
       ></BasicSelector>
     </section>
   </section>
@@ -27,7 +27,7 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 import BasicCheckbox from '@common/components/checkboxes/BasicCheckbox/BasicCheckbox.vue';
 import BasicSelector from '@common/components/selectors/BasicSelector/BasicSelector.vue';
@@ -53,6 +53,15 @@ AUTHORITY_PERMISSIONS.forEach((e) => {
   });
 });
 
+const authorityMapWithMaster = new Map<string, { value: AuthorityPermission; label: string }>();
+AUTHORITY_PERMISSIONS.forEach((e) => {
+  if (e === 'DEFAULT' || e === 'NIL' || hasHigherAuthorityPermission(e, 'DEVELOPER')) return;
+  authorityMapWithMaster.set(e, {
+    value: e,
+    label: permissionToString(e),
+  });
+});
+
 const curDeptStorage = useCurDeptStorage();
 const { curDept, curDeptId } = storeToRefs(curDeptStorage);
 
@@ -60,6 +69,13 @@ const userCheckedStore = useUserChecked();
 const { repChecked, checkedUsers } = storeToRefs(userCheckedStore);
 
 const userDiffStore = useUserDiff();
+
+const masterSelected = computed(
+  () =>
+    !checkedUsers.value.every(
+      (user) => !hasHigherAuthorityPermission(user.getPermission(curDeptId.value), 'MASTER')
+    )
+);
 
 const checkboxRef = ref<InstanceType<typeof BasicCheckbox> | null>(null);
 const selectorRef = ref<InstanceType<typeof BasicSelector> | null>(null);

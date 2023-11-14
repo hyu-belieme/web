@@ -21,8 +21,12 @@
         size="xs"
         ref="selectorRef"
         @on-change="updateUserDiff"
-        :disabled="false"
-        :options="authorityMap"
+        :disabled="hasHigherAuthorityPermission(user.getPermission(curDeptId), 'MASTER')"
+        :options="
+          hasHigherAuthorityPermission(user.getPermission(curDeptId), 'MASTER')
+            ? masterOnlyAuthorityMap
+            : authorityMap
+        "
         :initial-key="user.getPermission(curDeptId)"
       ></BasicSelector>
     </section>
@@ -66,6 +70,12 @@ AUTHORITY_PERMISSIONS.forEach((e) => {
     value: e,
     label: permissionToString(e),
   });
+});
+
+const masterOnlyAuthorityMap = new Map<string, { value: AuthorityPermission; label: string }>();
+masterOnlyAuthorityMap.set('MASTER', {
+  value: 'MASTER',
+  label: permissionToString('MASTER'),
 });
 
 const curDeptStorage = useCurDeptStorage();

@@ -109,7 +109,7 @@ function commitUserDiff(resolve: () => void, reject: () => void) {
 
 const diffAppliedUserList = computed(() =>
   userDiffApplier(baseUserList.value || [], userDiffList.value).filter(
-    (e) => !hasHigherAuthorityPermission(e.getPermission(curDeptId.value), 'MASTER')
+    (e) => !hasHigherAuthorityPermission(e.getPermission(curDeptId.value), 'DEVELOPER')
   )
 );
 
