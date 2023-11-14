@@ -58,6 +58,7 @@ import { useQuery } from 'vue-query';
 import { getAllUnivList } from '@common/apis/belieme-apis';
 import { univKeys } from '@common/apis/query-keys';
 import BasicButton from '@common/components/buttons/BasicButton/BasicButton.vue';
+import buildAlertModal from '@common/components/modals/AlertModal/utils/alert-modal-builder';
 import useModalStore from '@common/components/modals/stores/modal-store';
 import BasicSelector from '@common/components/selectors/BasicSelector/BasicSelector.vue';
 import type University from '@common/models/University';
@@ -99,6 +100,13 @@ watch(
 );
 
 function openUserRegisterModal() {
+  if (selectedUniv.value === null) {
+    modalStore.addModal(
+      buildAlertModal('user-register-no-univ-error', '등록 시 학교를 선택해주세요.')
+    );
+    return;
+  }
+
   const userRegisterModal = {
     component: UserRegisterModal,
     props: {
