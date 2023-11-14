@@ -18,11 +18,5 @@ const { userMode } = storeToRefs(userModeStore);
 <style lang="scss" scoped>
 .history-page {
   height: 100%;
-
-  display: flex;
-  flex-direction: row;
-  gap: map-get($map: $spacers, $key: 4);
-
-  padding-bottom: map-get($map: $spacers, $key: 4);
 }
 </style>

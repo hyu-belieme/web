@@ -136,7 +136,7 @@ const returnApproveModal = {
       ></BasicButton>
       <BasicButton
         class="flex-grow-1"
-        :color="'gray'"
+        :color="'light'"
         :content="'요청취소'"
         :onClick="() => modalStore.addModal(requestCancelModal)"
       ></BasicButton>

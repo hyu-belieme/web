@@ -4,6 +4,8 @@ import { computed } from 'vue';
 
 import useModalStore from '@common/components/modals/stores/modal-store';
 import type User from '@common/models/User';
+import { hasHigherAuthorityPermission } from '@common/models/types/AuthorityPermission';
+import useCurDeptStorage from '@common/storages/cur-dept-storage';
 import useLoggedInUserStorage from '@common/storages/logged-in-user-storage';
 import useUserTokenStorage from '@common/storages/user-token-storage';
 import useUserModeStore from '@common/stores/user-mode-store';
@@ -18,6 +20,9 @@ const emit = defineEmits(['closeDropdown']);
 const userTokenStorage = useUserTokenStorage();
 
 const loggedInUserStorage = useLoggedInUserStorage();
+
+const curDeptStorage = useCurDeptStorage();
+const { curDeptId } = storeToRefs(curDeptStorage);
 
 const modalStore = useModalStore();
 
@@ -51,6 +56,10 @@ function logout() {
   userTokenStorage.removeItem();
   loggedInUserStorage.removeItem();
 }
+
+function getPermissionOfLoggedInUser() {
+  return loggedInUserStorage.getPermissionOfLoggedInUser(curDeptId.value || '');
+}
 </script>
 
 <template>
@@ -64,7 +73,7 @@ function logout() {
   </li>
   <li><hr class="dropdown-divider" /></li>
   <li><a class="dropdown-item" @click="showChangeDeptModal()">학과 변경하기</a></li>
-  <li>
+  <li v-if="hasHigherAuthorityPermission(getPermissionOfLoggedInUser(), 'MASTER')">
     <a class="dropdown-item" @click="changeUserMode()">{{ changeUserModeLabel }}</a>
   </li>
   <li><a class="dropdown-item" @click="logout()" href="/login">로그아웃</a></li>
@@ -90,7 +99,7 @@ function logout() {
 }
 
 .user-sub-info {
-  font-size: $font-size-xsm;
+  font-size: $font-size-xs;
   font-weight: $font-weight-light;
 }
 </style>

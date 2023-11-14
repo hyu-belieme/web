@@ -135,10 +135,10 @@ onBeforeMount(() => {
       v-if="viewMode === 'EDIT' || viewMode === 'ADD' || viewMode === 'INITIAL_ADD'"
       type="button"
       class="w-100"
-      v-bind:color="'gray'"
+      v-bind:color="'light'"
       @click="pushNewItem()"
     >
-      <PlusIcon :color="'dark'"></PlusIcon>
+      <PlusIcon :color="'dark'" hover="off"></PlusIcon>
     </ButtonBase>
   </section>
 </template>

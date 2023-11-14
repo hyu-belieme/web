@@ -10,8 +10,10 @@ import type { IStuffPostRequestBody } from '@common/models/StuffPostRequestBody'
 import StuffRequestBody from '@common/models/StuffRequestBody';
 import type { IStuffRequestBody } from '@common/models/StuffRequestBody';
 import StuffWithItems from '@common/models/StuffWithItems';
+import University from '@common/models/University';
 import User from '@common/models/User';
 import UserWithSecureInfo from '@common/models/UserWithSecureInfo';
+import type AuthorityPermission from '@common/models/types/AuthorityPermission';
 
 const NETWORK_ERROR: BaseError = {
   name: 'NETWORK_ERROR',
@@ -32,6 +34,27 @@ function handleError(reject: (_?: any) => void) {
       reject(NETWORK_ERROR);
     }
   };
+}
+
+export function getAllUnivList(userToken: string) {
+  const apiUrl = `/universities`;
+
+  return new Promise<List<University>>((resolve, reject) => {
+    axios
+      .create({
+        ...API_SERVER_INSTANCE_CONFIG,
+        headers: { 'user-token': userToken },
+      })
+      .get<List<University>>(apiUrl)
+      .then((response) => {
+        let output = List<University>([]);
+        response.data.forEach((univ) => {
+          output = output.push(new University(univ));
+        });
+        resolve(output);
+      })
+      .catch(handleError(reject));
+  });
 }
 
 export function getAccessibleDeptList(userToken: string) {
@@ -81,6 +104,70 @@ export function getCurrentUserInfo(userToken: string) {
       })
       .get<User>(apiUrl)
       .then((response) => resolve(new User(response.data)))
+      .catch(handleError(reject));
+  });
+}
+
+export function getUserByIndex(userToken: string, univId: string, studentId: string) {
+  const apiUrl = `/users/by-index?university-id=${univId}&student-id=${studentId}`;
+
+  return new Promise<User>((resolve, reject) => {
+    axios
+      .create({
+        ...API_SERVER_INSTANCE_CONFIG,
+        headers: { 'user-token': userToken },
+      })
+      .get<User>(apiUrl)
+      .then((response) => resolve(new User(response.data)))
+      .catch(handleError(reject));
+  });
+}
+
+export function getAllUsersInDept(userToken: string, deptId: string) {
+  const apiUrl = `/users?department-id=${deptId}`;
+
+  return new Promise<User[]>((resolve, reject) => {
+    axios
+      .create({
+        ...API_SERVER_INSTANCE_CONFIG,
+        headers: { 'user-token': userToken },
+      })
+      .get<User[]>(apiUrl)
+      .then((response) => {
+        const output: User[] = [];
+        response.data.forEach((user) => {
+          output.push(new User(user));
+        });
+        resolve(output);
+      })
+      .catch(handleError(reject));
+  });
+}
+
+export function updateUserPermissions(
+  userToken: string,
+  permissionInfos: {
+    userId: string;
+    departmentId: string;
+    permission: AuthorityPermission;
+  }[]
+) {
+  const apiUrl = 'users/update-permission';
+
+  return new Promise<User[]>((resolve, reject) => {
+    axios
+      .create({
+        ...API_SERVER_INSTANCE_CONFIG,
+        headers: { 'user-token': userToken },
+      })
+      .patch<User[]>(apiUrl, permissionInfos)
+      .then((response) => {
+        const output: User[] = [];
+        response.data.forEach((user) => {
+          output.push(new User(user));
+        });
+        resolve(output);
+      })
       .catch(handleError(reject));
   });
 }

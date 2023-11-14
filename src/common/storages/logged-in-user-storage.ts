@@ -12,6 +12,10 @@ const useLoggedInUserStorage = defineStore(key, () => {
   const loggedInUser = useStorage<User>(key, defaultVal, storageArea);
   const loggedInUserId = computed(() => loggedInUser.value.id);
 
+  function getPermissionOfLoggedInUser(deptId: string) {
+    return new User(loggedInUser.value).getPermission(deptId);
+  }
+
   function itemEquals(user: User) {
     return new User(loggedInUser.value).equals(user);
   }
@@ -21,12 +25,13 @@ const useLoggedInUserStorage = defineStore(key, () => {
   }
 
   function removeItem() {
-    loggedInUser.value = null;
+    loggedInUser.value = User.NIL;
   }
 
   return {
     loggedInUser,
     loggedInUserId,
+    getPermissionOfLoggedInUser,
     itemEquals,
     setItem,
     removeItem,

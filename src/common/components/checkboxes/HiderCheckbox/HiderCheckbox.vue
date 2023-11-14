@@ -2,13 +2,15 @@
 withDefaults(
   defineProps<{
     state: 'showed' | 'hidden';
-    color?: 'dark' | 'light' | 'gray';
-    multiplier?: number;
+    hover?: 'on' | 'off';
+    color?: string;
+    size?: '100' | 'auto' | 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   }>(),
   {
     state: 'hidden',
+    hover: 'on',
     color: 'dark',
-    multiplier: 1,
+    size: 'md',
   }
 );
 </script>
@@ -16,9 +18,7 @@ withDefaults(
 <template>
   <svg
     v-if="state === 'hidden'"
-    :class="['hider-checkbox', `hider-checkbox-${color}`]"
-    :width="`${1.5 * multiplier}rem`"
-    :height="`${1 * multiplier}rem`"
+    :class="[`color-${color}-hover-${hover}`, `size-${size}`]"
     viewBox="0 0 24 16"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -32,9 +32,7 @@ withDefaults(
   </svg>
   <svg
     v-else
-    :class="['hider-checkbox', `hider-checkbox-${color}`]"
-    :width="`${1.5 * multiplier}rem`"
-    :height="`${1 * multiplier}rem`"
+    :class="[`color-${color}-hover-${hover}`, `size-${size}`]"
     viewBox="0 0 24 16"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -49,22 +47,54 @@ withDefaults(
 </template>
 
 <style scoped lang="scss">
-.hider-checkbox {
+$component-prefix: 'hider-checkbox';
+$size-base-x: 1.5;
+$size-base-y: 1;
+
+.size-100 {
+  width: 100%;
+  height: 100%;
 }
 
-.hider-checkbox-dark {
-  --#{$prefix}hider-checkbox-color: #{$dark};
+.size-auto {
+  width: auto;
+  height: auto;
 }
 
-.hider-checkbox-light {
-  --#{$prefix}hider-checkbox-color: #{$light};
+@each $key, $value in $size-ratios {
+  .size-#{$key} {
+    width: #{$size-base-x * $value}rem;
+    height: #{$size-base-y * $value}rem;
+  }
 }
 
-.hider-checkbox-gray {
-  --#{$prefix}hider-checkbox-color: #{$gray-700};
+@each $color, $value in $theme-colors {
+  .color-#{$color}-hover-on {
+    --#{$prefix}--#{$component-prefix}-color: #{$value};
+    &:hover {
+      --#{$prefix}--#{$component-prefix}-color: #{hover-color($value)};
+    }
+  }
+
+  .color-#{$color}-hover-off {
+    --#{$prefix}--#{$component-prefix}-color: #{$value};
+  }
+}
+
+@each $color, $value in $colors {
+  .color-#{$color}-hover-on {
+    --#{$prefix}--#{$component-prefix}-color: #{$value};
+    &:hover {
+      --#{$prefix}--#{$component-prefix}-color: #{hover-color($value)};
+    }
+  }
+
+  .color-#{$color}-hover-off {
+    --#{$prefix}--#{$component-prefix}-color: #{$value};
+  }
 }
 
 .fill-color {
-  fill: var(--#{$prefix}hider-checkbox-color);
+  fill: var(--#{$prefix}--#{$component-prefix}-color);
 }
 </style>

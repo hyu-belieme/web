@@ -1,78 +1,48 @@
 <script setup lang="ts">
-import { v4 as uuidV4 } from 'uuid';
 import { ref } from 'vue';
 
-const props = withDefaults(
+import DropdownBase from '@common/components/dropdowns/DropdownBase/DropdownBase.vue';
+
+withDefaults(
   defineProps<{
     type?: 'hover' | 'toggle';
     align?: 'left' | 'right';
     opened?: boolean;
+    disabled?: boolean;
   }>(),
   {
     type: 'hover',
     align: 'left',
     opened: false,
+    disabled: false,
   }
 );
 
-const openedRef = ref<boolean>(false);
+const dropdownBaseRef = ref<InstanceType<typeof DropdownBase> | null>(null);
 
-const dropdownKey = uuidV4();
-
-let closeLogic: (_: Event) => void;
-let closeEventRegistered = false;
-
-let listenerType = 'mouseover';
-if (props.type === 'hover') listenerType = 'mouseover';
-else if (props.type === 'toggle') listenerType = 'click';
-
-function closeDropdown() {
-  window.removeEventListener(listenerType, closeLogic);
-  openedRef.value = false;
-  closeEventRegistered = false;
-}
-
-function openDropdown() {
-  if (closeEventRegistered) return;
-  closeEventRegistered = true;
-  closeLogic = (e) => {
-    const target = e.target as HTMLDivElement;
-    if (!target.closest(`*[dropdown-key='${dropdownKey}']`)) {
-      closeDropdown();
-    }
-  };
-  window.addEventListener(listenerType, closeLogic);
-  openedRef.value = true;
-}
-
-function toggleDropdown() {
-  if (openedRef.value) {
-    closeDropdown();
-  } else {
-    openDropdown();
-  }
-}
-
-if (props.opened) {
-  openDropdown();
-}
+defineExpose({
+  openedRef: () => dropdownBaseRef.value?.openedRef(),
+});
 </script>
-
 <template>
-  <div class="dropdown" :dropdown-key="dropdownKey">
-    <section v-if="type === 'hover'" ref="trigger" class="p-1" @mouseover="openDropdown()">
+  <DropdownBase ref="dropdownBaseRef" :type="type" :opened="opened" :disabled="disabled">
+    <template v-slot:trigger>
       <slot name="trigger"></slot>
-    </section>
-    <section v-else-if="type === 'toggle'" ref="trigger" class="p-1" @click="toggleDropdown()">
-      <slot name="trigger"></slot>
-    </section>
-    <section v-else ref="trigger" class="p-1" @mouseover="openDropdown()">
-      <slot name="trigger"></slot>
-    </section>
-    <ul ref="dropdownBody" :class="['dropdown-menu', align + '-aligned', openedRef ? 'show' : '']">
-      <slot name="menu" :closeDropdown="closeDropdown"></slot>
-    </ul>
-  </div>
+    </template>
+    <template v-slot:menu="{ closeDropdown }">
+      <ul
+        ref="dropdownBody"
+        :class="[
+          'dropdown-menu',
+          type !== 'hover' ? 'mt-1' : '',
+          align + '-aligned',
+          dropdownBaseRef?.openedRef() ? 'show' : '',
+        ]"
+      >
+        <slot name="menu" :closeDropdown="closeDropdown"></slot>
+      </ul>
+    </template>
+  </DropdownBase>
 </template>
 
 <style scoped lang="scss">

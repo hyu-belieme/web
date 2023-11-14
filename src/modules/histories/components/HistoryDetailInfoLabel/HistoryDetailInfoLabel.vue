@@ -41,7 +41,7 @@ const { isSuccess, data } = getHistoryDetailQuery();
   }
 
   .name {
-    font-size: $font-size-xlg;
+    font-size: $font-size-xl;
     font-weight: $font-weight-semibold;
     flex-grow: 1;
 

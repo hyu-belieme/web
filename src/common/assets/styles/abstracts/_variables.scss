@@ -90,6 +90,8 @@ $green: #69ad6c !default;
 $yellow: #ffc107 !default;
 $cyan: #0dcaf0 !default;
 $pink: #d63384 !default;
+$light-gray: $gray-500 !default;
+$gray: $gray-700 !default;
 // scss-docs-end color-variables
 
 // scss-docs-start colors-map
@@ -100,9 +102,10 @@ $colors: (
   'yellow': $yellow,
   'cyan': $cyan,
   'pink': $pink,
-  'gray-light': $gray-200,
-  'gray': $gray-700,
-  'gray-dark': $gray-900,
+  'light-gray': $light-gray,
+  'gray': $gray,
+  'black': $black,
+  'white': $white,
 ) !default;
 // scss-docs-end colors-map
 
@@ -113,6 +116,9 @@ $min-contrast-ratio: 4.5 !default;
 // Customize the light and dark text colors for use in our color contrast function.
 $color-contrast-dark: $gray-900 !default;
 $color-contrast-light: $white !default;
+
+$hover-bg-shade-amount: 15% !default;
+$hover-bg-tint-amount: 15% !default;
 
 // fusv-disable
 $blue-100: tint-color($blue, 80%) !default;
@@ -249,12 +255,13 @@ $pinks: (
 
 // scss-docs-start theme-color-variables
 $primary: $blue !default;
-$secondary: $gray-600 !default;
+$secondary: $gray-700 !default;
 $success: $green !default;
 $info: $cyan !default;
 $warning: $yellow !default;
 $danger: $red !default;
-$light: $gray-50 !default;
+$hint: $light-gray !default;
+$light: $gray-100 !default;
 $dark: $gray-900 !default;
 // scss-docs-end theme-color-variables
 
@@ -266,6 +273,7 @@ $theme-colors: (
   'info': $info,
   'warning': $warning,
   'danger': $danger,
+  'hint': $hint,
   'light': $light,
   'dark': $dark,
 ) !default;
@@ -332,6 +340,9 @@ $spacers: (
   3: $spacer,
   4: $spacer * 1.5,
   5: $spacer * 3,
+  sm: $spacer * 0.175,
+  md: $spacer * 0.25,
+  lg: $spacer * 0.5,
 ) !default;
 // scss-docs-end spacer-variables-maps
 
@@ -454,6 +465,22 @@ $aspect-ratios: (
 // scss-docs-end aspect-ratios
 // stylelint-enable function-disallowed-list
 
+$size-ratio-xs: 0.75 !default;
+$size-ratio-sm: 0.875 !default;
+$size-ratio-md: 1 !default;
+$size-ratio-lg: 1.25 !default;
+$size-ratio-xl: 1.5 !default;
+
+// scss-docs-start aspect-ratios
+$size-ratios: (
+  'xs': $size-ratio-xs,
+  'sm': $size-ratio-sm,
+  'md': $size-ratio-md,
+  'lg': $size-ratio-lg,
+  'xl': $size-ratio-xl,
+) !default;
+// scss-docs-end aspect-ratios
+
 // Typography
 //
 // Font, line-height, and color for body text, headings, and more.
@@ -485,10 +512,11 @@ $h9-font-size: $font-size-base * 0.625 !default;
 $h10-font-size: $font-size-base * 0.5 !default;
 // scss-docs-end font-variables
 
-$font-size-sm: $font-size-base * 0.875 !default;
-$font-size-xsm: $font-size-base * 0.75 !default;
-$font-size-lg: $font-size-base * 1.25 !default;
-$font-size-xlg: $font-size-base * 1.5 !default;
+$font-size-xs: $font-size-base * $size-ratio-xs !default;
+$font-size-sm: $font-size-base * $size-ratio-sm !default;
+$font-size-md: $font-size-base * $size-ratio-md !default;
+$font-size-lg: $font-size-base * $size-ratio-lg !default;
+$font-size-xl: $font-size-base * $size-ratio-xl !default;
 
 // scss-docs-start font-sizes
 $font-sizes: (
@@ -502,11 +530,12 @@ $font-sizes: (
   8: $h8-font-size,
   9: $h9-font-size,
   10: $h10-font-size,
-  xsm: $font-size-xsm,
-  sm: $font-size-sm,
   base: $font-size-base,
+  xs: $font-size-xs,
+  sm: $font-size-sm,
+  md: $font-size-md,
   lg: $font-size-lg,
-  xlg: $font-size-xlg,
+  xl: $font-size-xl,
 ) !default;
 
 $font-weight-lighter: lighter !default;
@@ -519,8 +548,13 @@ $font-weight-bolder: bolder !default;
 $font-weight-base: $font-weight-normal !default;
 
 $line-height-base: 1.5 !default;
-$line-height-sm: 1.25 !default;
-$line-height-lg: 2 !default;
+$line-height-xs: $line-height-base * $size-ratio-xs !default;
+$line-height-sm: $line-height-base * $size-ratio-sm !default;
+$line-height-md: $line-height-base * $size-ratio-md !default;
+$line-height-lg: $line-height-base * $size-ratio-lg !default;
+$line-height-xl: $line-height-base * $size-ratio-xl !default;
+// $line-height-sm: 1.25 !default;
+// $line-height-lg: 2 !default;
 
 // scss-docs-start headings-variables
 $headings-margin-bottom: $spacer * 0.5 !default;
@@ -553,7 +587,7 @@ $lead-font-weight: 300 !default;
 
 $small-font-size: $font-size-sm !default;
 
-$sub-sup-font-size: $font-size-xsm !default;
+$sub-sup-font-size: $font-size-xs !default;
 
 $text-muted: $gray-600 !default;
 

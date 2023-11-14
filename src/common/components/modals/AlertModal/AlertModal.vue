@@ -28,7 +28,7 @@ withDefaults(
   >
     <template v-slot:header>
       <section class="d-flex flex-direction-row align-items-stretch justify-content-between w-100">
-        <span class="modal-title fs-xlg">오류</span>
+        <span class="modal-title fs-xl">오류</span>
         <CloseButton v-if="hasCloseButton" @click="$emit('close')" aria-label="Close"></CloseButton>
       </section>
     </template>
@@ -37,7 +37,7 @@ withDefaults(
     </template>
     <template v-slot:footer>
       <div class="d-flex flex-gap-2">
-        <BasicButton color="gray" content="뒤로가기" @click="$emit('close')"> </BasicButton>
+        <BasicButton color="light" content="뒤로가기" @click="$emit('close')"> </BasicButton>
       </div>
     </template>
   </BasicModal>

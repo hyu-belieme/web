@@ -14,8 +14,10 @@
       "@^login/*": ["./src/modules/login/*"],
       "@^stuffs/*": ["./src/modules/stuffs/*"],
       "@^histories/*": ["./src/modules/histories/*"],
+      "@^users/*": ["./src/modules/users/*"],
       "@modules/*": ["./src/modules/*"],
       "~/*": ["./*"]
-    }
+    },
+    "ignoreDeprecations": "5.0" // TODO: Should solve deprecation problems
   }
 }

@@ -139,7 +139,7 @@ onBeforeMount(() => {
     </section>
     <section class="label-and-desc">
       <section v-if="viewMode === 'SHOW'" class="label">
-        <section class="name fs-xlg fw-semibold">
+        <section class="name fs-xl fw-semibold">
           <span>{{ data?.name }}</span>
         </section>
         <template v-if="userMode === 'STAFF' || userMode === 'MASTER'">
@@ -190,7 +190,7 @@ onBeforeMount(() => {
             <BasicButton
               v-bind="{
                 size: 'sm',
-                color: 'gray',
+                color: 'light',
                 content: '뒤로',
               }"
               @click="
@@ -202,7 +202,7 @@ onBeforeMount(() => {
           </section>
         </template>
       </section>
-      <div class="desc fs-xsm fw-light">
+      <div class="desc fs-xs fw-light">
         <span v-if="viewMode === 'SHOW'" class="p-1">
           {{ LOREM_IPSUM }}
         </span>
@@ -278,11 +278,11 @@ onBeforeMount(() => {
           border: $border-width solid $border-color;
           @include border-radius();
 
-          padding-top: map-get($spacers, 1);
-          padding-bottom: map-get($spacers, 1);
+          padding-top: map-get($spacers, 'sm');
+          padding-bottom: map-get($spacers, 'sm');
 
-          padding-left: map-get($spacers, 2);
-          padding-right: map-get($spacers, 2);
+          padding-left: 2 * map-get($spacers, 'sm');
+          padding-right: 2 * map-get($spacers, 'sm');
           font-size: inherit;
           font-weight: inherit;
 
@@ -320,7 +320,7 @@ onBeforeMount(() => {
         border: $border-width solid $border-color;
         @include border-radius();
 
-        padding: map-get($spacers, 2);
+        padding: 2 * map-get($spacers, 'sm');
         font-size: inherit;
         font-weight: inherit;
 

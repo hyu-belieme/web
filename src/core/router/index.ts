@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 import Department from '@common/models/Department';
 import User from '@common/models/User';
+import { hasHigherAuthorityPermission } from '@common/models/types/AuthorityPermission';
 import useCurDeptStorage from '@common/storages/cur-dept-storage';
 import useLoggedInUserStorage from '@common/storages/logged-in-user-storage';
 import useUserTokenStorage from '@common/storages/user-token-storage';
@@ -50,6 +51,15 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('@^histories/HistoryPage.vue'),
     },
+    {
+      path: '/users',
+      name: 'users',
+      meta: { onlyAccessAfterAuth: true, onlyMasterAccess: true },
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('@^users/UserPage.vue'),
+    },
   ],
 });
 
@@ -57,6 +67,7 @@ router.beforeEach((to, from, next) => {
   const userTokenStorage = useUserTokenStorage();
   const loggedInUserStorage = useLoggedInUserStorage();
   const curDeptStorage = useCurDeptStorage();
+  const { curDeptId } = curDeptStorage;
 
   if (
     to.meta.onlyAccessAfterAuth &&
@@ -65,6 +76,17 @@ router.beforeEach((to, from, next) => {
       curDeptStorage.itemEquals(Department.NIL))
   ) {
     router.replace('/login');
+    return;
+  }
+
+  if (
+    to.meta.onlyMasterAccess &&
+    !hasHigherAuthorityPermission(
+      loggedInUserStorage.getPermissionOfLoggedInUser(curDeptId),
+      'MASTER'
+    )
+  ) {
+    router.replace('/stuffs');
     return;
   }
   next();

@@ -4,6 +4,7 @@ import Authority from '@common/models/Authority';
 import type { IAuthority } from '@common/models/Authority';
 import BaseVo from '@common/models/BaseVo';
 import University, { type IUniversity } from '@common/models/University';
+import type AuthorityPermission from '@common/models/types/AuthorityPermission';
 
 export interface IUser {
   id: string;
@@ -43,6 +44,20 @@ export class User extends BaseVo {
     this.name = oth.name;
     this.entranceYear = oth.entranceYear;
     this.authorities = List<Authority>(oth.authorities.map((auth) => new Authority(auth)));
+  }
+
+  public compare(oth: User): number {
+    const cmpName = this.name.localeCompare(oth.name);
+    if (cmpName === 0) {
+      return this.id.localeCompare(oth.id);
+    }
+    return cmpName;
+  }
+
+  public getPermission(deptId: string): AuthorityPermission {
+    if (this.authorities.findIndex((e) => e.permission === 'DEVELOPER') !== -1) return 'DEVELOPER';
+    const auth = this.authorities.find((e) => e.department.id === deptId);
+    return auth ? auth.permission : 'NIL';
   }
 
   public equals(oth: any): boolean {

@@ -354,3 +354,11 @@ $_luminance-list: 0.0008 0.001 0.0011 0.0013 0.0015 0.0017 0.002 0.0022 0.0025 0
   }
   @return $result;
 }
+
+@function hover-color($background, $color: color-contrast($background)) {
+  @if $color == $color-contrast-dark {
+    @return shade-color($background, $hover-bg-shade-amount);
+  } @else {
+    @return tint-color($background, $hover-bg-tint-amount);
+  }
+}

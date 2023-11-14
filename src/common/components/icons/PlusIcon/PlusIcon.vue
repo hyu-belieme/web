@@ -1,39 +1,90 @@
 <script setup lang="ts">
 withDefaults(
   defineProps<{
-    color?: 'dark' | 'light';
-    multiplier?: number;
+    hover?: 'on' | 'off';
+    color?: string;
+    size?: '100' | 'auto' | 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   }>(),
   {
-    color: 'light',
-    multiplier: 1,
+    hover: 'on',
+    color: 'dark',
+    size: 'md',
   }
 );
 </script>
 
 <template>
   <svg
-    :width="`${1.5 * multiplier}rem`"
-    :height="`${1.5 * multiplier}rem`"
+    :class="[`color-${color}-hover-${hover}`, `size-${size}`]"
     viewBox="0 0 24 24"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
     <path
-      :class="`color-${color}`"
-      fill-rule="evenodd"
-      clip-rule="evenodd"
-      d="M11 17C11 17.5523 11.4477 18 12 18C12.5523 18 13 17.5523 13 17V13H17C17.5523 13 18 12.5523 18 12C18 11.4477 17.5523 11 17 11H13V7C13 6.44771 12.5523 6 12 6C11.4477 6 11 6.44771 11 7V11H7C6.44772 11 6 11.4477 6 12C6 12.5523 6.44772 13 7 13H11V17Z"
+      class="stroke-color"
+      d="M3 12H21"
+      stroke-width="4"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      class="stroke-color"
+      d="M12 3V21"
+      stroke-width="4"
+      stroke-linecap="round"
+      stroke-linejoin="round"
     />
   </svg>
 </template>
 
 <style lang="scss" scoped>
-.color-dark {
-  fill: $dark;
+$component-prefix: 'plus-icon';
+$size-base: 1.5;
+
+.size-100 {
+  width: 100%;
+  height: 100%;
 }
 
-.color-light {
-  fill: $white;
+.size-auto {
+  width: auto;
+  height: auto;
+}
+
+@each $key, $value in $size-ratios {
+  .size-#{$key} {
+    width: #{$size-base * $value}rem;
+    height: #{$size-base * $value}rem;
+  }
+}
+
+@each $color, $value in $theme-colors {
+  .color-#{$color}-hover-on {
+    --#{$prefix}--#{$component-prefix}-color: #{$value};
+    &:hover {
+      --#{$prefix}--#{$component-prefix}-color: #{hover-color($value)};
+    }
+  }
+
+  .color-#{$color}-hover-off {
+    --#{$prefix}--#{$component-prefix}-color: #{$value};
+  }
+}
+
+@each $color, $value in $colors {
+  .color-#{$color}-hover-on {
+    --#{$prefix}--#{$component-prefix}-color: #{$value};
+    &:hover {
+      --#{$prefix}--#{$component-prefix}-color: #{hover-color($value)};
+    }
+  }
+
+  .color-#{$color}-hover-off {
+    --#{$prefix}--#{$component-prefix}-color: #{$value};
+  }
+}
+
+.stroke-color {
+  stroke: var(--#{$prefix}--#{$component-prefix}-color);
 }
 </style>

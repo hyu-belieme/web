@@ -1,3 +1,7 @@
+export const univKeys = {
+  all: () => ['univs'] as const,
+};
+
 export const deptKeys = {
   all: () => ['depts'] as const,
   list: (univId?: string) => {
@@ -22,6 +26,9 @@ export const userKeys = {
   detail: (id?: string) => {
     if (id === undefined) return [...userKeys.all(), 'detail'] as const;
     return [...userKeys.all(), 'detail', id] as const;
+  },
+  detailByIndex: (univId: string, studentId: string) => {
+    return [...userKeys.all(), 'detailByIndex', univId, studentId] as const;
   },
   current: (token: string) => {
     return [...userKeys.all(), 'current', token] as const;

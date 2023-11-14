@@ -2,20 +2,18 @@
 withDefaults(
   defineProps<{
     spin?: boolean;
-    multiplier?: number;
+    size?: '100' | 'auto' | 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   }>(),
   {
     spin: true,
-    multiplier: 1,
+    size: 'md',
   }
 );
 </script>
 
 <template>
   <svg
-    :class="spin ? 'spin-animation' : ''"
-    :width="`${4 * multiplier}rem`"
-    :height="`${4 * multiplier}rem`"
+    :class="[spin ? 'spin-animation' : '', `size-${size}`]"
     viewBox="0 0 64 64"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
@@ -30,6 +28,25 @@ withDefaults(
 </template>
 
 <style scoped lang="scss">
+$size-base: 4;
+
+.size-100 {
+  width: 100%;
+  height: 100%;
+}
+
+.size-auto {
+  width: auto;
+  height: auto;
+}
+
+@each $key, $value in $size-ratios {
+  .size-#{$key} {
+    width: #{$size-base * $value}rem;
+    height: #{$size-base * $value}rem;
+  }
+}
+
 .spin-animation {
   @keyframes rotate_image {
     100% {

@@ -19,7 +19,7 @@ const useUserTokenStorage = defineStore(key, () => {
   }
 
   function removeItem() {
-    userToken.value = null;
+    userToken.value = NIL_UUID;
   }
 
   return {

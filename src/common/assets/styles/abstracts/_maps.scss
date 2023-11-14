@@ -2,6 +2,10 @@
 //
 // Placed here so that others can override the default Sass maps and see automatic updates to utilities and more.
 
+// scss-docs-start colors-rgb
+$colors-rgb: map-loop($colors, to-rgb, '$value') !default;
+// scss-docs-end colors-rgb
+
 // scss-docs-start theme-colors-rgb
 $theme-colors-rgb: map-loop($theme-colors, to-rgb, '$value') !default;
 // scss-docs-end theme-colors-rgb
@@ -12,7 +16,7 @@ $theme-colors-rgb: map-loop($theme-colors, to-rgb, '$value') !default;
 
 // Come v6, we'll de-dupe these variables. Until then, for backward compatibility, we keep them to reassign.
 // scss-docs-start utilities-colors
-$utilities-colors: $theme-colors-rgb !default;
+$utilities-colors: map-merge($theme-colors-rgb, $colors-rgb) !default;
 // scss-docs-end utilities-colors
 
 // scss-docs-start utilities-text-colors
