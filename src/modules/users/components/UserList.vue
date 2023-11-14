@@ -6,7 +6,7 @@
     <section class="w-100 flex-grow-1 d-flex flex-column">
       <section v-if="isSuccess" class="w-100 h-100 d-flex flex-column">
         <UserListCell
-          v-for="cellInfo of applyUserListFilter()"
+          v-for="cellInfo of sortedUserList()"
           :key="cellInfo.user.id + cellInfo.user.getPermission(curDeptId)"
           :user="cellInfo.user"
           :checked="cellInfo.checked"
@@ -168,6 +168,15 @@ function applyUserListFilter() {
     user: e,
     checked: userCheckedStore.isChecked(e.id),
   }));
+}
+
+function sortedUserList() {
+  return applyUserListFilter().sort((a, b) => {
+    const aIsMaster = hasHigherAuthorityPermission(a.user.getPermission(curDeptId.value), 'MASTER');
+    const bIsMaster = hasHigherAuthorityPermission(b.user.getPermission(curDeptId.value), 'MASTER');
+    if (aIsMaster === bIsMaster) return a.user.compare(b.user);
+    return aIsMaster ? -1 : 1;
+  });
 }
 
 watchEffect(() => {
