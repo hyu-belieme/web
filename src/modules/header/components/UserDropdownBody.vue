@@ -10,7 +10,7 @@ import useLoggedInUserStorage from '@common/storages/logged-in-user-storage';
 import useUserTokenStorage from '@common/storages/user-token-storage';
 import useUserModeStore from '@common/stores/user-mode-store';
 
-import ChangeDepartmentModal from '@^header/components/ChangeDepartmentModal/ChangeDepartmentModal.vue';
+import ChangeDepartmentModal from '@^header/components/ChangeDepartmentModal.vue';
 
 defineProps<{
   user: User;

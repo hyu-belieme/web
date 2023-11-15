@@ -364,13 +364,21 @@ $position-values: (
 // adapting to different screen sizes, for use in media queries.
 
 // scss-docs-start grid-breakpoints
+// $grid-breakpoints: (
+//   xs: 0,
+//   sm: 576px,
+//   md: 768px,
+//   lg: 992px,
+//   xl: 1200px,
+//   xxl: 1400px,
+// ) !default;
+
 $grid-breakpoints: (
-  xs: 0,
-  sm: 576px,
-  md: 768px,
-  lg: 992px,
-  xl: 1200px,
-  xxl: 1400px,
+  mobile: 0,
+  tablet-portrait: 480px,
+  tablet-landscape: 768px,
+  desktop: 1024px,
+  big-desktop: 1920px,
 ) !default;
 // scss-docs-end grid-breakpoints
 @include _assert-ascending($grid-breakpoints, '$grid-breakpoints');
@@ -498,7 +506,9 @@ $font-family-code: var(--#{$prefix}font-monospace) !default;
 
 // $font-size-root affects the value of `rem`, which is used for as well font sizes, paddings, and margins
 // $font-size-base affects the font size of the body text
-$font-size-root: null !default;
+$font-size-root: 16px !default;
+$font-size-root-mobile: 14px !default;
+
 $font-size-base: 1rem !default;
 $h1-font-size: $font-size-base * 2.5 !default;
 $h2-font-size: $font-size-base * 2 !default;

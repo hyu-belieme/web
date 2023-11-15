@@ -13,7 +13,7 @@ import type Department from '@common/models/Department';
 import useCurDeptStorage from '@common/storages/cur-dept-storage';
 import useUserTokenStorage from '@common/storages/user-token-storage';
 
-import DepartmentCell from '@^header/components/DepartementCell/DepartmentCell.vue';
+import DepartmentCell from '@^header/components/DepartmentCell.vue';
 
 defineProps<{
   modalKey: string;
@@ -60,4 +60,11 @@ function changeDept(newDept: Department) {
   </BasicModal>
 </template>
 
-<style scoped></style>
+<style scoped lang="scss">
+.dept-list {
+  display: flex;
+  flex-direction: column;
+
+  overflow: scroll;
+}
+</style>
