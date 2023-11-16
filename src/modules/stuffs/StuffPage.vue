@@ -1,5 +1,35 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia';
+import { onMounted, onUnmounted } from 'vue';
+
+import useBackButtonFunction from '@common/stores/back-button-function-store';
+
 import StuffEmptyPageRouter from '@^stuffs/components/StuffEmptyPageRouter/StuffEmptyPageRouter.vue';
+import useMobileCurrentStuffPage from '@^stuffs/stores/mobile-current-stuff-page-store';
+import useStuffDetailViewModeStore from '@^stuffs/stores/stuff-detail-view-mode-store';
+
+const mobileCurrentStuffPageStore = useMobileCurrentStuffPage();
+const { mobileCurrentStuffPage } = storeToRefs(mobileCurrentStuffPageStore);
+
+const backButtonFunctionStore = useBackButtonFunction();
+
+const stuffDetailViewModeStore = useStuffDetailViewModeStore();
+
+function stuffPageBackButton() {
+  stuffDetailViewModeStore.changeStuffDetailViewMode('SHOW');
+  mobileCurrentStuffPageStore.changeMobileCurrentStuffPage('LIST');
+  backButtonFunctionStore.updateBackButtonFunction(undefined);
+}
+
+onMounted(() => {
+  if (mobileCurrentStuffPage.value === 'DETAIL') {
+    backButtonFunctionStore.updateBackButtonFunction(stuffPageBackButton);
+  }
+});
+
+onUnmounted(() => {
+  backButtonFunctionStore.updateBackButtonFunction(undefined);
+});
 </script>
 
 <template>
@@ -11,9 +41,5 @@ import StuffEmptyPageRouter from '@^stuffs/components/StuffEmptyPageRouter/Stuff
 <style lang="scss" scoped>
 .stuff-page {
   height: 100%;
-
-  display: flex;
-  flex-direction: row;
-  gap: map-get($map: $spacers, $key: 3);
 }
 </style>

@@ -7,9 +7,11 @@ import DataLoadFailView from '@common/components/DataLoadFailView/DataLoadFailVi
 import LoadingView from '@common/components/LoadingView/LoadingView.vue';
 import ConfirmModal from '@common/components/modals/ConfirmModal/ConfirmModal.vue';
 import useModalStore from '@common/components/modals/stores/modal-store';
+import useBackButtonFunction from '@common/stores/back-button-function-store';
 
 import StuffListCell from '@^stuffs/components/StuffListCell/StuffListCell.vue';
 import { getStuffListQuery } from '@^stuffs/components/utils/stuff-query-utils';
+import useMobileCurrentStuffPage from '@^stuffs/stores/mobile-current-stuff-page-store';
 import useStuffDetailViewModeStore from '@^stuffs/stores/stuff-detail-view-mode-store';
 import useStuffSelectedStore from '@^stuffs/stores/stuff-selected-store';
 
@@ -21,7 +23,23 @@ const { stuffDetailViewMode } = storeToRefs(stuffDetailViewModeStore);
 const stuffSelectedStore = useStuffSelectedStore();
 const { selectedId } = storeToRefs(stuffSelectedStore);
 
+const mobileCurrentStuffPageStore = useMobileCurrentStuffPage();
+const backButtonFunctionStore = useBackButtonFunction();
+
 const { data, isLoading, isSuccess } = getStuffListQuery();
+
+function stuffPageBackButton() {
+  stuffDetailViewModeStore.changeStuffDetailViewMode('SHOW');
+  mobileCurrentStuffPageStore.changeMobileCurrentStuffPage('LIST');
+  backButtonFunctionStore.updateBackButtonFunction(undefined);
+}
+
+function moveToNewStuffCell(newSelectedId: string) {
+  stuffSelectedStore.updateSelectedId(newSelectedId);
+  mobileCurrentStuffPageStore.changeMobileCurrentStuffPage('DETAIL');
+  backButtonFunctionStore.updateBackButtonFunction(stuffPageBackButton);
+  stuffDetailViewModeStore.changeStuffDetailViewMode('SHOW');
+}
 
 function changingStuffAtEditionModeConfirmModal(newSelectedId: string) {
   return {
@@ -33,8 +51,7 @@ function changingStuffAtEditionModeConfirmModal(newSelectedId: string) {
       rejectLabel: '뒤로가기',
     },
     resolve: () => {
-      stuffSelectedStore.updateSelectedId(newSelectedId);
-      stuffDetailViewModeStore.changeStuffDetailViewMode('SHOW');
+      moveToNewStuffCell(newSelectedId);
       modalStore.removeModal();
     },
     reject: () => {
@@ -45,7 +62,7 @@ function changingStuffAtEditionModeConfirmModal(newSelectedId: string) {
 
 function updateSelectedId(newSelectedId: string) {
   if (stuffDetailViewMode.value === 'SHOW') {
-    stuffSelectedStore.updateSelectedId(newSelectedId);
+    moveToNewStuffCell(newSelectedId);
     return;
   }
   modalStore.addModal(changingStuffAtEditionModeConfirmModal(newSelectedId));

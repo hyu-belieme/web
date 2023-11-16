@@ -15,9 +15,26 @@ const { curDeptId } = storeToRefs(curDeptStorage);
     <header class="d-flex flex-row align-items-center flex-grow-0">
       <TheHeader></TheHeader>
     </header>
-    <main class="container pt-3 pb-3 flex-grow-1" :key="curDeptId">
+    <main class="container main-frame" :key="curDeptId">
       <RouterView />
     </main>
   </section>
   <TheModalFrame></TheModalFrame>
 </template>
+
+<style lang="scss" scoped>
+.main-frame {
+  padding-bottom: map-get($spacers, 3);
+
+  flex-grow: 1;
+}
+
+@include media-breakpoint-up('tablet-landscape') {
+  .main-frame {
+    padding-top: map-get($spacers, 3);
+    padding-bottom: map-get($spacers, 3);
+
+    flex-grow: 1;
+  }
+}
+</style>
