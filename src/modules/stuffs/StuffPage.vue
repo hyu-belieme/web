@@ -19,11 +19,11 @@ const { selectedId } = storeToRefs(stuffSelectedStore);
 const { isSuccess, data } = getStuffListQuery();
 
 const stuffIdOnRoute = computed(() => {
-  if (typeof route.params.stuffId === 'string') {
-    return route.params.stuffId;
+  if (typeof route.query.stuffId === 'string') {
+    return route.query.stuffId;
   }
-  if (Array.isArray(route.params.stuffId)) {
-    return route.params.stuffId.join('');
+  if (Array.isArray(route.query.stuffId)) {
+    return route.query.stuffId.join('');
   }
   return NIL_UUID;
 });

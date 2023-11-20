@@ -1,11 +1,23 @@
 <template>
   <nav class="d-flex flex-row align-items-center gap-2">
-    <RouterLink v-if="isLoggedIn" to="/stuffs" class="navigation-cell"> 물품목록 </RouterLink>
-    <RouterLink v-if="isLoggedIn" to="/histories" class="navigation-cell"> 대여기록 </RouterLink>
+    <RouterLink
+      v-if="isLoggedIn"
+      to="/stuffs"
+      :class="['navigation-cell', route.path.startsWith('/stuffs') ? 'active' : '']"
+    >
+      물품목록
+    </RouterLink>
+    <RouterLink
+      v-if="isLoggedIn"
+      to="/histories"
+      :class="['navigation-cell', route.path.startsWith('/histories') ? 'active' : '']"
+    >
+      대여기록
+    </RouterLink>
     <RouterLink
       v-if="isLoggedIn && hasHigherAuthorityPermission(getPermissionOfLoggedInUser(), 'MASTER')"
       to="/users"
-      class="navigation-cell"
+      :class="['navigation-cell', route.path.startsWith('/users') ? 'active' : '']"
     >
       유저관리
     </RouterLink>
@@ -58,7 +70,7 @@ nav a {
   }
 }
 
-nav a.router-link-exact-active {
+nav a.active {
   color: $primary;
   border-bottom: $border-width solid $primary;
 }

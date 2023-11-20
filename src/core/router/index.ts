@@ -51,7 +51,7 @@ const router = createRouter({
       component: () => import('@^users/UserPage.vue'),
     },
     {
-      path: '/stuffs/:stuffId?',
+      path: '/stuffs',
       name: 'stuffs',
       meta: { onlyAccessAfterAuth: true },
       // route level code-splitting
@@ -60,8 +60,8 @@ const router = createRouter({
       component: () => import('@^stuffs/StuffPage.vue'),
     },
     {
-      path: '/new-stuff',
-      name: 'newStuff',
+      path: '/stuffs/first-register',
+      name: 'first-register',
       meta: { onlyAccessAfterAuth: true },
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route

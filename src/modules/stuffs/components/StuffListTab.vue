@@ -37,7 +37,7 @@ function stuffPageBackButton() {
 }
 
 function moveToNewStuffCell(newSelectedId: string) {
-  router.push(`/stuffs/${newSelectedId}`);
+  router.push(`/stuffs?stuffId=${newSelectedId}`);
   mobileCurrentStuffPageStore.changeMobileCurrentStuffPage('DETAIL');
   backButtonFunctionStore.updateBackButtonFunction(stuffPageBackButton);
   stuffDetailViewModeStore.changeStuffDetailViewMode('SHOW');
