@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { NIL as NIL_UUID } from 'uuid';
-import { onBeforeMount, watch } from 'vue';
+import { onBeforeMount } from 'vue';
+import { useRouter } from 'vue-router';
 
 import DataLoadFailView from '@common/components/DataLoadFailView/DataLoadFailView.vue';
 import LoadingView from '@common/components/LoadingView/LoadingView.vue';
@@ -9,11 +9,13 @@ import ConfirmModal from '@common/components/modals/ConfirmModal/ConfirmModal.vu
 import useModalStore from '@common/components/modals/stores/modal-store';
 import useBackButtonFunction from '@common/stores/back-button-function-store';
 
-import StuffListCell from '@^stuffs/components/StuffListCell/StuffListCell.vue';
+import StuffListCell from '@^stuffs/components/StuffListCell.vue';
 import { getStuffListQuery } from '@^stuffs/components/utils/stuff-query-utils';
 import useMobileCurrentStuffPage from '@^stuffs/stores/mobile-current-stuff-page-store';
 import useStuffDetailViewModeStore from '@^stuffs/stores/stuff-detail-view-mode-store';
 import useStuffSelectedStore from '@^stuffs/stores/stuff-selected-store';
+
+const router = useRouter();
 
 const modalStore = useModalStore();
 
@@ -35,7 +37,7 @@ function stuffPageBackButton() {
 }
 
 function moveToNewStuffCell(newSelectedId: string) {
-  stuffSelectedStore.updateSelectedId(newSelectedId);
+  router.push(`/stuffs/${newSelectedId}`);
   mobileCurrentStuffPageStore.changeMobileCurrentStuffPage('DETAIL');
   backButtonFunctionStore.updateBackButtonFunction(stuffPageBackButton);
   stuffDetailViewModeStore.changeStuffDetailViewMode('SHOW');
@@ -67,25 +69,6 @@ function updateSelectedId(newSelectedId: string) {
   }
   modalStore.addModal(changingStuffAtEditionModeConfirmModal(newSelectedId));
 }
-
-function convertIdToFirstIdIfNotExist() {
-  if (data.value === undefined || data.value.isEmpty()) return NIL_UUID;
-
-  const selected = data.value.find((value) => value.id === selectedId.value);
-  if (selected === undefined) return data.value.get(0)?.id || NIL_UUID;
-  return selected.id;
-}
-
-watch(
-  data,
-  () => {
-    const convertedSelectedId = convertIdToFirstIdIfNotExist();
-    if (convertedSelectedId !== selectedId.value) {
-      stuffSelectedStore.updateSelectedId(convertedSelectedId);
-    }
-  },
-  { immediate: true }
-);
 
 onBeforeMount(() => {
   stuffDetailViewModeStore.changeStuffDetailViewMode('SHOW');

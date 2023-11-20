@@ -1,38 +1,33 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { NIL as NIL_UUID } from 'uuid';
-import { getCurrentInstance } from 'vue';
 import { useMutation, useQueryClient } from 'vue-query';
 
 import { rentItem, reportLostItem, returnItem } from '@common/apis/belieme-apis';
 import { historyKeys, stuffKeys } from '@common/apis/query-keys';
 import BasicButton from '@common/components/buttons/BasicButton/BasicButton.vue';
-import MinusButton from '@common/components/buttons/MinusButton/MinusButton.vue';
 import ThreeDotsButton from '@common/components/buttons/ThreeDotsButton/ThreeDotsButton.vue';
 import FitContentDropdown from '@common/components/dropdowns/FitContentDropdown/FitContentDropdown.vue';
 import buildAlertModal from '@common/components/modals/AlertModal/utils/alert-modal-builder';
 import ConfirmModal from '@common/components/modals/ConfirmModal/ConfirmModal.vue';
 import useModalStore from '@common/components/modals/stores/modal-store';
+import type Modal from '@common/components/modals/types/Modal';
 import type BaseError from '@common/errors/BaseError';
 import type History from '@common/models/History';
-import type ItemInfoOnly from '@common/models/ItemInfoOnly';
+import type Item from '@common/models/Item';
 import useCurDeptStorage from '@common/storages/cur-dept-storage';
 import useUserTokenStorage from '@common/storages/user-token-storage';
 import useUserModeStore from '@common/stores/user-mode-store';
 
-import useStuffDetailViewModeStore from '@^stuffs/stores/stuff-detail-view-mode-store';
-import useStuffSelectedStore from '@^stuffs/stores/stuff-selected-store';
-
-const emit = defineEmits(['popItem']);
+import ItemListCellFrame from '@^stuffs/components/stuff-detail-frames/ItemListCellFrame.vue';
 
 const props = defineProps<{
-  item: ItemInfoOnly;
+  item: Item;
 }>();
 
-const app = getCurrentInstance();
-const dayjs = app!.appContext.config.globalProperties.$dayjs;
-
 const queryClient = useQueryClient();
+
+const userModeStore = useUserModeStore();
+const { userMode } = storeToRefs(userModeStore);
 
 const userTokenStorage = useUserTokenStorage();
 const { userToken } = storeToRefs(userTokenStorage);
@@ -42,27 +37,17 @@ const { curDeptId } = storeToRefs(curDeptStorage);
 
 const modalStore = useModalStore();
 
-const viewModeStore = useStuffDetailViewModeStore();
-const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
-
-const userModeStore = useUserModeStore();
-const { userMode } = storeToRefs(userModeStore);
-
-const stuffStore = useStuffSelectedStore();
-const { selectedId } = storeToRefs(stuffStore);
-
 function changeItemRequestMutation(mutationFn: () => Promise<History>) {
   return useMutation<History, BaseError>(mutationFn, {
     onSettled: () => {
       queryClient.invalidateQueries(stuffKeys.list(curDeptId.value));
-      queryClient.invalidateQueries(stuffKeys.detail(selectedId.value));
+      queryClient.invalidateQueries(stuffKeys.detail(props.item.stuff.id));
     },
     onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: historyKeys.list() });
       queryClient.setQueryData(historyKeys.detail(response.id), response);
     },
     onError: (error) => {
-      console.error(error);
       modalStore.addModal(buildAlertModal('errorAlert', error.message));
     },
   });
@@ -134,47 +119,16 @@ const foundApproveModal = {
   },
 };
 
-function textByStatus(item: ItemInfoOnly) {
-  if (item.status === 'USABLE') return '대여 가능';
-  if (item.status === 'REQUESTED') return '예약 됨';
-  if (item.status === 'USING') return '대여 중';
-  if (item.status === 'LOST') return '사용 불가';
-  return 'ERROR';
-}
-
-function relativeTimeString(time: number) {
-  return dayjs.unix(time).fromNow();
-}
-
-function timestampByStatus(item: ItemInfoOnly) {
-  if (item.status === 'REQUESTED') {
-    return relativeTimeString(item.lastHistory?.requestedAt!);
-  }
-  if (item.status === 'USING') {
-    return relativeTimeString(item.lastHistory?.approvedAt!);
-  }
-  if (item.status === 'LOST') {
-    return relativeTimeString(item.lastHistory?.lostAt!);
-  }
-  return 'ERROR';
+function addModalAndCloseDropdown(modal: Modal, closeDropdown: () => void) {
+  modalStore.addModal(modal);
+  closeDropdown();
 }
 </script>
 
 <template>
-  <section class="cell">
-    <section class="numbering">
-      <span class="position-absolute start-50 top-50 translate-middle fs-xl fw-bold">
-        {{ item.num }}
-      </span>
-    </section>
-    <section :class="['content', item.status !== 'USABLE' ? 'red' : '']">
-      <section class="info">
-        <span>{{ textByStatus(item) }}</span>
-        <span v-if="item.status !== 'USABLE'" class="fw-normal fs-sm"
-          >({{ timestampByStatus(item) }})</span
-        >
-      </section>
-      <template v-if="viewMode === 'SHOW' && userMode === 'USER'">
+  <ItemListCellFrame :item="item">
+    <template v-slot:buttons>
+      <template v-if="userMode === 'USER'">
         <BasicButton
           v-if="item.status === 'USABLE'"
           @click="() => modalStore.addModal(rentalRequestModal)"
@@ -185,7 +139,6 @@ function timestampByStatus(item: ItemInfoOnly) {
         </BasicButton>
         <BasicButton
           v-else
-          @click="modalStore.addModal(rentalRequestModal)"
           v-bind:content="'대여신청'"
           v-bind:color="'primary'"
           v-bind:size="'sm'"
@@ -193,23 +146,18 @@ function timestampByStatus(item: ItemInfoOnly) {
         >
         </BasicButton>
       </template>
-      <template v-else-if="(viewMode === 'SHOW' && userMode === 'STAFF') || userMode === 'MASTER'">
+      <template v-else-if="userMode === 'STAFF'">
         <FitContentDropdown v-bind:align="'right'" v-bind:type="'hover'">
           <template v-slot:trigger>
-            <section class="p-1">
-              <ThreeDotsButton></ThreeDotsButton>
+            <section class="py-1 d-flex align-items-center">
+              <ThreeDotsButton :size="'sm'"></ThreeDotsButton>
             </section>
           </template>
           <template v-slot:menu="{ closeDropdown }">
             <li v-if="item.status === 'USABLE'">
               <a
                 class="dropdown-item py-1 px-2 lh-sm"
-                @click="
-                  () => {
-                    modalStore.addModal(rentalRequestModal);
-                    closeDropdown();
-                  }
-                "
+                @click="() => addModalAndCloseDropdown(rentalRequestModal, closeDropdown)"
               >
                 대여신청
               </a>
@@ -217,12 +165,7 @@ function timestampByStatus(item: ItemInfoOnly) {
             <li v-if="item.status !== 'LOST'">
               <a
                 class="dropdown-item py-1 px-2 lh-sm"
-                @click="
-                  () => {
-                    modalStore.addModal(lostRequestModal);
-                    closeDropdown();
-                  }
-                "
+                @click="() => addModalAndCloseDropdown(lostRequestModal, closeDropdown)"
               >
                 분실등록
               </a>
@@ -230,12 +173,7 @@ function timestampByStatus(item: ItemInfoOnly) {
             <li v-else>
               <a
                 class="dropdown-item py-1 px-2 lh-sm"
-                @click="
-                  () => {
-                    modalStore.addModal(foundApproveModal);
-                    closeDropdown();
-                  }
-                "
+                @click="() => addModalAndCloseDropdown(foundApproveModal, closeDropdown)"
               >
                 반환확인
               </a>
@@ -243,73 +181,10 @@ function timestampByStatus(item: ItemInfoOnly) {
           </template>
         </FitContentDropdown>
       </template>
-      <template v-else>
-        <MinusButton
-          v-if="viewMode === 'ADD' || viewMode === 'INITIAL_ADD' || item.id === NIL_UUID"
-          size="xs"
-          color="danger"
-          :onClick="() => emit('popItem')"
-        >
-        </MinusButton>
-        <MinusButton v-else size="xs" color="danger" :disabled="true"></MinusButton>
-      </template>
-    </section>
-  </section>
+    </template>
+  </ItemListCellFrame>
 </template>
 
 <style lang="scss" scoped>
 @import '@common/components/dropdowns/styles/main';
-.cell {
-  position: relative;
-
-  padding-left: map-get($spacers, 2);
-  padding-right: map-get($spacers, 2);
-
-  padding-top: map-get($spacers, 1);
-  padding-bottom: map-get($spacers, 1);
-
-  background-color: $white;
-  border: $border-width solid $border-color;
-  @include border-radius();
-
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-
-  .numbering {
-    position: relative;
-    width: 2rem;
-    height: 2rem;
-  }
-
-  .content {
-    width: 100%;
-    height: 100%;
-
-    padding-left: map-get($spacers, 1);
-    padding-right: map-get($spacers, 1);
-
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: map-get($spacers, 2);
-
-    &.red {
-      color: $danger;
-      font-weight: $font-weight-semibold;
-    }
-
-    .info {
-      flex-grow: 1;
-
-      padding-top: map-get($spacers, 2);
-      padding-bottom: map-get($spacers, 2);
-
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      gap: map-get($spacers, 1);
-    }
-  }
-}
 </style>

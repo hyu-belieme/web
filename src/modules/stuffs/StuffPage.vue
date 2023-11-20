@@ -1,45 +1,83 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { onMounted, onUnmounted } from 'vue';
+import { NIL as NIL_UUID } from 'uuid';
+import { computed, watch } from 'vue';
+import { useRoute } from 'vue-router';
 
-import useBackButtonFunction from '@common/stores/back-button-function-store';
+import CommonStuffPageOnDesktop from '@^stuffs/components/CommonStuffPageOnDesktop.vue';
+import StuffDetailTab from '@^stuffs/components/StuffDetailTab.vue';
+import StuffListTab from '@^stuffs/components/StuffListTab.vue';
+import StuffPageOnEmpty from '@^stuffs/components/StuffPageOnEmpty.vue';
+import { getStuffListQuery } from '@^stuffs/components/utils/stuff-query-utils';
+import useStuffSelectedStore from '@^stuffs/stores/stuff-selected-store';
 
-import StuffEmptyPageRouter from '@^stuffs/components/StuffEmptyPageRouter/StuffEmptyPageRouter.vue';
-import useMobileCurrentStuffPage from '@^stuffs/stores/mobile-current-stuff-page-store';
-import useStuffDetailViewModeStore from '@^stuffs/stores/stuff-detail-view-mode-store';
+const route = useRoute();
 
-const mobileCurrentStuffPageStore = useMobileCurrentStuffPage();
-const { mobileCurrentStuffPage } = storeToRefs(mobileCurrentStuffPageStore);
+const stuffSelectedStore = useStuffSelectedStore();
+const { selectedId } = storeToRefs(stuffSelectedStore);
 
-const backButtonFunctionStore = useBackButtonFunction();
+const { isSuccess, data } = getStuffListQuery();
 
-const stuffDetailViewModeStore = useStuffDetailViewModeStore();
+const stuffIdOnRoute = computed(() => {
+  if (typeof route.params.stuffId === 'string') {
+    return route.params.stuffId;
+  }
+  if (Array.isArray(route.params.stuffId)) {
+    return route.params.stuffId.join('');
+  }
+  return NIL_UUID;
+});
 
-function stuffPageBackButton() {
-  stuffDetailViewModeStore.changeStuffDetailViewMode('SHOW');
-  mobileCurrentStuffPageStore.changeMobileCurrentStuffPage('LIST');
-  backButtonFunctionStore.updateBackButtonFunction(undefined);
+function doesStuffExist(currentId: string) {
+  if (data.value === undefined || data.value.isEmpty()) return false;
+  return data.value.some((value) => value.id === currentId);
 }
 
-onMounted(() => {
-  if (mobileCurrentStuffPage.value === 'DETAIL') {
-    backButtonFunctionStore.updateBackButtonFunction(stuffPageBackButton);
-  }
-});
-
-onUnmounted(() => {
-  backButtonFunctionStore.updateBackButtonFunction(undefined);
-});
+watch(
+  stuffIdOnRoute,
+  () => {
+    stuffSelectedStore.updateSelectedId(stuffIdOnRoute.value);
+  },
+  { immediate: true }
+);
 </script>
 
 <template>
-  <section class="stuff-page">
-    <StuffEmptyPageRouter></StuffEmptyPageRouter>
+  <section class="desktop-frame">
+    <StuffPageOnEmpty v-if="isSuccess && data?.size === 0"></StuffPageOnEmpty>
+    <CommonStuffPageOnDesktop v-else></CommonStuffPageOnDesktop>
+  </section>
+  <section class="mobile-frame">
+    <StuffPageOnEmpty v-if="isSuccess && data?.size === 0"></StuffPageOnEmpty>
+    <StuffListTab v-else-if="!doesStuffExist(stuffIdOnRoute)"></StuffListTab>
+    <StuffDetailTab v-else :key="selectedId"></StuffDetailTab>
   </section>
 </template>
 
 <style lang="scss" scoped>
-.stuff-page {
-  height: 100%;
+@include media-breakpoint-between('mobile', 'tablet-landscape') {
+  .desktop-frame {
+    display: none;
+  }
+
+  .mobile-frame {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+  }
+}
+
+@include media-breakpoint-up('tablet-landscape') {
+  .desktop-frame {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+  }
+
+  .mobile-frame {
+    display: none;
+  }
 }
 </style>

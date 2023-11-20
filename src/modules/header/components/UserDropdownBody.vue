@@ -73,7 +73,7 @@ function getPermissionOfLoggedInUser() {
   </li>
   <li><hr class="dropdown-divider" /></li>
   <li><a class="dropdown-item" @click="showChangeDeptModal()">학과 변경하기</a></li>
-  <li v-if="hasHigherAuthorityPermission(getPermissionOfLoggedInUser(), 'MASTER')">
+  <li v-if="hasHigherAuthorityPermission(getPermissionOfLoggedInUser(), 'STAFF')">
     <a class="dropdown-item" @click="changeUserMode()">{{ changeUserModeLabel }}</a>
   </li>
   <li><a class="dropdown-item" @click="logout()" href="/login">로그아웃</a></li>

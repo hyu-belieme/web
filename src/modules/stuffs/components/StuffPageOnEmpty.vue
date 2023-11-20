@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
+import { useRouter } from 'vue-router';
 
 import BasicButton from '@common/components/buttons/BasicButton/BasicButton.vue';
 import useUserModeStore from '@common/stores/user-mode-store';
 
-import useStuffDetailViewModeStore from '@^stuffs/stores/stuff-detail-view-mode-store';
-
 const userModeStore = useUserModeStore();
 const { userMode } = storeToRefs(userModeStore);
 
-const viewModeStore = useStuffDetailViewModeStore();
+const router = useRouter();
 </script>
 
 <template>
@@ -19,7 +18,7 @@ const viewModeStore = useStuffDetailViewModeStore();
       <BasicButton
         v-if="userMode === 'STAFF' || userMode === 'MASTER'"
         class="m-2"
-        @click="viewModeStore.changeStuffDetailViewMode('INITIAL_ADD')"
+        @click="router.push('/new-stuff')"
         :size="'sm'"
         :content="'물품 등록하기'"
       >
