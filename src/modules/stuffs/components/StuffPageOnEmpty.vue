@@ -16,7 +16,7 @@ const router = useRouter();
     <section class="empty-page-content">
       <span class="text-center">아직 물품이 등록되지 않았습니다.</span>
       <BasicButton
-        v-if="userMode === 'STAFF' || userMode === 'MASTER'"
+        v-if="userMode === 'STAFF'"
         class="m-2"
         @click="router.push('/new-stuff')"
         :size="'sm'"

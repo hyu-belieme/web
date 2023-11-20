@@ -49,8 +49,7 @@ function makeTimestampTagContent(history: History) {
           <!-- <span class="delayed">연체됨</span> -->
         </section>
         <section class="user-and-timestamp">
-          <span v-if="userMode === 'STAFF' || userMode === 'MASTER'">
-            <!-- <span> -->
+          <span v-if="userMode === 'STAFF'">
             {{ makeUserTagContent(history) }}
           </span>
           <span>{{ makeTimestampTagContent(history) }}</span>

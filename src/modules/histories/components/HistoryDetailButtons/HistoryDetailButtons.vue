@@ -128,7 +128,7 @@ const returnApproveModal = {
   <section v-if="isSuccess && data !== undefined" class="buttons">
     <template v-if="data.status === 'REQUESTED'">
       <BasicButton
-        v-if="userMode === 'STAFF' || userMode === 'MASTER'"
+        v-if="userMode === 'STAFF'"
         class="flex-grow-1"
         :color="'primary'"
         :content="'대여승인'"
@@ -143,7 +143,7 @@ const returnApproveModal = {
     </template>
     <template v-else-if="data.status === 'USING' || data.status === 'DELAYED'">
       <BasicButton
-        v-if="userMode === 'STAFF' || userMode === 'MASTER'"
+        v-if="userMode === 'STAFF'"
         class="flex-grow-1"
         :color="'primary'"
         :content="'반납확인'"

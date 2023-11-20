@@ -1,5 +1,3 @@
-// TODO 'MASTER' mode is not required. Remove it.
-
-type UserMode = 'USER' | 'STAFF' | 'MASTER';
+type UserMode = 'USER' | 'STAFF';
 
 export default UserMode;

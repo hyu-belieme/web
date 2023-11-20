@@ -40,7 +40,7 @@ const LOREM_IPSUM =
         <section class="w-0 flex-grow-1 fs-xl fw-semibold">
           <span>{{ stuff?.name }}</span>
         </section>
-        <section v-if="userMode === 'STAFF' || userMode === 'MASTER'" class="buttons">
+        <section v-if="userMode === 'STAFF'" class="buttons">
           <BasicButton
             v-bind="{
               size: 'sm',
