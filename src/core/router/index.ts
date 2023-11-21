@@ -33,15 +33,6 @@ const router = createRouter({
       component: () => import('@^login/LoginRedirectPage.vue'),
     },
     {
-      path: '/histories',
-      name: 'histories',
-      meta: { onlyAccessAfterAuth: true },
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('@^histories/HistoryPage.vue'),
-    },
-    {
       path: '/users',
       name: 'users',
       meta: { onlyAccessAfterAuth: true, onlyMasterAccess: true },
@@ -67,6 +58,15 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('@^stuffs/NewStuffAddPage.vue'),
+    },
+    {
+      path: '/histories',
+      name: 'histories',
+      meta: { onlyAccessAfterAuth: true },
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('@^histories/HistoryPage.vue'),
     },
   ],
 });

@@ -1,11 +1,17 @@
 <script setup lang="ts">
-import { getHistoryDetailQuery } from '@^histories/components/utils/history-query-utils';
+import { toRef } from 'vue';
 
-const { isSuccess, data } = getHistoryDetailQuery();
+import type History from '@common/models/History';
+
+const props = defineProps<{
+  data: History | undefined;
+}>();
+
+const data = toRef(props, 'data');
 </script>
 
 <template>
-  <template v-if="isSuccess && data !== undefined">
+  <template v-if="data !== undefined">
     <section class="label">
       <section class="thumbnail">
         <span class="position-absolute start-50 top-50 translate-middle">

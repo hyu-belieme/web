@@ -60,6 +60,16 @@ function makeTimestampTagContent(history: History) {
 </template>
 
 <style lang="scss" scoped>
+@include media-breakpoint-up('tablet-landscape') {
+  .selected {
+    background-color: $gray-100;
+
+    .content {
+      border-bottom: calc($border-width * 0.5) solid transparent;
+    }
+  }
+}
+
 .cell {
   $padding-size: map-get($spacers, 2);
   position: relative;
@@ -67,7 +77,6 @@ function makeTimestampTagContent(history: History) {
   padding-left: $padding-size;
   padding-right: $padding-size;
 
-  &.selected,
   &:hover {
     background-color: $gray-100;
 

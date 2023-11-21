@@ -1,15 +1,19 @@
 <script setup lang="ts">
-import { getCurrentInstance } from 'vue';
+import { getCurrentInstance, toRef } from 'vue';
 
+import type History from '@common/models/History';
 import type User from '@common/models/User';
 
-import InfoListCell from '@^histories/components/HistoryDetailInfoListCell/HistoryDetailInfoListCell.vue';
-import { getHistoryDetailQuery } from '@^histories/components/utils/history-query-utils';
+import InfoListCell from '@^histories/components/HistoryDetailInfoListCell.vue';
+
+const props = defineProps<{
+  data: History | undefined;
+}>();
+
+const data = toRef(props, 'data');
 
 const app = getCurrentInstance();
 const dayjs = app!.appContext.config.globalProperties.$dayjs;
-
-const { isSuccess, data } = getHistoryDetailQuery();
 
 function timeToString(time: number) {
   return dayjs.unix(time).format('llll');
@@ -21,7 +25,7 @@ function nameAndStudentIdFormat(user: User) {
 </script>
 
 <template>
-  <template v-if="isSuccess && data !== undefined">
+  <template v-if="data !== undefined">
     <section class="info-list">
       <InfoListCell
         v-if="data.requestedAt !== undefined"

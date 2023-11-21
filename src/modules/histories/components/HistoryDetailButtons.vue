@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
+import { toRef } from 'vue';
 import { useMutation, useQueryClient } from 'vue-query';
 
 import { approveItem, cancelItem, returnItem } from '@common/apis/belieme-apis';
@@ -16,10 +17,15 @@ import useUserTokenStorage from '@common/storages/user-token-storage';
 import useUserModeStore from '@common/stores/user-mode-store';
 
 import {
-  getHistoryDetailQuery,
   getHistoryListQuery,
   reloadHistoryDataUsingCacheAndResponse,
 } from '@^histories/components/utils/history-query-utils';
+
+const props = defineProps<{
+  data: History | undefined;
+}>();
+
+const data = toRef(props, 'data');
 
 const userTokenStorage = useUserTokenStorage();
 const { userToken } = storeToRefs(userTokenStorage);
@@ -36,8 +42,6 @@ const userModeStore = useUserModeStore();
 const { userMode } = storeToRefs(userModeStore);
 
 const { isStale: isListDataStale } = getHistoryListQuery();
-
-const { isSuccess, data } = getHistoryDetailQuery();
 
 const queryClient = useQueryClient();
 
@@ -125,7 +129,7 @@ const returnApproveModal = {
 </script>
 
 <template>
-  <section v-if="isSuccess && data !== undefined" class="buttons">
+  <section v-if="data !== undefined" class="buttons">
     <template v-if="data.status === 'REQUESTED'">
       <BasicButton
         v-if="userMode === 'STAFF'"
