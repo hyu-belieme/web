@@ -25,17 +25,15 @@ const dataLoadStatus = computed(() => {
 </script>
 
 <template>
-  <section class="history-detail">
-    <template v-if="dataLoadStatus === 'Success'">
-      <HistoryDetail :data="data"></HistoryDetail>
-    </template>
-    <template v-else-if="dataLoadStatus === 'Loading'">
-      <LoadingView></LoadingView>
-    </template>
-    <template v-else>
-      <DataLoadFailView></DataLoadFailView>
-    </template>
-  </section>
+  <template v-if="dataLoadStatus === 'Success'">
+    <HistoryDetail :data="data"></HistoryDetail>
+  </template>
+  <template v-else-if="dataLoadStatus === 'Loading'">
+    <LoadingView></LoadingView>
+  </template>
+  <template v-else>
+    <DataLoadFailView></DataLoadFailView>
+  </template>
 </template>
 
 <style lang="scss" scoped></style>

@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-  <section class="text-frame m-auto">
+  <section class="text-frame">
     <span class="error-title"
       ><span class="primary-color">E</span>RR<span class="primary-color">O</span>R</span
     >
@@ -14,11 +14,15 @@
 
 <style scoped lang="scss">
 .text-frame {
+  width: 100%;
+  height: 100%;
+
   padding: map-get($spacers, 3);
 
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 
   text-align: center;
 }
