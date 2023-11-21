@@ -40,9 +40,11 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
+$list-height: calc(100vh - $header-height-desktop);
+
 .tabs-wrapper {
   width: 100%;
-  height: 100%;
+  height: fit-content;
 
   display: flex;
   flex-direction: row;
@@ -50,12 +52,21 @@ onMounted(() => {
 
   .list-section {
     width: 24rem;
-    height: 100%;
+    height: $list-height;
+
+    padding-top: map-get($map: $spacers, $key: 3);
+    padding-bottom: map-get($map: $spacers, $key: 3);
+
+    position: sticky;
+    top: 0;
   }
 
   .detail-section {
     width: 0;
     height: 100%;
+
+    padding-top: map-get($map: $spacers, $key: 3);
+    padding-bottom: map-get($map: $spacers, $key: 3);
 
     flex-grow: 1;
   }

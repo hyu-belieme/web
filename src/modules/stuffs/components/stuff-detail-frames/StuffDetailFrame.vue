@@ -14,11 +14,10 @@
 <style lang="scss" scoped>
 .stuff-detail {
   width: 100%;
-  height: 100%;
+  min-height: 100%;
 
   display: flex;
   flex-direction: column;
-  overflow: scroll;
 
   gap: map-get($map: $spacers, $key: 2);
 

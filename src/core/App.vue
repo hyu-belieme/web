@@ -12,7 +12,7 @@ const { curDeptId } = storeToRefs(curDeptStorage);
 
 <template>
   <section class="d-flex flex-column w-100 h-100">
-    <header class="d-flex flex-row align-items-center flex-grow-0">
+    <header class="d-flex flex-row align-items-center flex-grow-0 m-auto">
       <TheHeader></TheHeader>
     </header>
     <main class="container main-frame" :key="curDeptId">
@@ -27,13 +27,12 @@ const { curDeptId } = storeToRefs(curDeptStorage);
   padding-bottom: map-get($spacers, 3);
 
   flex-grow: 1;
+
+  overflow: scroll;
 }
 
 @include media-breakpoint-up('tablet-landscape') {
   .main-frame {
-    padding-top: map-get($spacers, 3);
-    padding-bottom: map-get($spacers, 3);
-
     flex-grow: 1;
   }
 }

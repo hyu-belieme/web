@@ -40,9 +40,10 @@ $min-contrast-ratio: 3;
 ///   $base-url: 'https://cdn.example.com/assets/';
 $base-url: '/assets/' !default;
 
-$header-min-height: 3rem;
 $header-font-size: 1.25rem;
 $header-line-height: 1.2;
+$header-height-desktop: 3.25rem;
+$header-height-mobile: 6.5rem;
 
 // Variables
 //
