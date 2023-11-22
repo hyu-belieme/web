@@ -3,7 +3,7 @@
     <section class="w-100 flex-grow-0">
       <UserListHeader></UserListHeader>
     </section>
-    <section class="w-100 flex-grow-1 d-flex flex-column">
+    <section class="w-100 h-100 flex-grow-1 d-flex flex-column overflow-scroll">
       <section v-if="isSuccess" class="w-100 h-100 d-flex flex-column">
         <UserListCell
           v-for="cellInfo of sortedUserList()"
@@ -200,7 +200,5 @@ watch(diffAppliedUserList, () => {
 
   border: $border-width solid $border-color;
   @include border-radius();
-
-  overflow: scroll;
 }
 </style>

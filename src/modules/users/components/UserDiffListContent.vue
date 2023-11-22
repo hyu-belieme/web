@@ -1,5 +1,5 @@
 <template>
-  <section v-if="true" class="w-100 h-100 d-flex flex-column">
+  <section v-if="sortedUserDiffList.length !== 0" class="w-100 h-100 d-flex flex-column">
     <UserDiffListCell
       v-for="userDiff of sortedUserDiffList"
       :user-diff="userDiff"

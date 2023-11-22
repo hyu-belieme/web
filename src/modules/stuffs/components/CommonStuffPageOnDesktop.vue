@@ -53,10 +53,8 @@ $list-height: calc(100vh - $header-height-desktop);
   .list-section {
     width: 24rem;
     height: $list-height;
-
-    padding-top: map-get($map: $spacers, $key: 3);
+    padding-top: map-get($map: $spacers, $key: 2);
     padding-bottom: map-get($map: $spacers, $key: 3);
-
     position: sticky;
     top: 0;
   }
@@ -64,10 +62,8 @@ $list-height: calc(100vh - $header-height-desktop);
   .detail-section {
     width: 0;
     height: 100%;
-
-    padding-top: map-get($map: $spacers, $key: 3);
+    padding-top: map-get($map: $spacers, $key: 2);
     padding-bottom: map-get($map: $spacers, $key: 3);
-
     flex-grow: 1;
   }
 }

@@ -120,6 +120,11 @@ watch(
   display: flex;
   flex-direction: column;
   gap: map-get($spacers, 2);
+  padding-bottom: map-get($spacers, 3);
+
+  @include media-breakpoint-up('tablet-landscape') {
+    padding-top: map-get($spacers, 2);
+  }
 
   overflow: scroll;
 

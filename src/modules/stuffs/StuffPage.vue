@@ -50,7 +50,9 @@ watch(
   <section class="mobile-frame">
     <StuffPageOnEmpty v-if="isSuccess && data?.size === 0"></StuffPageOnEmpty>
     <StuffListTab v-else-if="!doesStuffExist(stuffIdOnRoute)"></StuffListTab>
-    <StuffDetailTab v-else :key="selectedId"></StuffDetailTab>
+    <section v-else class="pb-3">
+      <StuffDetailTab :key="selectedId"></StuffDetailTab>
+    </section>
   </section>
 </template>
 
@@ -65,6 +67,7 @@ watch(
 
     width: 100%;
     height: 100%;
+    padding-bottom: map-get($spacers, 3);
   }
 }
 

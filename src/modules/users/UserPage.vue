@@ -23,6 +23,8 @@ import UserListAndSearchBox from '@^users/components/UserListAndSearchBox.vue';
 
     width: 100%;
     height: 100%;
+
+    padding-bottom: map-get($map: $spacers, $key: 3);
   }
 }
 

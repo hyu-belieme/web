@@ -24,8 +24,6 @@ const { curDeptId } = storeToRefs(curDeptStorage);
 
 <style lang="scss" scoped>
 .main-frame {
-  padding-bottom: map-get($spacers, 3);
-
   flex-grow: 1;
 
   overflow: scroll;

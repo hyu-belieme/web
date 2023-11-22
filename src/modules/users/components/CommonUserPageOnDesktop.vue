@@ -29,20 +29,20 @@ $list-height: calc(100vh - $header-height-desktop);
     width: 0;
     height: 100%;
 
-    padding-top: map-get($map: $spacers, $key: 3);
-    padding-bottom: map-get($map: $spacers, $key: 3);
-
     flex-grow: 1;
+
+    padding-top: map-get($map: $spacers, $key: 2);
+    padding-bottom: map-get($map: $spacers, $key: 3);
   }
 
   .user-diffs-section {
     width: 0;
     height: 100%;
 
-    padding-top: map-get($map: $spacers, $key: 3);
-    padding-bottom: map-get($map: $spacers, $key: 3);
-
     flex-grow: 1;
+
+    padding-top: map-get($map: $spacers, $key: 2);
+    padding-bottom: map-get($map: $spacers, $key: 3);
   }
 }
 </style>
