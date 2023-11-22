@@ -19,15 +19,7 @@
       <BasicButton
         content="저장하기"
         size="sm"
-        @click="
-          () => {
-            if (userDiffList.length === 0) {
-              modalStore.addModal(noDiffModal);
-              return;
-            }
-            modalStore.addModal(commitDiffModal);
-          }
-        "
+        @click="() => modalStore.addModal(commitDiffModal)"
       ></BasicButton>
       <BasicButton
         content="새로고침"
@@ -112,13 +104,6 @@ const diffAppliedUserList = computed(() =>
     (e) => !hasHigherAuthorityPermission(e.getPermission(curDeptId.value), 'DEVELOPER')
   )
 );
-
-const noDiffModal = {
-  component: AlertModal,
-  props: {
-    content: '반영할 변경사항이 없습니다. 변경사항을 먼저 추가해주세요.',
-  },
-};
 
 const commitDiffModal = {
   component: ModalWithUserDiffList,

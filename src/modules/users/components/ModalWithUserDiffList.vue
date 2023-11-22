@@ -11,6 +11,8 @@ withDefaults(
     title?: string;
     contentForDesktop?: string;
     contentForMobile?: string;
+    resolveLabel?: string;
+    rejectLabel?: string;
     size?: string;
   }>(),
   {
@@ -41,9 +43,9 @@ withDefaults(
     </template>
     <template v-slot:footer>
       <div class="d-flex flex-gap-2">
-        <BasicButton color="primary" content="등록하기" @click="() => $emit('resolve')">
+        <BasicButton color="primary" :content="resolveLabel" @click="() => $emit('resolve')">
         </BasicButton>
-        <BasicButton color="light" content="뒤로가기" @click="$emit('reject')"></BasicButton>
+        <BasicButton color="light" :content="rejectLabel" @click="$emit('reject')"></BasicButton>
       </div>
     </template>
   </BasicModal>
