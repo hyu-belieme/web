@@ -3,7 +3,7 @@ import { storeToRefs } from 'pinia';
 
 import useUserModeStore from '@common/stores/user-mode-store';
 
-import HistoryEmptyPageRouter from '@^histories/components/HistoryEmptyPageRouter/HistoryEmptyPageRouter.vue';
+import HistoryPageFrameRouter from '@^histories/components/HistoryPageFrameRouter.vue';
 
 const userModeStore = useUserModeStore();
 const { userMode } = storeToRefs(userModeStore);
@@ -11,7 +11,7 @@ const { userMode } = storeToRefs(userModeStore);
 
 <template>
   <section class="history-page" :key="userMode">
-    <HistoryEmptyPageRouter></HistoryEmptyPageRouter>
+    <HistoryPageFrameRouter :user-mode="userMode"></HistoryPageFrameRouter>
   </section>
 </template>
 

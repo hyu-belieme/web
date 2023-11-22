@@ -23,8 +23,16 @@
 // null by default, thus nothing is generated.
 
 :root {
-  @if $font-size-root != null {
-    @include font-size(var(--#{$prefix}root-font-size));
+  @include media-breakpoint-between('mobile', 'tablet-portrait') {
+    @if $font-size-root-mobile != null {
+      @include font-size(var(--#{$prefix}root-font-size-mobile));
+    }
+  }
+
+  @include media-breakpoint-up('tablet-portrait') {
+    @if $font-size-root != null {
+      @include font-size(var(--#{$prefix}root-font-size));
+    }
   }
 
   @if $enable-smooth-scroll {

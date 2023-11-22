@@ -83,4 +83,6 @@ defineExpose({
 });
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+@import '@common/components/dropdowns/styles/main';
+</style>

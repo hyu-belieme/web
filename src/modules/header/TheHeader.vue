@@ -1,96 +1,35 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia';
-import { computed } from 'vue';
-import { useRoute } from 'vue-router';
-
-import BasicDropdown from '@common/components/dropdowns/BasicDropdown/BasicDropdown.vue';
-import { hasHigherAuthorityPermission } from '@common/models/types/AuthorityPermission';
-import useCurDeptStorage from '@common/storages/cur-dept-storage';
-import useLoggedInUserStorage from '@common/storages/logged-in-user-storage';
-
-import UserDropdownBody from '@^header/components/UserDropdownBody/UserDropdownBody.vue';
-import UserIcon from '@^header/components/UserIcon.vue';
-
-const route = useRoute();
-
-const { curDeptId } = storeToRefs(useCurDeptStorage());
-
-const loggedInUserStorage = useLoggedInUserStorage();
-const { loggedInUser } = storeToRefs(loggedInUserStorage);
-
-const isLoggedIn = computed(() => {
-  return !(route.path === '/' || route.path.startsWith('/login'));
-});
-
-function getPermissionOfLoggedInUser() {
-  return loggedInUserStorage.getPermissionOfLoggedInUser(curDeptId.value || '');
-}
+import DesktopHeader from '@^header/components/DesktopHeader.vue';
+import MobileHeader from '@^header/components/MobileHeader.vue';
 </script>
 
 <template>
-  <section class="d-flex flex-row align-items-center w-100 ps-5 pe-5 pt-2 pb-2 border-bottom">
-    <section class="flex-grow-0">
-      <img class="logo" src="@common/assets/images/belieme_logo_en.png" />
-    </section>
-    <nav class="flex-grow-1 d-flex flex-row align-items-center ms-4">
-      <RouterLink v-if="isLoggedIn" to="/stuffs" class="ms-4 me-4">물품목록</RouterLink>
-      <RouterLink v-if="isLoggedIn" to="/histories" class="ms-4 me-4">대여기록</RouterLink>
-      <RouterLink
-        v-if="isLoggedIn && hasHigherAuthorityPermission(getPermissionOfLoggedInUser(), 'MASTER')"
-        to="/users"
-        class="ms-4 me-4"
-      >
-        유저관리
-      </RouterLink>
-    </nav>
-    <section v-if="isLoggedIn" class="flex-grow-0">
-      <BasicDropdown v-bind:align="'right'" v-bind:type="'hover'">
-        <template v-slot:trigger>
-          <section class="p-1">
-            <UserIcon hover="off"></UserIcon>
-          </section>
-        </template>
-        <template v-slot:menu="{ closeDropdown }">
-          <UserDropdownBody
-            v-bind:user="loggedInUser"
-            @closeDropdown="closeDropdown"
-          ></UserDropdownBody>
-        </template>
-      </BasicDropdown>
-    </section>
-  </section>
+  <div class="w-100 desktop-frame">
+    <DesktopHeader></DesktopHeader>
+  </div>
+  <div class="w-100 mobile-frame">
+    <MobileHeader></MobileHeader>
+  </div>
 </template>
 
 <style lang="scss">
-@import '@common/components/dropdowns/styles/main';
+@include media-breakpoint-between('mobile', 'tablet-landscape') {
+  .mobile-frame {
+    display: block;
+  }
 
-.logo {
-  height: $header-font-size * $header-line-height * 1.25;
-}
-
-.icon {
-  font-size: $header-font-size * 1.3;
-}
-
-.dept-list {
-  display: flex;
-  flex-direction: column;
-
-  overflow: scroll;
-}
-
-nav a {
-  display: inline-block;
-  text-decoration: none;
-  font-weight: 600;
-  color: $body-color;
-
-  &:hover {
-    color: $gray-700;
+  .desktop-frame {
+    display: none;
   }
 }
 
-nav a.router-link-exact-active {
-  color: $primary;
+@include media-breakpoint-up('tablet-landscape') {
+  .mobile-frame {
+    display: none;
+  }
+
+  .desktop-frame {
+    display: block;
+  }
 }
 </style>

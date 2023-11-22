@@ -12,12 +12,26 @@ const { curDeptId } = storeToRefs(curDeptStorage);
 
 <template>
   <section class="d-flex flex-column w-100 h-100">
-    <header class="d-flex flex-row align-items-center flex-grow-0">
+    <header class="d-flex flex-row align-items-center flex-grow-0 m-auto">
       <TheHeader></TheHeader>
     </header>
-    <main class="container pt-3 pb-3 flex-grow-1" :key="curDeptId">
+    <main class="container main-frame" :key="curDeptId">
       <RouterView />
     </main>
   </section>
   <TheModalFrame></TheModalFrame>
 </template>
+
+<style lang="scss" scoped>
+.main-frame {
+  flex-grow: 1;
+
+  overflow: scroll;
+}
+
+@include media-breakpoint-up('tablet-landscape') {
+  .main-frame {
+    flex-grow: 1;
+  }
+}
+</style>

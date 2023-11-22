@@ -54,6 +54,29 @@ export function getHistoryListQuery() {
   });
 }
 
+export function getHistoryListQueryForUserMode() {
+  return useQuery<List<History>>(
+    historyKeys.listByDeptAndRequester(curDeptId.value, loggedInUserId.value),
+    async () => {
+      let historyList = await getAllRequesterHistoryInDept(
+        userToken.value,
+        curDeptId.value,
+        loggedInUserId.value
+      );
+      historyList = sortHistoryList(historyList);
+      return historyList;
+    }
+  );
+}
+
+export function getHistoryListQueryForStaffMode() {
+  return useQuery<List<History>>(historyKeys.listByDept(curDeptId.value), async () => {
+    let historyList = await getAllHistoryInDept(userToken.value, curDeptId.value);
+    historyList = sortHistoryList(historyList);
+    return historyList;
+  });
+}
+
 export function getHistoryDetailQuery() {
   return useQuery<History>(historyKeys.detail(selectedId.value), () =>
     getHistory(userToken.value, selectedId.value)

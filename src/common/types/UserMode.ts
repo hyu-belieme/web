@@ -1,3 +1,3 @@
-type UserMode = 'USER' | 'STAFF' | 'MASTER';
+type UserMode = 'USER' | 'STAFF';
 
 export default UserMode;

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { NIL as NIL_UUID } from 'uuid';
-import { readonly, ref } from 'vue';
+import { ref } from 'vue';
 
 const useStuffSelectedStore = defineStore('stuffSelected', () => {
   const selectedId = ref<string>(NIL_UUID);
@@ -10,7 +10,7 @@ const useStuffSelectedStore = defineStore('stuffSelected', () => {
   }
 
   return {
-    selectedId: readonly(selectedId),
+    selectedId,
     updateSelectedId,
   };
 });

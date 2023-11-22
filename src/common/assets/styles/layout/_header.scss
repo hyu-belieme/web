@@ -4,7 +4,18 @@
 
 header {
   width: 100%;
-  min-height: $header-min-height;
   font-size: $header-font-size;
   line-height: $header-line-height;
+}
+
+@include media-breakpoint-between('mobile', 'tablet-landscape') {
+  header {
+    height: $header-height-mobile;
+  }
+}
+
+@include media-breakpoint-up('tablet-landscape') {
+  header {
+    height: $header-height-desktop;
+  }
 }

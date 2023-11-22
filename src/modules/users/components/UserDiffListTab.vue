@@ -1,25 +1,28 @@
 <template>
   <section class="user-diff-list">
-    <section class="w-100">
+    <section class="w-100 flex-grow-0">
       <section class="border-bottom d-flex flex-row align-items-center px-2">
         <section
           class="px-1 py-2 w-0 flex-grow-1 d-flex flex-row align-items-center justify-content-between"
         >
-          <span class="lh-sm">등록하기</span>
+          <span class="lh-sm">변경사항</span>
         </section>
       </section>
     </section>
-    <UserRegisterContent></UserRegisterContent>
+    <section class="w-100 flex-grow-1">
+      <UserDiffListContent></UserDiffListContent>
+    </section>
   </section>
 </template>
 
 <script setup lang="ts">
-import UserRegisterContent from '@^users/components/UserRegisterContent.vue';
+import UserDiffListContent from '@^users/components/UserDiffListContent.vue';
 </script>
 
 <style scoped lang="scss">
 .user-diff-list {
   width: 100%;
+  height: 100%;
 
   display: flex;
   flex-direction: column;
@@ -28,5 +31,7 @@ import UserRegisterContent from '@^users/components/UserRegisterContent.vue';
 
   border: $border-width solid $border-color;
   @include border-radius();
+
+  overflow: scroll;
 }
 </style>
