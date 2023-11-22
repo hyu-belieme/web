@@ -1,7 +1,7 @@
 <template>
   <section class="px-1 w-100">
     <section class="px-2 pt-2 d-flex flex-row w-100">
-      <section class="d-flex flex-row flex-grow-1 gap-2">
+      <section class="d-flex flex-row flex-grow-1 gap-2 overflow-scroll">
         <ButtonBase
           :size="'xs'"
           :color="selectedFilter === 'ALL' ? 'dark' : 'white'"
@@ -14,21 +14,21 @@
           :color="selectedFilter === 'USER' ? 'dark' : 'white'"
           @click="() => (selectedFilter = 'USER')"
         >
-          <span class="lh-sm">일반 유저만</span>
+          <span class="lh-sm">일반 유저</span>
         </ButtonBase>
         <ButtonBase
           :size="'xs'"
           :color="selectedFilter === 'STAFF' ? 'dark' : 'white'"
           @click="() => (selectedFilter = 'STAFF')"
         >
-          <span class="lh-sm">관리자 유저만</span>
+          <span class="lh-sm">관리자 유저</span>
         </ButtonBase>
         <ButtonBase
           :size="'xs'"
           :color="selectedFilter === 'CHECKED' ? 'dark' : 'white'"
           @click="() => (selectedFilter = 'CHECKED')"
         >
-          <span class="lh-sm">선택된 유저만</span>
+          <span class="lh-sm">선택된 유저</span>
         </ButtonBase>
       </section>
       <ButtonBase

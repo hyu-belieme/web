@@ -41,7 +41,7 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { computed, watchEffect } from 'vue';
+import { computed, watch } from 'vue';
 import { useQuery, useQueryClient } from 'vue-query';
 
 import { getAllUsersInDept, updateUserPermissions } from '@common/apis/belieme-apis';
@@ -179,7 +179,7 @@ function sortedUserList() {
   });
 }
 
-watchEffect(() => {
+watch(diffAppliedUserList, () => {
   userCheckedStore.updateUserList(diffAppliedUserList.value);
 });
 </script>
