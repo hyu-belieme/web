@@ -7,11 +7,9 @@ import DataLoadFailView from '@common/components/DataLoadFailView/DataLoadFailVi
 import LoadingView from '@common/components/LoadingView/LoadingView.vue';
 import ConfirmModal from '@common/components/modals/ConfirmModal/ConfirmModal.vue';
 import useModalStore from '@common/components/modals/stores/modal-store';
-import useBackButtonFunction from '@common/stores/back-button-function-store';
 
 import StuffListCell from '@^stuffs/components/StuffListCell.vue';
 import { getStuffListQuery } from '@^stuffs/components/utils/stuff-query-utils';
-import useMobileCurrentStuffPage from '@^stuffs/stores/mobile-current-stuff-page-store';
 import useStuffDetailViewModeStore from '@^stuffs/stores/stuff-detail-view-mode-store';
 import useStuffSelectedStore from '@^stuffs/stores/stuff-selected-store';
 
@@ -25,21 +23,10 @@ const { stuffDetailViewMode } = storeToRefs(stuffDetailViewModeStore);
 const stuffSelectedStore = useStuffSelectedStore();
 const { selectedId } = storeToRefs(stuffSelectedStore);
 
-const mobileCurrentStuffPageStore = useMobileCurrentStuffPage();
-const backButtonFunctionStore = useBackButtonFunction();
-
 const { data, isLoading, isSuccess } = getStuffListQuery();
-
-function stuffPageBackButton() {
-  stuffDetailViewModeStore.changeStuffDetailViewMode('SHOW');
-  mobileCurrentStuffPageStore.changeMobileCurrentStuffPage('LIST');
-  backButtonFunctionStore.updateBackButtonFunction(undefined);
-}
 
 function moveToNewStuffCell(newSelectedId: string) {
   router.push(`/stuffs?stuffId=${newSelectedId}`);
-  mobileCurrentStuffPageStore.changeMobileCurrentStuffPage('DETAIL');
-  backButtonFunctionStore.updateBackButtonFunction(stuffPageBackButton);
   stuffDetailViewModeStore.changeStuffDetailViewMode('SHOW');
 }
 
