@@ -34,6 +34,7 @@
       <ButtonBase
         class="button-size"
         :size="'xs'"
+        :disabled="isUserRegisterTabOpened"
         @click="userRegisterTabStore.openUserRegisterTab"
       >
         <section class="w-100 d-flex flex-row gap-1 align-items-center justify-content-center">
@@ -63,13 +64,14 @@ import useUserRegisterTab from '@^users/stores/user-register-tab-store';
 const curDeptStorage = useCurDeptStorage();
 const { curDeptId } = storeToRefs(curDeptStorage);
 
-const userRegisterTabStore = useUserRegisterTab();
-
 const userCheckedStore = useUserChecked();
 
 const selectedFilter = ref<'ALL' | 'USER' | 'STAFF' | 'CHECKED'>('ALL');
 
 const userListFilterStore = useUserListFilter();
+
+const userRegisterTabStore = useUserRegisterTab();
+const { isUserRegisterTabOpened } = storeToRefs(userRegisterTabStore);
 
 watch(selectedFilter, (newVal) => {
   switch (newVal) {

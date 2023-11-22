@@ -50,13 +50,13 @@ import DataLoadFailView from '@common/components/DataLoadFailView/DataLoadFailVi
 import LoadingView from '@common/components/LoadingView/LoadingView.vue';
 import BasicButton from '@common/components/buttons/BasicButton/BasicButton.vue';
 import AlertModal from '@common/components/modals/AlertModal/AlertModal.vue';
-import ConfirmModal from '@common/components/modals/ConfirmModal/ConfirmModal.vue';
 import useModalStore from '@common/components/modals/stores/modal-store';
 import type User from '@common/models/User';
 import { hasHigherAuthorityPermission } from '@common/models/types/AuthorityPermission';
 import useCurDeptStorage from '@common/storages/cur-dept-storage';
 import useUserTokenStorage from '@common/storages/user-token-storage';
 
+import ModalWithUserDiffList from '@^users/components/ModalWithUserDiffList.vue';
 import UserListCell from '@^users/components/UserListCell.vue';
 import UserListHeader from '@^users/components/UserListHeader.vue';
 import useUserChecked from '@^users/stores/user-checked-store';
@@ -121,11 +121,12 @@ const noDiffModal = {
 };
 
 const commitDiffModal = {
-  component: ConfirmModal,
+  component: ModalWithUserDiffList,
   props: {
-    title: '변경사항 반영하기',
-    content: '변경사항을 반영하시겠습니까?',
-    resolveLabel: '반영하기',
+    title: '변경사항 적용하기',
+    contentForMobile: '다음과 같은 변경사항을 적용하시겠습니까?',
+    contentForDesktop: '변경사항을 적용하시겠습니까?',
+    resolveLabel: '적용하기',
     rejectLabel: '뒤로가기',
   },
   resolve: () => {
@@ -144,10 +145,13 @@ const commitDiffModal = {
 };
 
 const reloadModal = {
-  component: ConfirmModal,
+  component: ModalWithUserDiffList,
   props: {
     title: '사용자 리스트 새로고침',
-    content: '저장하지 않은 변경사항은 모두 사라집니다. 그래도 사용자 리스트를 다시 불러올까요?',
+    contentForMobile:
+      '다음과 같은 변경사항은 모두 사라집니다. 그래도 사용자 리스트를 다시 불러올까요?',
+    contentForDesktop:
+      '저장하지 않은 변경사항은 모두 사라집니다. 그래도 사용자 리스트를 다시 불러올까요?',
     resolveLabel: '불러오기',
     rejectLabel: '뒤로가기',
   },
