@@ -27,7 +27,7 @@ withDefaults(
       display: 'block',
     }"
   >
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content" :modal-key="modalKey">
         <div v-if="!noHeader" class="modal-header">
           <slot name="header"> </slot>
