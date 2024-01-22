@@ -56,6 +56,7 @@ const commitChangeMutation = useMutation<StuffWithItems, BaseError>(
     editStuff(userToken.value, selectedId.value, {
       name: newName.value,
       thumbnail: newThumbnail.value,
+      desc: newDesc.value,
     }),
   {
     onSuccess: (response) => {
@@ -77,6 +78,7 @@ const commitAddNewStuffMutation = useMutation<StuffWithItems, BaseError>(
       name: newName.value,
       thumbnail: newThumbnail.value,
       amount: newItemCount.value,
+      desc: newDesc.value,
     }),
   {
     onSuccess: (response) => {

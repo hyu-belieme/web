@@ -41,6 +41,7 @@ const commitAddNewStuffMutation = useMutation<StuffWithItems, BaseError>(
       name: newName.value,
       thumbnail: newThumbnail.value,
       amount: newItemCount.value,
+      desc: newDesc.value,
     }),
   {
     onSuccess: () => {

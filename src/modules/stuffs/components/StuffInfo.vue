@@ -21,9 +21,6 @@ const stuff = toRef(props, 'stuff');
 
 const userModeStore = useUserModeStore();
 const { userMode } = storeToRefs(userModeStore);
-
-const LOREM_IPSUM =
-  'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi sint corrupti illum quos. Dolorum architecto illum, veritatis asperiores odio exercitationem impedit natus. Modi magni, aut corporis impedit ullam nemo saepe!';
 </script>
 
 <template>
@@ -59,9 +56,9 @@ const LOREM_IPSUM =
       </section>
     </template>
     <template v-slot:desc>
-      <span class="p-1">
-        {{ LOREM_IPSUM }}
-      </span>
+      <div class="desc-frame">
+        <span>{{ stuff?.desc }}</span>
+      </div>
     </template>
   </StuffInfoFrame>
 </template>
@@ -76,5 +73,23 @@ const LOREM_IPSUM =
   button {
     min-width: 3rem;
   }
+}
+
+.desc-frame {
+  height: 100%;
+  width: 100%;
+
+  padding-top: map-get($spacers, 1);
+  padding-bottom: map-get($spacers, 1);
+  padding-left: map-get($spacers, 2);
+  padding-right: map-get($spacers, 2);
+
+  background-color: $white;
+  border: $border-width solid $border-color;
+  @include border-radius();
+
+  white-space: pre-wrap;
+
+  overflow: scroll;
 }
 </style>
