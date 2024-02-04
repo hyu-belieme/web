@@ -42,10 +42,8 @@ function changeItemRequestMutation(mutationFn: () => Promise<History>) {
     onSettled: () => {
       queryClient.invalidateQueries(stuffKeys.list(curDeptId.value));
       queryClient.invalidateQueries(stuffKeys.detail(props.item.stuff.id));
-    },
-    onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: historyKeys.list() });
-      queryClient.setQueryData(historyKeys.detail(response.id), response);
+      queryClient.invalidateQueries(historyKeys.list());
+      queryClient.invalidateQueries(historyKeys.detail());
     },
     onError: (error) => {
       modalStore.addModal(buildAlertModal('errorAlert', error.message));

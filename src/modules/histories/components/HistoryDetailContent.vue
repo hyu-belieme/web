@@ -3,7 +3,7 @@ import { toRef } from 'vue';
 
 import type History from '@common/models/History';
 
-import ActionButtons from '@^histories/components/HistoryDetailButtons.vue';
+import HistoryDetailButtons from '@^histories/components/HistoryDetailButtons.vue';
 import InfoLabel from '@^histories/components/HistoryDetailInfoLabel.vue';
 import InfoList from '@^histories/components/HistoryDetailInfoList.vue';
 
@@ -18,7 +18,7 @@ const data = toRef(props, 'data');
   <section class="history-info">
     <InfoLabel :data="data"></InfoLabel>
     <InfoList :data="data"></InfoList>
-    <ActionButtons :data="data"></ActionButtons>
+    <HistoryDetailButtons :data="data"></HistoryDetailButtons>
   </section>
 </template>
 

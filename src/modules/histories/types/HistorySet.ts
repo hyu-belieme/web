@@ -1,10 +1,8 @@
-import type { List } from 'immutable';
-
 import type History from '@common/models/History';
 
 import type { HistoryCategory } from '@^histories/types/HistoryCategory';
 
-export interface CategorizedHistories {
+export interface CategorizedHistorySet {
   category: HistoryCategory;
-  histories: List<History>;
+  histories: History[];
 }

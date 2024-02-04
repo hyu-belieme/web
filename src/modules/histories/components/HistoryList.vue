@@ -1,34 +1,44 @@
 <script setup lang="ts">
-import type { List } from 'immutable';
-import { storeToRefs } from 'pinia';
 import { NIL as NIL_UUID } from 'uuid';
-import { computed, toRef, watch } from 'vue';
+import { toRef, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
+import LoadingView from '@common/components/LoadingView/LoadingView.vue';
 import HiderCheckbox from '@common/components/checkboxes/HiderCheckbox/HiderCheckbox.vue';
 import type History from '@common/models/History';
 
 import HistoryCell from '@^histories/components/HistoryListCell.vue';
-import useHistorySelectedStore from '@^histories/stores/history-selected-store';
-import type { CategorizedHistories } from '@^histories/types/CategorizedHistories';
 import type { HistoryCategory } from '@^histories/types/HistoryCategory';
-import CategorizeHistories from '@^histories/utils/history-categorizer';
+import type { CategorizedHistorySet } from '@^histories/types/HistorySet';
 
 const props = defineProps<{
-  histories: List<History> | undefined;
+  categorizedHistories: CategorizedHistorySet[] | undefined;
+  selectedId: string;
+  isReturnedFetchingNextPage: boolean;
+  isExpiredFetchingNextPage: boolean;
+  hasReturnedNextPage: boolean;
+  hasExpiredNextPage: boolean;
 }>();
 
-const histories = toRef(props, 'histories');
+const emit = defineEmits<{
+  (e: 'updateSelectedId', selectedId: string): void;
+  (e: 'fetchReturnedNextPage'): void;
+  (e: 'fetchExpiredNextPage'): void;
+}>();
+
+const categorizedHistories = toRef(props, 'categorizedHistories');
+const isReturnedFetchingNextPage = toRef(props, 'isReturnedFetchingNextPage');
+const isExpiredFetchingNextPage = toRef(props, 'isExpiredFetchingNextPage');
+const hasExpiredNextPage = toRef(props, 'hasExpiredNextPage');
+const hasReturnedNextPage = toRef(props, 'hasReturnedNextPage');
 
 const router = useRouter();
 
-const historySelectedStore = useHistorySelectedStore();
-const { selectedId } = storeToRefs(historySelectedStore);
+const selectedId = toRef(props, 'selectedId');
 
-const categorizedHistoriesList = computed(() => {
-  if (histories.value === undefined) return undefined;
-  return CategorizeHistories(histories.value);
-});
+function moveToHistoryCell(newSelectedId: string) {
+  router.push(`/histories?historyId=${newSelectedId}`);
+}
 
 function headerLabel(category: HistoryCategory) {
   switch (category) {
@@ -47,31 +57,41 @@ function headerLabel(category: HistoryCategory) {
   }
 }
 
-function moveToHistoryCell(newSelectedId: string) {
-  router.push(`/histories?historyId=${newSelectedId}`);
-}
-
-function needHider(categorizedHistories: CategorizedHistories) {
+function needHider(historySet: CategorizedHistorySet) {
   return (
-    (categorizedHistories.category === 'RETURNED' || categorizedHistories.category === 'EXPIRED') &&
-    categorizedHistories.histories.size >= 5
+    (historySet.category === 'RETURNED' && hasReturnedNextPage.value) ||
+    (historySet.category === 'EXPIRED' && hasExpiredNextPage.value)
   );
 }
 
-function convertIdToFirstIdIfNotExist() {
-  if (histories.value === undefined || histories.value.isEmpty()) return NIL_UUID;
+function fetchNextPage(historySet: CategorizedHistorySet) {
+  if (historySet.category === 'RETURNED') {
+    emit('fetchReturnedNextPage');
+  } else if (historySet.category === 'EXPIRED') {
+    emit('fetchExpiredNextPage');
+  }
+}
 
-  const selected = histories.value.find((value) => value.id === selectedId.value);
-  if (selected === undefined) return histories.value.get(0)?.id || NIL_UUID;
-  return selected.id;
+function convertIdToFirstIdIfNotExist() {
+  if (categorizedHistories.value === undefined || categorizedHistories.value.length === 0) {
+    return NIL_UUID;
+  }
+
+  let selected: History | undefined = categorizedHistories.value[0]?.histories[0] || undefined;
+  categorizedHistories.value.forEach((historySet) => {
+    const tmpSelected = historySet.histories.find((history) => history.id === selectedId.value);
+    if (tmpSelected !== undefined) selected = tmpSelected;
+  });
+
+  return selected?.id || NIL_UUID;
 }
 
 watch(
-  histories,
+  categorizedHistories,
   () => {
     const convertedSelectedId = convertIdToFirstIdIfNotExist();
     if (convertedSelectedId !== selectedId.value) {
-      historySelectedStore.updateSelectedId(convertedSelectedId);
+      emit('updateSelectedId', convertedSelectedId);
     }
   },
   { immediate: true }
@@ -82,13 +102,13 @@ watch(
   <section class="history-list">
     <section
       class="history-sublist"
-      v-for="categorizedHistories of categorizedHistoriesList"
-      :key="categorizedHistories.category"
+      v-for="historySet of categorizedHistories"
+      :key="historySet.category"
     >
-      <section class="cell-header">{{ headerLabel(categorizedHistories.category) }}</section>
+      <section class="cell-header">{{ headerLabel(historySet.category) }}</section>
       <section class="cell-frame">
         <HistoryCell
-          v-for="history of categorizedHistories.histories"
+          v-for="history of historySet.histories"
           :key="history.id"
           v-bind="{
             history: history,
@@ -96,7 +116,20 @@ watch(
           }"
           @click="moveToHistoryCell(history.id)"
         ></HistoryCell>
-        <section v-if="needHider(categorizedHistories)" class="cell-hider">
+        <section
+          v-if="
+            (historySet.category === 'RETURNED' && isReturnedFetchingNextPage) ||
+            (historySet.category === 'EXPIRED' && isExpiredFetchingNextPage)
+          "
+          class="loading-cell"
+        >
+          <LoadingView />
+        </section>
+        <section
+          v-else-if="needHider(historySet)"
+          class="cell-hider"
+          @click="fetchNextPage(historySet)"
+        >
           <span>10개 더보기</span>
           <section class="hider-icon-size d-flex align-items-center">
             <HiderCheckbox
@@ -152,7 +185,16 @@ watch(
       display: flex;
       flex-direction: column;
 
+      .loading-cell {
+        padding-top: map-get($spacers, 2);
+        padding-bottom: map-get($spacers, 2);
+      }
+
       .cell-hider {
+        &:hover {
+          background-color: $gray-100;
+        }
+
         font-size: $font-size-xs;
         line-height: 1;
         color: $gray-700;

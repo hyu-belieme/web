@@ -11,15 +11,8 @@ import ConfirmModal from '@common/components/modals/ConfirmModal/ConfirmModal.vu
 import useModalStore from '@common/components/modals/stores/modal-store';
 import type BaseError from '@common/errors/BaseError';
 import type History from '@common/models/History';
-import useCurDeptStorage from '@common/storages/cur-dept-storage';
-import useLoggedInUserStorage from '@common/storages/logged-in-user-storage';
 import useUserTokenStorage from '@common/storages/user-token-storage';
 import useUserModeStore from '@common/stores/user-mode-store';
-
-import {
-  getHistoryListQuery,
-  reloadHistoryDataUsingCacheAndResponse,
-} from '@^histories/components/utils/history-query-utils';
 
 const props = defineProps<{
   data: History | undefined;
@@ -30,33 +23,20 @@ const data = toRef(props, 'data');
 const userTokenStorage = useUserTokenStorage();
 const { userToken } = storeToRefs(userTokenStorage);
 
-const loggedInUserStorage = useLoggedInUserStorage();
-const { loggedInUserId } = storeToRefs(loggedInUserStorage);
-
-const curDeptStorage = useCurDeptStorage();
-const { curDeptId } = storeToRefs(curDeptStorage);
-
 const modalStore = useModalStore();
 
 const userModeStore = useUserModeStore();
 const { userMode } = storeToRefs(userModeStore);
 
-const { isStale: isListDataStale } = getHistoryListQuery();
-
 const queryClient = useQueryClient();
 
 function changeItemRequestMutation(mutationFn: () => Promise<History>) {
   return useMutation<History, BaseError>(mutationFn, {
-    onSuccess: (response) => {
-      reloadHistoryDataUsingCacheAndResponse(queryClient, response, isListDataStale.value);
+    onSettled: () => {
+      queryClient.invalidateQueries(historyKeys.list());
+      queryClient.invalidateQueries(historyKeys.detail());
     },
     onError: (error) => {
-      console.error(error);
-      queryClient.invalidateQueries(historyKeys.listByDept(curDeptId.value));
-      queryClient.invalidateQueries(
-        historyKeys.listByDeptAndRequester(curDeptId.value, loggedInUserId.value)
-      );
-      queryClient.invalidateQueries({ queryKey: historyKeys.detail() });
       modalStore.addModal(buildAlertModal('errorAlert', error.message));
     },
   });
