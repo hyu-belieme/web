@@ -42,6 +42,8 @@ const isFetching = toRef(props, 'isFetching');
     <section class="list-section">
       <StuffListTab
         :user-token="userToken"
+        :cur-dept-id="curDeptId"
+        :user-mode="userMode"
         :stuff-detail-view-mode="stuffDetailViewMode"
         :selected-id="selectedId"
         :is-success="isSuccess"

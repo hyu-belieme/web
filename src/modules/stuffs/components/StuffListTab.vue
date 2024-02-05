@@ -9,12 +9,15 @@ import LoadingView from '@common/components/LoadingView/LoadingView.vue';
 import ConfirmModal from '@common/components/modals/ConfirmModal/ConfirmModal.vue';
 import useModalStore from '@common/components/modals/stores/modal-store';
 import type Stuff from '@common/models/Stuff';
+import type UserMode from '@common/types/UserMode';
 
 import StuffListCell from '@^stuffs/components/StuffListCell.vue';
 import type { StuffDetailViewMode } from '@^stuffs/types/StuffDetailViewMode';
 
 const props = defineProps<{
   userToken: string;
+  curDeptId: string;
+  userMode: UserMode;
   stuffDetailViewMode: StuffDetailViewMode;
   selectedId: string;
   isSuccess: boolean;
@@ -103,7 +106,11 @@ watch(
       <StuffListCell
         v-for="stuff of stuffs"
         :key="stuff.name"
-        v-bind="{ stuff: stuff, selected: stuff.id === selectedId }"
+        :user-token="userToken"
+        :cur-dept-id="curDeptId"
+        :user-mode="userMode"
+        :stuff="stuff"
+        :selected="stuff.id === selectedId"
         @click="() => updateSelectedId(stuff.id)"
       ></StuffListCell>
     </template>

@@ -60,6 +60,8 @@ function doesStuffExist(currentId: string) {
   <StuffListTab
     v-if="!doesStuffExist(stuffIdOnRoute)"
     :user-token="userToken"
+    :cur-dept-id="curDeptId"
+    :user-mode="userMode"
     :stuff-detail-view-mode="stuffDetailViewMode"
     :selected-id="selectedId"
     :is-success="isSuccess"
