@@ -225,7 +225,8 @@ watch(
     ></HistoryPageOnEmpty>
     <CommonHistoryPageOnDesktop
       v-else
-      :user-token="props.userToken"
+      :user-token="userToken"
+      :user-mode="userMode"
       :selected-id="selectedId"
       :is-success="isSuccess"
       :is-loading="isLoading"
@@ -247,7 +248,8 @@ watch(
     ></HistoryPageOnEmpty>
     <CommonHistoryPageOnMobile
       v-else
-      :user-token="props.userToken"
+      :user-token="userToken"
+      :user-mode="userMode"
       :selected-id="selectedId"
       :is-success="isSuccess"
       :is-loading="isLoading"

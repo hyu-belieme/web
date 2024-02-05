@@ -6,12 +6,14 @@ import { useRouter } from 'vue-router';
 import LoadingView from '@common/components/LoadingView/LoadingView.vue';
 import HiderCheckbox from '@common/components/checkboxes/HiderCheckbox/HiderCheckbox.vue';
 import type History from '@common/models/History';
+import type UserMode from '@common/types/UserMode';
 
 import HistoryCell from '@^histories/components/HistoryListCell.vue';
 import type { HistoryCategory } from '@^histories/types/HistoryCategory';
 import type { CategorizedHistorySet } from '@^histories/types/HistorySet';
 
 const props = defineProps<{
+  userMode: UserMode;
   categorizedHistories: CategorizedHistorySet[] | undefined;
   selectedId: string;
   isReturnedFetchingNextPage: boolean;
@@ -111,6 +113,7 @@ watch(
           v-for="history of historySet.histories"
           :key="history.id"
           v-bind="{
+            userMode: userMode,
             history: history,
             selected: selectedId === history.id,
           }"

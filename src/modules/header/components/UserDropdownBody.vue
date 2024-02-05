@@ -7,8 +7,8 @@ import type User from '@common/models/User';
 import { hasHigherAuthorityPermission } from '@common/models/types/AuthorityPermission';
 import useCurDeptStorage from '@common/storages/cur-dept-storage';
 import useLoggedInUserStorage from '@common/storages/logged-in-user-storage';
+import useUserModeStorage from '@common/storages/user-mode-storage';
 import useUserTokenStorage from '@common/storages/user-token-storage';
-import useUserModeStore from '@common/stores/user-mode-store';
 
 import ChangeDepartmentModal from '@^header/components/ChangeDepartmentModal.vue';
 
@@ -26,8 +26,8 @@ const { curDeptId } = storeToRefs(curDeptStorage);
 
 const modalStore = useModalStore();
 
-const userModeStore = useUserModeStore();
-const { userMode } = storeToRefs(userModeStore);
+const userModeStorage = useUserModeStorage();
+const { userMode } = storeToRefs(userModeStorage);
 
 const changeDeptModal = {
   component: ChangeDepartmentModal,
@@ -47,8 +47,8 @@ function showChangeDeptModal() {
 
 function changeUserMode() {
   emit('closeDropdown');
-  if (userMode.value === 'USER') userModeStore.updateUserMode('STAFF');
-  else userModeStore.updateUserMode('USER');
+  if (userMode.value === 'USER') userModeStorage.set('STAFF');
+  else userModeStorage.set('USER');
 }
 
 function logout() {

@@ -3,10 +3,10 @@ import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
 
 import BasicButton from '@common/components/buttons/BasicButton/BasicButton.vue';
-import useUserModeStore from '@common/stores/user-mode-store';
+import useUserModeStorage from '@common/storages/user-mode-storage';
 
-const userModeStore = useUserModeStore();
-const { userMode } = storeToRefs(userModeStore);
+const userModeStorage = useUserModeStorage();
+const { userMode } = storeToRefs(userModeStorage);
 
 const router = useRouter();
 </script>

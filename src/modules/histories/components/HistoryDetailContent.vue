@@ -2,12 +2,15 @@
 import { toRef } from 'vue';
 
 import type History from '@common/models/History';
+import type UserMode from '@common/types/UserMode';
 
 import HistoryDetailButtons from '@^histories/components/HistoryDetailButtons.vue';
 import InfoLabel from '@^histories/components/HistoryDetailInfoLabel.vue';
 import InfoList from '@^histories/components/HistoryDetailInfoList.vue';
 
 const props = defineProps<{
+  userToken: string;
+  userMode: UserMode;
   data: History | undefined;
 }>();
 
@@ -18,7 +21,11 @@ const data = toRef(props, 'data');
   <section class="history-info">
     <InfoLabel :data="data"></InfoLabel>
     <InfoList :data="data"></InfoList>
-    <HistoryDetailButtons :data="data"></HistoryDetailButtons>
+    <HistoryDetailButtons
+      :user-token="userToken"
+      :user-mode="userMode"
+      :data="data"
+    ></HistoryDetailButtons>
   </section>
 </template>
 

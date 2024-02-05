@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia';
 import { toRef } from 'vue';
 import { useMutation, useQueryClient } from 'vue-query';
 
@@ -11,22 +10,17 @@ import ConfirmModal from '@common/components/modals/ConfirmModal/ConfirmModal.vu
 import useModalStore from '@common/components/modals/stores/modal-store';
 import type BaseError from '@common/errors/BaseError';
 import type History from '@common/models/History';
-import useUserTokenStorage from '@common/storages/user-token-storage';
-import useUserModeStore from '@common/stores/user-mode-store';
+import type UserMode from '@common/types/UserMode';
 
 const props = defineProps<{
+  userToken: string;
+  userMode: UserMode;
   data: History | undefined;
 }>();
 
 const data = toRef(props, 'data');
 
-const userTokenStorage = useUserTokenStorage();
-const { userToken } = storeToRefs(userTokenStorage);
-
 const modalStore = useModalStore();
-
-const userModeStore = useUserModeStore();
-const { userMode } = storeToRefs(userModeStore);
 
 const queryClient = useQueryClient();
 
@@ -43,15 +37,15 @@ function changeItemRequestMutation(mutationFn: () => Promise<History>) {
 }
 
 const rentalApproveMutation = changeItemRequestMutation(() =>
-  approveItem(userToken.value, data.value!.item.id)
+  approveItem(props.userToken, data.value!.item.id)
 );
 
 const cancelRequestMutation = changeItemRequestMutation(() =>
-  cancelItem(userToken.value, data.value!.item.id)
+  cancelItem(props.userToken, data.value!.item.id)
 );
 
 const returnApproveMutation = changeItemRequestMutation(() =>
-  returnItem(userToken.value, data.value!.item.id)
+  returnItem(props.userToken, data.value!.item.id)
 );
 
 const rentalApproveModal = {

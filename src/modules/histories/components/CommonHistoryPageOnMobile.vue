@@ -3,6 +3,8 @@ import { NIL as NIL_UUID } from 'uuid';
 import { computed, toRef } from 'vue';
 import { useRoute } from 'vue-router';
 
+import type UserMode from '@common/types/UserMode';
+
 import HistoryDetailTab from '@^histories/components/HistoryDetailTab.vue';
 import HistoryListTab from '@^histories/components/HistoryListTab.vue';
 import type { CategorizedHistorySet } from '@^histories/types/HistorySet';
@@ -11,6 +13,7 @@ const route = useRoute();
 
 const props = defineProps<{
   userToken: string;
+  userMode: UserMode;
   selectedId: string;
   isSuccess: boolean;
   isLoading: boolean;
@@ -62,6 +65,7 @@ const doesHistoryExist = computed(() => {
 <template>
   <HistoryListTab
     v-if="!doesHistoryExist"
+    :user-mode="userMode"
     :selected-id="selectedId"
     :is-success="isSuccess"
     :is-loading="isLoading"
@@ -79,6 +83,7 @@ const doesHistoryExist = computed(() => {
   <HistoryDetailTab
     v-else
     :key="selectedId"
+    :user-mode="userMode"
     :user-token="userToken"
     :selected-id="selectedId"
     :is-list-success="isSuccess"

@@ -2,11 +2,14 @@
 import { toRef } from 'vue';
 
 import type History from '@common/models/History';
+import type UserMode from '@common/types/UserMode';
 
 import HistoryDetailContent from '@^histories/components/HistoryDetailContent.vue';
 import ProcedureDesc from '@^histories/components/ProcedureDesc.vue';
 
 const props = defineProps<{
+  userToken: string;
+  userMode: UserMode;
   data: History | undefined;
 }>();
 
@@ -15,7 +18,11 @@ const data = toRef(props, 'data');
 
 <template>
   <section class="history-detail">
-    <HistoryDetailContent :data="data"></HistoryDetailContent>
+    <HistoryDetailContent
+      :user-token="userToken"
+      :user-mode="userMode"
+      :data="data"
+    ></HistoryDetailContent>
     <ProcedureDesc></ProcedureDesc>
   </section>
 </template>

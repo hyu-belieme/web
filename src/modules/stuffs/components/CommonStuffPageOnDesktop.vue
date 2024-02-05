@@ -1,40 +1,75 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia';
-import { NIL as NIL_UUID } from 'uuid';
-import { onMounted, watchEffect } from 'vue';
+import type { List } from 'immutable';
+import { toRef } from 'vue';
+
+import type Stuff from '@common/models/Stuff';
+import type UserMode from '@common/types/UserMode';
 
 import StuffDetailTab from '@^stuffs/components/StuffDetailTab.vue';
 import StuffListTab from '@^stuffs/components/StuffListTab.vue';
-import { getStuffListQuery } from '@^stuffs/components/utils/stuff-query-utils';
-import useStuffSelectedStore from '@^stuffs/stores/stuff-selected-store';
+import type { StuffDetailViewMode } from '@^stuffs/types/StuffDetailViewMode';
 
-const stuffStore = useStuffSelectedStore();
-const { selectedId } = storeToRefs(stuffStore);
+const props = defineProps<{
+  userToken: string;
+  curDeptId: string;
+  userMode: UserMode;
+  stuffDetailViewMode: StuffDetailViewMode;
+  selectedId: string;
+  isSuccess: boolean;
+  isLoading: boolean;
+  isError: boolean;
+  isFetching: boolean;
+  stuffs: List<Stuff> | undefined;
+}>();
 
-const { isSuccess, data } = getStuffListQuery();
+const emit = defineEmits<{
+  (e: 'updateStuffDetailViewMode', viewMode: StuffDetailViewMode): void;
+  (e: 'updateSelectedId', newSelectedId: string): void;
+}>();
 
-onMounted(() => {
-  function convertIdToFirstIdIfNotExist(currentId: string) {
-    if (data.value === undefined || data.value.isEmpty()) return NIL_UUID;
-    const selected = data.value.find((value) => value.id === currentId);
-    if (selected === undefined) return data.value.get(0)?.id || NIL_UUID;
-    return selected.id;
-  }
-  watchEffect(() => {
-    if (!isSuccess.value) return;
-    const newId = convertIdToFirstIdIfNotExist(selectedId.value);
-    stuffStore.updateSelectedId(newId);
-  });
-});
+const stuffDetailViewMode = toRef(props, 'stuffDetailViewMode');
+const selectedId = toRef(props, 'selectedId');
+
+const stuffs = toRef(props, 'stuffs');
+const isSuccess = toRef(props, 'isSuccess');
+const isLoading = toRef(props, 'isLoading');
+const isError = toRef(props, 'isError');
+const isFetching = toRef(props, 'isFetching');
 </script>
 
 <template>
   <section class="tabs-wrapper">
     <section class="list-section">
-      <StuffListTab></StuffListTab>
+      <StuffListTab
+        :user-token="userToken"
+        :stuff-detail-view-mode="stuffDetailViewMode"
+        :selected-id="selectedId"
+        :is-success="isSuccess"
+        :is-loading="isLoading"
+        :is-error="isError"
+        :is-fetching="isFetching"
+        :stuffs="stuffs"
+        @update-stuff-detail-view-mode="
+          (newViewMode) => emit('updateStuffDetailViewMode', newViewMode)
+        "
+        @update-selected-id="(newSelectedId) => emit('updateSelectedId', newSelectedId)"
+      ></StuffListTab>
     </section>
     <section class="detail-section">
-      <StuffDetailTab :key="selectedId"></StuffDetailTab>
+      <StuffDetailTab
+        :key="selectedId"
+        :user-token="userToken"
+        :cur-dept-id="curDeptId"
+        :user-mode="userMode"
+        :stuff-detail-view-mode="stuffDetailViewMode"
+        :selected-id="selectedId"
+        :is-list-success="isSuccess"
+        :is-list-loading="isLoading"
+        :is-list-error="isError"
+        @update-stuff-detail-view-mode="
+          (newViewMode) => emit('updateStuffDetailViewMode', newViewMode)
+        "
+      ></StuffDetailTab>
     </section>
   </section>
 </template>

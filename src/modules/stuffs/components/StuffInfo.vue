@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia';
 import { toRef } from 'vue';
 
 import BasicButton from '@common/components/buttons/BasicButton/BasicButton.vue';
 import type StuffInfoOnly from '@common/models/StuffInfoOnly';
-import useUserModeStore from '@common/stores/user-mode-store';
+import type UserMode from '@common/types/UserMode';
 
 import StuffInfoFrame from '@^stuffs/components/stuff-detail-frames/StuffInfoFrame.vue';
 
 const props = defineProps<{
+  userMode: UserMode;
   stuff: StuffInfoOnly | undefined;
 }>();
 
@@ -18,9 +18,6 @@ const emits = defineEmits<{
 }>();
 
 const stuff = toRef(props, 'stuff');
-
-const userModeStore = useUserModeStore();
-const { userMode } = storeToRefs(userModeStore);
 </script>
 
 <template>

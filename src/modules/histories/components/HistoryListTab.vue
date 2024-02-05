@@ -3,11 +3,13 @@ import { toRef } from 'vue';
 
 import DataLoadFailView from '@common/components/DataLoadFailView/DataLoadFailView.vue';
 import LoadingView from '@common/components/LoadingView/LoadingView.vue';
+import type UserMode from '@common/types/UserMode';
 
 import HistoryList from '@^histories/components/HistoryList.vue';
 import type { CategorizedHistorySet } from '@^histories/types/HistorySet';
 
 const props = defineProps<{
+  userMode: UserMode;
   selectedId: string;
   isSuccess: boolean;
   isLoading: boolean;
@@ -46,6 +48,7 @@ const hasReturnedNextPage = toRef(props, 'hasReturnedNextPage');
   <DataLoadFailView v-else-if="isError"></DataLoadFailView>
   <HistoryList
     v-else-if="isSuccess && categorizedHistories !== undefined"
+    :user-mode="userMode"
     :selected-id="selectedId"
     :is-returned-fetching-next-page="isReturnedFetchingNextPage"
     :is-expired-fetching-next-page="isExpiredFetchingNextPage"

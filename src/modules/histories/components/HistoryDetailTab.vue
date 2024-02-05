@@ -3,12 +3,14 @@ import { computed, toRef } from 'vue';
 
 import DataLoadFailView from '@common/components/DataLoadFailView/DataLoadFailView.vue';
 import LoadingView from '@common/components/LoadingView/LoadingView.vue';
+import type UserMode from '@common/types/UserMode';
 
 import HistoryDetail from '@^histories/components/HistoryDetail.vue';
 import { getHistoryDetailQuery } from '@^histories/components/utils/history-query-utils';
 
 const props = defineProps<{
   userToken: string;
+  userMode: UserMode;
   selectedId: string;
   isListSuccess: boolean;
   isListLoading: boolean;
@@ -38,7 +40,12 @@ const dataLoadStatus = computed(() => {
 </script>
 
 <template>
-  <HistoryDetail v-if="dataLoadStatus === 'Success'" :data="data"></HistoryDetail>
+  <HistoryDetail
+    v-if="dataLoadStatus === 'Success'"
+    :user-token="userToken"
+    :user-mode="userMode"
+    :data="data"
+  ></HistoryDetail>
   <LoadingView v-else-if="dataLoadStatus === 'Loading'"></LoadingView>
   <DataLoadFailView v-else></DataLoadFailView>
 </template>

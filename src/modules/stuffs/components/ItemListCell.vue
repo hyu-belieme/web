@@ -16,18 +16,16 @@ import type History from '@common/models/History';
 import type Item from '@common/models/Item';
 import useCurDeptStorage from '@common/storages/cur-dept-storage';
 import useUserTokenStorage from '@common/storages/user-token-storage';
-import useUserModeStore from '@common/stores/user-mode-store';
+import type UserMode from '@common/types/UserMode';
 
 import ItemListCellFrame from '@^stuffs/components/stuff-detail-frames/ItemListCellFrame.vue';
 
 const props = defineProps<{
+  userMode: UserMode;
   item: Item;
 }>();
 
 const queryClient = useQueryClient();
-
-const userModeStore = useUserModeStore();
-const { userMode } = storeToRefs(userModeStore);
 
 const userTokenStorage = useUserTokenStorage();
 const { userToken } = storeToRefs(userTokenStorage);

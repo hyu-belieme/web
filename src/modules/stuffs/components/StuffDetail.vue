@@ -6,12 +6,14 @@ import Item from '@common/models/Item';
 import StuffInfoOnly from '@common/models/StuffInfoOnly';
 import type StuffWithItems from '@common/models/StuffWithItems';
 import University from '@common/models/University';
+import type UserMode from '@common/types/UserMode';
 
 import StuffDetailItemList from '@^stuffs/components/ItemList.vue';
 import StuffDetailContent from '@^stuffs/components/StuffInfo.vue';
 import StuffDetailFrame from '@^stuffs/components/stuff-detail-frames/StuffDetailFrame.vue';
 
 const props = defineProps<{
+  userMode: UserMode;
   stuff: StuffWithItems | undefined;
 }>();
 
@@ -40,13 +42,17 @@ const items = computed(() =>
     <StuffDetailFrame>
       <template v-slot:stuff-info>
         <StuffDetailContent
+          :user-mode="userMode"
           :stuff="stuff"
           @to-edit-mode="emits('toEditMode')"
           @to-register-mode="emits('toRegisterMode')"
         ></StuffDetailContent>
       </template>
       <template v-slot:item-list>
-        <StuffDetailItemList :items="items?.toArray() ?? []"></StuffDetailItemList>
+        <StuffDetailItemList
+          :user-mode="userMode"
+          :items="items?.toArray() ?? []"
+        ></StuffDetailItemList>
       </template>
     </StuffDetailFrame>
   </section>
