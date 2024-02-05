@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { computed, toRef } from 'vue';
+import { computed, ref, toRef } from 'vue';
 import { useMutation, useQueryClient } from 'vue-query';
 
-import { editStuff, postNewStuff } from '@common/apis/belieme-apis';
+import { addNewItem, editStuff, postNewStuff } from '@common/apis/belieme-apis';
 import { stuffKeys } from '@common/apis/query-keys';
 import DataLoadFailView from '@common/components/DataLoadFailView/DataLoadFailView.vue';
 import LoadingView from '@common/components/LoadingView/LoadingView.vue';
@@ -47,10 +47,28 @@ const { isSuccess, isError, isLoading, isFetching, data } = getStuffDetailQuery(
   props.selectedId
 );
 
+const isMutateData = ref<boolean>(false);
+
 const modalStore = useModalStore();
 
 const stuffEditionStore = useStuffEditionStore();
 const { newName, newThumbnail, newDesc, newItemCount } = storeToRefs(stuffEditionStore);
+
+const addNewItemsMutation = useMutation<StuffWithItems, BaseError>(
+  () => addNewItem(props.userToken, props.selectedId, newItemCount.value),
+  {
+    onSettled: () => {
+      queryClient.invalidateQueries(stuffKeys.list(props.curDeptId));
+      queryClient.invalidateQueries(stuffKeys.detail(props.selectedId));
+      emit('updateStuffDetailViewMode', 'SHOW');
+      isMutateData.value = false;
+    },
+    onError: (error) => {
+      modalStore.addModal(buildAlertModal('errorAlert', error.message));
+      isMutateData.value = false;
+    },
+  }
+);
 
 const commitChangeMutation = useMutation<StuffWithItems, BaseError>(
   () =>
@@ -60,15 +78,21 @@ const commitChangeMutation = useMutation<StuffWithItems, BaseError>(
       desc: newDesc.value,
     }),
   {
-    onSettled: () => {
-      queryClient.invalidateQueries(stuffKeys.list(props.curDeptId));
-      queryClient.invalidateQueries(stuffKeys.detail(props.selectedId));
-    },
     onSuccess: () => {
-      emit('updateStuffDetailViewMode', 'SHOW');
+      if (newItemCount.value <= 0) {
+        queryClient.invalidateQueries(stuffKeys.list(props.curDeptId));
+        queryClient.invalidateQueries(stuffKeys.detail(props.selectedId));
+        emit('updateStuffDetailViewMode', 'SHOW');
+        isMutateData.value = false;
+        return;
+      }
+      addNewItemsMutation.mutate();
     },
     onError: (error) => {
+      queryClient.invalidateQueries(stuffKeys.list(props.curDeptId));
+      queryClient.invalidateQueries(stuffKeys.detail(props.selectedId));
       modalStore.addModal(buildAlertModal('errorAlert', error.message));
+      isMutateData.value = false;
     },
   }
 );
@@ -84,6 +108,7 @@ const commitAddNewStuffMutation = useMutation<StuffWithItems, BaseError>(
     }),
   {
     onSettled: () => {
+      isMutateData.value = false;
       queryClient.invalidateQueries(stuffKeys.list(props.curDeptId));
       queryClient.invalidateQueries(stuffKeys.detail(props.selectedId));
     },
@@ -100,13 +125,23 @@ const dataLoadStatus = computed(() => {
   if (isListLoading.value) return 'Loading';
   if (isListError.value) return 'Error';
   if (isListSuccess.value) {
-    if (isLoading.value || isFetching.value) return 'Loading';
+    if (isLoading.value || isFetching.value || isMutateData.value) return 'Loading';
     if (isError.value) return 'Error';
     if (isSuccess.value) return 'Success';
     return 'Error';
   }
   return 'Error';
 });
+
+function commitChangeStuff() {
+  commitChangeMutation.mutate();
+  isMutateData.value = true;
+}
+
+function commitAddNewStuff() {
+  commitAddNewStuffMutation.mutate();
+  isMutateData.value = true;
+}
 </script>
 
 <template>
@@ -121,13 +156,13 @@ const dataLoadStatus = computed(() => {
     <EditableStuffDetail
       v-else-if="stuffDetailViewMode === 'EDIT'"
       :original-stuff="data"
-      @commit-change="commitChangeMutation.mutate()"
+      @commit-change="commitChangeStuff()"
       @close-edit-mode="emit('updateStuffDetailViewMode', 'SHOW')"
     ></EditableStuffDetail>
     <EditableStuffDetail
       v-else-if="stuffDetailViewMode === 'ADD'"
       :original-stuff="undefined"
-      @commit-change="commitAddNewStuffMutation.mutate()"
+      @commit-change="commitAddNewStuff()"
       @close-edit-mode="emit('updateStuffDetailViewMode', 'SHOW')"
     ></EditableStuffDetail>
   </template>

@@ -16,9 +16,11 @@ const props = defineProps<{
 const emits = defineEmits<{
   (e: 'appendItem'): void;
   (e: 'deleteItem', id: string): void;
+  (e: 'resetItems'): void;
 }>();
 
 const items = ref<ItemInfoOnly[]>(props.originalItems);
+emits('resetItems');
 
 function appendItem() {
   items.value.push(
@@ -33,7 +35,7 @@ function appendItem() {
 }
 
 function deleteItem(id: string) {
-  items.value = items.value.filter((e) => e.id !== id);
+  items.value.pop();
   emits('deleteItem', id);
 }
 </script>
@@ -45,7 +47,7 @@ function deleteItem(id: string) {
         v-for="(item, index) of items"
         :key="index"
         :item="item"
-        :removable="false"
+        :removable="item.num === -1"
         @pop-item="deleteItem(item.id)"
       ></EditableItemCell>
       <ButtonBase type="button" class="w-100" v-bind:color="'light'" @click="appendItem()">

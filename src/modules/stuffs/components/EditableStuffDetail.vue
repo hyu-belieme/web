@@ -46,6 +46,7 @@ function deleteItem(id: string) {
           :original-items="originalStuff?.items.toArray() ?? []"
           @append-item="() => stuffEditionStore.increaseNewItemCount()"
           @delete-item="(id) => deleteItem(id)"
+          @reset-items="() => stuffEditionStore.resetNewItemCount()"
         ></EditableItemList>
       </template>
     </StuffDetailFrame>

@@ -241,7 +241,7 @@ export function editStuff(userToken: string, stuffId: string, newStuffInfo: IStu
   });
 }
 
-export function addNewItem(userToken: string, stuffId: string) {
+export function addNewItem(userToken: string, stuffId: string, amount: number) {
   const apiUrl = 'items';
 
   return new Promise<StuffWithItems>((resolve, reject) => {
@@ -252,6 +252,7 @@ export function addNewItem(userToken: string, stuffId: string) {
       })
       .post<StuffWithItems>(apiUrl, {
         stuffId,
+        amount,
       })
       .then((response) => resolve(new StuffWithItems(response.data)))
       .catch(handleError(reject));
