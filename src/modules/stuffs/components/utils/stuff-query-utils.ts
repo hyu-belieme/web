@@ -6,7 +6,7 @@ import { stuffKeys } from '@common/apis/query-keys';
 import type Stuff from '@common/models/Stuff';
 import type StuffWithItems from '@common/models/StuffWithItems';
 
-import sortStuffList from '@^stuffs/utils/stuff-sorter';
+import { sortItemListOfStuff, sortStuffList } from '@^stuffs/utils/stuff-sorter';
 
 export function getStuffListQuery(userToken: string, curDeptId: string) {
   return useQuery<List<Stuff>>(stuffKeys.list(curDeptId), async () => {
@@ -18,6 +18,6 @@ export function getStuffListQuery(userToken: string, curDeptId: string) {
 
 export function getStuffDetailQuery(userToken: string, selectedId: string) {
   return useQuery<StuffWithItems>(stuffKeys.detail(selectedId), () =>
-    getStuff(userToken, selectedId)
+    getStuff(userToken, selectedId).then((stuff) => sortItemListOfStuff(stuff))
   );
 }
