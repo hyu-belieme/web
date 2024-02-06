@@ -2,8 +2,9 @@
 import { storeToRefs } from 'pinia';
 import { computed, ref, toRef } from 'vue';
 import { useMutation, useQueryClient } from 'vue-query';
+import { useRouter } from 'vue-router';
 
-import { addNewItem, editStuff, postNewStuff } from '@common/apis/belieme-apis';
+import { addNewItem, editStuff } from '@common/apis/belieme-apis';
 import { stuffKeys } from '@common/apis/query-keys';
 import DataLoadFailView from '@common/components/DataLoadFailView/DataLoadFailView.vue';
 import LoadingView from '@common/components/LoadingView/LoadingView.vue';
@@ -40,6 +41,7 @@ const isListSuccess = toRef(props, 'isListSuccess');
 const isListLoading = toRef(props, 'isListLoading');
 const isListError = toRef(props, 'isListError');
 
+const router = useRouter();
 const queryClient = useQueryClient();
 
 const { isSuccess, isError, isLoading, isFetching, data } = getStuffDetailQuery(
@@ -97,30 +99,6 @@ const commitChangeMutation = useMutation<StuffWithItems, BaseError>(
   }
 );
 
-const commitAddNewStuffMutation = useMutation<StuffWithItems, BaseError>(
-  () =>
-    postNewStuff(props.userToken, {
-      departmentId: props.curDeptId,
-      name: newName.value,
-      thumbnail: newThumbnail.value,
-      amount: newItemCount.value,
-      desc: newDesc.value,
-    }),
-  {
-    onSettled: () => {
-      isMutateData.value = false;
-      queryClient.invalidateQueries(stuffKeys.list(props.curDeptId));
-      queryClient.invalidateQueries(stuffKeys.detail(props.selectedId));
-    },
-    onSuccess: () => {
-      emit('updateStuffDetailViewMode', 'SHOW');
-    },
-    onError: (error) => {
-      modalStore.addModal(buildAlertModal('errorAlert', error.message));
-    },
-  }
-);
-
 const dataLoadStatus = computed(() => {
   if (isListLoading.value) return 'Loading';
   if (isListError.value) return 'Error';
@@ -137,11 +115,6 @@ function commitChangeStuff() {
   commitChangeMutation.mutate();
   isMutateData.value = true;
 }
-
-function commitAddNewStuff() {
-  commitAddNewStuffMutation.mutate();
-  isMutateData.value = true;
-}
 </script>
 
 <template>
@@ -151,18 +124,12 @@ function commitAddNewStuff() {
       :user-mode="userMode"
       :stuff="data"
       @to-edit-mode="emit('updateStuffDetailViewMode', 'EDIT')"
-      @to-register-mode="emit('updateStuffDetailViewMode', 'ADD')"
+      @to-register-mode="router.push('/stuffs/add')"
     ></StuffDetail>
     <EditableStuffDetail
       v-else-if="stuffDetailViewMode === 'EDIT'"
       :original-stuff="data"
       @commit-change="commitChangeStuff()"
-      @close-edit-mode="emit('updateStuffDetailViewMode', 'SHOW')"
-    ></EditableStuffDetail>
-    <EditableStuffDetail
-      v-else-if="stuffDetailViewMode === 'ADD'"
-      :original-stuff="undefined"
-      @commit-change="commitAddNewStuff()"
       @close-edit-mode="emit('updateStuffDetailViewMode', 'SHOW')"
     ></EditableStuffDetail>
   </template>

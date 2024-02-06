@@ -4,7 +4,7 @@ import { storeToRefs } from 'pinia';
 import useCurDeptStorage from '@common/storages/cur-dept-storage';
 import useUserTokenStorage from '@common/storages/user-token-storage';
 
-import FirstStuffAddTab from '@^stuffs/components/FirstStuffAddTab.vue';
+import StuffAddTab from '@^stuffs/components/StuffAddTab.vue';
 
 const userTokenStorage = useUserTokenStorage();
 const { userToken } = storeToRefs(userTokenStorage);
@@ -14,7 +14,9 @@ const { curDeptId } = storeToRefs(curDeptStorage);
 </script>
 
 <template>
-  <FirstStuffAddTab :user-token="userToken" :cur-dept-id="curDeptId"></FirstStuffAddTab>
+  <section class="w-100 h-100 pt-2 pb-3 overflow-scroll">
+    <StuffAddTab :user-token="userToken" :cur-dept-id="curDeptId"></StuffAddTab>
+  </section>
 </template>
 
 <style lang="scss" scoped></style>

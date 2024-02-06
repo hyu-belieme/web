@@ -51,13 +51,13 @@ const router = createRouter({
       component: () => import('@^stuffs/StuffPage.vue'),
     },
     {
-      path: '/stuffs/first-register',
-      name: 'first-register',
+      path: '/stuffs/add',
+      name: 'stuff-add',
       meta: { onlyAccessAfterAuth: true },
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('@^stuffs/NewStuffAddPage.vue'),
+      component: () => import('@^stuffs/StuffAddPage.vue'),
     },
     {
       path: '/histories',
@@ -94,6 +94,11 @@ router.beforeEach((to, from, next) => {
       'MASTER'
     )
   ) {
+    router.replace('/stuffs');
+    return;
+  }
+
+  if (to.name === 'stuff-add' && from.name !== 'stuffs') {
     router.replace('/stuffs');
     return;
   }
