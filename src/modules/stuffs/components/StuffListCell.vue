@@ -5,12 +5,13 @@ import { rentStuff } from '@common/apis/belieme-apis';
 import { historyKeys, stuffKeys } from '@common/apis/query-keys';
 import BasicButton from '@common/components/buttons/BasicButton/BasicButton.vue';
 import buildAlertModal from '@common/components/modals/AlertModal/utils/alert-modal-builder';
-import ConfirmModal from '@common/components/modals/ConfirmModal/ConfirmModal.vue';
 import useModalStore from '@common/components/modals/stores/modal-store';
 import type BaseError from '@common/errors/BaseError';
 import type History from '@common/models/History';
 import type Stuff from '@common/models/Stuff';
 import type UserMode from '@common/types/UserMode';
+
+import StuffRequestConfirmModal from '@^stuffs/components/StuffRequestConfirmModal.vue';
 
 const props = defineProps<{
   userToken: string;
@@ -43,11 +44,8 @@ const rentalRequestMutation = changeItemRequestMutation(() =>
 );
 
 const rentalRequestModal = {
-  component: ConfirmModal,
+  component: StuffRequestConfirmModal,
   props: {
-    title: '대여 신청하기',
-    content:
-      '신청을 한 후에 대여장소에서 관리자를 통해 대여 승인을 받고 대여 할 수 있습니다. 단, 해당 신청은 15분 후에 자동으로 만료됩니다.',
     resolveLabel: '신청하기',
     rejectLabel: '뒤로가기',
   },

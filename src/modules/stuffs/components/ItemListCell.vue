@@ -18,6 +18,7 @@ import useCurDeptStorage from '@common/storages/cur-dept-storage';
 import useUserTokenStorage from '@common/storages/user-token-storage';
 import type UserMode from '@common/types/UserMode';
 
+import StuffRequestConfirmModal from '@^stuffs/components/StuffRequestConfirmModal.vue';
 import ItemListCellFrame from '@^stuffs/components/stuff-detail-frames/ItemListCellFrame.vue';
 
 const props = defineProps<{
@@ -62,11 +63,8 @@ const foundApproveMutation = changeItemRequestMutation(() =>
 );
 
 const rentalRequestModal = {
-  component: ConfirmModal,
+  component: StuffRequestConfirmModal,
   props: {
-    title: '대여 신청하기',
-    content:
-      '신청을 한 후에 대여장소에서 관리자를 통해 대여 승인을 받고 대여 할 수 있습니다. 단, 해당 신청은 15분 후에 자동으로 만료됩니다.',
     resolveLabel: '신청하기',
     rejectLabel: '뒤로가기',
   },
