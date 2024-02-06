@@ -18,7 +18,7 @@ const router = useRouter();
       <BasicButton
         v-if="userMode === 'STAFF'"
         class="m-2"
-        @click="router.push('/stuffs/first-register')"
+        @click="router.push('/stuffs/add')"
         :size="'sm'"
         :content="'물품 등록하기'"
       >
