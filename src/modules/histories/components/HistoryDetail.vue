@@ -23,7 +23,7 @@ const data = toRef(props, 'data');
       :user-mode="userMode"
       :data="data"
     ></HistoryDetailContent>
-    <ProcedureDesc></ProcedureDesc>
+    <ProcedureDesc :user-mode="userMode"></ProcedureDesc>
   </section>
 </template>
 
