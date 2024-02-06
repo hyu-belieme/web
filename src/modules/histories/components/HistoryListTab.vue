@@ -1,33 +1,64 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { toRef } from 'vue';
 
 import DataLoadFailView from '@common/components/DataLoadFailView/DataLoadFailView.vue';
 import LoadingView from '@common/components/LoadingView/LoadingView.vue';
+import type UserMode from '@common/types/UserMode';
 
 import HistoryList from '@^histories/components/HistoryList.vue';
-import { getHistoryListQuery } from '@^histories/components/utils/history-query-utils';
-import CategorizeHistories from '@^histories/utils/history-categorizer';
+import type { CategorizedHistorySet } from '@^histories/types/HistorySet';
 
-const { data, isLoading, isSuccess, isFetching } = getHistoryListQuery();
+const props = defineProps<{
+  userMode: UserMode;
+  selectedId: string;
+  isSuccess: boolean;
+  isLoading: boolean;
+  isError: boolean;
+  isFetching: boolean;
+  isReturnedFetchingNextPage: boolean;
+  isExpiredFetchingNextPage: boolean;
+  categorizedHistories: CategorizedHistorySet[] | undefined;
+  hasReturnedNextPage: boolean;
+  hasExpiredNextPage: boolean;
+}>();
 
-const categorizedHistoriesList = computed(() => {
-  if (data.value === undefined) return undefined;
-  return CategorizeHistories(data.value);
-});
+const emit = defineEmits<{
+  (e: 'updateSelectedId', selectedId: string): void;
+  (e: 'fetchReturnedNextPage'): void;
+  (e: 'fetchExpiredNextPage'): void;
+}>();
 
-const dataLoadStatus = computed(() => {
-  if (isFetching.value || isLoading.value) return 'Loading';
-  if (isSuccess.value) return 'Success';
-  return 'Error';
-});
+const selectedId = toRef(props, 'selectedId');
+
+const categorizedHistories = toRef(props, 'categorizedHistories');
+const isSuccess = toRef(props, 'isSuccess');
+const isLoading = toRef(props, 'isLoading');
+const isError = toRef(props, 'isError');
+const isFetching = toRef(props, 'isFetching');
+const isReturnedFetchingNextPage = toRef(props, 'isReturnedFetchingNextPage');
+const isExpiredFetchingNextPage = toRef(props, 'isExpiredFetchingNextPage');
+const hasExpiredNextPage = toRef(props, 'hasExpiredNextPage');
+const hasReturnedNextPage = toRef(props, 'hasReturnedNextPage');
 </script>
 
 <template>
-  <template v-if="dataLoadStatus === 'Success' && categorizedHistoriesList !== undefined">
-    <HistoryList :histories="data"></HistoryList>
-  </template>
-  <LoadingView v-else-if="dataLoadStatus === 'Loading'"></LoadingView>
-  <DataLoadFailView v-else></DataLoadFailView>
+  <LoadingView
+    v-if="isLoading || (isFetching && !(isExpiredFetchingNextPage || isReturnedFetchingNextPage))"
+  ></LoadingView>
+  <DataLoadFailView v-else-if="isError"></DataLoadFailView>
+  <HistoryList
+    v-else-if="isSuccess && categorizedHistories !== undefined"
+    :user-mode="userMode"
+    :selected-id="selectedId"
+    :is-returned-fetching-next-page="isReturnedFetchingNextPage"
+    :is-expired-fetching-next-page="isExpiredFetchingNextPage"
+    :categorized-histories="categorizedHistories"
+    :has-returned-next-page="hasReturnedNextPage"
+    :has-expired-next-page="hasExpiredNextPage"
+    @update-selected-id="(newSelectedId) => emit('updateSelectedId', newSelectedId)"
+    @fetch-returned-next-page="() => emit('fetchReturnedNextPage')"
+    @fetch-expired-next-page="() => emit('fetchExpiredNextPage')"
+  ></HistoryList>
 </template>
 
 <style lang="scss" scoped></style>

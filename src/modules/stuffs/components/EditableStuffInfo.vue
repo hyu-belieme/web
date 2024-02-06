@@ -18,9 +18,6 @@ const emits = defineEmits<{
   (e: 'closeEditMode'): void;
 }>();
 
-const LOREM_IPSUM =
-  'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi sint corrupti illum quos. Dolorum architecto illum, veritatis asperiores odio exercitationem impedit natus. Modi magni, aut corporis impedit ullam nemo saepe!';
-
 const nameInput = ref<string>('');
 const thumbnailInput = ref<string>('');
 const descInput = ref<string>('');
@@ -34,7 +31,7 @@ onBeforeMount(() => {
 onMounted(() => {
   nameInput.value = props.originalStuff?.name || '';
   thumbnailInput.value = props.originalStuff?.thumbnail || '';
-  descInput.value = props.originalStuff !== undefined ? LOREM_IPSUM : '';
+  descInput.value = props.originalStuff !== undefined ? props.originalStuff?.desc : '';
 });
 </script>
 

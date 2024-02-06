@@ -1,21 +1,18 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia';
 import { getCurrentInstance } from 'vue';
 
 import type History from '@common/models/History';
 import type User from '@common/models/User';
-import useUserModeStore from '@common/stores/user-mode-store';
-
-const app = getCurrentInstance();
-const dayjs = app!.appContext.config.globalProperties.$dayjs;
-
-const userModeStore = useUserModeStore();
-const { userMode } = storeToRefs(userModeStore);
+import type UserMode from '@common/types/UserMode';
 
 defineProps<{
+  userMode: UserMode;
   history: History;
   selected: boolean;
 }>();
+
+const app = getCurrentInstance();
+const dayjs = app!.appContext.config.globalProperties.$dayjs;
 
 function entranceYearAndNameToString(user: User) {
   if (user.entranceYear === undefined) return user.name;
@@ -46,7 +43,6 @@ function makeTimestampTagContent(history: History) {
       <section class="sub-info">
         <section class="tags">
           <span v-if="history.status === 'DELAYED'" class="delayed">연체됨</span>
-          <!-- <span class="delayed">연체됨</span> -->
         </section>
         <section class="user-and-timestamp">
           <span v-if="userMode === 'STAFF'">

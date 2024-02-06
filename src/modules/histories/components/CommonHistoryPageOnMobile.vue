@@ -1,11 +1,15 @@
 <script setup lang="ts">
-import { toRef } from 'vue';
+import { NIL as NIL_UUID } from 'uuid';
+import { computed, toRef } from 'vue';
+import { useRoute } from 'vue-router';
 
 import type UserMode from '@common/types/UserMode';
 
 import HistoryDetailTab from '@^histories/components/HistoryDetailTab.vue';
 import HistoryListTab from '@^histories/components/HistoryListTab.vue';
 import type { CategorizedHistorySet } from '@^histories/types/HistorySet';
+
+const route = useRoute();
 
 const props = defineProps<{
   userToken: string;
@@ -39,40 +43,53 @@ const isReturnedFetchingNextPage = toRef(props, 'isReturnedFetchingNextPage');
 const isExpiredFetchingNextPage = toRef(props, 'isExpiredFetchingNextPage');
 const hasExpiredNextPage = toRef(props, 'hasExpiredNextPage');
 const hasReturnedNextPage = toRef(props, 'hasReturnedNextPage');
+
+const historyIdOnRoute = computed(() => {
+  if (typeof route.query.historyId === 'string') {
+    return route.query.historyId;
+  }
+  if (Array.isArray(route.query.historyId)) {
+    return route.query.historyId.join('');
+  }
+  return NIL_UUID;
+});
+
+const doesHistoryExist = computed(() => {
+  if (categorizedHistories.value === undefined || historyIdOnRoute.value === NIL_UUID) return false;
+  return categorizedHistories.value.some((historySet) => {
+    return historySet.histories.some((history) => history.id === historyIdOnRoute.value);
+  });
+});
 </script>
 
 <template>
-  <section class="tabs-wrapper">
-    <section class="list-section">
-      <HistoryListTab
-        :user-mode="userMode"
-        :selected-id="selectedId"
-        :is-success="isSuccess"
-        :is-loading="isLoading"
-        :is-error="isError"
-        :is-fetching="isFetching"
-        :is-returned-fetching-next-page="isReturnedFetchingNextPage"
-        :is-expired-fetching-next-page="isExpiredFetchingNextPage"
-        :categorized-histories="categorizedHistories"
-        :has-expired-next-page="hasExpiredNextPage"
-        :has-returned-next-page="hasReturnedNextPage"
-        @update-selected-id="(newSelectedId) => emit('updateSelectedId', newSelectedId)"
-        @fetch-returned-next-page="() => emit('fetchReturnedNextPage')"
-        @fetch-expired-next-page="() => emit('fetchExpiredNextPage')"
-      ></HistoryListTab>
-    </section>
-    <section class="detail-section">
-      <HistoryDetailTab
-        :key="selectedId"
-        :user-mode="userMode"
-        :user-token="userToken"
-        :selected-id="selectedId"
-        :is-list-success="isSuccess"
-        :is-list-loading="isLoading"
-        :is-list-error="isError"
-      ></HistoryDetailTab>
-    </section>
-  </section>
+  <HistoryListTab
+    v-if="!doesHistoryExist"
+    :user-mode="userMode"
+    :selected-id="selectedId"
+    :is-success="isSuccess"
+    :is-loading="isLoading"
+    :is-error="isError"
+    :is-fetching="isFetching"
+    :is-returned-fetching-next-page="isReturnedFetchingNextPage"
+    :is-expired-fetching-next-page="isExpiredFetchingNextPage"
+    :categorized-histories="categorizedHistories"
+    :has-expired-next-page="hasExpiredNextPage"
+    :has-returned-next-page="hasReturnedNextPage"
+    @update-selected-id="(newSelectedId) => emit('updateSelectedId', newSelectedId)"
+    @fetch-returned-next-page="() => emit('fetchReturnedNextPage')"
+    @fetch-expired-next-page="() => emit('fetchExpiredNextPage')"
+  ></HistoryListTab>
+  <HistoryDetailTab
+    v-else
+    :key="selectedId"
+    :user-mode="userMode"
+    :user-token="userToken"
+    :selected-id="selectedId"
+    :is-list-success="isSuccess"
+    :is-list-loading="isLoading"
+    :is-list-error="isError"
+  ></HistoryDetailTab>
 </template>
 
 <style lang="scss" scoped>

@@ -36,8 +36,7 @@ const loginMutation = useMutation<UserWithSecureInfo, BaseError>(
       userTokenStorage.setItem(response.token);
       router.go(-2);
     },
-    onError: (error) => {
-      console.error(error);
+    onError: () => {
       router.replace({ name: 'login' });
     },
   }

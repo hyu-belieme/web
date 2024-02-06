@@ -4,6 +4,7 @@ import { List } from 'immutable';
 import BaseError from '@common/errors/BaseError';
 import Department from '@common/models/Department';
 import History from '@common/models/History';
+import HistoryPaginationWrapper from '@common/models/HistoryPaginationWrapper';
 import Stuff from '@common/models/Stuff';
 import StuffPostRequestBody from '@common/models/StuffPostRequestBody';
 import type { IStuffPostRequestBody } from '@common/models/StuffPostRequestBody';
@@ -14,6 +15,7 @@ import University from '@common/models/University';
 import User from '@common/models/User';
 import UserWithSecureInfo from '@common/models/UserWithSecureInfo';
 import type AuthorityPermission from '@common/models/types/AuthorityPermission';
+import type HistoryStatus from '@common/models/types/HistoryStatus';
 
 const NETWORK_ERROR: BaseError = {
   name: 'NETWORK_ERROR',
@@ -23,11 +25,12 @@ const NETWORK_ERROR: BaseError = {
 
 const API_SERVER_INSTANCE_CONFIG = {
   baseURL: import.meta.env.VITE_SERVER_API_URL,
-  timeout: 1000,
+  timeout: 10000,
 };
 
 function handleError(reject: (_?: any) => void) {
   return (error: any) => {
+    console.error(error);
     if (error.response) {
       reject(new BaseError(error.response.data));
     } else {
@@ -238,7 +241,7 @@ export function editStuff(userToken: string, stuffId: string, newStuffInfo: IStu
   });
 }
 
-export function addNewItem(userToken: string, stuffId: string) {
+export function addNewItem(userToken: string, stuffId: string, amount: number) {
   const apiUrl = 'items';
 
   return new Promise<StuffWithItems>((resolve, reject) => {
@@ -249,14 +252,22 @@ export function addNewItem(userToken: string, stuffId: string) {
       })
       .post<StuffWithItems>(apiUrl, {
         stuffId,
+        amount,
       })
       .then((response) => resolve(new StuffWithItems(response.data)))
       .catch(handleError(reject));
   });
 }
 
-export function getAllHistoryInDept(userToken: string, deptId: string) {
-  const apiUrl = `histories?department-id=${deptId}`;
+export function getHistoryListByDept(
+  userToken: string,
+  deptId: string,
+  userId: string | undefined,
+  status: HistoryStatus | undefined
+) {
+  const requesterQuery = userId ? `&requester-id=${userId}` : '';
+  const statusQuery = status ? `&status=${status}` : '';
+  const apiUrl = `histories?department-id=${deptId}${requesterQuery}${statusQuery}`;
 
   return new Promise<List<History>>((resolve, reject) => {
     axios
@@ -278,22 +289,31 @@ export function getAllHistoryInDept(userToken: string, deptId: string) {
   });
 }
 
-export function getAllRequesterHistoryInDept(userToken: string, deptId: string, userId: string) {
-  const apiUrl = `histories?department-id=${deptId}&requester-id=${userId}`;
+export function getHistoryListByDeptWithPagination(
+  userToken: string,
+  deptId: string,
+  userId: string | undefined,
+  status: HistoryStatus | undefined,
+  cursor?: string,
+  limit?: number
+) {
+  const requesterQuery = userId ? `&requester-id=${userId}` : '';
+  const statusQuery = status ? `&status=${status}` : '';
+  const cursorQuery = cursor ? `&cursor=${cursor}` : '';
+  const limitQuery = limit ? `&limit=${limit}` : '';
+  const apiUrl = `histories/with-pagination?department-id=${deptId}${requesterQuery}${statusQuery}${cursorQuery}${limitQuery}`;
 
-  return new Promise<List<History>>((resolve, reject) => {
+  return new Promise<HistoryPaginationWrapper>((resolve, reject) => {
     axios
       .create({
         ...API_SERVER_INSTANCE_CONFIG,
         headers: { 'user-token': userToken },
       })
-      .get<List<History>>(apiUrl)
+      .get<HistoryPaginationWrapper>(apiUrl, {
+        timeout: 5000,
+      })
       .then((response) => {
-        let output = List<History>([]);
-        response.data.forEach((history) => {
-          output = output.push(new History(history));
-        });
-        resolve(output);
+        resolve(new HistoryPaginationWrapper(response.data));
       })
       .catch(handleError(reject));
   });

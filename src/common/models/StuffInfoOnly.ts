@@ -4,6 +4,7 @@ export interface IStuffInfoOnly {
   id: string;
   name: string;
   thumbnail: string;
+  desc: string;
 }
 
 export class StuffInfoOnly extends BaseVo {
@@ -11,6 +12,7 @@ export class StuffInfoOnly extends BaseVo {
     id: '',
     name: '',
     thumbnail: '',
+    desc: '',
   });
 
   public id: string;
@@ -19,17 +21,25 @@ export class StuffInfoOnly extends BaseVo {
 
   public thumbnail: string;
 
+  public desc: string;
+
   constructor(oth: IStuffInfoOnly) {
     super();
     this.id = oth.id;
     this.name = oth.name;
     this.thumbnail = oth.thumbnail;
+    this.desc = oth.desc;
   }
 
   public equals(oth: any): boolean {
     if (oth === undefined || oth === null) return false;
     if (!(oth instanceof StuffInfoOnly)) return false;
-    return this.id === oth.id && this.name === oth.name && this.thumbnail === oth.thumbnail;
+    return (
+      this.id === oth.id &&
+      this.name === oth.name &&
+      this.thumbnail === oth.thumbnail &&
+      this.desc === oth.desc
+    );
   }
 }
 

@@ -41,6 +41,7 @@ const useStuffEditionStore = defineStore('stuff-edition', () => {
         id: stuffBeforeUpdate.value?.id || NIL_UUID,
         name: newName.value,
         thumbnail: newThumbnail.value,
+        desc: newDesc.value,
       })
   );
 

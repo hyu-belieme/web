@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { computed } from 'vue';
+import { computed, ref, toRef } from 'vue';
 import { useMutation, useQueryClient } from 'vue-query';
 
-import { editStuff, postNewStuff } from '@common/apis/belieme-apis';
+import { addNewItem, editStuff, postNewStuff } from '@common/apis/belieme-apis';
 import { stuffKeys } from '@common/apis/query-keys';
 import DataLoadFailView from '@common/components/DataLoadFailView/DataLoadFailView.vue';
 import LoadingView from '@common/components/LoadingView/LoadingView.vue';
@@ -11,81 +11,111 @@ import buildAlertModal from '@common/components/modals/AlertModal/utils/alert-mo
 import useModalStore from '@common/components/modals/stores/modal-store';
 import type BaseError from '@common/errors/BaseError';
 import type StuffWithItems from '@common/models/StuffWithItems';
-import useCurDeptStorage from '@common/storages/cur-dept-storage';
-import useUserTokenStorage from '@common/storages/user-token-storage';
+import type UserMode from '@common/types/UserMode';
 
 import EditableStuffDetail from '@^stuffs/components/EditableStuffDetail.vue';
 import StuffDetail from '@^stuffs/components/StuffDetail.vue';
-import {
-  getStuffDetailQuery,
-  getStuffListQuery,
-  reloadStuffDataUsingCacheAndResponse,
-} from '@^stuffs/components/utils/stuff-query-utils';
-import useStuffDetailViewModeStore from '@^stuffs/stores/stuff-detail-view-mode-store';
+import { getStuffDetailQuery } from '@^stuffs/components/utils/stuff-query-utils';
 import useStuffEditionStore from '@^stuffs/stores/stuff-edition-store';
-import useStuffSelectedStore from '@^stuffs/stores/stuff-selected-store';
+import type { StuffDetailViewMode } from '@^stuffs/types/StuffDetailViewMode';
+
+const props = defineProps<{
+  userToken: string;
+  curDeptId: string;
+  userMode: UserMode;
+  stuffDetailViewMode: StuffDetailViewMode;
+  selectedId: string;
+  isListSuccess: boolean;
+  isListLoading: boolean;
+  isListError: boolean;
+}>();
+
+const emit = defineEmits<{
+  (e: 'updateStuffDetailViewMode', viewMode: StuffDetailViewMode): void;
+}>();
+
+const stuffDetailViewMode = toRef(props, 'stuffDetailViewMode');
+
+const isListSuccess = toRef(props, 'isListSuccess');
+const isListLoading = toRef(props, 'isListLoading');
+const isListError = toRef(props, 'isListError');
 
 const queryClient = useQueryClient();
 
-const viewModeStore = useStuffDetailViewModeStore();
-const viewMode = storeToRefs(viewModeStore).stuffDetailViewMode;
+const { isSuccess, isError, isLoading, isFetching, data } = getStuffDetailQuery(
+  props.userToken,
+  props.selectedId
+);
 
-const {
-  isLoading: isListLoading,
-  isSuccess: isListSuccess,
-  isStale: isListDataStale,
-} = getStuffListQuery();
-const { isLoading, isSuccess, data } = getStuffDetailQuery();
-
-const userTokenStorage = useUserTokenStorage();
-const { userToken } = storeToRefs(userTokenStorage);
-
-const curDeptStorage = useCurDeptStorage();
-const { curDeptId } = storeToRefs(curDeptStorage);
+const isMutateData = ref<boolean>(false);
 
 const modalStore = useModalStore();
-
-const stuffStore = useStuffSelectedStore();
-const { selectedId } = storeToRefs(stuffStore);
 
 const stuffEditionStore = useStuffEditionStore();
 const { newName, newThumbnail, newDesc, newItemCount } = storeToRefs(stuffEditionStore);
 
-const commitChangeMutation = useMutation<StuffWithItems, BaseError>(
-  () =>
-    editStuff(userToken.value, selectedId.value, {
-      name: newName.value,
-      thumbnail: newThumbnail.value,
-    }),
+const addNewItemsMutation = useMutation<StuffWithItems, BaseError>(
+  () => addNewItem(props.userToken, props.selectedId, newItemCount.value),
   {
-    onSuccess: (response) => {
-      reloadStuffDataUsingCacheAndResponse(queryClient, response, isListDataStale.value);
-      viewModeStore.changeStuffDetailViewMode('SHOW');
+    onSettled: () => {
+      queryClient.invalidateQueries(stuffKeys.list(props.curDeptId));
+      queryClient.invalidateQueries(stuffKeys.detail(props.selectedId));
+      emit('updateStuffDetailViewMode', 'SHOW');
+      isMutateData.value = false;
     },
     onError: (error) => {
-      queryClient.invalidateQueries(stuffKeys.list(curDeptId.value));
-      queryClient.invalidateQueries(stuffKeys.detail(selectedId.value));
       modalStore.addModal(buildAlertModal('errorAlert', error.message));
+      isMutateData.value = false;
+    },
+  }
+);
+
+const commitChangeMutation = useMutation<StuffWithItems, BaseError>(
+  () =>
+    editStuff(props.userToken, props.selectedId, {
+      name: newName.value,
+      thumbnail: newThumbnail.value,
+      desc: newDesc.value,
+    }),
+  {
+    onSuccess: () => {
+      if (newItemCount.value <= 0) {
+        queryClient.invalidateQueries(stuffKeys.list(props.curDeptId));
+        queryClient.invalidateQueries(stuffKeys.detail(props.selectedId));
+        emit('updateStuffDetailViewMode', 'SHOW');
+        isMutateData.value = false;
+        return;
+      }
+      addNewItemsMutation.mutate();
+    },
+    onError: (error) => {
+      queryClient.invalidateQueries(stuffKeys.list(props.curDeptId));
+      queryClient.invalidateQueries(stuffKeys.detail(props.selectedId));
+      modalStore.addModal(buildAlertModal('errorAlert', error.message));
+      isMutateData.value = false;
     },
   }
 );
 
 const commitAddNewStuffMutation = useMutation<StuffWithItems, BaseError>(
   () =>
-    postNewStuff(userToken.value, {
-      departmentId: curDeptId.value,
+    postNewStuff(props.userToken, {
+      departmentId: props.curDeptId,
       name: newName.value,
       thumbnail: newThumbnail.value,
       amount: newItemCount.value,
+      desc: newDesc.value,
     }),
   {
-    onSuccess: (response) => {
-      reloadStuffDataUsingCacheAndResponse(queryClient, response, isListDataStale.value);
-      viewModeStore.changeStuffDetailViewMode('SHOW');
+    onSettled: () => {
+      isMutateData.value = false;
+      queryClient.invalidateQueries(stuffKeys.list(props.curDeptId));
+      queryClient.invalidateQueries(stuffKeys.detail(props.selectedId));
+    },
+    onSuccess: () => {
+      emit('updateStuffDetailViewMode', 'SHOW');
     },
     onError: (error) => {
-      queryClient.invalidateQueries(stuffKeys.list(curDeptId.value));
-      queryClient.invalidateQueries(stuffKeys.detail(selectedId.value));
       modalStore.addModal(buildAlertModal('errorAlert', error.message));
     },
   }
@@ -93,34 +123,47 @@ const commitAddNewStuffMutation = useMutation<StuffWithItems, BaseError>(
 
 const dataLoadStatus = computed(() => {
   if (isListLoading.value) return 'Loading';
+  if (isListError.value) return 'Error';
   if (isListSuccess.value) {
-    if (isLoading.value) return 'Loading';
+    if (isLoading.value || isFetching.value || isMutateData.value) return 'Loading';
+    if (isError.value) return 'Error';
     if (isSuccess.value) return 'Success';
     return 'Error';
   }
   return 'Error';
 });
+
+function commitChangeStuff() {
+  commitChangeMutation.mutate();
+  isMutateData.value = true;
+}
+
+function commitAddNewStuff() {
+  commitAddNewStuffMutation.mutate();
+  isMutateData.value = true;
+}
 </script>
 
 <template>
   <template v-if="dataLoadStatus === 'Success'">
     <StuffDetail
-      v-if="viewMode === 'SHOW'"
+      v-if="stuffDetailViewMode === 'SHOW'"
+      :user-mode="userMode"
       :stuff="data"
-      @to-edit-mode="viewModeStore.changeStuffDetailViewMode('EDIT')"
-      @to-register-mode="viewModeStore.changeStuffDetailViewMode('ADD')"
+      @to-edit-mode="emit('updateStuffDetailViewMode', 'EDIT')"
+      @to-register-mode="emit('updateStuffDetailViewMode', 'ADD')"
     ></StuffDetail>
     <EditableStuffDetail
-      v-else-if="viewMode === 'EDIT'"
+      v-else-if="stuffDetailViewMode === 'EDIT'"
       :original-stuff="data"
-      @commit-change="commitChangeMutation.mutate()"
-      @close-edit-mode="viewModeStore.changeStuffDetailViewMode('SHOW')"
+      @commit-change="commitChangeStuff()"
+      @close-edit-mode="emit('updateStuffDetailViewMode', 'SHOW')"
     ></EditableStuffDetail>
     <EditableStuffDetail
-      v-else-if="viewMode === 'ADD'"
+      v-else-if="stuffDetailViewMode === 'ADD'"
       :original-stuff="undefined"
-      @commit-change="commitAddNewStuffMutation.mutate()"
-      @close-edit-mode="viewModeStore.changeStuffDetailViewMode('SHOW')"
+      @commit-change="commitAddNewStuff()"
+      @close-edit-mode="emit('updateStuffDetailViewMode', 'SHOW')"
     ></EditableStuffDetail>
   </template>
   <template v-else-if="dataLoadStatus === 'Loading'">

@@ -41,9 +41,8 @@ function timestampByStatus(item: ItemInfoOnly) {
     <section class="numbering">
       <slot name="numbering">
         <section class="w-100 h-100 position-relative">
-          <span class="position-absolute start-50 top-50 translate-middle fs-xl fw-bold">
-            {{ item.num }}
-          </span>
+          <span v-if="item.num !== -1" class="fs-xl fw-bold">{{ item.num }}</span>
+          <span v-else class="fs-sm fw-bold">NEW</span>
         </section>
       </slot>
     </section>
@@ -93,6 +92,14 @@ function timestampByStatus(item: ItemInfoOnly) {
   .numbering {
     width: 2rem;
     height: 2rem;
+
+    span {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      line-height: 1;
+    }
   }
 
   .content {

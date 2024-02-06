@@ -16,18 +16,17 @@ import type History from '@common/models/History';
 import type Item from '@common/models/Item';
 import useCurDeptStorage from '@common/storages/cur-dept-storage';
 import useUserTokenStorage from '@common/storages/user-token-storage';
-import useUserModeStore from '@common/stores/user-mode-store';
+import type UserMode from '@common/types/UserMode';
 
+import StuffRequestConfirmModal from '@^stuffs/components/StuffRequestConfirmModal.vue';
 import ItemListCellFrame from '@^stuffs/components/stuff-detail-frames/ItemListCellFrame.vue';
 
 const props = defineProps<{
+  userMode: UserMode;
   item: Item;
 }>();
 
 const queryClient = useQueryClient();
-
-const userModeStore = useUserModeStore();
-const { userMode } = storeToRefs(userModeStore);
 
 const userTokenStorage = useUserTokenStorage();
 const { userToken } = storeToRefs(userTokenStorage);
@@ -42,10 +41,8 @@ function changeItemRequestMutation(mutationFn: () => Promise<History>) {
     onSettled: () => {
       queryClient.invalidateQueries(stuffKeys.list(curDeptId.value));
       queryClient.invalidateQueries(stuffKeys.detail(props.item.stuff.id));
-    },
-    onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: historyKeys.list() });
-      queryClient.setQueryData(historyKeys.detail(response.id), response);
+      queryClient.invalidateQueries(historyKeys.list());
+      queryClient.invalidateQueries(historyKeys.detail());
     },
     onError: (error) => {
       modalStore.addModal(buildAlertModal('errorAlert', error.message));
@@ -66,11 +63,8 @@ const foundApproveMutation = changeItemRequestMutation(() =>
 );
 
 const rentalRequestModal = {
-  component: ConfirmModal,
+  component: StuffRequestConfirmModal,
   props: {
-    title: '대여 신청하기',
-    content:
-      '신청을 한 후에 대여장소에서 관리자를 통해 대여 승인을 받고 대여 할 수 있습니다. 단, 해당 신청은 15분 후에 자동으로 만료됩니다.',
     resolveLabel: '신청하기',
     rejectLabel: '뒤로가기',
   },

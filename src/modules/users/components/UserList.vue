@@ -41,7 +41,6 @@ import { userKeys } from '@common/apis/query-keys';
 import DataLoadFailView from '@common/components/DataLoadFailView/DataLoadFailView.vue';
 import LoadingView from '@common/components/LoadingView/LoadingView.vue';
 import BasicButton from '@common/components/buttons/BasicButton/BasicButton.vue';
-import AlertModal from '@common/components/modals/AlertModal/AlertModal.vue';
 import useModalStore from '@common/components/modals/stores/modal-store';
 import type User from '@common/models/User';
 import { hasHigherAuthorityPermission } from '@common/models/types/AuthorityPermission';
