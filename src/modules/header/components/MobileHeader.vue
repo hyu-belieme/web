@@ -64,7 +64,7 @@ if (
         arrow
         :show="openedUserHeaderGuidePopover || openedStaffHeaderGuidePopover"
         placement="left-start"
-        :openDelay="100"
+        :openDelay="300"
       >
         <UserDropdown :class="!isLoggedIn ? 'invisible' : ''"></UserDropdown>
         <template #content>

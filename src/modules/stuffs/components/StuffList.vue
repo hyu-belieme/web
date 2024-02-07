@@ -92,12 +92,13 @@ watch(
   <section class="stuff-list-frame">
     <section class="stuff-list">
       <StuffListCell
-        v-for="stuff of stuffs"
+        v-for="(stuff, idx) of stuffs"
         :key="stuff.name"
         :user-token="userToken"
         :cur-dept-id="curDeptId"
         :user-mode="userMode"
         :stuff="stuff"
+        :idx="idx"
         :selected="stuff.id === selectedId"
         @click="() => updateSelectedId(stuff.id)"
       ></StuffListCell>
