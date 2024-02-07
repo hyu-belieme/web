@@ -21,7 +21,7 @@ const userModeStorage = useUserModeStorage();
 const { userMode } = storeToRefs(userModeStorage);
 
 watch(userMode, () => {
-  if (loggedInUser.value === undefined) {
+  if (loggedInUser.value === undefined || User.NIL.equals(loggedInUser.value)) {
     return;
   }
 
