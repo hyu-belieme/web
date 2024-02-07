@@ -21,7 +21,16 @@ const userModeStorage = useUserModeStorage();
 const { userMode } = storeToRefs(userModeStorage);
 
 watch(userMode, () => {
-  if (!hasHigherAuthorityPermission(loggedInUser.value.getPermission(curDeptId.value), 'STAFF')) {
+  if (loggedInUser.value === undefined) {
+    return;
+  }
+
+  if (
+    !hasHigherAuthorityPermission(
+      new User(loggedInUser.value).getPermission(curDeptId.value),
+      'STAFF'
+    )
+  ) {
     userModeStorage.set('USER');
   }
 });
