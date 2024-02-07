@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
+import { watch } from 'vue';
 
 import User from '@common/models/User';
+import { hasHigherAuthorityPermission } from '@common/models/types/AuthorityPermission';
 import useCurDeptStorage from '@common/storages/cur-dept-storage';
 import useLoggedInUserStorage from '@common/storages/logged-in-user-storage';
 import useUserModeStorage from '@common/storages/user-mode-storage';
@@ -17,6 +19,12 @@ const { curDeptId } = storeToRefs(curDeptStorage);
 
 const userModeStorage = useUserModeStorage();
 const { userMode } = storeToRefs(userModeStorage);
+
+watch(userMode, () => {
+  if (!hasHigherAuthorityPermission(loggedInUser.value.getPermission(curDeptId.value), 'STAFF')) {
+    userModeStorage.set('USER');
+  }
+});
 </script>
 
 <template>
