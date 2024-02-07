@@ -28,7 +28,8 @@
     "vue": "^3.2.47",
     "vue-moment": "^4.1.0",
     "vue-query": "^1.26.0",
-    "vue-router": "^4.1.6"
+    "vue-router": "^4.1.6",
+    "vue3-popper": "^1.5.0"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.2.0",

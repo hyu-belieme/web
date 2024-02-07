@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 
+import TheGuideFrame from '@common/components/guide-popovers/TheGuideFrame/TheGuideFrame.vue';
 import TheModalFrame from '@common/components/modals/TheModalFrame/TheModalFrame.vue';
 import useCurDeptStorage from '@common/storages/cur-dept-storage';
 
@@ -20,6 +21,7 @@ const { curDeptId } = storeToRefs(curDeptStorage);
     </main>
   </section>
   <TheModalFrame></TheModalFrame>
+  <TheGuideFrame></TheGuideFrame>
 </template>
 
 <style lang="scss" scoped>

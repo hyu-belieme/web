@@ -5,7 +5,7 @@
   'abstracts/utilities';
 
 // 2. Vendors
-@import 'vendors/normalize', 'vendors/rfs';
+@import 'vendors/normalize', 'vendors/rfs', 'vendors/popper';
 
 // 3. Base stuff
 @import 'base/root', 'base/reset', 'base/base', 'base/fonts', 'base/typography', 'base/helpers',
