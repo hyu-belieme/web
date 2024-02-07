@@ -22,7 +22,7 @@
         arrow
         :show="openedUserTabGuidePopover"
         placement="top-end"
-        :openDelay="100"
+        :openDelay="500"
       >
         <BasicButton
           content="저장하기"
@@ -38,7 +38,7 @@
         arrow
         :show="openedUserTabGuidePopover"
         placement="top-start"
-        :openDelay="100"
+        :openDelay="500"
       >
         <BasicButton
           content="새로고침"

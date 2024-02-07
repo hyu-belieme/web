@@ -36,7 +36,7 @@
         arrow
         :show="openedUserTabGuidePopover"
         placement="left"
-        :openDelay="100"
+        :openDelay="500"
       >
         <ButtonBase
           class="button-size"

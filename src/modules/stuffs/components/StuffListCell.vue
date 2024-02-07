@@ -103,7 +103,7 @@ const rentalRequestModal = {
           arrow
           :show="openedStuffCellGuidePopover"
           placement="bottom-start"
-          :openDelay="100"
+          :openDelay="500"
         >
           <span class="name">{{ stuff.name }}</span>
           <template #content>
@@ -119,7 +119,7 @@ const rentalRequestModal = {
             arrow
             :show="openedRentStuffButtonGuidePopover"
             placement="bottom-start"
-            :openDelay="100"
+            :openDelay="500"
           >
             <BasicButton
               v-if="stuff.count > 0"

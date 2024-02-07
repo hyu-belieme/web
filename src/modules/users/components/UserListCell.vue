@@ -5,7 +5,7 @@
       arrow
       :show="openedMultiSelectGuidePopover"
       placement="bottom-start"
-      :openDelay="100"
+      :openDelay="500"
     >
       <BasicCheckbox
         class="mx-1"
@@ -35,7 +35,7 @@
         arrow
         :show="openedUserTabGuidePopover"
         placement="left-start"
-        :openDelay="100"
+        :openDelay="500"
       >
         <BasicSelector
           class="authority-selector"
