@@ -1,4 +1,5 @@
 import { type RemovableRef, useStorage } from '@vueuse/core';
+import { set } from 'immutable';
 import { defineStore } from 'pinia';
 
 import { GUIDE_TYPES } from '@common/components/guide-popovers/types/GuideTypes';
@@ -22,9 +23,16 @@ const useGuideFlagsStorage = defineStore(key, () => {
     }
   }
 
+  function resetGuideFlags() {
+    GUIDE_TYPES.forEach((type) => {
+      setGuideFlag(type, false);
+    });
+  }
+
   return {
     getGuideFlag,
     setGuideFlag,
+    resetGuideFlags,
   };
 });
 export default useGuideFlagsStorage;
