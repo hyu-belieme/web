@@ -31,31 +31,48 @@
           <span class="lh-sm">선택된 유저</span>
         </ButtonBase>
       </section>
-      <ButtonBase
-        class="button-size"
-        :size="'xs'"
-        :disabled="isUserRegisterTabOpened"
-        @click="userRegisterTabStore.openUserRegisterTab"
+      <Popper
+        disableClickAway
+        arrow
+        :show="openedUserTabGuidePopover"
+        placement="left"
+        :openDelay="100"
       >
-        <section class="w-100 d-flex flex-row gap-1 align-items-center justify-content-center">
-          <span class="lh-sm">등록하기</span>
-          <section :class="['plus-icon-size', 'd-flex', 'align-items-center']">
-            <PlusIcon size="100" :color="'white'" hover="off"></PlusIcon>
+        <ButtonBase
+          class="button-size"
+          :size="'xs'"
+          :disabled="isUserRegisterTabOpened"
+          @click="userRegisterTabStore.openUserRegisterTab"
+        >
+          <section class="w-100 d-flex flex-row gap-1 align-items-center justify-content-center">
+            <span class="lh-sm">등록하기</span>
+            <section :class="['plus-icon-size', 'd-flex', 'align-items-center']">
+              <PlusIcon size="100" :color="'white'" hover="off"></PlusIcon>
+            </section>
           </section>
-        </section>
-      </ButtonBase>
+        </ButtonBase>
+        <template #content>
+          <div class="user-register-button-guide">
+            편입생이나 부전공자 등 자동으로 등록되지 않는 유저를 학번으로 검색하여 등록할 수
+            있습니다.
+          </div>
+        </template>
+      </Popper>
     </section>
   </section>
 </template>
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
+import Popper from 'vue3-popper';
 
 import ButtonBase from '@common/components/buttons/ButtonBase/ButtonBase.vue';
+import useGuidePopoverStore from '@common/components/guide-popovers/stores/guide-popover-store';
 import PlusIcon from '@common/components/icons/PlusIcon/PlusIcon.vue';
 import { hasHigherAuthorityPermission } from '@common/models/types/AuthorityPermission';
 import useCurDeptStorage from '@common/storages/cur-dept-storage';
+import useGuideFlagsStorage from '@common/storages/guide-flags-storage';
 
 import useUserChecked from '@^users/stores/user-checked-store';
 import useUserListFilter from '@^users/stores/user-list-filter-store';
@@ -72,6 +89,19 @@ const userListFilterStore = useUserListFilter();
 
 const userRegisterTabStore = useUserRegisterTab();
 const { isUserRegisterTabOpened } = storeToRefs(userRegisterTabStore);
+
+const guidePopoverStore = useGuidePopoverStore();
+const { openedGuidePopovers } = storeToRefs(guidePopoverStore);
+
+const guideFlagsStorage = useGuideFlagsStorage();
+
+const openedUserTabGuidePopover = computed(() => {
+  return openedGuidePopovers.value.includes('USER_TAB_MASTER');
+});
+
+if (guideFlagsStorage.getGuideFlag('USER_TAB_MASTER')?.value === false) {
+  guidePopoverStore.openGuidePopover('USER_TAB_MASTER');
+}
 
 watch(selectedFilter, (newVal) => {
   switch (newVal) {
@@ -111,5 +141,12 @@ watch(selectedFilter, (newVal) => {
 }
 .button-size {
   width: 5rem;
+}
+
+.user-register-button-guide {
+  max-width: 15rem;
+  height: auto;
+
+  font-size: $font-size-sm;
 }
 </style>
