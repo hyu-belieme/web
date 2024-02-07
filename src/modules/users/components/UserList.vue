@@ -6,8 +6,9 @@
     <section class="w-100 h-100 flex-grow-1 d-flex flex-column overflow-scroll">
       <section v-if="isSuccess" class="w-100 h-100 d-flex flex-column">
         <UserListCell
-          v-for="cellInfo of sortedUserList()"
+          v-for="(cellInfo, idx) of sortedUserList()"
           :key="cellInfo.user.id + cellInfo.user.getPermission(curDeptId)"
+          :idx="idx"
           :user="cellInfo.user"
           :checked="cellInfo.checked"
         ></UserListCell>
@@ -16,17 +17,39 @@
       <DataLoadFailView v-else></DataLoadFailView>
     </section>
     <section class="w-100 p-2 d-flex flex-row gap-2 justify-content-center">
-      <BasicButton
-        content="저장하기"
-        size="sm"
-        @click="() => modalStore.addModal(commitDiffModal)"
-      ></BasicButton>
-      <BasicButton
-        content="새로고침"
-        color="light"
-        size="sm"
-        @click="() => modalStore.addModal(reloadModal)"
-      ></BasicButton>
+      <Popper
+        disableClickAway
+        arrow
+        :show="openedUserTabGuidePopover"
+        placement="top-end"
+        :openDelay="500"
+      >
+        <BasicButton
+          content="저장하기"
+          size="sm"
+          @click="() => modalStore.addModal(commitDiffModal)"
+        ></BasicButton>
+        <template #content>
+          <div class="button-guide">변경사항을 반영하기 위해 저장하기 버튼을 누르세요.</div>
+        </template>
+      </Popper>
+      <Popper
+        disableClickAway
+        arrow
+        :show="openedUserTabGuidePopover"
+        placement="top-start"
+        :openDelay="500"
+      >
+        <BasicButton
+          content="새로고침"
+          color="light"
+          size="sm"
+          @click="() => modalStore.addModal(reloadModal)"
+        ></BasicButton>
+        <template #content>
+          <div class="button-guide">변경사항을 원래대로 돌리기 위해 새로고침 버튼을 누르세요.</div>
+        </template>
+      </Popper>
     </section>
   </section>
 </template>
@@ -34,6 +57,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { computed, watch } from 'vue';
+import Popper from 'vue3-popper';
 import { useQuery, useQueryClient } from 'vue-query';
 
 import { getAllUsersInDept, updateUserPermissions } from '@common/apis/belieme-apis';
@@ -41,10 +65,12 @@ import { userKeys } from '@common/apis/query-keys';
 import DataLoadFailView from '@common/components/DataLoadFailView/DataLoadFailView.vue';
 import LoadingView from '@common/components/LoadingView/LoadingView.vue';
 import BasicButton from '@common/components/buttons/BasicButton/BasicButton.vue';
+import useGuidePopoverStore from '@common/components/guide-popovers/stores/guide-popover-store';
 import useModalStore from '@common/components/modals/stores/modal-store';
 import type User from '@common/models/User';
 import { hasHigherAuthorityPermission } from '@common/models/types/AuthorityPermission';
 import useCurDeptStorage from '@common/storages/cur-dept-storage';
+import useGuideFlagsStorage from '@common/storages/guide-flags-storage';
 import useUserTokenStorage from '@common/storages/user-token-storage';
 
 import ModalWithUserDiffList from '@^users/components/ModalWithUserDiffList.vue';
@@ -72,6 +98,19 @@ const userListFilterStore = useUserListFilter();
 
 const userTokenStorage = useUserTokenStorage();
 const { userToken } = storeToRefs(userTokenStorage);
+
+const guidePopoverStore = useGuidePopoverStore();
+const { openedGuidePopovers } = storeToRefs(guidePopoverStore);
+
+const guideFlagsStorage = useGuideFlagsStorage();
+
+const openedUserTabGuidePopover = computed(() => {
+  return openedGuidePopovers.value.includes('USER_TAB_MASTER');
+});
+
+if (guideFlagsStorage.getGuideFlag('USER_TAB_MASTER')?.value === false) {
+  guidePopoverStore.openGuidePopover('USER_TAB_MASTER');
+}
 
 const {
   isLoading,
@@ -184,5 +223,12 @@ watch(diffAppliedUserList, () => {
 
   border: $border-width solid $border-color;
   @include border-radius();
+}
+
+.button-guide {
+  max-width: 8rem;
+  height: auto;
+
+  font-size: $font-size-sm;
 }
 </style>

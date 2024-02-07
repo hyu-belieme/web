@@ -8,6 +8,7 @@ import 'immutable';
 import { createPinia } from 'pinia';
 import 'uuid';
 import { createApp } from 'vue';
+import Popper from 'vue3-popper';
 import { VueQueryPlugin, type VueQueryPluginOptions } from 'vue-query';
 
 import App from '@core/App.vue';
@@ -22,6 +23,7 @@ app.config.globalProperties.$dayjs = dayjs;
 
 app.use(createPinia());
 app.use(router);
+app.component('PopperWrapper', Popper);
 
 const vueQueryPluginOptions: VueQueryPluginOptions = {
   queryClientConfig: {

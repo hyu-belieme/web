@@ -6,6 +6,7 @@ import useModalStore from '@common/components/modals/stores/modal-store';
 import type User from '@common/models/User';
 import { hasHigherAuthorityPermission } from '@common/models/types/AuthorityPermission';
 import useCurDeptStorage from '@common/storages/cur-dept-storage';
+import useGuideFlagsStorage from '@common/storages/guide-flags-storage';
 import useLoggedInUserStorage from '@common/storages/logged-in-user-storage';
 import useUserModeStorage from '@common/storages/user-mode-storage';
 import useUserTokenStorage from '@common/storages/user-token-storage';
@@ -51,6 +52,13 @@ function changeUserMode() {
   else userModeStorage.set('USER');
 }
 
+const guideFlagsStorage = useGuideFlagsStorage();
+
+function activateGuide() {
+  emit('closeDropdown');
+  guideFlagsStorage.resetGuideFlags();
+}
+
 function logout() {
   emit('closeDropdown');
   userTokenStorage.removeItem();
@@ -76,6 +84,7 @@ function getPermissionOfLoggedInUser() {
   <li v-if="hasHigherAuthorityPermission(getPermissionOfLoggedInUser(), 'STAFF')">
     <a class="dropdown-item" @click="changeUserMode()">{{ changeUserModeLabel }}</a>
   </li>
+  <li><a class="dropdown-item" @click="activateGuide()">가이드 활성화하기</a></li>
   <li><a class="dropdown-item" @click="logout()" href="/login">로그아웃</a></li>
 </template>
 
