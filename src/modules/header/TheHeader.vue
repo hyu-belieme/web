@@ -14,6 +14,8 @@ import MobileHeader from '@^header/components/MobileHeader.vue';
 const loggedInUserStorage = useLoggedInUserStorage();
 const { loggedInUser } = storeToRefs(loggedInUserStorage);
 
+const parsedLoggedInUser = new User(loggedInUser.value);
+
 const curDeptStorage = useCurDeptStorage();
 const { curDeptId } = storeToRefs(curDeptStorage);
 
@@ -21,7 +23,7 @@ const userModeStorage = useUserModeStorage();
 const { userMode } = storeToRefs(userModeStorage);
 
 watch(userMode, () => {
-  if (loggedInUser.value === undefined || User.NIL.equals(loggedInUser.value)) {
+  if (User.NIL.equals(loggedInUser.value)) {
     return;
   }
 
@@ -40,7 +42,7 @@ watch(userMode, () => {
   <div :class="'w-100 desktop-frame ' + (userMode === 'STAFF' ? 'staff-mode-background' : '')">
     <DesktopHeader
       :key="`${loggedInUser?.id || ''} + ${curDeptId}`"
-      :logged-in-user="loggedInUser ? new User(loggedInUser) : undefined"
+      :logged-in-user="parsedLoggedInUser"
       :cur-dept-id="curDeptId"
       :user-mode="userMode"
     ></DesktopHeader>
@@ -48,7 +50,7 @@ watch(userMode, () => {
   <div :class="'w-100 mobile-frame ' + (userMode === 'STAFF' ? 'staff-mode-background' : '')">
     <MobileHeader
       :key="`${loggedInUser?.id || ''} + ${curDeptId}`"
-      :logged-in-user="loggedInUser ? new User(loggedInUser) : undefined"
+      :logged-in-user="parsedLoggedInUser"
       :cur-dept-id="curDeptId"
       :user-mode="userMode"
     ></MobileHeader>

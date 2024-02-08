@@ -6,7 +6,7 @@ import { useRoute } from 'vue-router';
 
 import useGuidePopoverStore from '@common/components/guide-popovers/stores/guide-popover-store';
 import ChevronIcon from '@common/components/icons/ChevronIcon/ChevronIcon.vue';
-import type User from '@common/models/User';
+import User from '@common/models/User';
 import { hasHigherAuthorityPermission } from '@common/models/types/AuthorityPermission';
 import useGuideFlagsStorage from '@common/storages/guide-flags-storage';
 import type UserMode from '@common/types/UserMode';
@@ -15,7 +15,7 @@ import MobileNavigationBar from '@^header/components/MobileNavigationBar.vue';
 import UserDropdown from '@^header/components/UserDropdown.vue';
 
 const props = defineProps<{
-  loggedInUser: User | undefined;
+  loggedInUser: User;
   curDeptId: string;
   userMode: UserMode;
 }>();
@@ -39,7 +39,7 @@ const openedStaffHeaderGuidePopover = computed(() => {
 });
 
 if (
-  props.loggedInUser !== undefined &&
+  !props.loggedInUser.equals(User.NIL) &&
   guideFlagsStorage.getGuideFlag('HEADER_STAFF')?.value === false &&
   hasHigherAuthorityPermission(props.loggedInUser?.getPermission(props.curDeptId), 'STAFF')
 ) {
@@ -47,7 +47,7 @@ if (
 }
 
 if (
-  props.loggedInUser !== undefined &&
+  !props.loggedInUser.equals(User.NIL) &&
   guideFlagsStorage.getGuideFlag('HEADER_USER')?.value === false
 ) {
   guidePopoverStore.openGuidePopover('HEADER_USER');
