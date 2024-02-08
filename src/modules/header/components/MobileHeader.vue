@@ -6,7 +6,7 @@ import { useRoute } from 'vue-router';
 
 import useGuidePopoverStore from '@common/components/guide-popovers/stores/guide-popover-store';
 import ChevronIcon from '@common/components/icons/ChevronIcon/ChevronIcon.vue';
-import type User from '@common/models/User';
+import User from '@common/models/User';
 import { hasHigherAuthorityPermission } from '@common/models/types/AuthorityPermission';
 import useGuideFlagsStorage from '@common/storages/guide-flags-storage';
 import type UserMode from '@common/types/UserMode';
@@ -15,9 +15,13 @@ import MobileNavigationBar from '@^header/components/MobileNavigationBar.vue';
 import UserDropdown from '@^header/components/UserDropdown.vue';
 
 const props = defineProps<{
-  loggedInUser: User | undefined;
+  loggedInUser: User;
   curDeptId: string;
   userMode: UserMode;
+}>();
+
+defineEmits<{
+  (e: 'logout'): void;
 }>();
 
 const route = useRoute();
@@ -39,7 +43,7 @@ const openedStaffHeaderGuidePopover = computed(() => {
 });
 
 if (
-  props.loggedInUser !== undefined &&
+  !props.loggedInUser.equals(User.NIL) &&
   guideFlagsStorage.getGuideFlag('HEADER_STAFF')?.value === false &&
   hasHigherAuthorityPermission(props.loggedInUser?.getPermission(props.curDeptId), 'STAFF')
 ) {
@@ -47,7 +51,7 @@ if (
 }
 
 if (
-  props.loggedInUser !== undefined &&
+  !props.loggedInUser.equals(User.NIL) &&
   guideFlagsStorage.getGuideFlag('HEADER_USER')?.value === false
 ) {
   guidePopoverStore.openGuidePopover('HEADER_USER');
@@ -66,7 +70,12 @@ if (
         placement="left-start"
         :openDelay="500"
       >
-        <UserDropdown :class="!isLoggedIn ? 'invisible' : ''"></UserDropdown>
+        <UserDropdown
+          :class="!isLoggedIn ? 'invisible' : ''"
+          :user="loggedInUser"
+          :cur-dept-id="curDeptId"
+          @logout="$emit('logout')"
+        ></UserDropdown>
         <template #content>
           <div class="user-dropdown-desc">
             다른 학과로 이동, 사용 가이드 활성화,
@@ -76,7 +85,7 @@ if (
         </template>
       </Popper>
     </section>
-    <MobileNavigationBar></MobileNavigationBar>
+    <MobileNavigationBar :loggedInUser="loggedInUser" :curDeptId="curDeptId"></MobileNavigationBar>
   </section>
 </template>
 

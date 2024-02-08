@@ -5,25 +5,20 @@ import { computed } from 'vue';
 import useModalStore from '@common/components/modals/stores/modal-store';
 import type User from '@common/models/User';
 import { hasHigherAuthorityPermission } from '@common/models/types/AuthorityPermission';
-import useCurDeptStorage from '@common/storages/cur-dept-storage';
 import useGuideFlagsStorage from '@common/storages/guide-flags-storage';
-import useLoggedInUserStorage from '@common/storages/logged-in-user-storage';
 import useUserModeStorage from '@common/storages/user-mode-storage';
-import useUserTokenStorage from '@common/storages/user-token-storage';
 
 import ChangeDepartmentModal from '@^header/components/ChangeDepartmentModal.vue';
 
 defineProps<{
   user: User;
+  curDeptId: string;
 }>();
-const emit = defineEmits(['closeDropdown']);
 
-const userTokenStorage = useUserTokenStorage();
-
-const loggedInUserStorage = useLoggedInUserStorage();
-
-const curDeptStorage = useCurDeptStorage();
-const { curDeptId } = storeToRefs(curDeptStorage);
+const emit = defineEmits<{
+  (e: 'closeDropdown'): void;
+  (e: 'logout'): void;
+}>();
 
 const modalStore = useModalStore();
 
@@ -61,12 +56,7 @@ function activateGuide() {
 
 function logout() {
   emit('closeDropdown');
-  userTokenStorage.removeItem();
-  loggedInUserStorage.removeItem();
-}
-
-function getPermissionOfLoggedInUser() {
-  return loggedInUserStorage.getPermissionOfLoggedInUser(curDeptId.value || '');
+  emit('logout');
 }
 </script>
 
@@ -81,7 +71,7 @@ function getPermissionOfLoggedInUser() {
   </li>
   <li><hr class="dropdown-divider" /></li>
   <li><a class="dropdown-item" @click="showChangeDeptModal()">학과 변경하기</a></li>
-  <li v-if="hasHigherAuthorityPermission(getPermissionOfLoggedInUser(), 'STAFF')">
+  <li v-if="hasHigherAuthorityPermission(user.getPermission(curDeptId), 'STAFF')">
     <a class="dropdown-item" @click="changeUserMode()">{{ changeUserModeLabel }}</a>
   </li>
   <li><a class="dropdown-item" @click="activateGuide()">가이드 활성화하기</a></li>

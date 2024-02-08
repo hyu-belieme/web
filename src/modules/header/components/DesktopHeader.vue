@@ -5,7 +5,7 @@ import Popper from 'vue3-popper';
 import { useRoute } from 'vue-router';
 
 import useGuidePopoverStore from '@common/components/guide-popovers/stores/guide-popover-store';
-import type User from '@common/models/User';
+import User from '@common/models/User';
 import { hasHigherAuthorityPermission } from '@common/models/types/AuthorityPermission';
 import useGuideFlagsStorage from '@common/storages/guide-flags-storage';
 import type UserMode from '@common/types/UserMode';
@@ -14,9 +14,13 @@ import DesktopNavigationBar from '@^header/components/DesktopNavigationBar.vue';
 import UserDropdown from '@^header/components/UserDropdown.vue';
 
 const props = defineProps<{
-  loggedInUser: User | undefined;
+  loggedInUser: User;
   curDeptId: string;
   userMode: UserMode;
+}>();
+
+defineEmits<{
+  (e: 'logout'): void;
 }>();
 
 const route = useRoute();
@@ -38,15 +42,15 @@ const openedStaffHeaderGuidePopover = computed(() => {
 });
 
 if (
-  props.loggedInUser !== undefined &&
+  !props.loggedInUser.equals(User.NIL) &&
   guideFlagsStorage.getGuideFlag('HEADER_STAFF')?.value === false &&
-  hasHigherAuthorityPermission(props.loggedInUser?.getPermission(props.curDeptId), 'STAFF')
+  hasHigherAuthorityPermission(props.loggedInUser.getPermission(props.curDeptId), 'STAFF')
 ) {
   guidePopoverStore.openGuidePopover('HEADER_STAFF');
 }
 
 if (
-  props.loggedInUser !== undefined &&
+  !props.loggedInUser.equals(User.NIL) &&
   guideFlagsStorage.getGuideFlag('HEADER_USER')?.value === false
 ) {
   guidePopoverStore.openGuidePopover('HEADER_USER');
@@ -58,7 +62,10 @@ if (
     <section class="flex-grow-0">
       <img class="logo" src="@common/assets/images/belieme_logo_en.png" />
     </section>
-    <DesktopNavigationBar></DesktopNavigationBar>
+    <DesktopNavigationBar
+      :loggedInUser="loggedInUser"
+      :curDeptId="curDeptId"
+    ></DesktopNavigationBar>
     <Popper
       disableClickAway
       arrow
@@ -66,7 +73,12 @@ if (
       placement="bottom-start"
       :openDelay="500"
     >
-      <UserDropdown :class="!isLoggedIn ? 'invisible' : ''"></UserDropdown>
+      <UserDropdown
+        :class="!isLoggedIn ? 'invisible' : ''"
+        :user="loggedInUser"
+        :cur-dept-id="curDeptId"
+        @logout="$emit('logout')"
+      ></UserDropdown>
       <template #content>
         <div class="user-dropdown-desc">
           다른 학과로 이동, 사용 가이드 활성화,
