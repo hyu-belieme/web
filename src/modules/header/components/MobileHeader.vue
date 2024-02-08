@@ -20,6 +20,10 @@ const props = defineProps<{
   userMode: UserMode;
 }>();
 
+defineEmits<{
+  (e: 'logout'): void;
+}>();
+
 const route = useRoute();
 const isLoggedIn = computed(() => {
   return !(route.path === '/' || route.path.startsWith('/login'));
@@ -66,7 +70,12 @@ if (
         placement="left-start"
         :openDelay="500"
       >
-        <UserDropdown :class="!isLoggedIn ? 'invisible' : ''"></UserDropdown>
+        <UserDropdown
+          :class="!isLoggedIn ? 'invisible' : ''"
+          :user="loggedInUser"
+          :cur-dept-id="curDeptId"
+          @logout="$emit('logout')"
+        ></UserDropdown>
         <template #content>
           <div class="user-dropdown-desc">
             다른 학과로 이동, 사용 가이드 활성화,
@@ -76,7 +85,7 @@ if (
         </template>
       </Popper>
     </section>
-    <MobileNavigationBar></MobileNavigationBar>
+    <MobileNavigationBar :loggedInUser="loggedInUser" :curDeptId="curDeptId"></MobileNavigationBar>
   </section>
 </template>
 

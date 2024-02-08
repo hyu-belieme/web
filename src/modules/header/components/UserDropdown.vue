@@ -7,24 +7,30 @@
     </template>
     <template v-slot:menu="{ closeDropdown }">
       <UserDropdownBody
-        v-bind:user="loggedInUser"
+        :user="user"
+        :cur-dept-id="curDeptId"
         @closeDropdown="closeDropdown"
+        @logout="$emit('logout')"
       ></UserDropdownBody>
     </template>
   </BasicDropdown>
 </template>
 
 <script setup lang="ts">
-import { storeToRefs } from 'pinia';
-
 import BasicDropdown from '@common/components/dropdowns/BasicDropdown/BasicDropdown.vue';
-import useLoggedInUserStorage from '@common/storages/logged-in-user-storage';
+import type User from '@common/models/User';
 
 import UserDropdownBody from '@^header/components/UserDropdownBody.vue';
 import UserIcon from '@^header/components/UserIcon.vue';
 
-const loggedInUserStorage = useLoggedInUserStorage();
-const { loggedInUser } = storeToRefs(loggedInUserStorage);
+defineProps<{
+  user: User;
+  curDeptId: string;
+}>();
+
+defineEmits<{
+  (e: 'logout'): void;
+}>();
 </script>
 
 <style lang="scss" scoped></style>

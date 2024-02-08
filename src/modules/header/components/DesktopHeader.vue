@@ -19,6 +19,10 @@ const props = defineProps<{
   userMode: UserMode;
 }>();
 
+defineEmits<{
+  (e: 'logout'): void;
+}>();
+
 const route = useRoute();
 const isLoggedIn = computed(() => {
   return !(route.path === '/' || route.path.startsWith('/login'));
@@ -58,7 +62,10 @@ if (
     <section class="flex-grow-0">
       <img class="logo" src="@common/assets/images/belieme_logo_en.png" />
     </section>
-    <DesktopNavigationBar></DesktopNavigationBar>
+    <DesktopNavigationBar
+      :loggedInUser="loggedInUser"
+      :curDeptId="curDeptId"
+    ></DesktopNavigationBar>
     <Popper
       disableClickAway
       arrow
@@ -66,7 +73,12 @@ if (
       placement="bottom-start"
       :openDelay="500"
     >
-      <UserDropdown :class="!isLoggedIn ? 'invisible' : ''"></UserDropdown>
+      <UserDropdown
+        :class="!isLoggedIn ? 'invisible' : ''"
+        :user="loggedInUser"
+        :cur-dept-id="curDeptId"
+        @logout="$emit('logout')"
+      ></UserDropdown>
       <template #content>
         <div class="user-dropdown-desc">
           다른 학과로 이동, 사용 가이드 활성화,

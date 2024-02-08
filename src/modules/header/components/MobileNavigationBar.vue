@@ -15,7 +15,9 @@
       대여기록
     </RouterLink>
     <RouterLink
-      v-if="isLoggedIn && hasHigherAuthorityPermission(getPermissionOfLoggedInUser(), 'MASTER')"
+      v-if="
+        isLoggedIn && hasHigherAuthorityPermission(loggedInUser.getPermission(curDeptId), 'MASTER')
+      "
       to="/users"
       :class="['navigation-cell', route.path.startsWith('/users') ? 'active' : '']"
     >
@@ -25,27 +27,22 @@
 </template>
 
 <script setup lang="ts">
-import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 
+import type User from '@common/models/User';
 import { hasHigherAuthorityPermission } from '@common/models/types/AuthorityPermission';
-import useCurDeptStorage from '@common/storages/cur-dept-storage';
-import useLoggedInUserStorage from '@common/storages/logged-in-user-storage';
+
+defineProps<{
+  loggedInUser: User;
+  curDeptId: string;
+}>();
 
 const route = useRoute();
-
-const { curDeptId } = storeToRefs(useCurDeptStorage());
-
-const loggedInUserStorage = useLoggedInUserStorage();
 
 const isLoggedIn = computed(() => {
   return !(route.path === '/' || route.path.startsWith('/login'));
 });
-
-function getPermissionOfLoggedInUser() {
-  return loggedInUserStorage.getPermissionOfLoggedInUser(curDeptId.value || '');
-}
 </script>
 
 <style scoped lang="scss">
