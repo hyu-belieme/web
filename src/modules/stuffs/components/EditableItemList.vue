@@ -1,41 +1,29 @@
 <script setup lang="ts">
-import { NIL as NIL_UUID } from 'uuid';
-import { ref } from 'vue';
+import { toRef } from 'vue';
 
 import ButtonBase from '@common/components/buttons/ButtonBase/ButtonBase.vue';
 import PlusIcon from '@common/components/icons/PlusIcon/PlusIcon.vue';
-import ItemInfoOnly from '@common/models/ItemInfoOnly';
+import type ItemInfoOnly from '@common/models/ItemInfoOnly';
 
 import EditableItemCell from '@^stuffs/components/EditableItemCell.vue';
 import ItemListFrame from '@^stuffs/components/stuff-detail-frames/ItemListFrame.vue';
 
 const props = defineProps<{
-  originalItems: ItemInfoOnly[];
+  items: ItemInfoOnly[];
 }>();
 
 const emits = defineEmits<{
   (e: 'appendItem'): void;
   (e: 'deleteItem', id: string): void;
-  (e: 'resetItems'): void;
 }>();
 
-const items = ref<ItemInfoOnly[]>(props.originalItems);
-emits('resetItems');
+const items = toRef(props, 'items');
 
 function appendItem() {
-  items.value.push(
-    new ItemInfoOnly({
-      id: NIL_UUID,
-      num: -1,
-      status: 'USABLE',
-      lastHistory: null,
-    })
-  );
   emits('appendItem');
 }
 
 function deleteItem(id: string) {
-  items.value.pop();
   emits('deleteItem', id);
 }
 </script>

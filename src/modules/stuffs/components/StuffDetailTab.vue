@@ -1,23 +1,19 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia';
 import { computed, ref, toRef } from 'vue';
 import { useMutation, useQueryClient } from 'vue-query';
 import { useRouter } from 'vue-router';
 
 import { addNewItem, editStuff } from '@common/apis/belieme-apis';
 import { stuffKeys } from '@common/apis/query-keys';
-import DataLoadFailView from '@common/components/DataLoadFailView/DataLoadFailView.vue';
-import LoadingView from '@common/components/LoadingView/LoadingView.vue';
 import buildAlertModal from '@common/components/modals/AlertModal/utils/alert-modal-builder';
 import useModalStore from '@common/components/modals/stores/modal-store';
 import type BaseError from '@common/errors/BaseError';
-import type StuffWithItems from '@common/models/StuffWithItems';
+import StuffWithItems from '@common/models/StuffWithItems';
 import type UserMode from '@common/types/UserMode';
 
 import EditableStuffDetail from '@^stuffs/components/EditableStuffDetail.vue';
 import StuffDetail from '@^stuffs/components/StuffDetail.vue';
 import { getStuffDetailQuery } from '@^stuffs/components/utils/stuff-query-utils';
-import useStuffEditionStore from '@^stuffs/stores/stuff-edition-store';
 import type { StuffDetailViewMode } from '@^stuffs/types/StuffDetailViewMode';
 
 const props = defineProps<{
@@ -44,40 +40,47 @@ const isListError = toRef(props, 'isListError');
 const router = useRouter();
 const queryClient = useQueryClient();
 
-const { isSuccess, isError, isLoading, isFetching, data } = getStuffDetailQuery(
-  props.userToken,
-  props.selectedId
-);
-
-const isMutateData = ref<boolean>(false);
+const {
+  isSuccess: isSuccessOnGetDetail,
+  isError: isErrorOnGetDetail,
+  isLoading: isLoadingOnDetail,
+  isFetching: isFetchingOnDetail,
+  data,
+} = getStuffDetailQuery(props.userToken, props.selectedId);
 
 const modalStore = useModalStore();
 
-const stuffEditionStore = useStuffEditionStore();
-const { newName, newThumbnail, newDesc, newItemCount } = storeToRefs(stuffEditionStore);
+const editStuffComponent = ref<InstanceType<typeof EditableStuffDetail> | null>(null);
 
-const addNewItemsMutation = useMutation<StuffWithItems, BaseError>(
-  () => addNewItem(props.userToken, props.selectedId, newItemCount.value),
-  {
-    onSettled: () => {
-      queryClient.invalidateQueries(stuffKeys.list(props.curDeptId));
-      queryClient.invalidateQueries(stuffKeys.detail(props.selectedId));
-      emit('updateStuffDetailViewMode', 'SHOW');
-      isMutateData.value = false;
-    },
-    onError: (error) => {
-      modalStore.addModal(buildAlertModal('errorAlert', error.message));
-      isMutateData.value = false;
-    },
-  }
+const editionAppliedStuff = computed(
+  () => editStuffComponent.value?.getNewStuff() ?? StuffWithItems.NIL
 );
 
-const commitChangeMutation = useMutation<StuffWithItems, BaseError>(
+const newItemCount = computed(() => editStuffComponent.value?.getNewItemCount() ?? 0);
+
+const { isLoading: isLoadingOnAddingItem, mutate: addItemMutate } = useMutation<
+  StuffWithItems,
+  BaseError
+>(() => addNewItem(props.userToken, props.selectedId, newItemCount.value), {
+  onSettled: () => {
+    queryClient.invalidateQueries(stuffKeys.list(props.curDeptId));
+    queryClient.invalidateQueries(stuffKeys.detail(props.selectedId));
+    emit('updateStuffDetailViewMode', 'SHOW');
+  },
+  onError: (error) => {
+    modalStore.addModal(buildAlertModal('errorAlert', error.message));
+  },
+});
+
+const { isLoading: isLoadingOnUpdatingStuff, mutate: updateStuffMutate } = useMutation<
+  StuffWithItems,
+  BaseError
+>(
   () =>
     editStuff(props.userToken, props.selectedId, {
-      name: newName.value,
-      thumbnail: newThumbnail.value,
-      desc: newDesc.value,
+      name: editionAppliedStuff.value.name,
+      thumbnail: editionAppliedStuff.value.thumbnail,
+      desc: editionAppliedStuff.value.desc,
     }),
   {
     onSuccess: () => {
@@ -85,60 +88,56 @@ const commitChangeMutation = useMutation<StuffWithItems, BaseError>(
         queryClient.invalidateQueries(stuffKeys.list(props.curDeptId));
         queryClient.invalidateQueries(stuffKeys.detail(props.selectedId));
         emit('updateStuffDetailViewMode', 'SHOW');
-        isMutateData.value = false;
         return;
       }
-      addNewItemsMutation.mutate();
+      addItemMutate();
     },
     onError: (error) => {
       queryClient.invalidateQueries(stuffKeys.list(props.curDeptId));
       queryClient.invalidateQueries(stuffKeys.detail(props.selectedId));
       modalStore.addModal(buildAlertModal('errorAlert', error.message));
-      isMutateData.value = false;
     },
   }
 );
 
-const dataLoadStatus = computed(() => {
-  if (isListLoading.value) return 'Loading';
-  if (isListError.value) return 'Error';
-  if (isListSuccess.value) {
-    if (isLoading.value || isFetching.value || isMutateData.value) return 'Loading';
-    if (isError.value) return 'Error';
-    if (isSuccess.value) return 'Success';
-    return 'Error';
-  }
-  return 'Error';
-});
+const isLoadingOnShowMode = computed(
+  () => isListLoading.value || isLoadingOnDetail.value || isFetchingOnDetail.value
+);
+
+const isErrorOnShowMode = computed(
+  () => isListError.value || (isListSuccess.value && isErrorOnGetDetail.value)
+);
+
+const isSuccessOnShowMode = computed(() => isListSuccess.value && isSuccessOnGetDetail.value);
+
+const isLoadingOnEditMode = computed(
+  () => isLoadingOnAddingItem.value || isLoadingOnUpdatingStuff.value
+);
 
 function commitChangeStuff() {
-  commitChangeMutation.mutate();
-  isMutateData.value = true;
+  updateStuffMutate();
 }
 </script>
 
 <template>
-  <template v-if="dataLoadStatus === 'Success'">
-    <StuffDetail
-      v-if="stuffDetailViewMode === 'SHOW'"
-      :user-mode="userMode"
-      :stuff="data"
-      @to-edit-mode="emit('updateStuffDetailViewMode', 'EDIT')"
-      @to-register-mode="router.push('/stuffs/add')"
-    ></StuffDetail>
-    <EditableStuffDetail
-      v-else-if="stuffDetailViewMode === 'EDIT'"
-      :original-stuff="data"
-      @commit-change="commitChangeStuff()"
-      @close-edit-mode="emit('updateStuffDetailViewMode', 'SHOW')"
-    ></EditableStuffDetail>
-  </template>
-  <template v-else-if="dataLoadStatus === 'Loading'">
-    <LoadingView></LoadingView>
-  </template>
-  <template v-else>
-    <DataLoadFailView></DataLoadFailView>
-  </template>
+  <StuffDetail
+    v-if="stuffDetailViewMode === 'SHOW'"
+    :is-loading="isLoadingOnShowMode"
+    :is-error="isErrorOnShowMode"
+    :is-success="isSuccessOnShowMode"
+    :user-mode="userMode"
+    :stuff="data ?? StuffWithItems.NIL"
+    @to-edit-mode="emit('updateStuffDetailViewMode', 'EDIT')"
+    @to-register-mode="router.push('/stuffs/add')"
+  ></StuffDetail>
+  <EditableStuffDetail
+    v-else-if="stuffDetailViewMode === 'EDIT'"
+    ref="editStuffComponent"
+    :stuff="data ?? StuffWithItems.NIL"
+    :is-loading="isLoadingOnEditMode"
+    @commit-change="commitChangeStuff()"
+    @close-edit-mode="emit('updateStuffDetailViewMode', 'SHOW')"
+  ></EditableStuffDetail>
 </template>
 
 <style lang="scss" scoped></style>

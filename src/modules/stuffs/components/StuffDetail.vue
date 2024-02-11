@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { computed, toRef } from 'vue';
 
-import Department from '@common/models/Department';
+import DataLoadFailView from '@common/components/DataLoadFailView/DataLoadFailView.vue';
+import LoadingView from '@common/components/LoadingView/LoadingView.vue';
 import Item from '@common/models/Item';
-import StuffInfoOnly from '@common/models/StuffInfoOnly';
 import type StuffWithItems from '@common/models/StuffWithItems';
-import University from '@common/models/University';
 import type UserMode from '@common/types/UserMode';
 
 import StuffDetailItemList from '@^stuffs/components/ItemList.vue';
@@ -14,9 +13,15 @@ import StuffDetailFrame from '@^stuffs/components/stuff-detail-frames/StuffDetai
 
 const props = defineProps<{
   userMode: UserMode;
-  stuff: StuffWithItems | undefined;
+  isSuccess: boolean;
+  isLoading: boolean;
+  isError: boolean;
+  stuff: StuffWithItems;
 }>();
 
+const isSuccess = toRef(props, 'isSuccess');
+const isLoading = toRef(props, 'isLoading');
+const isError = toRef(props, 'isError');
 const stuff = toRef(props, 'stuff');
 
 const emits = defineEmits<{
@@ -29,9 +34,9 @@ const items = computed(() =>
     (e) =>
       new Item({
         ...e,
-        university: props.stuff?.university ?? University.NIL,
-        department: props.stuff?.department ?? Department.NIL,
-        stuff: props.stuff ?? StuffInfoOnly.NIL,
+        university: props.stuff.university,
+        department: props.stuff.department,
+        stuff: props.stuff,
       })
   )
 );
@@ -39,7 +44,9 @@ const items = computed(() =>
 
 <template>
   <section class="w-100 h-100">
-    <StuffDetailFrame>
+    <LoadingView v-if="isLoading"></LoadingView>
+    <DataLoadFailView v-else-if="isError"></DataLoadFailView>
+    <StuffDetailFrame v-else-if="isSuccess">
       <template v-slot:stuff-info>
         <StuffDetailContent
           :user-mode="userMode"
