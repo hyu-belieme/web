@@ -2,7 +2,7 @@
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import Popper from 'vue3-popper';
-import { useMutation, useQueryClient } from 'vue-query';
+import { useQueryClient } from 'vue-query';
 
 import { rentStuff } from '@common/apis/belieme-apis';
 import { historyKeys, stuffKeys } from '@common/apis/query-keys';
@@ -11,7 +11,6 @@ import useGuidePopoverStore from '@common/components/guide-popovers/stores/guide
 import buildAlertModal from '@common/components/modals/AlertModal/utils/alert-modal-builder';
 import useModalStore from '@common/components/modals/stores/modal-store';
 import type BaseError from '@common/errors/BaseError';
-import type History from '@common/models/History';
 import type Stuff from '@common/models/Stuff';
 import useGuideFlagsStorage from '@common/storages/guide-flags-storage';
 import type UserMode from '@common/types/UserMode';
@@ -59,36 +58,21 @@ if (
   guidePopoverStore.openGuidePopover('STUFF_LIST_USER');
 }
 
-function changeItemRequestMutation(mutationFn: () => Promise<History>) {
-  return useMutation<History, BaseError>(mutationFn, {
+const rentalRequestModal = {
+  component: StuffRequestConfirmModal,
+  props: {
+    resolveLabel: '신청하기',
+    rejectLabel: '뒤로가기',
+    asyncResolve: () => rentStuff(props.userToken, props.stuff.id),
     onSettled: () => {
       queryClient.invalidateQueries(stuffKeys.list(props.curDeptId));
       queryClient.invalidateQueries(stuffKeys.detail(props.stuff.id));
       queryClient.invalidateQueries(historyKeys.list());
       queryClient.invalidateQueries(historyKeys.detail());
     },
-    onError: (error) => {
+    onError: (error: BaseError) => {
       modalStore.addModal(buildAlertModal('errorAlert', error.message));
     },
-  });
-}
-
-const rentalRequestMutation = changeItemRequestMutation(() =>
-  rentStuff(props.userToken, props.stuff.id)
-);
-
-const rentalRequestModal = {
-  component: StuffRequestConfirmModal,
-  props: {
-    resolveLabel: '신청하기',
-    rejectLabel: '뒤로가기',
-  },
-  resolve: () => {
-    rentalRequestMutation.mutate();
-    modalStore.removeModal();
-  },
-  reject: () => {
-    modalStore.removeModal();
   },
 };
 </script>

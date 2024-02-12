@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeMount, onMounted, ref, watch } from 'vue';
+import { ref, toRef, watch } from 'vue';
 
 import BasicButton from '@common/components/buttons/BasicButton/BasicButton.vue';
 import type StuffInfoOnly from '@common/models/StuffInfoOnly';
@@ -7,7 +7,7 @@ import type StuffInfoOnly from '@common/models/StuffInfoOnly';
 import StuffInfoFrame from '@^stuffs/components/stuff-detail-frames/StuffInfoFrame.vue';
 
 const props = defineProps<{
-  originalStuff: StuffInfoOnly | undefined;
+  stuff: StuffInfoOnly;
 }>();
 
 const emits = defineEmits<{
@@ -18,21 +18,15 @@ const emits = defineEmits<{
   (e: 'closeEditMode'): void;
 }>();
 
-const nameInput = ref<string>('');
-const thumbnailInput = ref<string>('');
-const descInput = ref<string>('');
+const stuff = toRef(props, 'stuff');
 
-onBeforeMount(() => {
-  watch(nameInput, () => emits('nameChanged', nameInput.value));
-  watch(thumbnailInput, () => emits('thumbnailChanged', thumbnailInput.value));
-  watch(descInput, () => emits('descChanged', descInput.value));
-});
+const nameInput = ref<string>(stuff.value.name);
+const thumbnailInput = ref<string>(stuff.value.thumbnail);
+const descInput = ref<string>(stuff.value.desc);
 
-onMounted(() => {
-  nameInput.value = props.originalStuff?.name || '';
-  thumbnailInput.value = props.originalStuff?.thumbnail || '';
-  descInput.value = props.originalStuff !== undefined ? props.originalStuff?.desc : '';
-});
+watch(nameInput, () => emits('nameChanged', nameInput.value));
+watch(thumbnailInput, () => emits('thumbnailChanged', thumbnailInput.value));
+watch(descInput, () => emits('descChanged', descInput.value));
 </script>
 
 <template>

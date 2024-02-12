@@ -66,7 +66,9 @@ import DataLoadFailView from '@common/components/DataLoadFailView/DataLoadFailVi
 import LoadingView from '@common/components/LoadingView/LoadingView.vue';
 import BasicButton from '@common/components/buttons/BasicButton/BasicButton.vue';
 import useGuidePopoverStore from '@common/components/guide-popovers/stores/guide-popover-store';
+import buildAlertModal from '@common/components/modals/AlertModal/utils/alert-modal-builder';
 import useModalStore from '@common/components/modals/stores/modal-store';
+import type BaseError from '@common/errors/BaseError';
 import type User from '@common/models/User';
 import { hasHigherAuthorityPermission } from '@common/models/types/AuthorityPermission';
 import useCurDeptStorage from '@common/storages/cur-dept-storage';
@@ -124,19 +126,6 @@ const {
   }
 );
 
-function commitUserDiff(resolve: () => void, reject: () => void) {
-  updateUserPermissions(
-    userToken.value,
-    userDiffList.value.map((e) => ({
-      userId: e.user.id,
-      departmentId: curDeptId.value,
-      permission: e.curState,
-    }))
-  )
-    .then(resolve)
-    .catch(reject);
-}
-
 const diffAppliedUserList = computed(() =>
   userDiffApplier(baseUserList.value || [], userDiffList.value).filter(
     (e) => !hasHigherAuthorityPermission(e.getPermission(curDeptId.value), 'DEVELOPER')
@@ -151,19 +140,23 @@ const commitDiffModal = {
     contentForDesktop: '변경사항을 적용하시겠습니까?',
     resolveLabel: '적용하기',
     rejectLabel: '뒤로가기',
-  },
-  resolve: () => {
-    commitUserDiff(
-      () => {
-        userDiffStore.clearUserDiffs();
-        queryClient.refetchQueries(userKeys.list(curDeptId.value));
-        modalStore.removeModal();
-      },
-      () => modalStore.removeModal()
-    );
-  },
-  reject: () => {
-    modalStore.removeModal();
+    asyncResolve: () => {
+      return updateUserPermissions(
+        userToken.value,
+        userDiffList.value.map((e) => ({
+          userId: e.user.id,
+          departmentId: curDeptId.value,
+          permission: e.curState,
+        }))
+      );
+    },
+    onSuccess: () => {
+      userDiffStore.clearUserDiffs();
+      queryClient.refetchQueries(userKeys.list(curDeptId.value));
+    },
+    onError: (error: BaseError) => {
+      modalStore.addModal(buildAlertModal('errorAlert', error.message));
+    },
   },
 };
 
@@ -177,14 +170,11 @@ const reloadModal = {
       '저장하지 않은 변경사항은 모두 사라집니다. 그래도 사용자 리스트를 다시 불러올까요?',
     resolveLabel: '불러오기',
     rejectLabel: '뒤로가기',
-  },
-  resolve: () => {
-    userDiffStore.clearUserDiffs();
-    queryClient.refetchQueries(userKeys.list(curDeptId.value));
-    modalStore.removeModal();
-  },
-  reject: () => {
-    modalStore.removeModal();
+    asyncResolve: () => Promise.resolve(),
+    onSettled: () => {
+      userDiffStore.clearUserDiffs();
+      queryClient.refetchQueries(userKeys.list(curDeptId.value));
+    },
   },
 };
 

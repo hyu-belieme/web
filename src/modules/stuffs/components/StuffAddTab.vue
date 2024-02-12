@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia';
+import { computed, ref } from 'vue';
 import { useMutation, useQueryClient } from 'vue-query';
 import { useRouter } from 'vue-router';
 
 import { postNewStuff } from '@common/apis/belieme-apis';
 import { stuffKeys } from '@common/apis/query-keys';
 import buildAlertModal from '@common/components/modals/AlertModal/utils/alert-modal-builder';
+import ConfirmModal from '@common/components/modals/ConfirmModal/ConfirmModal.vue';
 import useModalStore from '@common/components/modals/stores/modal-store';
 import type BaseError from '@common/errors/BaseError';
-import type StuffWithItems from '@common/models/StuffWithItems';
+import StuffWithItems from '@common/models/StuffWithItems';
 
 import EditableStuffDetail from '@^stuffs/components/EditableStuffDetail.vue';
-import useStuffEditionStore from '@^stuffs/stores/stuff-edition-store';
 
 const props = defineProps<{
   userToken: string;
@@ -24,17 +24,20 @@ const queryClient = useQueryClient();
 
 const modalStore = useModalStore();
 
-const stuffEditionStore = useStuffEditionStore();
-const { newName, newThumbnail, newDesc, newItemCount } = storeToRefs(stuffEditionStore);
+const editStuffComponent = ref<InstanceType<typeof EditableStuffDetail> | null>(null);
 
-const commitAddNewStuffMutation = useMutation<StuffWithItems, BaseError>(
+const editionAppliedStuff = computed(
+  () => editStuffComponent.value?.getNewStuff() ?? StuffWithItems.NIL
+);
+
+const { isLoading, mutate } = useMutation<StuffWithItems, BaseError>(
   () =>
     postNewStuff(props.userToken, {
       departmentId: props.curDeptId,
-      name: newName.value,
-      thumbnail: newThumbnail.value,
-      amount: newItemCount.value,
-      desc: newDesc.value,
+      name: editionAppliedStuff.value.name,
+      thumbnail: editionAppliedStuff.value.thumbnail,
+      desc: editionAppliedStuff.value.desc,
+      amount: editionAppliedStuff.value.items.size,
     }),
   {
     onSuccess: () => {
@@ -47,12 +50,33 @@ const commitAddNewStuffMutation = useMutation<StuffWithItems, BaseError>(
     },
   }
 );
+
+function makeCommitInputConfirmModal() {
+  return {
+    component: ConfirmModal,
+    props: {
+      title: '물품 추가하기',
+      content: '새로운 물품을 추가하시겠습니까?',
+      resolveLabel: '추가하기',
+      rejectLabel: '뒤로가기',
+    },
+    resolve: () => {
+      mutate();
+      modalStore.removeModal();
+    },
+    reject: () => {
+      modalStore.removeModal();
+    },
+  };
+}
 </script>
 
 <template>
   <EditableStuffDetail
-    :original-stuff="undefined"
-    @commit-change="commitAddNewStuffMutation.mutate()"
+    ref="editStuffComponent"
+    :stuff="StuffWithItems.NIL"
+    :is-loading="isLoading"
+    @commit-change="modalStore.addModal(makeCommitInputConfirmModal())"
     @close-edit-mode="router.back()"
   ></EditableStuffDetail>
 </template>

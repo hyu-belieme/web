@@ -11,7 +11,7 @@ import InfoList from '@^histories/components/HistoryDetailInfoList.vue';
 const props = defineProps<{
   userToken: string;
   userMode: UserMode;
-  data: History | undefined;
+  data: History;
 }>();
 
 const data = toRef(props, 'data');

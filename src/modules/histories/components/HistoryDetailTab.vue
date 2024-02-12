@@ -41,7 +41,7 @@ const dataLoadStatus = computed(() => {
 
 <template>
   <HistoryDetail
-    v-if="dataLoadStatus === 'Success'"
+    v-if="dataLoadStatus === 'Success' && data !== undefined"
     :user-token="userToken"
     :user-mode="userMode"
     :data="data"

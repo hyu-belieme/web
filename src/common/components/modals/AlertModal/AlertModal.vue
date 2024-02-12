@@ -14,26 +14,21 @@ withDefaults(
   {
     size: '',
     content: '',
-    hasCloseButton: true,
+    hasCloseButton: false,
   }
 );
 </script>
 
 <template>
-  <BasicModal
-    v-bind:index="index"
-    v-bind:modal-key="modalKey"
-    v-bind:size="size"
-    v-bind:no-footer="true"
-  >
+  <BasicModal v-bind:index="index" v-bind:modal-key="modalKey" v-bind:size="size">
     <template v-slot:header>
       <section class="d-flex flex-direction-row align-items-stretch justify-content-between w-100">
-        <span class="modal-title fs-xl">오류</span>
+        <span class="modal-title fs-lg fw-semibold">경고</span>
         <CloseButton v-if="hasCloseButton" @click="$emit('close')" aria-label="Close"></CloseButton>
       </section>
     </template>
     <template v-slot:body>
-      <p class="no-margin-p">{{ content }}</p>
+      <p class="no-margin-p fw-light">{{ content }}</p>
     </template>
     <template v-slot:footer>
       <div class="d-flex flex-gap-2">

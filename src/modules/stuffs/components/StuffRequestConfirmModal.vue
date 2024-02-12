@@ -1,14 +1,22 @@
 <script setup lang="ts">
+import { ref } from 'vue';
+
+import LoadingView from '@common/components/LoadingView/LoadingView.vue';
 import BasicButton from '@common/components/buttons/BasicButton/BasicButton.vue';
 import BasicModal from '@common/components/modals/BasicModal/BasicModal.vue';
+import useModalStore from '@common/components/modals/stores/modal-store';
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     modalKey: string;
     index: number;
     size?: string;
     resolveLabel?: string;
     rejectLabel?: string;
+    asyncResolve?: () => Promise<void>;
+    onSettled?: () => void;
+    onSuccess?: () => void;
+    onError?: (error: any) => void;
     hasCloseButton?: boolean;
   }>(),
   {
@@ -18,6 +26,45 @@ withDefaults(
     hasCloseButton: false,
   }
 );
+
+const modalStore = useModalStore();
+const isLoading = ref<boolean>(false);
+
+async function resolve() {
+  if (props.asyncResolve !== undefined) {
+    isLoading.value = true;
+    modalStore.pauseCloseLogic();
+
+    props
+      .asyncResolve()
+      .then(() => {
+        isLoading.value = false;
+        modalStore.restartCloseLogic();
+        modalStore.removeModal();
+
+        if (props.onSettled !== undefined) {
+          props.onSettled();
+        }
+
+        if (props.onSuccess !== undefined) {
+          props.onSuccess();
+        }
+      })
+      .catch((error) => {
+        isLoading.value = false;
+        modalStore.restartCloseLogic();
+        modalStore.removeModal();
+
+        if (props.onSettled !== undefined) {
+          props.onSettled();
+        }
+
+        if (props.onError !== undefined) {
+          props.onError(error);
+        }
+      });
+  }
+}
 </script>
 
 <template>
@@ -26,7 +73,8 @@ withDefaults(
       <span class="modal-title fs-lg fw-semibold">물품 대여 방법</span>
     </template>
     <template v-slot:body>
-      <section class="d-flex flex-column gap-3 p-1">
+      <LoadingView v-if="isLoading"></LoadingView>
+      <section v-else class="d-flex flex-column gap-3 p-1">
         <section class="desc">
           <span>1. 물품목록 페이지에서 필요한 물품의 대여신청을 한다.</span>
           <span
@@ -42,19 +90,19 @@ withDefaults(
       </section>
     </template>
     <template v-if="rejectLabel !== '' || resolveLabel !== ''" v-slot:footer>
-      <div class="d-flex flex-gap-2">
+      <div v-if="!isLoading" class="d-flex flex-gap-2">
         <BasicButton
           v-if="resolveLabel !== ''"
           color="primary"
           :content="resolveLabel"
-          @click="$emit('resolve')"
+          @click="() => resolve()"
         >
         </BasicButton>
         <BasicButton
           v-if="rejectLabel !== ''"
           color="light"
           :content="rejectLabel"
-          @click="$emit('reject')"
+          @click="() => modalStore.removeModal()"
         >
           {{ rejectLabel }}
         </BasicButton>
