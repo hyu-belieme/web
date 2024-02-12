@@ -1,4 +1,5 @@
 <script setup lang="ts">
+/* global defineProps, withDefaults */
 import { ref } from 'vue';
 
 import LoadingView from '@common/components/LoadingView/LoadingView.vue';
@@ -6,27 +7,26 @@ import BasicButton from '@common/components/buttons/BasicButton/BasicButton.vue'
 import BasicModal from '@common/components/modals/BasicModal/BasicModal.vue';
 import useModalStore from '@common/components/modals/stores/modal-store';
 
-import UserDiffListContent from '@^users/components/UserDiffListContent.vue';
-
 const props = withDefaults(
   defineProps<{
     modalKey: string;
     index: number;
+    size?: string;
     title?: string;
-    contentForDesktop?: string;
-    contentForMobile?: string;
+    content?: string;
     resolveLabel?: string;
     rejectLabel?: string;
-    size?: string;
     asyncResolve?: () => Promise<void>;
     onSettled?: () => void;
     onSuccess?: () => void;
     onError?: (error: any) => void;
   }>(),
   {
+    size: '',
     title: '',
     content: '',
-    size: '',
+    resolveLabel: '',
+    rejectLabel: '',
   }
 );
 
@@ -77,19 +77,7 @@ async function resolve() {
     </template>
     <template v-slot:body>
       <LoadingView v-if="isLoading"></LoadingView>
-      <template v-else>
-        <section class="on-mobile">
-          <section class="d-flex flex-column gap-1">
-            <section class="user-diff-list-frame">
-              <UserDiffListContent></UserDiffListContent>
-            </section>
-            <p class="no-margin-p">{{ contentForMobile }}</p>
-          </section>
-        </section>
-        <section class="on-desktop">
-          <p class="no-margin-p fw-light">{{ contentForDesktop }}</p>
-        </section>
-      </template>
+      <p v-else class="no-margin-p fw-light text-start">{{ content }}</p>
     </template>
     <template v-if="rejectLabel !== '' || resolveLabel !== ''" v-slot:footer>
       <div v-if="!isLoading" class="d-flex flex-gap-2">
@@ -116,35 +104,5 @@ async function resolve() {
 <style scoped lang="scss">
 .no-margin-p {
   margin: 0;
-}
-
-.user-diff-list-frame {
-  border: $border-width solid $border-color;
-  @include border-radius();
-
-  height: 20rem;
-  overflow: scroll;
-
-  background-color: $gray-50;
-}
-
-@include media-breakpoint-between('mobile', 'tablet-landscape') {
-  .on-desktop {
-    display: none;
-  }
-
-  .on-mobile {
-    display: block;
-  }
-}
-
-@include media-breakpoint-up('tablet-landscape') {
-  .on-desktop {
-    display: block;
-  }
-
-  .on-mobile {
-    display: none;
-  }
 }
 </style>

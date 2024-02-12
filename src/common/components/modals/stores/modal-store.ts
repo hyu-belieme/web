@@ -22,6 +22,18 @@ const useModalStore = defineStore('modal', () => {
     modals.value = modals.value.push(newModal);
   }
 
+  function pauseCloseLogic() {
+    if (modals.value.size !== 0) {
+      window.removeEventListener('mouseup', closeLogic);
+    }
+  }
+
+  function restartCloseLogic() {
+    if (modals.value.size !== 0) {
+      window.addEventListener('mouseup', closeLogic);
+    }
+  }
+
   function removeModal() {
     modals.value = modals.value.pop();
     if (modals.value.size === 0) {
@@ -30,6 +42,10 @@ const useModalStore = defineStore('modal', () => {
   }
 
   closeLogic = (e: MouseEvent) => {
+    if (modals.value.size === 0) {
+      return;
+    }
+
     const currentModal = modals.value.last();
     if (
       e.target instanceof Element &&
@@ -44,6 +60,8 @@ const useModalStore = defineStore('modal', () => {
     modals: readonly(modals),
     addModal,
     removeModal,
+    pauseCloseLogic,
+    restartCloseLogic,
   };
 });
 

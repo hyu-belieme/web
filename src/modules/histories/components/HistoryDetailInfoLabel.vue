@@ -4,27 +4,25 @@ import { toRef } from 'vue';
 import type History from '@common/models/History';
 
 const props = defineProps<{
-  data: History | undefined;
+  data: History;
 }>();
 
 const data = toRef(props, 'data');
 </script>
 
 <template>
-  <template v-if="data !== undefined">
-    <section class="label">
-      <section class="thumbnail">
-        <span class="position-absolute start-50 top-50 translate-middle">
-          {{ data.stuff.thumbnail }}
-        </span>
-      </section>
-      <section class="name">
-        <span class="position-absolute top-50 translate-middle-y">
-          {{ data.stuff.name }} #{{ data.item.num }}
-        </span>
-      </section>
+  <section class="label">
+    <section class="thumbnail">
+      <span class="position-absolute start-50 top-50 translate-middle">
+        {{ data.stuff.thumbnail }}
+      </span>
     </section>
-  </template>
+    <section class="name">
+      <span class="position-absolute top-50 translate-middle-y">
+        {{ data.stuff.name }} #{{ data.item.num }}
+      </span>
+    </section>
+  </section>
 </template>
 
 <style lang="scss" scoped>
