@@ -35,6 +35,7 @@ function closeGuidePopovers() {
         <BasicCheckboxVue
           name="not-show-again"
           init-state="checked"
+          @on-init="(checked) => updateNotShowAgain(checked)"
           @on-change="(checked) => updateNotShowAgain(checked)"
         ></BasicCheckboxVue>
         <span class="fs-xs">이 가이드를 다시 보지 않습니다.</span>
