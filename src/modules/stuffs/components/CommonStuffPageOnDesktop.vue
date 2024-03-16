@@ -77,7 +77,8 @@ const isFetching = toRef(props, 'isFetching');
 </template>
 
 <style lang="scss" scoped>
-$list-height: calc(100vh - $header-height-desktop);
+$cropped100vh: calc(var(--vh, 1vh) * 100);
+$list-height: calc($cropped100vh - $header-height-desktop);
 
 .tabs-wrapper {
   width: 100%;
